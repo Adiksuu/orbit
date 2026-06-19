@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Models\Project;
+use Illuminate\Database\Eloquent\Collection;
+
+class ProjectRepository
+{
+    public function getAll(): Collection {
+        return Project::query()->latest()->get();
+    }
+    public function findBySlug(string $slug): ?Project {
+        return Project::query()->where('slug', $slug)->firstOrFail();
+    }
+    public function store(array $data): Project {
+        return Project::query()->create($data);
+    }
+}

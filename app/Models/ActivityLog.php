@@ -15,6 +15,8 @@ class ActivityLog extends Model
         'user_id',
         'activity_type',
         'activity_description',
-        'activity_date'
+        'activity_date',
+        'project_id',
+        'body'
     ];
 }
