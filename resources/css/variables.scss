@@ -1,0 +1,58 @@
+// DEFINE THE COLOR VARIABLES (DARK THEME ONLY)
+// --- BACKGROUND
+$bg-color: #1c1c1c;
+$bg-light-color: #3c3c3c;
+
+// --- TEXT
+$text-color: #f3f3f3;
+$text-gray-color: #999;
+
+// --- COMPONENTS
+$accent-color: #8844da;
+$accent-light-color: #be55ff;
+
+// --- ACTIONS
+$success-color: #4caf50;
+$error-color: #f44336;
+$warning-color: #ff9800;
+$pending-color: #757575;
+$info-color: #2196f3;
+
+// DEFINE THE FONT SIZE VARIABLES
+$font-2xs: 0.625rem;
+$font-xs: 0.75rem;
+$font-sm: 0.875rem;
+$font-md: 1rem;
+$font-lg: 1.125rem;
+$font-xl: 1.25rem;
+$font-2xl: 1.5rem;
+$font-3xl: 1.75rem;
+$font-4xl: 2rem;
+
+// DEFINE THE BORDER RADIUS VARIABLES
+$br-sm: 8px;
+$br-md: 12px;
+$br-lg: 16px;
+$br-half: 50%;
+$br-full: 100%;
+
+// DEFINE THE BOX SHADOW VARIABLES
+$bs-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+$bs-md: 0 1px 3px rgba(0, 0, 0, 0.1);
+$bs-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+
+// DEFINE THE TRANSITION VARIABLES
+// --- LINEAR
+$tr-linear-short: all .1s linear;
+$tr-linear-medium: all .2s linear;
+$tr-linear-long: all .3s linear;
+
+// --- EASE-IN-OUT
+$tr-ease-in-out-short: all .1s ease-in-out;
+$tr-ease-in-out-medium: all .2s ease-in-out;
+$tr-ease-in-out-long: all .3s ease-in-out;
+
+// --- CUBIC-BEZIER
+$tr-cubic-bezier-short: all .1s cubic-bezier(0.4, 0, 0.2, 1);
+$tr-cubic-bezier-medium: all .2s cubic-bezier(0.4, 0, 0.2, 1);
+$tr-cubic-bezier-long: all .3s cubic-bezier(0.4, 0, 0.2, 1);
