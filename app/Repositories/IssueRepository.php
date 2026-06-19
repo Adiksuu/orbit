@@ -8,7 +8,11 @@ use Illuminate\Support\Collection;
 class IssueRepository
 {
     public function getForProject(int $projectId): Collection {
-        return Issue::query()->where('project_id', $projectId)->with(['creator', 'assignee'])->orderByRaw("FIELD(priority, 'high', 'medium', 'low')")->get();
+        return Issue::query()
+            ->where('project_id', $projectId)
+            ->with(['creator', 'assignee'])
+            ->orderByRaw("CASE WHEN priority = 'high' THEN 1 WHEN priority = 'medium' THEN 2 WHEN priority = 'low' THEN 3 ELSE 4 END")
+            ->get();
     }
     public function store(array $data): Issue {
         return Issue::query()->create($data);

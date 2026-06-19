@@ -16,7 +16,7 @@ class IssueService
         $data['user_id'] = auth()->id();
 
         $issue = $this->issueRepository->store($data);
-        $this->activityLogService->log($issue->project_id, "Added new task: #{$issue}");
+        $this->activityLogService->log($issue->project_id, "Added new task: #{$issue->id}");
 
         return $issue;
     }

@@ -19,10 +19,9 @@ class ActivityLogFactory extends Factory
     public function definition(): array
     {
         return [
+            'project_id' => \App\Models\Project::factory(),
             'user_id' => User::factory(),
-            'activity_type' => fake()->randomElement(['created', 'updated', 'deleted']),
-            'activity_description' => fake()->sentence(),
-            'activity_date' => fake()->dateTimeBetween('-1 year')
+            'body' => fake()->sentence(),
         ];
     }
 }
