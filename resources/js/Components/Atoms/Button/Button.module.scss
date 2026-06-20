@@ -1,0 +1,27 @@
+@use '../../../../css/variables' as *;
+@use 'sass:color';
+
+.button {
+    padding: 6px 12px;
+    border-radius: $br-sm;
+    background-color: $accent-color;
+    color: $text-color;
+    font-weight: 500;
+    font-size: $font-sm;
+    cursor: pointer;
+    transition: $tr-ease-in-out-short;
+    &:hover {
+        background-color: $accent-light-color;
+    }
+    &:disabled {
+        background-color: $pending-color;
+        cursor: not-allowed;
+    }
+    &.box {
+        padding: 0;
+        background-color: $bg-light-color;
+        &:hover {
+            background-color: color.adjust($bg-light-color, $lightness: -10%);
+        }
+    }
+}

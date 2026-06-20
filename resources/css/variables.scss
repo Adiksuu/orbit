@@ -1,7 +1,7 @@
 // DEFINE THE COLOR VARIABLES (DARK THEME ONLY)
 // --- BACKGROUND
 $bg-color: #1c1c1c;
-$bg-light-color: #3c3c3c;
+$bg-light-color: rgb(60 60 60 / 0.8);
 
 // --- TEXT
 $text-color: #f3f3f3;
@@ -9,7 +9,7 @@ $text-gray-color: #999;
 
 // --- COMPONENTS
 $accent-color: #8844da;
-$accent-light-color: #be55ff;
+$accent-light-color: rgb(190 85 255 / 0.8);
 
 // --- ACTIONS
 $success-color: #4caf50;

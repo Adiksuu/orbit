@@ -1,0 +1,24 @@
+@use '../../../../css/variables' as *;
+
+.input {
+    width: 100%;
+    padding: 6px 12px;
+    border-radius: $br-sm;
+    background-color: $bg-light-color;
+    color: $text-color;
+    border: 1px solid $text-gray-color;
+    font-size: $font-sm;
+    &:focus {
+        border-color: $accent-color;
+    }
+    &:disabled {
+        background-color: $pending-color;
+        cursor: not-allowed;
+    }
+    &::placeholder {
+        color: $text-gray-color;
+    }
+    &[type='file'] {
+        display: none;
+    }
+}
