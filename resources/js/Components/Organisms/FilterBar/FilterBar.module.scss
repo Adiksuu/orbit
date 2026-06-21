@@ -3,36 +3,8 @@
 .filterBar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     padding: 12px 16px;
-    border-bottom: 1px solid $bg-light-color;
-}
-
-.left {
-    display: flex;
-    align-items: center;
     gap: 8px;
-}
-
-.right {
-    display: flex;
-    align-items: center;
-}
-
-.saveView {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background-color: transparent;
-    border: none;
-    color: $text-gray-color;
-    font-size: $font-sm;
-    cursor: pointer;
-    padding: 4px 8px;
-    border-radius: $br-sm;
-
-    &:hover {
-        background-color: rgba($bg-light-color, 0.3);
-        color: $text-color;
-    }
+    border-bottom: 1px solid $bg-light-color;
 }
