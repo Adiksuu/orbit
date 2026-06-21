@@ -9,8 +9,8 @@ export interface Issue {
     project_id: number;
     user_id: number;
     assignee_id?: number;
-    created_at?: string;
-    updated_at?: string;
+    created_at?: number;
+    updated_at?: number;
     assignee?: {
         avatar: string;
         created_at: string;

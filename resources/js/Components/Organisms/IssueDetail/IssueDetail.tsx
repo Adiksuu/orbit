@@ -1,4 +1,5 @@
-import React from 'react';
+import { Issue } from '@/types/Issues';
+import { formatDate, formatTimeAgo } from '@/utils/time';
 import Badge from '../../Atoms/Badge/Badge';
 import Icon from '../../Atoms/Icon/Icon';
 import StatusDot from '../../Atoms/StatusDot/StatusDot';
@@ -6,22 +7,24 @@ import Comment from '../../Molecules/Comment/Comment';
 import UserBadge from '../../Molecules/UserBadge/UserBadge';
 import styles from './IssueDetail.module.scss';
 
-const IssueDetail: React.FC = () => {
+interface IssueDetailProps {
+    activeIssue: Issue;
+    setActiveIssue: (issue: Issue | null) => void;
+}
+
+const IssueDetail = ({ activeIssue, setActiveIssue }: IssueDetailProps) => {
     return (
         <div className={styles.issueDetail}>
             <div className={styles.header}>
-                <span className={styles.issueId}>MOB-127</span>
+                <span className={styles.issueId}>{activeIssue.title}</span>
                 <div className={styles.actions}>
                     <button className={styles.iconButton}>
                         <Icon name="Pencil" size={14} color="#999" />
                     </button>
-                    <button className={styles.iconButton}>
-                        <Icon name="Link" size={14} color="#999" />
-                    </button>
-                    <button className={styles.iconButton}>
-                        <Icon name="Ellipsis" size={14} color="#999" />
-                    </button>
-                    <button className={styles.iconButton}>
+                    <button
+                        className={styles.iconButton}
+                        onClick={() => setActiveIssue(null)}
+                    >
                         <Icon name="X" size={14} color="#999" />
                     </button>
                 </div>
@@ -30,50 +33,80 @@ const IssueDetail: React.FC = () => {
             <div className={styles.content}>
                 <h2 className={styles.title}>Fix crash on app launch</h2>
                 <div className={styles.meta}>
-                    <UserBadge name="Sarah Chen" size="sm" />
-                    <span className={styles.time}>2h ago • Edited</span>
+                    <UserBadge
+                        avatarSrc={activeIssue.assignee?.avatar}
+                        name={
+                            activeIssue.assignee
+                                ? activeIssue.assignee.name
+                                : 'Unassigned'
+                        }
+                        size="sm"
+                    />
+                    <span className={styles.time}>
+                        {formatTimeAgo(activeIssue.updated_at)} ago •
+                        {activeIssue.updated_at === activeIssue.created_at
+                            ? ' opened'
+                            : ' updated'}
+                    </span>
                 </div>
 
-                <p className={styles.description}>
-                    Users are experiencing crashes on app launch on iOS 17.2.
-                    Reproduced on iPhone 15 Pro.
-                </p>
+                <p className={styles.description}>{activeIssue.description}</p>
 
                 <div className={styles.properties}>
                     <div className={styles.property}>
                         <span className={styles.propLabel}>Status</span>
                         <div className={styles.propValue}>
-                            <StatusDot status="in-progress" />
-                            <span>In Progress</span>
+                            <StatusDot status={activeIssue.status} />
+                            <span>{activeIssue.status}</span>
                         </div>
                     </div>
                     <div className={styles.property}>
                         <span className={styles.propLabel}>Priority</span>
                         <div className={styles.propValue}>
-                            <StatusDot status="canceled" size="sm" />
-                            <span className={styles.high}>High</span>
+                            <StatusDot
+                                status={activeIssue.priority}
+                                size="sm"
+                            />
+                            <span className={styles[activeIssue.priority]}>
+                                {activeIssue.priority}
+                            </span>
                         </div>
                     </div>
                     <div className={styles.property}>
                         <span className={styles.propLabel}>Assignee</span>
                         <div className={styles.propValue}>
-                            <UserBadge name="Sarah Chen" size="sm" />
+                            <UserBadge
+                                avatarSrc={activeIssue.assignee?.avatar}
+                                name={
+                                    activeIssue.assignee
+                                        ? activeIssue.assignee.name
+                                        : 'Unassigned'
+                                }
+                                size="sm"
+                            />
                         </div>
                     </div>
                     <div className={styles.property}>
                         <span className={styles.propLabel}>Labels</span>
                         <div className={styles.propValue}>
-                            <Badge color="bug">bug</Badge>
-                            <Badge color="feature">ios</Badge>
+                            {activeIssue.labels?.map((label, idx) => (
+                                <Badge key={idx} color={label}>
+                                    {label}
+                                </Badge>
+                            ))}
                         </div>
                     </div>
                     <div className={styles.property}>
-                        <span className={styles.propLabel}>Sprint</span>
-                        <div className={styles.propValue}>Sprint 12</div>
+                        <span className={styles.propLabel}>Created</span>
+                        <div className={styles.propValue}>
+                            {formatDate(activeIssue.created_at)}
+                        </div>
                     </div>
                     <div className={styles.property}>
-                        <span className={styles.propLabel}>Due date</span>
-                        <div className={styles.propValue}>May 24, 2024</div>
+                        <span className={styles.propLabel}>Modified</span>
+                        <div className={styles.propValue}>
+                            {formatDate(activeIssue.updated_at)}
+                        </div>
                     </div>
                 </div>
 

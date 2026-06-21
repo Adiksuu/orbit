@@ -1,13 +1,20 @@
 import { Issue } from '@/types/Issues';
-import { useState } from 'react';
 import Badge from '../../Atoms/Badge/Badge';
 import StatusDot from '../../Atoms/StatusDot/StatusDot';
 import UserBadge from '../../Molecules/UserBadge/UserBadge';
 import styles from './IssueTable.module.scss';
 
-const IssueTable = ({ issues }: { issues: Issue[] }) => {
-    const [activeIssue, setActiveIssue] = useState({} as Issue);
+interface IssueTableProps {
+    issues: Issue[];
+    activeIssue: Issue | null;
+    setActiveIssue: (issue: Issue | null) => void;
+}
 
+const IssueTable = ({
+    issues,
+    activeIssue,
+    setActiveIssue,
+}: IssueTableProps) => {
     return (
         <div className={styles.container}>
             <table className={styles.table}>
@@ -26,8 +33,10 @@ const IssueTable = ({ issues }: { issues: Issue[] }) => {
                         <tr
                             key={issue.id}
                             className={
-                                issue.id === activeIssue.id
-                                    ? styles.activeRow
+                                activeIssue
+                                    ? issue.id === activeIssue.id
+                                        ? styles.activeRow
+                                        : ''
                                     : ''
                             }
                             onClick={() => setActiveIssue(issue)}
