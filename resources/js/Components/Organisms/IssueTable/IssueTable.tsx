@@ -1,59 +1,13 @@
-import React from 'react';
+import { Issue } from '@/types/Issues';
+import { useState } from 'react';
 import Badge from '../../Atoms/Badge/Badge';
 import StatusDot from '../../Atoms/StatusDot/StatusDot';
 import UserBadge from '../../Molecules/UserBadge/UserBadge';
 import styles from './IssueTable.module.scss';
 
-type IssueLabel = 'bug' | 'feature' | 'performance' | 'design' | 'ux' | 'chore';
+const IssueTable = ({ issues }: { issues: Issue[] }) => {
+    const [activeIssue, setActiveIssue] = useState({} as Issue);
 
-interface Issue {
-    id: string;
-    title: string;
-    description?: string;
-    status: 'open' | 'closed';
-    priority: 'high' | 'medium' | 'low';
-    project_id: number;
-    user_id: number;
-    assignee_id?: number;
-    created_at?: number;
-    updated_at?: number;
-    labels?: IssueLabel[];
-}
-
-const issues: Issue[] = [
-    {
-        id: 'MOB-127',
-        title: 'Fix crash on app launch',
-        status: 'open',
-        priority: 'high',
-        project_id: 1,
-        user_id: 2,
-        assignee_id: 3,
-        labels: ['bug', 'performance'],
-    },
-    {
-        id: 'MOB-1272',
-        title: 'Fix crash on app launch',
-        status: 'closed',
-        priority: 'low',
-        project_id: 1,
-        user_id: 2,
-        assignee_id: 3,
-        labels: ['feature'],
-    },
-    {
-        id: 'MOB-1227',
-        title: 'Fix crash on app launch',
-        status: 'open',
-        priority: 'medium',
-        project_id: 1,
-        user_id: 2,
-        assignee_id: 3,
-        labels: ['bug', 'ux'],
-    },
-];
-
-const IssueTable: React.FC = () => {
     return (
         <div className={styles.container}>
             <table className={styles.table}>
@@ -72,8 +26,11 @@ const IssueTable: React.FC = () => {
                         <tr
                             key={issue.id}
                             className={
-                                issue.id === 'MOB-127' ? styles.activeRow : ''
+                                issue.id === activeIssue.id
+                                    ? styles.activeRow
+                                    : ''
                             }
+                            onClick={() => setActiveIssue(issue)}
                         >
                             <td className={styles.idCell}>{issue.id}</td>
                             <td className={styles.titleCell}>{issue.title}</td>
@@ -84,8 +41,19 @@ const IssueTable: React.FC = () => {
                                 </div>
                             </td>
                             <td>
-                                <UserBadge name={issue.title} size="sm" />
-                                {/*<UserBadge name={issue.assignee_id} size="sm" />*/}
+                                <UserBadge
+                                    avatarSrc={
+                                        issue.assignee
+                                            ? issue.assignee.avatar
+                                            : undefined
+                                    }
+                                    name={
+                                        issue.assignee
+                                            ? issue.assignee.name
+                                            : 'Unassigned'
+                                    }
+                                    size="sm"
+                                />
                             </td>
                             <td>
                                 <div className={styles.priorityCell}>
@@ -116,7 +84,7 @@ const IssueTable: React.FC = () => {
                     ))}
                 </tbody>
             </table>
-            <div className={styles.footer}>7 issues</div>
+            <div className={styles.footer}>{issues.length || 0} issues</div>
         </div>
     );
 };

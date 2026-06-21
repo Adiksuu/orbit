@@ -21,4 +21,7 @@ class IssueRepository
         $issue->update($data);
         return $issue;
     }
+    public function getAll(): Collection {
+        return Issue::query()->with(['creator', 'assignee'])->get();
+    }
 }

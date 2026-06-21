@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Issue;
 use App\Repositories\IssueRepository;
+use Illuminate\Support\Collection;
 
 class IssueService
 {
@@ -19,5 +20,9 @@ class IssueService
         $this->activityLogService->log($issue->project_id, "Added new task: #{$issue->id}");
 
         return $issue;
+    }
+    public function getAll(): Collection
+    {
+        return $this->issueRepository->getAll();
     }
 }

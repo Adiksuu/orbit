@@ -1,18 +1,19 @@
-import React from 'react';
+import { Issue } from '@/types/Issues';
 import FilterBar from '../Components/Organisms/FilterBar/FilterBar';
 import IssueDetail from '../Components/Organisms/IssueDetail/IssueDetail';
 import IssueTable from '../Components/Organisms/IssueTable/IssueTable';
 import MainLayout from '../Layouts/MainLayout';
 import styles from './Dashboard.module.scss';
 
-const Dashboard: React.FC = () => {
+export default function Dashboard({ issues }: { issues: Issue[] }) {
+    console.log(issues);
     return (
         <MainLayout>
             <div className={styles.dashboard}>
                 <FilterBar />
                 <div className={styles.mainContent}>
                     <div className={styles.tableContainer}>
-                        <IssueTable />
+                        <IssueTable issues={issues} />
                     </div>
                     <div className={styles.detailContainer}>
                         <IssueDetail />
@@ -21,6 +22,4 @@ const Dashboard: React.FC = () => {
             </div>
         </MainLayout>
     );
-};
-
-export default Dashboard;
+}
