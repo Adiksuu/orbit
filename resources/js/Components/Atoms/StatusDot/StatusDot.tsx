@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './StatusDot.module.scss';
 
 interface StatusDotProps {
-    status: 'todo' | 'in-progress' | 'done' | 'review' | 'backlog' | 'canceled';
+    status: 'open' | 'closed' | 'low' | 'medium' | 'high';
     size?: 'sm' | 'md';
 }
 

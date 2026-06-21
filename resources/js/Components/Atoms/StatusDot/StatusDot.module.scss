@@ -16,26 +16,22 @@
     }
 }
 
-.todo {
+.closed {
     background-color: $pending-color;
 }
 
-.backlog {
-    border: 1px solid $pending-color;
-}
-
-.in-progress {
+.open{
     background-color: $info-color;
 }
 
-.done {
+.low {
     background-color: $success-color;
 }
 
-.review {
+.medium {
     background-color: $warning-color;
 }
 
-.canceled {
+.high {
     background-color: $error-color;
 }

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\IssueLabel;
+use Illuminate\Database\Eloquent\Casts\AsEnumArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,7 +12,6 @@ class Issue extends Model
 {
     /** @use HasFactory<\Database\Factories\IssueFactory> */
     use HasFactory;
-
     protected $fillable = [
         'id',
         'title',
@@ -19,8 +20,16 @@ class Issue extends Model
         'priority',
         'project_id',
         'user_id',
-        'assignee_id'
+        'assignee_id',
+        'labels',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'labels' => AsEnumArrayObject::class . ':' . IssueLabel::class,
+        ];
+    }
 
     public function creator(): BelongsTo {
         return $this->belongsTo(User::class, 'user_id');
