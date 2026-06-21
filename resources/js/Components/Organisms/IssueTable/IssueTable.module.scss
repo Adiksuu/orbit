@@ -1,0 +1,68 @@
+@use '../../../../css/variables' as *;
+
+.container {
+    flex: 1;
+    overflow-y: auto;
+    background-color: $bg-color;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: $font-sm;
+
+    th {
+        text-align: left;
+        padding: 12px 16px;
+        color: $text-gray-color;
+        font-weight: 500;
+        border-bottom: 1px solid $bg-light-color;
+    }
+
+    td {
+        padding: 8px 16px;
+        color: $text-color;
+        border-bottom: 1px solid rgba($bg-light-color, 0.5);
+    }
+}
+
+.idCell {
+    color: $text-gray-color;
+    width: 100px;
+}
+
+.titleCell {
+    font-weight: 500;
+}
+
+.statusCell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: $text-gray-color;
+}
+
+.priorityCell {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.high { color: #f44336; }
+.medium { color: #ff9800; }
+.low { color: #4caf50; }
+
+.labelsCell {
+    display: flex;
+    gap: 6px;
+}
+
+.activeRow {
+    background-color: rgba($bg-light-color, 0.2);
+}
+
+.footer {
+    padding: 16px;
+    color: $text-gray-color;
+    font-size: $font-xs;
+}

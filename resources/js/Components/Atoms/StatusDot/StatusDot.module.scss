@@ -1,0 +1,41 @@
+@use '../../../../css/variables' as *;
+
+.dot {
+    display: inline-block;
+    border-radius: $br-full;
+    flex-shrink: 0;
+
+    &.sm {
+        width: 8px;
+        height: 8px;
+    }
+
+    &.md {
+        width: 10px;
+        height: 10px;
+    }
+}
+
+.todo {
+    background-color: $pending-color;
+}
+
+.backlog {
+    border: 1px solid $pending-color;
+}
+
+.in-progress {
+    background-color: $info-color;
+}
+
+.done {
+    background-color: $success-color;
+}
+
+.review {
+    background-color: $warning-color;
+}
+
+.canceled {
+    background-color: $error-color;
+}

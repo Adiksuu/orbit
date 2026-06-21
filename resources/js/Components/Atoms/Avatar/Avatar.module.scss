@@ -1,0 +1,40 @@
+@use '../../../../css/variables' as *;
+
+.avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: $br-sm;
+    overflow: hidden;
+    background-color: $bg-light-color;
+    flex-shrink: 0;
+
+    &.sm {
+        width: 16px;
+        height: 16px;
+        font-size: $font-2xs;
+    }
+
+    &.md {
+        width: 24px;
+        height: 24px;
+        font-size: $font-xs;
+    }
+
+    &.lg {
+        width: 32px;
+        height: 32px;
+        font-size: $font-sm;
+    }
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.initials {
+    color: $text-color;
+    font-weight: 500;
+}

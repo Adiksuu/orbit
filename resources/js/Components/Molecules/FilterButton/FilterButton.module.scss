@@ -1,0 +1,30 @@
+@use '../../../../css/variables' as *;
+
+.filterButton {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: $br-sm;
+    background-color: transparent;
+    border: 1px dashed $bg-light-color;
+    color: $text-gray-color;
+    cursor: pointer;
+    transition: $tr-ease-in-out-short;
+    font-size: $font-sm;
+
+    &:hover {
+        background-color: rgba($bg-light-color, 0.3);
+        border-style: solid;
+        color: $text-color;
+    }
+}
+
+.label {
+    font-weight: 400;
+}
+
+.value {
+    color: $text-color;
+    font-weight: 500;
+}

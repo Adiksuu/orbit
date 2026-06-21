@@ -1,0 +1,152 @@
+@use '../../../../css/variables' as *;
+
+.issueDetail {
+    width: 400px;
+    height: 100vh;
+    background-color: color-mix(in srgb, $bg-color, white 2%);
+    border-left: 1px solid $bg-light-color;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid $bg-light-color;
+}
+
+.issueId {
+    font-size: $font-sm;
+    color: $text-gray-color;
+    font-weight: 500;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
+.iconButton {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: $br-sm;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+        background-color: rgba($bg-light-color, 0.3);
+    }
+}
+
+.content {
+    padding: 24px;
+    overflow-y: auto;
+}
+
+.title {
+    font-size: $font-xl;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: $text-color;
+}
+
+.meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.time {
+    font-size: $font-xs;
+    color: $text-gray-color;
+}
+
+.description {
+    font-size: $font-md;
+    color: $text-color;
+    line-height: 1.6;
+    margin-bottom: 32px;
+}
+
+.properties {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.property {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    align-items: center;
+}
+
+.propLabel {
+    font-size: $font-sm;
+    color: $text-gray-color;
+}
+
+.propValue {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: $font-sm;
+    color: $text-color;
+}
+
+.high { color: #f44336; }
+
+.commentsSection {
+    border-top: 1px solid $bg-light-color;
+    padding-top: 24px;
+}
+
+.tabs {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.tab, .tabActive {
+    background: none;
+    border: none;
+    font-size: $font-sm;
+    cursor: pointer;
+    padding: 4px 0;
+}
+
+.tab {
+    color: $text-gray-color;
+}
+
+.tabActive {
+    color: $text-color;
+    border-bottom: 2px solid $accent-color;
+}
+
+.commentInputContainer {
+    margin-top: 16px;
+    padding: 8px;
+    border: 1px solid $bg-light-color;
+    border-radius: $br-sm;
+}
+
+.commentInput {
+    background: none;
+    border: none;
+    width: 100%;
+    color: $text-color;
+    font-size: $font-sm;
+    outline: none;
+
+    &::placeholder {
+        color: $text-gray-color;
+    }
+}

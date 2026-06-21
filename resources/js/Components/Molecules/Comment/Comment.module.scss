@@ -1,0 +1,26 @@
+@use '../../../../css/variables' as *;
+
+.comment {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 0;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.timestamp {
+    font-size: $font-xs;
+    color: $text-gray-color;
+}
+
+.content {
+    font-size: $font-sm;
+    color: $text-color;
+    line-height: 1.5;
+    padding-left: 22px; // Align with avatar
+}

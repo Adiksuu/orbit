@@ -1,0 +1,26 @@
+@use '../../css/variables' as *;
+
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.mainContent {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    border-top: 1px solid $bg-light-color;
+}
+
+.tableContainer {
+    flex: 1;
+    overflow-y: auto;
+    border-right: 1px solid $bg-light-color;
+}
+
+.detailContainer {
+    width: 400px;
+    overflow-y: auto;
+    background-color: rgba($bg-light-color, 0.1);
+}
