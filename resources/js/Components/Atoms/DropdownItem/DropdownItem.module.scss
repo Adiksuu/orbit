@@ -1,0 +1,30 @@
+@use '../../../../css/variables.scss' as *;
+
+.item {
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: $text-gray-color;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: $text-color;
+    }
+
+    &.active {
+        background: $bg-light-color;
+        color: $text-color;
+        font-weight: 600;
+    }
+}

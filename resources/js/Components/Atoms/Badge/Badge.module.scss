@@ -11,23 +11,16 @@
     white-space: nowrap;
 }
 
-.default {
-    background-color: rgba($bg-light-color, 0.5);
-    color: $text-gray-color;
-}
-
-.outline {
-    background-color: transparent;
-    border: 1px solid $bg-light-color;
-    color: $text-gray-color;
-}
-
 .ghost {
     background-color: transparent;
     color: $text-gray-color;
 }
+.default {
+    background-color: rgba($bg-light-color, 0.5);
+    color: $text-gray-color;
+    border: 1px solid transparent;
+}
 
-// Colors from image
 .bug { color: #f44336; background-color: rgba(#f44336, 0.1); }
 .feature { color: #2196f3; background-color: rgba(#2196f3, 0.1); }
 .performance { color: #9c27b0; background-color: rgba(#9c27b0, 0.1); }
@@ -38,3 +31,9 @@
 .high { color: #f44336; }
 .medium { color: #ff9800; }
 .low { color: #4caf50; }
+
+.outline {
+    background-color: transparent;
+    border: 1px solid $bg-light-color;
+    color: $text-gray-color;
+}

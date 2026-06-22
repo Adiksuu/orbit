@@ -4,14 +4,12 @@
     width: 100%;
     padding: 6px 12px;
     border-radius: $br-sm;
-    background-color: $bg-light-color;
+    background-color: $bg-color;
     color: $text-color;
-    border: 1px solid $text-gray-color;
+    border: 1px solid $bg-light-color;
     font-size: $font-sm;
     resize: vertical;
-    &:focus {
-        border-color: $accent-color;
-    }
+    transition: none;
     &:disabled {
         background-color: $pending-color;
         cursor: not-allowed;

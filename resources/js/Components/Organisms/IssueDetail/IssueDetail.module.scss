@@ -99,6 +99,7 @@
     gap: 8px;
     font-size: $font-sm;
     color: $text-color;
+    position: relative;
 }
 
 .high { color: #f44336; }
@@ -150,5 +151,60 @@
 
     &::placeholder {
         color: $text-gray-color;
+    }
+}
+
+.editForm {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.select {
+    background-color: transparent;
+    border: 1px solid $bg-light-color;
+    border-radius: $br-sm;
+    color: $text-color;
+    font-size: $font-sm;
+    padding: 4px 8px;
+    outline: none;
+    cursor: pointer;
+
+    option {
+        background-color: $bg-color;
+    }
+
+    &:focus {
+        border-color: $accent-color;
+    }
+}
+
+.labelsPicker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 0;
+}
+
+.labelButton {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+
+    &:hover {
+        transform: scale(1.05);
+    }
+
+    &:active {
+        transform: scale(0.95);
     }
 }

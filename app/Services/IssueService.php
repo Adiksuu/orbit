@@ -25,4 +25,9 @@ class IssueService
     {
         return $this->issueRepository->getAll();
     }
+
+    public function updateIssue(Issue $issue, array $data): Issue {
+        $this->issueRepository->update($issue, $data);
+        return $issue;
+    }
 }

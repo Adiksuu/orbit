@@ -1,5 +1,5 @@
 import { Issue } from '@/types/Issues';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import FilterBar from '../Components/Organisms/FilterBar/FilterBar';
 import IssueDetail from '../Components/Organisms/IssueDetail/IssueDetail';
 import IssueTable from '../Components/Organisms/IssueTable/IssueTable';
@@ -8,6 +8,16 @@ import styles from './Dashboard.module.scss';
 
 export default function Dashboard({ issues }: { issues: Issue[] }) {
     const [activeIssue, setActiveIssue] = useState<Issue | null>(null);
+
+    // Sync activeIssue with the updated issue from props
+    useEffect(() => {
+        if (activeIssue) {
+            const updated = issues.find((i) => i.id === activeIssue.id);
+            if (updated) {
+                setActiveIssue(updated);
+            }
+        }
+    }, [issues]);
 
     return (
         <MainLayout>
