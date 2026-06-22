@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Issue;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 class IssueRepository
@@ -23,5 +24,8 @@ class IssueRepository
     }
     public function getAll(): Collection {
         return Issue::query()->with(['creator', 'assignee'])->get();
+    }
+    public function getAllPaginated(int $perPage = 10): LengthAwarePaginator {
+        return Issue::query()->with(['creator', 'assignee'])->paginate($perPage);
     }
 }

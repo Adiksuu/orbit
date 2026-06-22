@@ -1,0 +1,62 @@
+@use '../../../../css/variables' as *;
+
+.paginationContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background-color: rgba($bg-light-color, 0.05);
+    border-top: 1px solid rgba($bg-light-color, 0.2);
+    margin-top: auto;
+}
+
+.info {
+    font-size: $font-sm;
+    color: $text-gray-color;
+
+    span {
+        font-weight: 600;
+        color: $text-color;
+    }
+}
+
+.links {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 0.5rem;
+    border-radius: $br-sm;
+    font-size: $font-sm;
+    color: $text-color;
+    text-decoration: none;
+    transition: $tr-ease-in-out-short;
+    border: 1px solid transparent;
+    cursor: pointer;
+
+    &:hover:not(.disabled):not(.active) {
+        background-color: rgba($accent-color, 0.1);
+        border-color: rgba($accent-color, 0.2);
+        color: $accent-color;
+    }
+
+    &.active {
+        background-color: $accent-color;
+        color: white;
+        font-weight: 600;
+        box-shadow: $bs-sm;
+    }
+
+    &.disabled {
+        color: $text-gray-color;
+        cursor: not-allowed;
+        opacity: 0.4;
+    }
+}

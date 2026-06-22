@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Issue;
 use App\Repositories\IssueRepository;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 class IssueService
@@ -21,9 +22,9 @@ class IssueService
 
         return $issue;
     }
-    public function getAll(): Collection
+    public function getAll(): LengthAwarePaginator
     {
-        return $this->issueRepository->getAll();
+        return $this->issueRepository->getAllPaginated(10);
     }
 
     public function updateIssue(Issue $issue, array $data): Issue {

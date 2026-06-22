@@ -1,18 +1,24 @@
-import { Issue } from '@/types/Issues';
+import { Issue, PaginatedResponse } from '@/types/Issues';
 import { useEffect, useState } from 'react';
+import Pagination from '../Components/Molecules/Pagination/Pagination';
 import FilterBar from '../Components/Organisms/FilterBar/FilterBar';
 import IssueDetail from '../Components/Organisms/IssueDetail/IssueDetail';
 import IssueTable from '../Components/Organisms/IssueTable/IssueTable';
 import MainLayout from '../Layouts/MainLayout';
 import styles from './Dashboard.module.scss';
 
-export default function Dashboard({ issues }: { issues: Issue[] }) {
+export default function Dashboard({
+    issues,
+}: {
+    issues: PaginatedResponse<Issue>;
+}) {
+    console.log('Issues:', issues);
     const [activeIssue, setActiveIssue] = useState<Issue | null>(null);
 
     // Sync activeIssue with the updated issue from props
     useEffect(() => {
         if (activeIssue) {
-            const updated = issues.find((i) => i.id === activeIssue.id);
+            const updated = issues.data.find((i) => i.id === activeIssue.id);
             if (updated) {
                 setActiveIssue(updated);
             }
@@ -24,11 +30,19 @@ export default function Dashboard({ issues }: { issues: Issue[] }) {
             <div className={styles.dashboard}>
                 <FilterBar />
                 <div className={styles.mainContent}>
-                    <div className={styles.tableContainer}>
-                        <IssueTable
-                            issues={issues}
-                            activeIssue={activeIssue}
-                            setActiveIssue={setActiveIssue}
+                    <div className={styles.tableWrapper}>
+                        <div className={styles.tableContainer}>
+                            <IssueTable
+                                issues={issues.data}
+                                activeIssue={activeIssue}
+                                setActiveIssue={setActiveIssue}
+                            />
+                        </div>
+                        <Pagination
+                            links={issues.links}
+                            from={issues.from}
+                            to={issues.to}
+                            total={issues.total}
                         />
                     </div>
                     {activeIssue && (
