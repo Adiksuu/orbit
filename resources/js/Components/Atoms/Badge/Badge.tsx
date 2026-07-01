@@ -1,11 +1,6 @@
+import { cn } from '@/utils/cn';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { clsx, type ClassValue } from 'clsx';
 import React from 'react';
-import { twMerge } from 'tailwind-merge';
-
-const cn = (...inputs: ClassValue[]) => {
-    return twMerge(clsx(inputs));
-};
 
 const badgeVariants = cva(
     'inline-flex items-center py-[2px] px-2 rounded-md text-[10px] font-medium whitespace-nowrap transition-colors',
@@ -14,7 +9,8 @@ const badgeVariants = cva(
             variant: {
                 default:
                     'bg-zinc-100/50 text-zinc-400 border border-transparent',
-                outline: 'bg-transparent border border-zinc-600 text-zinc-400',
+                outline:
+                    'bg-transparent border border-[var(--bg-light-color)] text-zinc-400',
                 ghost: 'bg-transparent text-zinc-400',
             },
             color: {

@@ -1,10 +1,8 @@
 import React from 'react';
-import styles from './Input.module.scss';
 
 interface InputProps {
     value: string;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    className?: string;
     placeholder?: string;
     isDisabled?: boolean;
     type?: string;
@@ -13,7 +11,6 @@ interface InputProps {
 function Input({
     value,
     onChange,
-    className,
     placeholder,
     isDisabled,
     type = 'text',
@@ -22,7 +19,9 @@ function Input({
         <input
             value={value}
             onChange={onChange}
-            className={className || styles.input}
+            className={
+                'w-full rounded-md border border-[var(--bg-light-color)] bg-[var(--bg-color)] px-3 py-1.5 text-sm text-[var(--text-color)] transition-colors duration-150 file:hidden placeholder:text-slate-800 focus:border-[var(--accent-color)] disabled:cursor-not-allowed disabled:bg-[var(--pending-color)]'
+            }
             placeholder={placeholder}
             disabled={isDisabled}
             type={type}

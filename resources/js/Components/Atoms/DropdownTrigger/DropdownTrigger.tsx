@@ -1,6 +1,6 @@
 import Icon from '@/Components/Atoms/Icon/Icon';
+import { cn } from '@/utils/cn';
 import React from 'react';
-import styles from './DropdownTrigger.module.scss';
 
 interface DropdownTriggerProps {
     label: React.ReactNode;
@@ -16,11 +16,16 @@ export default function DropdownTrigger({
     return (
         <button
             type="button"
-            className={styles.trigger}
+            className={cn(
+                'flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg border border-[rgb(60_60_60/0.8)] bg-[var(--bg-color)] px-4 py-2.5 text-left text-sm font-medium text-white outline-none transition-all duration-200 ease-linear',
+                'disabled:cursor-not-allowed disabled:opacity-60',
+            )}
             onClick={onClick}
             disabled={disabled}
         >
-            <span className={styles.label}>{label}</span>
+            <span className="flex flex-1 items-center gap-2 overflow-hidden text-ellipsis whitespace-nowrap">
+                {label}
+            </span>
             <Icon name={'ChevronDown'} />
         </button>
     );

@@ -1,11 +1,6 @@
+import { cn } from '@/utils/cn';
 import { cva } from 'class-variance-authority';
-import { clsx, type ClassValue } from 'clsx';
 import React from 'react';
-import { twMerge } from 'tailwind-merge';
-
-const cn = (...inputs: ClassValue[]) => {
-    return twMerge(clsx(inputs));
-};
 
 const buttonVariants = cva(
     'font-medium text-sm cursor-pointer transition-all ease-in-out duration-150 disabled:cursor-not-allowed',
