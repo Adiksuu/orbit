@@ -1,11 +1,11 @@
 import DropdownItem from '@/Components/Atoms/DropdownItem/DropdownItem';
-import DropdownMenu from '@/Components/Atoms/DropdownMenu/DropdownMenu';
 import DropdownTrigger from '@/Components/Atoms/DropdownTrigger/DropdownTrigger';
 import { Issue } from '@/types/Issues';
 import { formatDate, formatTimeAgo } from '@/utils/time';
 import { useForm } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import Badge from '../../Atoms/Badge/Badge';
+import DropdownMenu from '../../Atoms/DropdownMenu/DropdownMenu';
 import Icon from '../../Atoms/Icon/Icon';
 import Input from '../../Atoms/Input/Input';
 import StatusDot from '../../Atoms/StatusDot/StatusDot';

@@ -1,0 +1,239 @@
+@use '../../../../css/variables' as *;
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.modal {
+    background-color: $bg-color;
+    width: 800px;
+    max-width: 90vw;
+    border-radius: $br-lg;
+    border: 1px solid $bg-light-color;
+    box-shadow: $bs-lg;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    border-bottom: 1px solid $bg-light-color;
+
+    .titleGroup {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        h2 {
+            font-size: $font-lg;
+            font-weight: 600;
+            margin: 0;
+            color: $text-color;
+        }
+    }
+
+    .closeBtn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: $br-sm;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: $tr-ease-in-out-short;
+
+        &:hover {
+            background-color: rgba($bg-light-color, 0.3);
+        }
+    }
+}
+
+.form {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    grid-template-rows: 1fr auto;
+    overflow: hidden;
+    height: 100%;
+}
+
+.mainContent {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .error {
+        color: $error-color;
+        font-size: $font-xs;
+    }
+}
+
+.titleInput {
+    font-size: $font-xl !important;
+    font-weight: 600;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    color: $text-color;
+
+    &:focus {
+        outline: none;
+    }
+}
+
+.descriptionInput {
+    min-height: 200px;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    resize: none;
+    font-size: $font-md;
+    color: $text-color;
+
+    &:focus {
+        outline: none;
+    }
+}
+
+.sidebar {
+    background-color: rgba($bg-light-color, 0.1);
+    border-left: 1px solid $bg-light-color;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    overflow-y: auto;
+}
+
+.sideField {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    label {
+        font-size: $font-xs;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: $text-gray-color;
+        font-weight: 600;
+    }
+}
+
+.select {
+    background-color: $bg-color;
+    border: 1px solid $bg-light-color;
+    color: $text-color;
+    padding: 8px 12px;
+    border-radius: $br-sm;
+    font-size: $font-sm;
+    outline: none;
+
+    &:focus {
+        border-color: $accent-color;
+    }
+}
+
+.btnGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.toggleBtn {
+    background: none;
+    border: 1px solid transparent;
+    color: $text-gray-color;
+    padding: 6px 12px;
+    border-radius: $br-sm;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: $font-sm;
+    transition: $tr-ease-in-out-short;
+    text-transform: capitalize;
+
+    &:hover {
+        background-color: rgba($bg-light-color, 0.2);
+    }
+
+    &.active {
+        background-color: rgba($accent-color, 0.15);
+        border-color: rgba($accent-color, 0.3);
+        color: $text-color;
+    }
+}
+
+.labelsGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.labelItem {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.footer {
+    grid-column: 1 / -1;
+    padding: 16px 24px;
+    border-top: 1px solid $bg-light-color;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.cancelBtn {
+    background: none;
+    border: none;
+    color: $text-gray-color;
+    cursor: pointer;
+    font-size: $font-sm;
+    font-weight: 500;
+    padding: 8px 16px;
+
+    &:hover {
+        color: $text-color;
+    }
+}
+
+.submitBtn {
+    padding: 8px 24px !important;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}

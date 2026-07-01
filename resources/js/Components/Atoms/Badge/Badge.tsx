@@ -1,31 +1,58 @@
+import { cva, type VariantProps } from 'class-variance-authority';
+import { clsx, type ClassValue } from 'clsx';
 import React from 'react';
-import styles from './Badge.module.scss';
+import { twMerge } from 'tailwind-merge';
 
-interface BadgeProps {
+const cn = (...inputs: ClassValue[]) => {
+    return twMerge(clsx(inputs));
+};
+
+const badgeVariants = cva(
+    'inline-flex items-center py-[2px] px-2 rounded-md text-[10px] font-medium whitespace-nowrap transition-colors',
+    {
+        variants: {
+            variant: {
+                default:
+                    'bg-zinc-100/50 text-zinc-400 border border-transparent',
+                outline: 'bg-transparent border border-zinc-600 text-zinc-400',
+                ghost: 'bg-transparent text-zinc-400',
+            },
+            color: {
+                bug: 'text-[#f44336] bg-[#f44336]/10',
+                feature: 'text-[#2196f3] bg-[#2196f3]/10',
+                performance: 'text-[#9c27b0] bg-[#9c27b0]/10',
+                design: 'text-[#00bcd4] bg-[#00bcd4]/10',
+                ux: 'text-[#009688] bg-[#009688]/10',
+                chore: 'text-[#e91e63] bg-[#e91e63]/10',
+                high: 'text-[#f44336]',
+                medium: 'text-[#ff9800]',
+                low: 'text-[#4caf50]',
+            },
+        },
+        defaultVariants: {
+            variant: 'default',
+        },
+    },
+);
+
+interface BadgeProps
+    extends
+        Omit<React.HTMLAttributes<HTMLSpanElement>, 'color'>,
+        VariantProps<typeof badgeVariants> {
     children: React.ReactNode;
-    variant?: 'default' | 'outline' | 'ghost';
-    color?:
-        | 'bug'
-        | 'feature'
-        | 'performance'
-        | 'design'
-        | 'ux'
-        | 'chore'
-        | 'high'
-        | 'medium'
-        | 'low';
-    className?: string;
 }
 
 const Badge: React.FC<BadgeProps> = ({
     children,
-    variant = 'default',
+    variant,
     color,
     className,
+    ...props
 }) => {
     return (
         <span
-            className={`${styles.badge} ${styles[variant]} ${color ? styles[color] : ''} ${className || ''}`}
+            className={cn(badgeVariants({ variant, color }), className)}
+            {...props}
         >
             {children}
         </span>
