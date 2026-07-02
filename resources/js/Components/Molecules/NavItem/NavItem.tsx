@@ -1,7 +1,7 @@
+import { cva } from 'class-variance-authority';
 import { icons } from 'lucide-react';
 import React from 'react';
 import Icon from '../../Atoms/Icon/Icon';
-import styles from './NavItem.module.scss';
 
 interface NavItemProps {
     icon: keyof typeof icons;
@@ -11,6 +11,21 @@ interface NavItemProps {
     onClick?: () => void;
 }
 
+const classVariants = cva(
+    'flex items-center justify-between py-2 px-3 rounded-md cursor-pointer transition-all duration-100 ease-in-out text-zinc-400 mb-[2px] hover:bg-[var(--bg-light-color)] hover:text-white',
+    {
+        variants: {
+            isActive: {
+                true: 'bg-[var(--accent-color-opacity)] text-white',
+                false: '',
+            },
+        },
+        defaultVariants: {
+            isActive: false,
+        },
+    },
+);
+
 const NavItem: React.FC<NavItemProps> = ({
     icon,
     label,
@@ -19,20 +34,23 @@ const NavItem: React.FC<NavItemProps> = ({
     onClick,
 }) => {
     return (
-        <div
-            className={`${styles.navItem} ${isActive ? styles.active : ''}`}
-            onClick={onClick}
-        >
-            <div className={styles.content}>
+        <div className={classVariants({ isActive })} onClick={onClick}>
+            <div className={'flex items-center gap-3'}>
                 <Icon
                     name={icon}
                     size={18}
                     color={isActive ? '#f3f3f3' : '#999'}
                 />
-                <span className={styles.label}>{label}</span>
+                <span className={'text-sm font-normal'}>{label}</span>
             </div>
             {badge !== undefined && (
-                <span className={styles.badge}>{badge}</span>
+                <span
+                    className={
+                        'rounded-full bg-[var(--bg-light-color)] px-3 py-0.5 text-xs text-zinc-300'
+                    }
+                >
+                    {badge}
+                </span>
             )}
         </div>
     );

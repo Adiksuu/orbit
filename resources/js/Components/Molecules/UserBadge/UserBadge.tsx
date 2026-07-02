@@ -1,6 +1,6 @@
+import { cva } from 'class-variance-authority';
 import React from 'react';
 import Avatar from '../../Atoms/Avatar/Avatar';
-import styles from './UserBadge.module.scss';
 
 interface UserBadgeProps {
     name: string;
@@ -10,6 +10,19 @@ interface UserBadgeProps {
     showDetails?: boolean;
 }
 
+const classVariants = cva('flex items-center gap-2.5 text-white', {
+    variants: {
+        size: {
+            sm: 'gap-1.5',
+            md: 'gap-2.5',
+            lg: 'gap-3.5',
+        },
+    },
+    defaultVariants: {
+        size: 'md',
+    },
+});
+
 const UserBadge: React.FC<UserBadgeProps> = ({
     name,
     email,
@@ -18,12 +31,24 @@ const UserBadge: React.FC<UserBadgeProps> = ({
     showDetails = false,
 }) => {
     return (
-        <div className={`${styles.userBadge} ${styles[size]}`}>
+        <div className={classVariants({ size })}>
             <Avatar src={avatarSrc} initials={name.charAt(0)} size={size} />
-            <div className={styles.info}>
-                <span className={styles.name}>{name}</span>
+            <div className={'flex min-w-0 flex-col'}>
+                <span
+                    className={
+                        'overflow-hidden overflow-ellipsis whitespace-nowrap text-sm font-medium'
+                    }
+                >
+                    {name}
+                </span>
                 {showDetails && email && (
-                    <span className={styles.email}>{email}</span>
+                    <span
+                        className={
+                            'overflow-hidden overflow-ellipsis whitespace-nowrap text-xs text-zinc-400'
+                        }
+                    >
+                        {email}
+                    </span>
                 )}
             </div>
         </div>

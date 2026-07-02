@@ -5,6 +5,7 @@
 :root {
     --accent-color: #8844da;
     --accent-light-color: rgb(156 36 255 / 0.8);
+    --accent-color-opacity: rgba(136, 68, 218, 0.2);
     --success-color: #4caf50;
     --error-color: #f44336;
     --warning-color: #ff9800;
@@ -12,4 +13,5 @@
     --info-color: #2196f3;
     --bg-color: #1c1c1c;
     --bg-light-color: rgb(60 60 60 / 0.8);
+    --bg-light-color-hover: rgb(65 65 65 / 0.8);
 }

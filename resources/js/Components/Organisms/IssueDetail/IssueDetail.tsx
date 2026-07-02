@@ -10,7 +10,6 @@ import Icon from '../../Atoms/Icon/Icon';
 import Input from '../../Atoms/Input/Input';
 import StatusDot from '../../Atoms/StatusDot/StatusDot';
 import TextArea from '../../Atoms/TextArea/TextArea';
-import Comment from '../../Molecules/Comment/Comment';
 import UserBadge from '../../Molecules/UserBadge/UserBadge';
 import styles from './IssueDetail.module.scss';
 
@@ -364,31 +363,6 @@ const IssueDetail = ({ activeIssue, setActiveIssue }: IssueDetailProps) => {
                         <div className={styles.propValue}>
                             {formatDate(activeIssue.updated_at)}
                         </div>
-                    </div>
-                </div>
-
-                <div className={styles.commentsSection}>
-                    <div className={styles.tabs}>
-                        <button className={styles.tabActive}>
-                            Comments <Badge variant="default">2</Badge>
-                        </button>
-                        <button className={styles.tab}>Activity</button>
-                    </div>
-
-                    <div className={styles.commentsList}>
-                        <Comment
-                            userName="Mike Johnson"
-                            timestamp="1h ago"
-                            content="I'm on it. Should have a fix soon."
-                        />
-                    </div>
-
-                    <div className={styles.commentInputContainer}>
-                        <input
-                            type="text"
-                            placeholder="Add a comment..."
-                            className={styles.commentInput}
-                        />
                     </div>
                 </div>
             </div>
