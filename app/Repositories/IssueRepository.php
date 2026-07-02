@@ -25,7 +25,7 @@ class IssueRepository
     public function getAll(): Collection {
         return Issue::query()->with(['creator', 'assignee'])->get();
     }
-    public function getAllPaginated(int $perPage = 10): LengthAwarePaginator {
+    public function getAllPaginated(int $perPage = 20): LengthAwarePaginator {
         return Issue::query()->with(['creator', 'assignee'])->paginate($perPage);
     }
 }

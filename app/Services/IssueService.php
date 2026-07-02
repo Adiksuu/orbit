@@ -24,7 +24,7 @@ class IssueService
     }
     public function getAll(): LengthAwarePaginator
     {
-        return $this->issueRepository->getAllPaginated(10);
+        return $this->issueRepository->getAllPaginated();
     }
 
     public function updateIssue(Issue $issue, array $data): Issue {

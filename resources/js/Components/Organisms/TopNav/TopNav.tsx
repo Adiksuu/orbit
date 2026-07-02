@@ -1,3 +1,4 @@
+import { IssuePageLooks } from '@/types/Issues';
 import { cva } from 'class-variance-authority';
 import React, { useState } from 'react';
 import Button from '../../Atoms/Button/Button';
@@ -16,7 +17,12 @@ const buttonVariants = cva(
     },
 );
 
-const TopNav: React.FC = () => {
+interface TopNavProps {
+    selectedLook: IssuePageLooks;
+    setSelectedLook: (look: IssuePageLooks) => void;
+}
+
+const TopNav: React.FC<TopNavProps> = ({ selectedLook, setSelectedLook }) => {
     const [isNewIssueModalOpen, setIsNewIssueModalOpen] = useState(false);
 
     return (
@@ -34,10 +40,20 @@ const TopNav: React.FC = () => {
                         <Icon name="Star" size={16} color="#999" />
                     </div>
                     <nav className={'flex gap-6'}>
-                        <button className={buttonVariants({ isActive: true })}>
-                            Issues
+                        <button
+                            className={buttonVariants({
+                                isActive: selectedLook === 'List',
+                            })}
+                            onClick={() => setSelectedLook('List')}
+                        >
+                            List
                         </button>
-                        <button className={buttonVariants({ isActive: false })}>
+                        <button
+                            className={buttonVariants({
+                                isActive: selectedLook === 'Board',
+                            })}
+                            onClick={() => setSelectedLook('Board')}
+                        >
                             Board
                         </button>
                     </nav>

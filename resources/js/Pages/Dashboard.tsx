@@ -1,4 +1,5 @@
-import { Issue, PaginatedResponse } from '@/types/Issues';
+import IssueBoard from '@/Components/Organisms/IssueBoard/IssueBoard';
+import { Issue, IssuePageLooks, PaginatedResponse } from '@/types/Issues';
 import { useEffect, useState } from 'react';
 import Pagination from '../Components/Molecules/Pagination/Pagination';
 import FilterBar from '../Components/Organisms/FilterBar/FilterBar';
@@ -13,8 +14,19 @@ export default function Dashboard({
 }) {
     console.log('Issues:', issues);
     const [activeIssue, setActiveIssue] = useState<Issue | null>(null);
+    const [selectedLook, setSelectedLook] = useState<IssuePageLooks>(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('selectedLook');
+            if (saved === 'List' || saved === 'Board') {
+                return saved;
+            }
+        }
+        return 'List';
+    });
 
-    // Sync activeIssue with the updated issue from props
+    useEffect(() => {
+        localStorage.setItem('selectedLook', selectedLook);
+    }, [selectedLook]);
     useEffect(() => {
         if (activeIssue) {
             const updated = issues.data.find((i) => i.id === activeIssue.id);
@@ -25,7 +37,10 @@ export default function Dashboard({
     }, [issues]);
 
     return (
-        <MainLayout>
+        <MainLayout
+            selectedLook={selectedLook}
+            setSelectedLook={setSelectedLook}
+        >
             <div className={'flex h-full flex-col'}>
                 <FilterBar />
                 <div
@@ -38,19 +53,43 @@ export default function Dashboard({
                             'flex flex-1 flex-col overflow-hidden border-r border-solid border-[var(--bg-light-color)]'
                         }
                     >
-                        <div className={'flex-1 overflow-y-auto'}>
-                            <IssueTable
-                                issues={issues.data}
-                                activeIssue={activeIssue}
-                                setActiveIssue={setActiveIssue}
-                            />
-                        </div>
-                        <Pagination
-                            links={issues.links}
-                            from={issues.from}
-                            to={issues.to}
-                            total={issues.total}
-                        />
+                        {selectedLook === 'List' ? (
+                            <>
+                                <div className={'flex-1 overflow-y-auto'}>
+                                    <IssueTable
+                                        issues={issues.data}
+                                        activeIssue={activeIssue}
+                                        setActiveIssue={setActiveIssue}
+                                    />
+                                </div>
+                                <Pagination
+                                    links={issues.links}
+                                    from={issues.from}
+                                    to={issues.to}
+                                    total={issues.total}
+                                />
+                            </>
+                        ) : (
+                            <>
+                                <div
+                                    className={
+                                        'flex flex-1 flex-row overflow-y-auto'
+                                    }
+                                >
+                                    <IssueBoard
+                                        issues={issues.data}
+                                        activeIssue={activeIssue}
+                                        setActiveIssue={setActiveIssue}
+                                    />
+                                </div>
+                                <Pagination
+                                    links={issues.links}
+                                    from={issues.from}
+                                    to={issues.to}
+                                    total={issues.total}
+                                />
+                            </>
+                        )}
                     </div>
                     {activeIssue && (
                         <div

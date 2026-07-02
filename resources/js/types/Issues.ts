@@ -44,3 +44,6 @@ export interface PaginatedResponse<T> {
     to: number;
     total: number;
 }
+
+export type IssuePageLooks = 'List' | 'Board';
+export type IssuePriority = 'high' | 'medium' | 'low';
