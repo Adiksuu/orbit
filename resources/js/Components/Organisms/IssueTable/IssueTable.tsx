@@ -1,6 +1,5 @@
-import { IssueElement } from '@/Components/Organisms/IssueElement/IssueElement';
+import { IssueElement } from '@/Components/Molecules/IssueElement/IssueElement';
 import { Issue } from '@/types/Issues';
-import styles from './IssueTable.module.scss';
 
 interface IssueTableProps {
     issues: Issue[];
@@ -14,25 +13,37 @@ const IssueTable = ({
     setActiveIssue,
 }: IssueTableProps) => {
     return (
-        <div className={styles.container}>
-            <table className={styles.table}>
+        <div className="flex-1 overflow-y-auto bg-[var(--bg-color)]">
+            <table className="w-full border-collapse text-left text-sm">
                 <thead>
-                    <tr>
-                        <th className={styles.idCell}>ID</th>
-                        <th>Title</th>
-                        <th>Status</th>
-                        <th>Assignee</th>
-                        <th>Priority</th>
-                        <th>Labels</th>
+                    <tr className="border-b border-solid border-[var(--bg-light-color)]">
+                        <th className="w-[100px] px-4 py-3 font-medium text-zinc-400">
+                            ID
+                        </th>
+                        <th className="px-4 py-3 font-medium text-zinc-400">
+                            Title
+                        </th>
+                        <th className="px-4 py-3 font-medium text-zinc-400">
+                            Status
+                        </th>
+                        <th className="px-4 py-3 font-medium text-zinc-400">
+                            Assignee
+                        </th>
+                        <th className="px-4 py-3 font-medium text-zinc-400">
+                            Priority
+                        </th>
+                        <th className="px-4 py-3 font-medium text-zinc-400">
+                            Labels
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     {issues.map((issue) => (
                         <IssueElement
-                            activeIssue={activeIssue}
-                            issue={issue}
-                            setActiveIssue={setActiveIssue}
                             key={issue.id}
+                            issue={issue}
+                            activeIssue={activeIssue}
+                            setActiveIssue={setActiveIssue}
                         />
                     ))}
                 </tbody>

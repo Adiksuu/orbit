@@ -1,29 +1,51 @@
-import DropdownItem from '@/Components/Atoms/DropdownItem/DropdownItem';
-import DropdownTrigger from '@/Components/Atoms/DropdownTrigger/DropdownTrigger';
-import { Issue } from '@/types/Issues';
+import { Issue, IssueLabel } from '@/types/Issues';
 import { formatDate, formatTimeAgo } from '@/utils/time';
 import { useForm } from '@inertiajs/react';
+import { cva } from 'class-variance-authority';
 import { useEffect, useState } from 'react';
 import Badge from '../../Atoms/Badge/Badge';
+import DropdownItem from '../../Atoms/DropdownItem/DropdownItem';
 import DropdownMenu from '../../Atoms/DropdownMenu/DropdownMenu';
-import Icon from '../../Atoms/Icon/Icon';
+import DropdownTrigger from '../../Atoms/DropdownTrigger/DropdownTrigger';
+import IconButton from '../../Atoms/IconButton/IconButton';
 import Input from '../../Atoms/Input/Input';
 import StatusDot from '../../Atoms/StatusDot/StatusDot';
 import TextArea from '../../Atoms/TextArea/TextArea';
+import IssueProperty from '../../Molecules/IssueProperty/IssueProperty';
 import UserBadge from '../../Molecules/UserBadge/UserBadge';
-import styles from './IssueDetail.module.scss';
 
 interface IssueDetailProps {
     activeIssue: Issue;
     setActiveIssue: (issue: Issue | null) => void;
 }
+
 type Status = 'open' | 'closed';
 type Priority = 'high' | 'medium' | 'low';
-type Label = 'bug' | 'feature' | 'performance' | 'design' | 'ux' | 'chore';
+
+const priorityVariants = cva('', {
+    variants: {
+        priority: {
+            high: 'text-red-500',
+            medium: 'text-yellow-500',
+            low: 'text-green-500',
+        },
+    },
+});
+
+const AVAILABLE_LABELS: IssueLabel[] = [
+    'bug',
+    'feature',
+    'performance',
+    'design',
+    'ux',
+    'chore',
+];
+const STATUSES: Status[] = ['open', 'closed'];
+const PRIORITIES: Priority[] = ['high', 'medium', 'low'];
 
 const IssueDetail = ({ activeIssue, setActiveIssue }: IssueDetailProps) => {
     const [isEditing, setIsEditing] = useState(false);
-    const [isOpen, setIsOpen] = useState(false);
+    const [isStatusOpen, setIsStatusOpen] = useState(false);
     const [isPriorityOpen, setIsPriorityOpen] = useState(false);
 
     const { data, setData, patch, processing } = useForm({
@@ -51,56 +73,50 @@ const IssueDetail = ({ activeIssue, setActiveIssue }: IssueDetailProps) => {
         });
     };
 
-    const statuses: string[] = ['open', 'closed'];
-    const priorities: string[] = ['high', 'medium', 'low'];
-
     useEffect(() => {
         handleCancel();
     }, [activeIssue]);
 
     return (
-        <div className={styles.issueDetail}>
-            <div className={styles.header}>
-                <span className={styles.issueId}>{activeIssue.title}</span>
-                <div className={styles.actions}>
+        <div className="bg-[var(--bg-light-color)]/40 flex h-screen shrink-0 flex-col border-l border-solid border-l-[var(--bg-light-color)]">
+            <div className="flex items-center justify-between border-b border-solid border-b-[var(--bg-light-color)] px-4 py-3">
+                <span className="max-w-[200px] truncate text-sm font-normal text-zinc-400">
+                    {activeIssue.title}
+                </span>
+                <div className="flex gap-2">
                     {isEditing ? (
                         <>
-                            <button
-                                className={styles.iconButton}
+                            <IconButton
+                                iconName="Check"
+                                iconColor="#4caf50"
                                 onClick={handleSave}
                                 disabled={processing}
-                            >
-                                <Icon name="Check" size={14} color="#4caf50" />
-                            </button>
-                            <button
-                                className={styles.iconButton}
+                            />
+                            <IconButton
+                                iconName="X"
+                                iconColor="#f44336"
                                 onClick={handleCancel}
-                            >
-                                <Icon name="X" size={14} color="#f44336" />
-                            </button>
+                            />
                         </>
                     ) : (
-                        <button
-                            className={styles.iconButton}
+                        <IconButton
+                            iconName="Pencil"
                             onClick={() => setIsEditing(true)}
-                        >
-                            <Icon name="Pencil" size={14} color="#999" />
-                        </button>
+                        />
                     )}
-                    <button
-                        className={styles.iconButton}
+                    <IconButton
+                        iconName="X"
                         onClick={() => setActiveIssue(null)}
-                    >
-                        <Icon name="X" size={14} color="#999" />
-                    </button>
+                    />
                 </div>
             </div>
-
-            <div className={styles.content}>
+            <div className="flex-1 overflow-y-auto p-6">
                 {isEditing ? (
-                    <div className={styles.editForm}>
-                        <div className={styles.field}>
-                            <label className={styles.propLabel}>Title</label>
+                    <div className="mb-6 flex flex-col gap-4">
+                        <div className="flex flex-col gap-1">
+                            <label className="text-sm text-zinc-400">
+                                Title
+                            </label>
                             <Input
                                 value={data.title}
                                 onChange={(e) =>
@@ -109,8 +125,8 @@ const IssueDetail = ({ activeIssue, setActiveIssue }: IssueDetailProps) => {
                                 placeholder="Issue title"
                             />
                         </div>
-                        <div className={styles.field}>
-                            <label className={styles.propLabel}>
+                        <div className="flex flex-col gap-1">
+                            <label className="text-sm text-zinc-400">
                                 Description
                             </label>
                             <TextArea
@@ -124,8 +140,10 @@ const IssueDetail = ({ activeIssue, setActiveIssue }: IssueDetailProps) => {
                     </div>
                 ) : (
                     <>
-                        <h2 className={styles.title}>{activeIssue.title}</h2>
-                        <div className={styles.meta}>
+                        <h2 className="mb-3 text-xl font-semibold text-white">
+                            {activeIssue.title}
+                        </h2>
+                        <div className="mb-6 flex items-center gap-3">
                             <UserBadge
                                 avatarSrc={activeIssue.assignee?.avatar}
                                 name={
@@ -135,235 +153,186 @@ const IssueDetail = ({ activeIssue, setActiveIssue }: IssueDetailProps) => {
                                 }
                                 size="sm"
                             />
-                            <span className={styles.time}>
-                                {formatTimeAgo(activeIssue.updated_at)} ago •
+                            <span className="text-xs text-zinc-400">
+                                {formatTimeAgo(activeIssue.updated_at)} ago •{' '}
                                 {activeIssue.updated_at ===
                                 activeIssue.created_at
                                     ? ' opened'
                                     : ' updated'}
                             </span>
                         </div>
-
-                        <p className={styles.description}>
+                        <p className="text-md mb-8 whitespace-pre-wrap leading-relaxed text-white">
                             {activeIssue.description}
                         </p>
                     </>
                 )}
-
-                <div className={styles.properties}>
-                    <div className={styles.property}>
-                        <span className={styles.propLabel}>Status</span>
-                        <div className={styles.propValue}>
-                            {isEditing ? (
-                                <>
-                                    <DropdownTrigger
-                                        label={
-                                            <>
-                                                <StatusDot
-                                                    status={data['status']}
-                                                />
-                                                <span>{data['status']}</span>
-                                            </>
-                                        }
-                                        onClick={() => setIsOpen(!isOpen)}
-                                    />
-                                    {isOpen && (
-                                        <DropdownMenu>
-                                            {statuses.map((option: string) => (
-                                                <DropdownItem
-                                                    key={option}
-                                                    label={
-                                                        <>
-                                                            <StatusDot
-                                                                status={
-                                                                    option as Status
-                                                                }
-                                                            />
-                                                            <span>
-                                                                {option}
-                                                            </span>
-                                                        </>
-                                                    }
-                                                    isActive={
-                                                        data['status'] ===
-                                                        option
-                                                    }
-                                                    onClick={() => {
-                                                        setData(
-                                                            'status',
-                                                            option as Status,
-                                                        );
-                                                        setIsOpen(false);
-                                                    }}
-                                                />
-                                            ))}
-                                        </DropdownMenu>
-                                    )}
-                                </>
-                            ) : (
-                                <>
-                                    <StatusDot status={activeIssue.status} />
-                                    <span>{activeIssue.status}</span>
-                                </>
-                            )}
-                        </div>
-                    </div>
-                    <div className={styles.property}>
-                        <span className={styles.propLabel}>Priority</span>
-                        <div className={styles.propValue}>
-                            {isEditing ? (
-                                <>
-                                    <DropdownTrigger
-                                        label={
-                                            <>
-                                                <StatusDot
-                                                    status={data['priority']}
-                                                />
-                                                <span>{data['priority']}</span>
-                                            </>
-                                        }
-                                        onClick={() =>
-                                            setIsPriorityOpen(!isPriorityOpen)
-                                        }
-                                    />
-                                    {isPriorityOpen && (
-                                        <DropdownMenu>
-                                            {priorities.map(
-                                                (option: string) => (
-                                                    <DropdownItem
-                                                        key={option}
-                                                        label={
-                                                            <>
-                                                                <StatusDot
-                                                                    status={
-                                                                        option as Priority
-                                                                    }
-                                                                />
-                                                                <span>
-                                                                    {option}
-                                                                </span>
-                                                            </>
-                                                        }
-                                                        isActive={
-                                                            data['priority'] ===
-                                                            option
-                                                        }
-                                                        onClick={() => {
-                                                            setData(
-                                                                'priority',
-                                                                option as Priority,
-                                                            );
-                                                            setIsPriorityOpen(
-                                                                false,
-                                                            );
-                                                        }}
-                                                    />
-                                                ),
-                                            )}
-                                        </DropdownMenu>
-                                    )}
-                                </>
-                            ) : (
-                                <>
-                                    <StatusDot
-                                        status={activeIssue.priority}
-                                        size="sm"
-                                    />
-                                    <span
-                                        className={styles[activeIssue.priority]}
-                                    >
-                                        {activeIssue.priority}
-                                    </span>
-                                </>
-                            )}
-                        </div>
-                    </div>
-                    <div className={styles.property}>
-                        <span className={styles.propLabel}>Assignee</span>
-                        <div className={styles.propValue}>
-                            <UserBadge
-                                avatarSrc={activeIssue.assignee?.avatar}
-                                name={
-                                    activeIssue.assignee
-                                        ? activeIssue.assignee.name
-                                        : 'Unassigned'
-                                }
-                                size="sm"
-                            />
-                        </div>
-                    </div>
-                    <div className={styles.property}>
-                        <span className={styles.propLabel}>Labels</span>
-                        <div className={styles.propValue}>
-                            {isEditing ? (
-                                <div className={styles.labelsPicker}>
-                                    {[
-                                        'bug',
-                                        'feature',
-                                        'performance',
-                                        'design',
-                                        'ux',
-                                        'chore',
-                                    ].map((label) => {
-                                        const isSelected = data.labels.includes(
-                                            label as Label,
-                                        );
-                                        return (
-                                            <button
-                                                key={label}
-                                                type="button"
-                                                className={`${styles.labelButton} ${isSelected ? styles.selected : ''}`}
+                <div className="flex flex-col gap-4">
+                    <IssueProperty label="Status">
+                        {isEditing ? (
+                            <>
+                                <DropdownTrigger
+                                    label={
+                                        <>
+                                            <StatusDot status={data.status} />
+                                            <span>{data.status}</span>
+                                        </>
+                                    }
+                                    onClick={() =>
+                                        setIsStatusOpen(!isStatusOpen)
+                                    }
+                                />
+                                {isStatusOpen && (
+                                    <DropdownMenu>
+                                        {STATUSES.map((option) => (
+                                            <DropdownItem
+                                                key={option}
+                                                label={
+                                                    <>
+                                                        <StatusDot
+                                                            status={option}
+                                                        />
+                                                        <span>{option}</span>
+                                                    </>
+                                                }
+                                                isActive={
+                                                    data.status === option
+                                                }
                                                 onClick={() => {
-                                                    const newLabels = isSelected
-                                                        ? data.labels.filter(
-                                                              (l) =>
-                                                                  l !== label,
-                                                          )
-                                                        : [
-                                                              ...data.labels,
-                                                              label,
-                                                          ];
-                                                    setData(
-                                                        'labels',
-                                                        newLabels as Label[],
-                                                    );
+                                                    setData('status', option);
+                                                    setIsStatusOpen(false);
                                                 }}
-                                            >
-                                                <Badge
-                                                    color={label as Label}
-                                                    variant={
-                                                        isSelected
-                                                            ? 'default'
-                                                            : 'outline'
-                                                    }
-                                                >
-                                                    {label}
-                                                </Badge>
-                                            </button>
-                                        );
+                                            />
+                                        ))}
+                                    </DropdownMenu>
+                                )}
+                            </>
+                        ) : (
+                            <>
+                                <StatusDot status={activeIssue.status} />
+                                <span className="capitalize">
+                                    {activeIssue.status}
+                                </span>
+                            </>
+                        )}
+                    </IssueProperty>
+                    <IssueProperty label="Priority">
+                        {isEditing ? (
+                            <>
+                                <DropdownTrigger
+                                    label={
+                                        <>
+                                            <StatusDot status={data.priority} />
+                                            <span>{data.priority}</span>
+                                        </>
+                                    }
+                                    onClick={() =>
+                                        setIsPriorityOpen(!isPriorityOpen)
+                                    }
+                                />
+                                {isPriorityOpen && (
+                                    <DropdownMenu>
+                                        {PRIORITIES.map((option) => (
+                                            <DropdownItem
+                                                key={option}
+                                                label={
+                                                    <>
+                                                        <StatusDot
+                                                            status={option}
+                                                        />
+                                                        <span>{option}</span>
+                                                    </>
+                                                }
+                                                isActive={
+                                                    data.priority === option
+                                                }
+                                                onClick={() => {
+                                                    setData('priority', option);
+                                                    setIsPriorityOpen(false);
+                                                }}
+                                            />
+                                        ))}
+                                    </DropdownMenu>
+                                )}
+                            </>
+                        ) : (
+                            <>
+                                <StatusDot
+                                    status={activeIssue.priority}
+                                    size="sm"
+                                />
+                                <span
+                                    className={priorityVariants({
+                                        priority:
+                                            activeIssue.priority as Priority,
                                     })}
-                                </div>
-                            ) : (
-                                activeIssue.labels?.map((label, idx) => (
-                                    <Badge key={idx} color={label}>
-                                        {label}
-                                    </Badge>
-                                ))
-                            )}
-                        </div>
-                    </div>
-                    <div className={styles.property}>
-                        <span className={styles.propLabel}>Created</span>
-                        <div className={styles.propValue}>
-                            {formatDate(activeIssue.created_at)}
-                        </div>
-                    </div>
-                    <div className={styles.property}>
-                        <span className={styles.propLabel}>Modified</span>
-                        <div className={styles.propValue}>
-                            {formatDate(activeIssue.updated_at)}
-                        </div>
-                    </div>
+                                >
+                                    {activeIssue.priority}
+                                </span>
+                            </>
+                        )}
+                    </IssueProperty>
+                    <IssueProperty label="Assignee">
+                        <UserBadge
+                            avatarSrc={activeIssue.assignee?.avatar}
+                            name={
+                                activeIssue.assignee
+                                    ? activeIssue.assignee.name
+                                    : 'Unassigned'
+                            }
+                            size="sm"
+                        />
+                    </IssueProperty>
+                    <IssueProperty label="Labels">
+                        {isEditing ? (
+                            <div className="flex flex-wrap gap-2 py-2">
+                                {AVAILABLE_LABELS.map((label) => {
+                                    const isSelected =
+                                        data.labels.includes(label);
+                                    return (
+                                        <button
+                                            key={label}
+                                            type="button"
+                                            className="transition-transform duration-100 ease-out hover:scale-105"
+                                            onClick={() => {
+                                                const newLabels = isSelected
+                                                    ? data.labels.filter(
+                                                          (l) => l !== label,
+                                                      )
+                                                    : [...data.labels, label];
+                                                setData(
+                                                    'labels',
+                                                    newLabels as IssueLabel[],
+                                                );
+                                            }}
+                                        >
+                                            <Badge
+                                                color={label}
+                                                variant={
+                                                    isSelected
+                                                        ? 'default'
+                                                        : 'outline'
+                                                }
+                                            >
+                                                {label}
+                                            </Badge>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        ) : (
+                            activeIssue.labels?.map((label, idx) => (
+                                <Badge key={idx} color={label}>
+                                    {label}
+                                </Badge>
+                            ))
+                        )}
+                    </IssueProperty>
+                    <IssueProperty label="Created">
+                        {formatDate(activeIssue.created_at)}
+                    </IssueProperty>
+                    <IssueProperty label="Modified">
+                        {formatDate(activeIssue.updated_at)}
+                    </IssueProperty>
                 </div>
             </div>
         </div>

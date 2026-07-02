@@ -3,7 +3,7 @@ import { cva } from 'class-variance-authority';
 import React from 'react';
 
 const buttonVariants = cva(
-    'font-medium text-sm cursor-pointer transition-all ease-in-out duration-150 disabled:cursor-not-allowed',
+    'font-medium text-sm cursor-pointer transition-all ease-in-out duration-150 disabled:cursor-not-allowed flex items-center justify-center gap-2',
     {
         variants: {
             isBox: {

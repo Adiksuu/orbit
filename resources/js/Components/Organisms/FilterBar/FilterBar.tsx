@@ -1,10 +1,13 @@
 import React from 'react';
 import FilterButton from '../../Molecules/FilterButton/FilterButton';
-import styles from './FilterBar.module.scss';
 
 const FilterBar: React.FC = () => {
     return (
-        <div className={styles.filterBar}>
+        <div
+            className={
+                'flex items-center justify-start gap-2 border-b border-solid border-[var(--bg-light-color)] px-4 py-3'
+            }
+        >
             <FilterButton icon="ListFilter" label="Filter" />
             <FilterButton label="Labels" />
             <FilterButton label="Status" />
