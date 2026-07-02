@@ -1,7 +1,8 @@
 import { cva } from 'class-variance-authority';
-import React from 'react';
+import React, { useState } from 'react';
 import Button from '../../Atoms/Button/Button';
 import Icon from '../../Atoms/Icon/Icon';
+import NewIssueModal from '../NewIssueModal/NewIssueModal';
 
 const buttonVariants = cva(
     'cursor-pointer border-none bg-transparent py-2 text-sm text-zinc-400 transition-all duration-100 ease-in-out hover:text-white',
@@ -16,79 +17,87 @@ const buttonVariants = cva(
 );
 
 const TopNav: React.FC = () => {
+    const [isNewIssueModalOpen, setIsNewIssueModalOpen] = useState(false);
+
     return (
-        <header
-            className={
-                'flex h-auto items-center justify-between border-b border-solid border-[var(--bg-light-color)] bg-[var(--bg-color)] px-6 pt-4'
-            }
-        >
-            <div className={'flex h-full flex-col justify-center gap-4'}>
-                <div className={'flex items-center gap-2'}>
-                    <h1 className={'m-0 text-sm font-semibold text-white'}>
-                        Mobile App
-                    </h1>
-                    <Icon name="Star" size={16} color="#999" />
-                </div>
-                <nav className={'flex gap-6'}>
-                    <button className={buttonVariants({ isActive: true })}>
-                        Issues
-                    </button>
-                    <button className={buttonVariants({ isActive: true })}>
-                        Board
-                    </button>
-                    <button className={buttonVariants({ isActive: true })}>
-                        Roadmap
-                    </button>
-                    <button className={buttonVariants({ isActive: true })}>
-                        Sprints
-                    </button>
-                    <button className={buttonVariants({ isActive: true })}>
-                        Reports
-                    </button>
-                    <button className={buttonVariants({ isActive: true })}>
-                        Settings
-                    </button>
-                </nav>
-            </div>
-            <div className={'flex items-center'}>
-                <div className={'flex items-center gap-4'}>
-                    <div
-                        className={
-                            'flex items-stretch overflow-hidden rounded-md bg-[var(--accent-color)]'
-                        }
-                    >
-                        <Button>
-                            New issue <Icon name={'Plus'} />
-                        </Button>
+        <>
+            <header
+                className={
+                    'flex h-auto items-center justify-between border-b border-solid border-[var(--bg-light-color)] bg-[var(--bg-color)] px-6 pt-4'
+                }
+            >
+                <div className={'flex h-full flex-col justify-center gap-4'}>
+                    <div className={'flex items-center gap-2'}>
+                        <h1 className={'m-0 text-sm font-semibold text-white'}>
+                            Mobile App
+                        </h1>
+                        <Icon name="Star" size={16} color="#999" />
                     </div>
-                    <button
-                        className={
-                            'flex cursor-pointer items-center justify-center rounded-md border-none bg-transparent p-1.5 hover:bg-[var(--bg-light-color)]'
-                        }
-                    >
-                        <Icon name="Search" size={18} color="#999" />
-                    </button>
-                    <button
-                        className={
-                            'flex cursor-pointer items-center justify-center rounded-md border-none bg-transparent p-1.5 hover:bg-[var(--bg-light-color)]'
-                        }
-                    >
-                        <Icon name="Bell" size={18} color="#999" />
-                    </button>
-                    <button
-                        className={
-                            'flex cursor-pointer items-center justify-center rounded-md border-none bg-transparent p-1.5 hover:bg-[var(--bg-light-color)]'
-                        }
-                    >
-                        <Icon
-                            name="CircleQuestionMark"
-                            size={18}
-                            color="#999"
-                        />
-                    </button>
+                    <nav className={'flex gap-6'}>
+                        <button className={buttonVariants({ isActive: true })}>
+                            Issues
+                        </button>
+                        <button className={buttonVariants({ isActive: true })}>
+                            Board
+                        </button>
+                        <button className={buttonVariants({ isActive: true })}>
+                            Roadmap
+                        </button>
+                        <button className={buttonVariants({ isActive: true })}>
+                            Sprints
+                        </button>
+                        <button className={buttonVariants({ isActive: true })}>
+                            Reports
+                        </button>
+                        <button className={buttonVariants({ isActive: true })}>
+                            Settings
+                        </button>
+                    </nav>
                 </div>
-            </div>
-        </header>
+                <div className={'flex items-center'}>
+                    <div className={'flex items-center gap-4'}>
+                        <div
+                            className={
+                                'flex items-stretch overflow-hidden rounded-md bg-[var(--accent-color)]'
+                            }
+                        >
+                            <Button onClick={() => setIsNewIssueModalOpen(true)}>
+                                New issue <Icon name={'Plus'} />
+                            </Button>
+                        </div>
+                        <button
+                            className={
+                                'flex cursor-pointer items-center justify-center rounded-md border-none bg-transparent p-1.5 hover:bg-[var(--bg-light-color)]'
+                            }
+                        >
+                            <Icon name="Search" size={18} color="#999" />
+                        </button>
+                        <button
+                            className={
+                                'flex cursor-pointer items-center justify-center rounded-md border-none bg-transparent p-1.5 hover:bg-[var(--bg-light-color)]'
+                            }
+                        >
+                            <Icon name="Bell" size={18} color="#999" />
+                        </button>
+                        <button
+                            className={
+                                'flex cursor-pointer items-center justify-center rounded-md border-none bg-transparent p-1.5 hover:bg-[var(--bg-light-color)]'
+                            }
+                        >
+                            <Icon
+                                name="CircleQuestionMark"
+                                size={18}
+                                color="#999"
+                            />
+                        </button>
+                    </div>
+                </div>
+            </header>
+            <NewIssueModal
+                isOpen={isNewIssueModalOpen}
+                onClose={() => setIsNewIssueModalOpen(false)}
+            />
+        </>
     );
 };
 

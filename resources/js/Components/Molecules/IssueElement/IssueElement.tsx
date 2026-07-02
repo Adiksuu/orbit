@@ -32,7 +32,7 @@ export const IssueElement = ({
     return (
         <tr
             onClick={() => setActiveIssue(issue)}
-            className={`cursor-pointer border-b border-solid border-[var(--bg-light-color)] transition-colors duration-100 hover:bg-[rgba(var(--bg-light-color-rgb),0.2)] ${isActive ? 'bg-[rgba(var(--bg-light-color-rgb),0.2)]' : ''} `}
+            className={`cursor-pointer border-b border-solid border-[var(--bg-light-color)] transition-colors duration-100 hover:bg-[var(--bg-light-color-hover)] ${isActive ? 'bg-[var(--bg-light-color-hover)]' : ''} `}
         >
             <td className="w-[100px] px-4 py-2 text-[var(--text-gray-color)]">
                 {issue.id}
