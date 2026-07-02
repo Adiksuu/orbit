@@ -5,7 +5,6 @@ import FilterBar from '../Components/Organisms/FilterBar/FilterBar';
 import IssueDetail from '../Components/Organisms/IssueDetail/IssueDetail';
 import IssueTable from '../Components/Organisms/IssueTable/IssueTable';
 import MainLayout from '../Layouts/MainLayout';
-import styles from './Dashboard.module.scss';
 
 export default function Dashboard({
     issues,
@@ -27,11 +26,19 @@ export default function Dashboard({
 
     return (
         <MainLayout>
-            <div className={styles.dashboard}>
+            <div className={'flex h-full flex-col'}>
                 <FilterBar />
-                <div className={styles.mainContent}>
-                    <div className={styles.tableWrapper}>
-                        <div className={styles.tableContainer}>
+                <div
+                    className={
+                        'flex flex-1 overflow-hidden border-t border-solid border-[var(--bg-light-color)]'
+                    }
+                >
+                    <div
+                        className={
+                            'flex flex-1 flex-col overflow-hidden border-r border-solid border-[var(--bg-light-color)]'
+                        }
+                    >
+                        <div className={'flex-1 overflow-y-auto'}>
                             <IssueTable
                                 issues={issues.data}
                                 activeIssue={activeIssue}
@@ -46,7 +53,11 @@ export default function Dashboard({
                         />
                     </div>
                     {activeIssue && (
-                        <div className={styles.detailContainer}>
+                        <div
+                            className={
+                                'w-[420px] overflow-y-auto bg-[var(--bg-color)]'
+                            }
+                        >
                             <IssueDetail
                                 activeIssue={activeIssue}
                                 setActiveIssue={setActiveIssue}
