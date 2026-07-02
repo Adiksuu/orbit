@@ -1,5 +1,6 @@
 import IssueBoard from '@/Components/Organisms/IssueBoard/IssueBoard';
 import { Issue, IssuePageLooks, PaginatedResponse } from '@/types/Issues';
+import { Project } from '@/types/Projects';
 import { useEffect, useState } from 'react';
 import Pagination from '../Components/Molecules/Pagination/Pagination';
 import FilterBar from '../Components/Organisms/FilterBar/FilterBar';
@@ -9,8 +10,10 @@ import MainLayout from '../Layouts/MainLayout';
 
 export default function Dashboard({
     issues,
+    projects,
 }: {
     issues: PaginatedResponse<Issue>;
+    projects: Project[];
 }) {
     console.log('Issues:', issues);
     const [activeIssue, setActiveIssue] = useState<Issue | null>(null);
@@ -40,6 +43,7 @@ export default function Dashboard({
         <MainLayout
             selectedLook={selectedLook}
             setSelectedLook={setSelectedLook}
+            projects={projects}
         >
             <div className={'flex h-full flex-col'}>
                 <FilterBar />

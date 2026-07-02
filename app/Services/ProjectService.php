@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Project;
 use App\Repositories\ProjectRepository;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class ProjectService
@@ -19,5 +20,8 @@ class ProjectService
         $this->activityLogService->log($project->id, "Created project: {$project->name}");
 
         return $project;
+    }
+    public function getAll(): Collection{
+        return $this->projectRepository->getAll();
     }
 }

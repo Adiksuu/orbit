@@ -1,4 +1,5 @@
 import { IssuePageLooks } from '@/types/Issues';
+import { Project } from '@/types/Projects';
 import { cva } from 'class-variance-authority';
 import React, { useState } from 'react';
 import Button from '../../Atoms/Button/Button';
@@ -20,9 +21,14 @@ const buttonVariants = cva(
 interface TopNavProps {
     selectedLook: IssuePageLooks;
     setSelectedLook: (look: IssuePageLooks) => void;
+    projects: Project[];
 }
 
-const TopNav: React.FC<TopNavProps> = ({ selectedLook, setSelectedLook }) => {
+const TopNav: React.FC<TopNavProps> = ({
+    selectedLook,
+    setSelectedLook,
+    projects,
+}) => {
     const [isNewIssueModalOpen, setIsNewIssueModalOpen] = useState(false);
 
     return (
@@ -102,6 +108,7 @@ const TopNav: React.FC<TopNavProps> = ({ selectedLook, setSelectedLook }) => {
             <NewIssueModal
                 isOpen={isNewIssueModalOpen}
                 onClose={() => setIsNewIssueModalOpen(false)}
+                projects={projects}
             />
         </>
     );

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->enum('status', ['open', 'closed'])->default('open');
             $table->enum('priority', ['low', 'medium', 'high'])->default('medium');
             $table->foreignId('project_id')->constrained()->onDelete('cascade');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('assignee_id')->nullable()->constrained('users')->onDelete('set null');
             $table->json('labels')->nullable();
             $table->timestamps();

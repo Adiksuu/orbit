@@ -9,12 +9,14 @@ import ModalFooter from '@/Components/Molecules/ModalFooter/ModalFooter';
 import ModalHeader from '@/Components/Molecules/ModalHeader/ModalHeader';
 import SidebarField from '@/Components/Molecules/SidebarField/SidebarField';
 import { IssueLabel } from '@/types/Issues';
+import { Project } from '@/types/Projects';
 import { useForm, usePage } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react';
 
 interface NewIssueModalProps {
     isOpen: boolean;
     onClose: () => void;
+    projects: Project[];
 }
 
 const PRIORITIES = ['low', 'medium', 'high'] as const;
@@ -27,12 +29,18 @@ const LABELS: IssueLabel[] = [
     'chore',
 ];
 
-const NewIssueModal: React.FC<NewIssueModalProps> = ({ isOpen, onClose }) => {
-    const { projects, users } = usePage<any>().props;
+const NewIssueModal: React.FC<NewIssueModalProps> = ({
+    isOpen,
+    onClose,
+    projects,
+}) => {
+    const { users } = usePage<any>().props;
     const [isProjectsDropdownOpen, setIsProjectsDropdownOpen] =
         useState<boolean>(false);
     const [isUsersDropdownOpen, setIsUsersDropdownOpen] =
         useState<boolean>(false);
+
+    console.log(projects);
 
     const { data, setData, post, processing, reset, errors } = useForm({
         title: '',
@@ -130,17 +138,17 @@ const NewIssueModal: React.FC<NewIssueModalProps> = ({ isOpen, onClose }) => {
                             />
                             {isProjectsDropdownOpen && (
                                 <DropdownMenu>
-                                    {projects?.map((option: string) => (
+                                    {projects?.map((option: Project) => (
                                         <DropdownItem
-                                            key={option.valueOf()}
-                                            label={<span>{option}</span>}
+                                            key={option.id}
+                                            label={<span>{option.name}</span>}
                                             isActive={
-                                                data.project_id === option
+                                                data.project_id === option.id
                                             }
                                             onClick={() => {
                                                 setData(
                                                     'project_id',
-                                                    option as string,
+                                                    option.id as number,
                                                 );
                                                 setIsProjectsDropdownOpen(
                                                     false,
