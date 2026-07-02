@@ -5,12 +5,12 @@ import Icon from '../../Atoms/Icon/Icon';
 import NewIssueModal from '../NewIssueModal/NewIssueModal';
 
 const buttonVariants = cva(
-    'cursor-pointer border-none bg-transparent py-2 text-sm text-zinc-400 transition-all duration-100 ease-in-out hover:text-white',
+    'cursor-pointer py-2 text-sm transition-all duration-100 ease-in-out hover:text-white',
     {
         variants: {
             isActive: {
-                true: 'text-white border-b-1 border-solid border-[var(--accent-color)]',
-                false: '',
+                true: 'text-white',
+                false: 'text-zinc-400',
             },
         },
     },
@@ -37,20 +37,8 @@ const TopNav: React.FC = () => {
                         <button className={buttonVariants({ isActive: true })}>
                             Issues
                         </button>
-                        <button className={buttonVariants({ isActive: true })}>
+                        <button className={buttonVariants({ isActive: false })}>
                             Board
-                        </button>
-                        <button className={buttonVariants({ isActive: true })}>
-                            Roadmap
-                        </button>
-                        <button className={buttonVariants({ isActive: true })}>
-                            Sprints
-                        </button>
-                        <button className={buttonVariants({ isActive: true })}>
-                            Reports
-                        </button>
-                        <button className={buttonVariants({ isActive: true })}>
-                            Settings
                         </button>
                     </nav>
                 </div>
@@ -61,7 +49,9 @@ const TopNav: React.FC = () => {
                                 'flex items-stretch overflow-hidden rounded-md bg-[var(--accent-color)]'
                             }
                         >
-                            <Button onClick={() => setIsNewIssueModalOpen(true)}>
+                            <Button
+                                onClick={() => setIsNewIssueModalOpen(true)}
+                            >
                                 New issue <Icon name={'Plus'} />
                             </Button>
                         </div>

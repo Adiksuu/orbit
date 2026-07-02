@@ -28,4 +28,20 @@ class IssueController extends Controller
 
         return redirect()->back();
     }
+    public function store(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'project_id' => 'required|exists:projects,id',
+            'priority' => 'required|string',
+            'status' => 'required|string',
+            'assignee_id' => 'nullable|exists:users,id',
+            'labels' => 'nullable|array',
+        ]);
+
+        $this->issueService->createIssue($data);
+
+        return redirect()->back();
+    }
 }

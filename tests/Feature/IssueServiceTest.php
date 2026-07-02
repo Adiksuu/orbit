@@ -29,7 +29,7 @@ test('it can create an issue and log activity', function () {
         }))
         ->andReturn($issue);
 
-    // This expectation will fail if my suspicion about #{$issue} is correct and it returns the whole object stringified
+    // This expectation will fail if my suspicion about #{$issue} is correct, and it returns the whole object stringified
     $this->activityLogService->shouldReceive('log')
         ->once()
         ->with(1, 'Added new task: #123');
