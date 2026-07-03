@@ -3,7 +3,6 @@ import { Project } from '@/types/Projects';
 import React from 'react';
 import Sidebar from '../Components/Organisms/Sidebar/Sidebar';
 import TopNav from '../Components/Organisms/TopNav/TopNav';
-import styles from './MainLayout.module.scss';
 
 interface MainLayoutProps {
     children: React.ReactNode;
@@ -19,15 +18,21 @@ const MainLayout: React.FC<MainLayoutProps> = ({
     projects,
 }) => {
     return (
-        <div className={styles.layout}>
+        <div
+            className={
+                'flex h-screen w-screen overflow-hidden bg-[var(--bg-color)]'
+            }
+        >
             <Sidebar />
-            <div className={styles.main}>
+            <div className={'flex min-w-0 flex-1 flex-col'}>
                 <TopNav
                     selectedLook={selectedLook}
                     setSelectedLook={setSelectedLook}
                     projects={projects}
                 />
-                <main className={styles.content}>{children}</main>
+                <main className={'flex flex-1 flex-col overflow-y-auto'}>
+                    {children}
+                </main>
             </div>
         </div>
     );

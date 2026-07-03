@@ -7,7 +7,7 @@ import Icon from '../../Atoms/Icon/Icon';
 import NewIssueModal from '../NewIssueModal/NewIssueModal';
 
 const buttonVariants = cva(
-    'cursor-pointer py-2 text-sm transition-all duration-100 ease-in-out hover:text-white',
+    'cursor-pointer py-2 text-sm transition-all duration-100 ease-in-out hover:text-white flex items-center justify-center gap-1',
     {
         variants: {
             isActive: {
@@ -52,6 +52,14 @@ const TopNav: React.FC<TopNavProps> = ({
                             })}
                             onClick={() => setSelectedLook('List')}
                         >
+                            <Icon
+                                name={'Rows3'}
+                                className={
+                                    selectedLook === 'List'
+                                        ? 'text-white'
+                                        : 'text-zinc-400'
+                                }
+                            />
                             List
                         </button>
                         <button
@@ -60,6 +68,14 @@ const TopNav: React.FC<TopNavProps> = ({
                             })}
                             onClick={() => setSelectedLook('Board')}
                         >
+                            <Icon
+                                name={'Columns3'}
+                                className={
+                                    selectedLook === 'Board'
+                                        ? 'text-white'
+                                        : 'text-zinc-400'
+                                }
+                            />
                             Board
                         </button>
                     </nav>
