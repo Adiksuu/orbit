@@ -9,6 +9,7 @@ interface NavItemProps {
     isActive?: boolean;
     badge?: string | number;
     onClick?: () => void;
+    iconClassName?: string;
 }
 
 const classVariants = cva(
@@ -32,6 +33,7 @@ const NavItem: React.FC<NavItemProps> = ({
     isActive,
     badge,
     onClick,
+    iconClassName,
 }) => {
     return (
         <div className={classVariants({ isActive })} onClick={onClick}>
@@ -39,7 +41,8 @@ const NavItem: React.FC<NavItemProps> = ({
                 <Icon
                     name={icon}
                     size={18}
-                    color={isActive ? '#f3f3f3' : '#999'}
+                    className={iconClassName}
+                    color={'#fff'}
                 />
                 <span className={'text-sm font-normal'}>{label}</span>
             </div>

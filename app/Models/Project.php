@@ -14,6 +14,7 @@ class Project extends Model
         'id',
         'name',
         'slug',
-        'description'
+        'description',
+        'color'
     ];
 }

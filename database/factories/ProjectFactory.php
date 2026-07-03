@@ -17,10 +17,24 @@ class ProjectFactory extends Factory
      */
     public function definition(): array
     {
+        $availableColors = [
+            'red',
+            'orange',
+            'yellow',
+            'green',
+            'lime',
+            'blue',
+            'sky',
+            'violet',
+            'purple',
+            'pink',
+        ];
+
         return [
             'name' => fake()->sentence(3),
             'slug' => fake()->slug(),
             'description' => fake()->paragraph(),
+            'color' => fake()->randomElement($availableColors),
         ];
     }
 }

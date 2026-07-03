@@ -3,6 +3,19 @@ export interface Project {
     name: string;
     slug: string;
     description: string;
+    color: ProjectColors;
     created_at: number;
     updated_at: number;
 }
+
+export type ProjectColors =
+    | 'red'
+    | 'orange'
+    | 'yellow'
+    | 'green'
+    | 'lime'
+    | 'blue'
+    | 'sky'
+    | 'violet'
+    | 'purple'
+    | 'pink';
