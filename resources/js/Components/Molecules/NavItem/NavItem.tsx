@@ -1,3 +1,4 @@
+import { Link } from '@inertiajs/react';
 import { cva } from 'class-variance-authority';
 import { icons } from 'lucide-react';
 import React from 'react';
@@ -10,6 +11,7 @@ interface NavItemProps {
     badge?: string | number;
     onClick?: () => void;
     iconClassName?: string;
+    link?: number;
 }
 
 const classVariants = cva(
@@ -34,9 +36,14 @@ const NavItem: React.FC<NavItemProps> = ({
     badge,
     onClick,
     iconClassName,
+    link,
 }) => {
     return (
-        <div className={classVariants({ isActive })} onClick={onClick}>
+        <Link
+            className={classVariants({ isActive })}
+            onClick={onClick}
+            href={`/projects/${link}`}
+        >
             <div className={'flex items-center gap-3'}>
                 <Icon
                     name={icon}
@@ -55,7 +62,7 @@ const NavItem: React.FC<NavItemProps> = ({
                     {badge}
                 </span>
             )}
-        </div>
+        </Link>
     );
 };
 

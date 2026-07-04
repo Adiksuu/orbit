@@ -66,6 +66,7 @@ const Sidebar: React.FC<{ projects: Project[] }> = ({ projects }) => {
                                     label={
                                         project.name.substring(0, 16) + '...'
                                     }
+                                    link={project.id}
                                 />
                             );
                         })}
