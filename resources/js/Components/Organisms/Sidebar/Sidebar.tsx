@@ -4,7 +4,10 @@ import Icon from '../../Atoms/Icon/Icon';
 import NavItem from '../../Molecules/NavItem/NavItem';
 import UserBadge from '../../Molecules/UserBadge/UserBadge';
 
-const Sidebar: React.FC<{ projects: Project[] }> = ({ projects }) => {
+const Sidebar: React.FC<{ projects: Project[]; project: Project }> = ({
+    projects,
+    project,
+}) => {
     const getTailwindColorFromName = (colorName: ProjectColors) => {
         const colors = {
             red: 'bg-red-500',
@@ -55,18 +58,19 @@ const Sidebar: React.FC<{ projects: Project[] }> = ({ projects }) => {
                         PROJECTS
                     </h3>
                     <nav className={'flex min-h-0 flex-col overflow-y-auto'}>
-                        {projects.map((project: Project) => {
+                        {projects.map((projectElement: Project) => {
                             return (
                                 <NavItem
-                                    key={project.id}
+                                    key={projectElement.id}
                                     icon="FolderGit2"
                                     iconClassName={`${getTailwindColorFromName(
-                                        project.color,
+                                        projectElement.color,
                                     )} h-5 w-5 rounded-md p-1`}
                                     label={
-                                        project.name.substring(0, 16) + '...'
+                                        projectElement.name.substring(0, 16) + '...'
                                     }
-                                    link={project.id}
+                                    link={projectElement.id}
+                                    isActive={projectElement.id === project.id}
                                 />
                             );
                         })}

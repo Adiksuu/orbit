@@ -24,11 +24,15 @@ class IssueService
     }
     public function getAll(): LengthAwarePaginator
     {
-        return $this->issueRepository->getAllPaginated();
+        return $this->issueRepository->getAllPaginated(1);
     }
 
     public function updateIssue(Issue $issue, array $data): Issue {
         $this->issueRepository->update($issue, $data);
         return $issue;
+    }
+    public function getAllByProjectID(int $projectID): LengthAwarePaginator
+    {
+        return $this->issueRepository->getAllPaginated($projectID);
     }
 }

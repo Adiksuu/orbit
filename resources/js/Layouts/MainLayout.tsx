@@ -9,6 +9,7 @@ interface MainLayoutProps {
     selectedLook: IssuePageLooks;
     setSelectedLook: (look: IssuePageLooks) => void;
     projects: Project[];
+    project: Project;
 }
 
 const MainLayout: React.FC<MainLayoutProps> = ({
@@ -16,6 +17,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
     selectedLook,
     setSelectedLook,
     projects,
+    project,
 }) => {
     return (
         <div
@@ -23,12 +25,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({
                 'flex h-screen w-screen overflow-hidden bg-[var(--bg-color)]'
             }
         >
-            <Sidebar projects={projects} />
+            <Sidebar projects={projects} project={project} />
             <div className={'flex min-w-0 flex-1 flex-col'}>
                 <TopNav
                     selectedLook={selectedLook}
                     setSelectedLook={setSelectedLook}
-                    projects={projects}
+                    project={project}
                 />
                 <main className={'flex flex-1 flex-col overflow-y-auto'}>
                     {children}
