@@ -16,7 +16,7 @@ import React, { useEffect, useState } from 'react';
 interface NewIssueModalProps {
     isOpen: boolean;
     onClose: () => void;
-    projects: Project[];
+    project: Project;
 }
 
 const PRIORITIES = ['low', 'medium', 'high'] as const;
@@ -32,20 +32,16 @@ const LABELS: IssueLabel[] = [
 const NewIssueModal: React.FC<NewIssueModalProps> = ({
     isOpen,
     onClose,
-    projects,
+    project,
 }) => {
     const { users } = usePage<any>().props;
-    const [isProjectsDropdownOpen, setIsProjectsDropdownOpen] =
-        useState<boolean>(false);
     const [isUsersDropdownOpen, setIsUsersDropdownOpen] =
         useState<boolean>(false);
-
-    console.log(projects);
 
     const { data, setData, post, processing, reset, errors } = useForm({
         title: '',
         description: '',
-        project_id: projects?.[0]?.id || '',
+        project_id: project.id,
         status: 'open',
         priority: 'medium',
         assignee_id: '',
@@ -55,11 +51,9 @@ const NewIssueModal: React.FC<NewIssueModalProps> = ({
     useEffect(() => {
         if (isOpen) {
             reset();
-            if (projects?.length > 0) {
-                setData('project_id', projects[0].id);
-            }
+            setData('project_id', project.id);
         }
-    }, [isOpen, projects]);
+    }, [isOpen, project]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -126,45 +120,6 @@ const NewIssueModal: React.FC<NewIssueModalProps> = ({
                     </div>
                 </div>
                 <div className="flex flex-col gap-6 overflow-y-auto border-l border-[var(--bg-light-color)] bg-white/[0.02] p-6">
-                    <SidebarField label="Project">
-                        <div className="relative">
-                            <DropdownTrigger
-                                label={<span>{data.project_id}</span>}
-                                onClick={() =>
-                                    setIsProjectsDropdownOpen(
-                                        !isProjectsDropdownOpen,
-                                    )
-                                }
-                            />
-                            {isProjectsDropdownOpen && (
-                                <DropdownMenu>
-                                    {projects?.map((option: Project) => (
-                                        <DropdownItem
-                                            key={option.id}
-                                            label={<span>{option.name}</span>}
-                                            isActive={
-                                                data.project_id === option.id
-                                            }
-                                            onClick={() => {
-                                                setData(
-                                                    'project_id',
-                                                    option.id as number,
-                                                );
-                                                setIsProjectsDropdownOpen(
-                                                    false,
-                                                );
-                                            }}
-                                        />
-                                    ))}
-                                </DropdownMenu>
-                            )}
-                        </div>
-                        {errors.project_id && (
-                            <span className="text-xs text-[var(--error-color)]">
-                                {errors.project_id}
-                            </span>
-                        )}
-                    </SidebarField>
                     <SidebarField label="Assignee">
                         <div className="relative">
                             <DropdownTrigger

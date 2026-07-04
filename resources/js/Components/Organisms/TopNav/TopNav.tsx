@@ -21,13 +21,13 @@ const buttonVariants = cva(
 interface TopNavProps {
     selectedLook: IssuePageLooks;
     setSelectedLook: (look: IssuePageLooks) => void;
-    projects: Project[];
+    project: Project;
 }
 
 const TopNav: React.FC<TopNavProps> = ({
     selectedLook,
     setSelectedLook,
-    projects,
+    project,
 }) => {
     const [isNewIssueModalOpen, setIsNewIssueModalOpen] = useState(false);
 
@@ -41,7 +41,7 @@ const TopNav: React.FC<TopNavProps> = ({
                 <div className={'flex h-full flex-col justify-center gap-4'}>
                     <div className={'flex items-center gap-2'}>
                         <h1 className={'m-0 text-sm font-semibold text-white'}>
-                            Mobile App
+                            {project.name}
                         </h1>
                         <Icon name="Star" size={16} color="#999" />
                     </div>
@@ -124,7 +124,7 @@ const TopNav: React.FC<TopNavProps> = ({
             <NewIssueModal
                 isOpen={isNewIssueModalOpen}
                 onClose={() => setIsNewIssueModalOpen(false)}
-                projects={projects}
+                project={project}
             />
         </>
     );
