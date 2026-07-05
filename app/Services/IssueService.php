@@ -22,9 +22,9 @@ class IssueService
 
         return $issue;
     }
-    public function getAll(): LengthAwarePaginator
+    public function getAll(): Collection
     {
-        return $this->issueRepository->getAllPaginated(1);
+        return $this->issueRepository->getAll();
     }
 
     public function updateIssue(Issue $issue, array $data): Issue {
@@ -34,5 +34,9 @@ class IssueService
     public function getAllByProjectID(int $projectID): LengthAwarePaginator
     {
         return $this->issueRepository->getAllPaginated($projectID);
+    }
+    public function getProductivityTrend(): array
+    {
+        return $this->issueRepository->getProductivityTrend();
     }
 }

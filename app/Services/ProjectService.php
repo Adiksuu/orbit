@@ -21,7 +21,7 @@ class ProjectService
 
         return $project;
     }
-    public function getAll(): Collection{
+    public function getAll(): Collection {
         return $this->projectRepository->getAll();
     }
 }

@@ -6,7 +6,7 @@ interface StatusDotProps extends VariantProps<typeof classVariants> {
     className?: string;
 }
 
-const classVariants = cva('inline-block rounded-full shrink-0', {
+const classVariants = cva('inline-block rounded-sm shrink-0', {
     variants: {
         size: {
             sm: 'w-2 h-2',

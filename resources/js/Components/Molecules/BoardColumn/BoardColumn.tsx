@@ -1,3 +1,4 @@
+import Badge from '@/Components/Atoms/Badge/Badge';
 import Icon from '@/Components/Atoms/Icon/Icon';
 import StatusDot from '@/Components/Atoms/StatusDot/StatusDot';
 import IssueElement from '@/Components/Molecules/IssueElement/IssueElement';
@@ -24,20 +25,12 @@ function BoardColumn({
                     <h3 className="text-sm font-semibold capitalize text-zinc-200">
                         {priority} Priority
                     </h3>
-                    <span className="rounded-full bg-zinc-800/80 px-2 py-0.5 text-[10px] font-semibold text-zinc-400">
+                    <Badge className={'rounded-full'}>
                         {
                             issues.filter((issue) => issue.status !== 'closed')
                                 .length
                         }
-                    </span>
-                </div>
-                <div className="flex items-center gap-1">
-                    <button className="rounded p-1 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-200">
-                        <Icon name="Plus" size={14} color="currentColor" />
-                    </button>
-                    <button className="rounded p-1 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-200">
-                        <Icon name="Ellipsis" size={14} color="currentColor" />
-                    </button>
+                    </Badge>
                 </div>
             </div>
             {issues.length === 0 ? (

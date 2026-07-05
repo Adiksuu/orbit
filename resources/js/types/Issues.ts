@@ -47,3 +47,8 @@ export interface PaginatedResponse<T> {
 
 export type IssuePageLooks = 'List' | 'Board';
 export type IssuePriority = 'high' | 'medium' | 'low';
+
+export interface ProductivityTrendProps {
+    count: number;
+    day: string;
+}

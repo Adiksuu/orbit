@@ -24,10 +24,12 @@ class DashboardController extends Controller
     {
         $issues = $this->issueService->getAll();
         $projects = $this->projectService->getAll();
+        $productivity_trend = $this->issueService->getProductivityTrend();
 
         return Inertia::render('Dashboard', [
             'issues' => $issues,
             'projects' => $projects,
+            'productivity_trend' => $productivity_trend,
         ]);
     }
 }

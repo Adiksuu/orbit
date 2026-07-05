@@ -4,7 +4,7 @@ import Icon from '../../Atoms/Icon/Icon';
 import NavItem from '../../Molecules/NavItem/NavItem';
 import UserBadge from '../../Molecules/UserBadge/UserBadge';
 
-const Sidebar: React.FC<{ projects: Project[]; project: Project }> = ({
+const Sidebar: React.FC<{ projects: Project[]; project?: Project }> = ({
     projects,
     project,
 }) => {
@@ -45,7 +45,13 @@ const Sidebar: React.FC<{ projects: Project[]; project: Project }> = ({
                     <Icon name="ChevronDown" size={14} color="#999" />
                 </div>
                 <nav className={'flex shrink-0 flex-col'}>
-                    <NavItem icon="Search" label="Search" badge="Ctrl K" />
+                    <NavItem
+                        icon="LayoutDashboard"
+                        label="Dashboard"
+                        badge="Ctrl D"
+                        link={'/'}
+                        isActive={!project}
+                    />
                     <NavItem icon="Inbox" label="Inbox" badge={3} />
                     <NavItem icon="Settings" label="Settings" />
                 </nav>
@@ -67,10 +73,11 @@ const Sidebar: React.FC<{ projects: Project[]; project: Project }> = ({
                                         projectElement.color,
                                     )} h-5 w-5 rounded-md p-1`}
                                     label={
-                                        projectElement.name.substring(0, 16) + '...'
+                                        projectElement.name.substring(0, 16) +
+                                        '...'
                                     }
-                                    link={projectElement.id}
-                                    isActive={projectElement.id === project.id}
+                                    link={`/projects/${projectElement.id}`}
+                                    isActive={projectElement.id === project?.id}
                                 />
                             );
                         })}

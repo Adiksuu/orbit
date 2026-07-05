@@ -1,3 +1,4 @@
+import Badge from '@/Components/Atoms/Badge/Badge';
 import { Link } from '@inertiajs/react';
 import { cva } from 'class-variance-authority';
 import { icons } from 'lucide-react';
@@ -11,7 +12,7 @@ interface NavItemProps {
     badge?: string | number;
     onClick?: () => void;
     iconClassName?: string;
-    link?: number;
+    link?: string;
 }
 
 const classVariants = cva(
@@ -42,7 +43,7 @@ const NavItem: React.FC<NavItemProps> = ({
         <Link
             className={classVariants({ isActive })}
             onClick={onClick}
-            href={`/projects/${link}`}
+            href={link}
         >
             <div className={'flex items-center gap-3'}>
                 <Icon
@@ -54,13 +55,7 @@ const NavItem: React.FC<NavItemProps> = ({
                 <span className={'text-sm font-normal'}>{label}</span>
             </div>
             {badge !== undefined && (
-                <span
-                    className={
-                        'rounded-full bg-[var(--bg-light-color)] px-3 py-0.5 text-xs text-zinc-300'
-                    }
-                >
-                    {badge}
-                </span>
+                <Badge className={'rounded-full'}>{badge}</Badge>
             )}
         </Link>
     );
