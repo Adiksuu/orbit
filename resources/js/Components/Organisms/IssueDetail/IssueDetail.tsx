@@ -3,6 +3,8 @@ import { formatDate, formatTimeAgo } from '@/utils/time';
 import { useForm } from '@inertiajs/react';
 import { cva } from 'class-variance-authority';
 import { useEffect, useState } from 'react';
+import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import Badge from '../../Atoms/Badge/Badge';
 import DropdownItem from '../../Atoms/DropdownItem/DropdownItem';
 import DropdownMenu from '../../Atoms/DropdownMenu/DropdownMenu';
@@ -161,9 +163,17 @@ const IssueDetail = ({ activeIssue, setActiveIssue }: IssueDetailProps) => {
                                     : ' updated'}
                             </span>
                         </div>
-                        <p className="text-md mb-8 whitespace-pre-wrap leading-relaxed text-white">
-                            {activeIssue.description}
-                        </p>
+                        <div className="prose prose-invert mb-8 max-w-none text-sm">
+                            {activeIssue.description ? (
+                                <Markdown remarkPlugins={[remarkGfm]}>
+                                    {activeIssue.description}
+                                </Markdown>
+                            ) : (
+                                <p className="italic text-zinc-500">
+                                    No description provided.
+                                </p>
+                            )}
+                        </div>
                     </>
                 )}
                 <div className="flex flex-col gap-4">

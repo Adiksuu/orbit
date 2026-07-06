@@ -86,7 +86,7 @@ const Sidebar: React.FC<{ projects: Project[]; project?: Project }> = ({
             </div>
             <div
                 className={
-                    'shrink-0 border-t border-solid border-[var(--bg-light-color)] py-3'
+                    'shrink-0 border-t border-solid border-[var(--bg-light-color)] pt-3'
                 }
             >
                 <div
