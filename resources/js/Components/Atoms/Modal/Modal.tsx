@@ -1,3 +1,4 @@
+import { ModalProps } from '@/types/Components';
 import { cn } from '@/utils/cn';
 import { cva } from 'class-variance-authority';
 import React from 'react';
@@ -17,13 +18,6 @@ const panelVariants = cva(
         },
     },
 );
-
-interface ModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    children: React.ReactNode;
-    size?: 'sm' | 'md' | 'lg';
-}
 
 const Modal: React.FC<ModalProps> = ({
     isOpen,

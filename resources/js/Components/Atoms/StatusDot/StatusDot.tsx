@@ -1,12 +1,8 @@
-import { cva, VariantProps } from 'class-variance-authority';
+import { StatusDotProps } from '@/types/Components';
+import { cva } from 'class-variance-authority';
 import React from 'react';
 
-interface StatusDotProps extends VariantProps<typeof classVariants> {
-    status: 'open' | 'closed' | 'low' | 'medium' | 'high';
-    className?: string;
-}
-
-const classVariants = cva('inline-block rounded-sm shrink-0', {
+export const statusDotVariants = cva('inline-block rounded-sm shrink-0', {
     variants: {
         size: {
             sm: 'w-2 h-2',
@@ -30,7 +26,7 @@ const StatusDot: React.FC<StatusDotProps> = ({
     size = 'sm',
     className,
 }) => {
-    return <span className={classVariants({ status, size, className })} />;
+    return <span className={statusDotVariants({ status, size, className })} />;
 };
 
 export default StatusDot;

@@ -1,8 +1,9 @@
+import { BadgeProps } from '@/types/Components';
 import { cn } from '@/utils/cn';
-import { cva, type VariantProps } from 'class-variance-authority';
+import { cva } from 'class-variance-authority';
 import React from 'react';
 
-const badgeVariants = cva(
+export const badgeVariants = cva(
     'inline-flex items-center py-[2px] px-2 rounded-md text-[10px] font-medium whitespace-nowrap transition-colors',
     {
         variants: {
@@ -29,13 +30,6 @@ const badgeVariants = cva(
         },
     },
 );
-
-interface BadgeProps
-    extends
-        Omit<React.HTMLAttributes<HTMLSpanElement>, 'color'>,
-        VariantProps<typeof badgeVariants> {
-    children: React.ReactNode;
-}
 
 const Badge: React.FC<BadgeProps> = ({
     children,

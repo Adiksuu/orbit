@@ -1,11 +1,4 @@
-import React from 'react';
-
-interface TextAreaProps {
-    value: string;
-    onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-    placeholder?: string;
-    isDisabled?: boolean;
-}
+import { TextAreaProps } from '@/types/Components';
 
 function TextArea({ value, onChange, placeholder, isDisabled }: TextAreaProps) {
     return (

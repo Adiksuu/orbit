@@ -1,12 +1,4 @@
-import React from 'react';
-
-interface InputProps {
-    value: string;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    placeholder?: string;
-    isDisabled?: boolean;
-    type?: string;
-}
+import { InputProps } from '@/types/Components';
 
 function Input({
     value,

@@ -1,11 +1,5 @@
+import { IconProps } from '@/types/Components';
 import { AlertOctagon, icons, type LucideIcon } from 'lucide-react';
-
-interface IconProps {
-    name: keyof typeof icons;
-    size?: number;
-    color?: string;
-    className?: string;
-}
 
 function Icon({ name, size = 16, color, className }: IconProps) {
     const LucideIcon: LucideIcon = icons[name];

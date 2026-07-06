@@ -1,23 +1,11 @@
+import { IconButtonProps } from '@/types/Components';
 import { Link } from '@inertiajs/react';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { icons } from 'lucide-react';
-import React from 'react';
+import { cva } from 'class-variance-authority';
 import Icon from '../Icon/Icon';
 
-const iconButtonVariants = cva(
+export const iconButtonVariants = cva(
     'bg-transparent border-none cursor-pointer p-2 rounded-md flex items-center justify-center hover:bg-[var(--bg-light-color)]/30 transition-colors duration-100',
 );
-
-interface IconButtonProps
-    extends
-        React.ButtonHTMLAttributes<HTMLButtonElement>,
-        VariantProps<typeof iconButtonVariants> {
-    iconName: keyof typeof icons;
-    iconColor?: string;
-    iconSize?: number;
-    isLink?: boolean;
-    link?: string;
-}
 
 const IconButton = ({
     iconName,
