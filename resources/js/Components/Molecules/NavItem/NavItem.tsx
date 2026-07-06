@@ -1,19 +1,9 @@
 import Badge from '@/Components/Atoms/Badge/Badge';
+import { NavItemProps } from '@/types/Components';
 import { Link } from '@inertiajs/react';
 import { cva } from 'class-variance-authority';
-import { icons } from 'lucide-react';
 import React from 'react';
 import Icon from '../../Atoms/Icon/Icon';
-
-interface NavItemProps {
-    icon: keyof typeof icons;
-    label: string;
-    isActive?: boolean;
-    badge?: string | number;
-    onClick?: () => void;
-    iconClassName?: string;
-    link?: string;
-}
 
 const classVariants = cva(
     'flex items-center justify-between py-2 px-3 rounded-md cursor-pointer transition-all duration-100 ease-in-out mb-[2px] hover:bg-[var(--bg-light-color)] hover:text-white',

@@ -1,14 +1,7 @@
+import { UserBadgeProps } from '@/types/Components';
 import { cva } from 'class-variance-authority';
 import React from 'react';
 import Avatar from '../../Atoms/Avatar/Avatar';
-
-interface UserBadgeProps {
-    name: string;
-    email?: string;
-    avatarSrc?: string;
-    size?: 'sm' | 'md' | 'lg';
-    showDetails?: boolean;
-}
 
 const classVariants = cva('flex items-center gap-2.5 text-white', {
     variants: {

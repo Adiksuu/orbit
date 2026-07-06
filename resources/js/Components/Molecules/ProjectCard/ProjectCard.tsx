@@ -1,15 +1,9 @@
 import StatusDot from '@/Components/Atoms/StatusDot/StatusDot';
-import { Issue } from '@/types/Issues';
-import { Project } from '@/types/Projects';
+import { ProjectCardProps } from '@/types/Components';
 import { getColorTheme } from '@/utils/colors';
 import { Link } from '@inertiajs/react';
 import React from 'react';
 import Icon from '../../Atoms/Icon/Icon';
-
-interface ProjectCardProps {
-    project: Project;
-    issues: Issue[];
-}
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project, issues }) => {
     const projectIssues = issues.filter((i) => i.project_id === project.id);

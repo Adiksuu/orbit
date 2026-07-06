@@ -1,13 +1,6 @@
-import { icons } from 'lucide-react';
+import { FilterButtonProps } from '@/types/Components';
 import React from 'react';
 import Icon from '../../Atoms/Icon/Icon';
-
-interface FilterButtonProps {
-    icon?: keyof typeof icons;
-    label: string;
-    value?: string;
-    onClick?: () => void;
-}
 
 const FilterButton: React.FC<FilterButtonProps> = ({
     icon,

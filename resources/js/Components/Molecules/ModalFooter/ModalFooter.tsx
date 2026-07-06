@@ -1,13 +1,6 @@
 import Button from '@/Components/Atoms/Button/Button';
+import { ModalFooterProps } from '@/types/Components';
 import React from 'react';
-
-interface ModalFooterProps {
-    onCancel: () => void;
-    submitLabel?: string;
-    cancelLabel?: string;
-    isSubmitting?: boolean;
-    children?: React.ReactNode;
-}
 
 const ModalFooter: React.FC<ModalFooterProps> = ({
     onCancel,

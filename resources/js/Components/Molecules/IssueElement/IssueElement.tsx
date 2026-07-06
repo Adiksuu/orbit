@@ -2,17 +2,9 @@ import Avatar from '@/Components/Atoms/Avatar/Avatar';
 import Badge from '@/Components/Atoms/Badge/Badge';
 import StatusDot from '@/Components/Atoms/StatusDot/StatusDot';
 import UserBadge from '@/Components/Molecules/UserBadge/UserBadge';
-import { Issue } from '@/types/Issues';
+import { IssueElementProps } from '@/types/Components';
+import { IssuePriority } from '@/types/Issues';
 import { cva } from 'class-variance-authority';
-
-interface IssueElementProps {
-    issue: Issue;
-    activeIssue: Issue | null;
-    setActiveIssue: (issue: Issue | null) => void;
-    type?: 'list' | 'board';
-}
-
-type Priority = 'high' | 'medium' | 'low';
 
 const priorityTextColor = cva('', {
     variants: {
@@ -191,7 +183,7 @@ export const IssueElement = ({
                     </Badge>
                     <span
                         className={priorityTextColor({
-                            priority: issue.priority as Priority,
+                            priority: issue.priority as IssuePriority,
                         })}
                     >
                         {issue.priority.charAt(0).toUpperCase() +
