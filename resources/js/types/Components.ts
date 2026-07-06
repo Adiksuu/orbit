@@ -2,6 +2,14 @@ import { badgeVariants } from '@/Components/Atoms/Badge/Badge';
 import { dropdownItemVariants } from '@/Components/Atoms/DropdownItem/DropdownItem';
 import { iconButtonVariants } from '@/Components/Atoms/IconButton/IconButton';
 import { statusDotVariants } from '@/Components/Atoms/StatusDot/StatusDot';
+import { statCardVariants } from '@/Components/Molecules/StatCard/StatCard';
+import {
+    Issue,
+    IssuePageLooks,
+    IssuePriority,
+    ProductivityTrendProps,
+} from '@/types/Issues';
+import { Project } from '@/types/Projects';
 import type { VariantProps } from 'class-variance-authority';
 import { icons } from 'lucide-react';
 import React, {
@@ -10,9 +18,6 @@ import React, {
     HTMLAttributes,
     ReactNode,
 } from 'react';
-import { Issue, IssuePriority } from '@/types/Issues';
-import { Project } from '@/types/Projects';
-import { statCardVariants } from '@/Components/Molecules/StatCard/StatCard';
 
 export interface AvatarProps {
     src?: string;
@@ -169,4 +174,39 @@ export interface UserBadgeProps {
     avatarSrc?: string;
     size?: 'sm' | 'md' | 'lg';
     showDetails?: boolean;
+}
+export interface DashboardVisualsProps {
+    issues: Issue[];
+    productivity_trend: ProductivityTrendProps[];
+}
+export interface IssueBoardProps {
+    issues: Issue[];
+    activeIssue: Issue | null;
+    setActiveIssue: (issue: Issue | null) => void;
+}
+export interface IssueDetailProps {
+    activeIssue: Issue;
+    setActiveIssue: (issue: Issue | null) => void;
+}
+export interface IssueTableProps {
+    issues: Issue[];
+    activeIssue: Issue | null;
+    setActiveIssue: (issue: Issue | null) => void;
+}
+export interface NewIssueModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    project: Project;
+}
+export interface TopNavProps {
+    selectedLook: IssuePageLooks;
+    setSelectedLook: (look: IssuePageLooks) => void;
+    project: Project;
+}
+export interface MainLayoutProps {
+    children: ReactNode;
+    selectedLook: IssuePageLooks;
+    setSelectedLook: (look: IssuePageLooks) => void;
+    projects: Project[];
+    project: Project;
 }

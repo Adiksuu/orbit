@@ -1,25 +1,16 @@
 import Badge from '@/Components/Atoms/Badge/Badge';
-import DropdownItem from '@/Components/Atoms/DropdownItem/DropdownItem';
-import DropdownMenu from '@/Components/Atoms/DropdownMenu/DropdownMenu';
-import DropdownTrigger from '@/Components/Atoms/DropdownTrigger/DropdownTrigger';
 import Icon from '@/Components/Atoms/Icon/Icon';
 import Modal from '@/Components/Atoms/Modal/Modal';
 import StatusDot from '@/Components/Atoms/StatusDot/StatusDot';
 import ModalFooter from '@/Components/Molecules/ModalFooter/ModalFooter';
 import ModalHeader from '@/Components/Molecules/ModalHeader/ModalHeader';
 import SidebarField from '@/Components/Molecules/SidebarField/SidebarField';
-import { IssueLabel } from '@/types/Issues';
-import { Project } from '@/types/Projects';
-import { useForm, usePage } from '@inertiajs/react';
-import React, { useEffect, useState } from 'react';
+import { NewIssueModalProps } from '@/types/Components';
+import { IssueLabel, IssuePriority } from '@/types/Issues';
+import { useForm } from '@inertiajs/react';
+import React, { useEffect } from 'react';
 
-interface NewIssueModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    project: Project;
-}
-
-const PRIORITIES = ['low', 'medium', 'high'] as const;
+const PRIORITIES: IssuePriority[] = ['low', 'medium', 'high'];
 const LABELS: IssueLabel[] = [
     'bug',
     'feature',
@@ -34,9 +25,8 @@ const NewIssueModal: React.FC<NewIssueModalProps> = ({
     onClose,
     project,
 }) => {
-    const { users } = usePage<any>().props;
-    const [isUsersDropdownOpen, setIsUsersDropdownOpen] =
-        useState<boolean>(false);
+    // const [isUsersDropdownOpen, setIsUsersDropdownOpen] =
+    //     useState<boolean>(false);
 
     const { data, setData, post, processing, reset, errors } = useForm({
         title: '',
@@ -53,7 +43,7 @@ const NewIssueModal: React.FC<NewIssueModalProps> = ({
             reset();
             setData('project_id', project.id);
         }
-    }, [isOpen, project]);
+    }, [isOpen, project, reset, setData]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -120,38 +110,38 @@ const NewIssueModal: React.FC<NewIssueModalProps> = ({
                     </div>
                 </div>
                 <div className="flex flex-col gap-6 overflow-y-auto border-l border-[var(--bg-light-color)] bg-white/[0.02] p-6">
-                    <SidebarField label="Assignee">
-                        <div className="relative">
-                            <DropdownTrigger
-                                label={<span>{data.assignee_id}</span>}
-                                onClick={() =>
-                                    setIsUsersDropdownOpen(!isUsersDropdownOpen)
-                                }
-                            />
-                            {isUsersDropdownOpen && (
-                                <DropdownMenu>
-                                    {users?.map((option: string) => (
-                                        <DropdownItem
-                                            key={option.valueOf()}
-                                            label={<span>{option}</span>}
-                                            isActive={
-                                                data.assignee_id === option
-                                            }
-                                            onClick={() => {
-                                                setData(
-                                                    'assignee_id',
-                                                    option as string,
-                                                );
-                                                setIsUsersDropdownOpen(
-                                                    !isUsersDropdownOpen,
-                                                );
-                                            }}
-                                        />
-                                    ))}
-                                </DropdownMenu>
-                            )}
-                        </div>
-                    </SidebarField>
+                    {/*<SidebarField label="Assignee">*/}
+                    {/*    <div className="relative">*/}
+                    {/*        <DropdownTrigger*/}
+                    {/*            label={<span>{data.assignee_id}</span>}*/}
+                    {/*            onClick={() =>*/}
+                    {/*                setIsUsersDropdownOpen(!isUsersDropdownOpen)*/}
+                    {/*            }*/}
+                    {/*        />*/}
+                    {/*        {isUsersDropdownOpen && (*/}
+                    {/*            <DropdownMenu>*/}
+                    {/*                {users?.map((option: string) => (*/}
+                    {/*                    <DropdownItem*/}
+                    {/*                        key={option.valueOf()}*/}
+                    {/*                        label={<span>{option}</span>}*/}
+                    {/*                        isActive={*/}
+                    {/*                            data.assignee_id === option*/}
+                    {/*                        }*/}
+                    {/*                        onClick={() => {*/}
+                    {/*                            setData(*/}
+                    {/*                                'assignee_id',*/}
+                    {/*                                option as string,*/}
+                    {/*                            );*/}
+                    {/*                            setIsUsersDropdownOpen(*/}
+                    {/*                                !isUsersDropdownOpen,*/}
+                    {/*                            );*/}
+                    {/*                        }}*/}
+                    {/*                    />*/}
+                    {/*                ))}*/}
+                    {/*            </DropdownMenu>*/}
+                    {/*        )}*/}
+                    {/*    </div>*/}
+                    {/*</SidebarField>*/}
                     <SidebarField label="Priority">
                         <div className="flex flex-col gap-1">
                             {PRIORITIES.map((p) => (

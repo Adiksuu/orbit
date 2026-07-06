@@ -1,5 +1,4 @@
-import { IssuePageLooks } from '@/types/Issues';
-import { Project } from '@/types/Projects';
+import { TopNavProps } from '@/types/Components';
 import { cva } from 'class-variance-authority';
 import React, { useState } from 'react';
 import Button from '../../Atoms/Button/Button';
@@ -17,12 +16,6 @@ const buttonVariants = cva(
         },
     },
 );
-
-interface TopNavProps {
-    selectedLook: IssuePageLooks;
-    setSelectedLook: (look: IssuePageLooks) => void;
-    project: Project;
-}
 
 const TopNav: React.FC<TopNavProps> = ({
     selectedLook,

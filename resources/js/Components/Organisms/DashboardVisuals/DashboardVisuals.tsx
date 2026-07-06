@@ -1,12 +1,7 @@
 import StatusDot from '@/Components/Atoms/StatusDot/StatusDot';
-import { Issue, ProductivityTrendProps } from '@/types/Issues';
+import { DashboardVisualsProps } from '@/types/Components';
 import React, { useMemo } from 'react';
 import ProgressRing from '../../Atoms/ProgressRing/ProgressRing';
-
-interface DashboardVisualsProps {
-    issues: Issue[];
-    productivity_trend: ProductivityTrendProps[];
-}
 
 const DashboardVisuals: React.FC<DashboardVisualsProps> = ({
     issues,

@@ -52,3 +52,4 @@ export interface ProductivityTrendProps {
     count: number;
     day: string;
 }
+export type Status = 'open' | 'closed';

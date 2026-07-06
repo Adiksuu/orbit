@@ -1,11 +1,6 @@
 import BoardColumn from '@/Components/Molecules/BoardColumn/BoardColumn';
+import { IssueBoardProps } from '@/types/Components';
 import { Issue, IssuePriority } from '@/types/Issues';
-
-interface IssueBoardProps {
-    issues: Issue[];
-    activeIssue: Issue | null;
-    setActiveIssue: (issue: Issue | null) => void;
-}
 
 function IssueBoard({ issues, activeIssue, setActiveIssue }: IssueBoardProps) {
     const preparePriorityBoard = (issues: Issue[]) => {
