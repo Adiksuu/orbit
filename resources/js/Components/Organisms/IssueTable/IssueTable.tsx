@@ -1,11 +1,5 @@
 import { IssueElement } from '@/Components/Molecules/IssueElement/IssueElement';
-import { Issue } from '@/types/Issues';
-
-interface IssueTableProps {
-    issues: Issue[];
-    activeIssue: Issue | null;
-    setActiveIssue: (issue: Issue | null) => void;
-}
+import { IssueTableProps } from '@/types/Components';
 
 const IssueTable = ({
     issues,

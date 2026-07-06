@@ -1,12 +1,6 @@
+import { AvatarProps } from '@/types/Components';
 import { cva } from 'class-variance-authority';
 import React from 'react';
-
-interface AvatarProps {
-    src?: string;
-    alt?: string;
-    size?: 'sm' | 'md' | 'lg';
-    initials?: string;
-}
 
 const classVariants = cva(
     'flex items-center justify-center rounded-md overflow-hidden bg-zinc-100 shrink-0',

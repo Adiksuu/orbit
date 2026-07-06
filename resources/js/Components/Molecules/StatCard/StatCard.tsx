@@ -1,10 +1,10 @@
+import { StatCardProps } from '@/types/Components';
 import { cn } from '@/utils/cn';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { icons } from 'lucide-react';
+import { cva } from 'class-variance-authority';
 import React from 'react';
 import Icon from '../../Atoms/Icon/Icon';
 
-const statCardVariants = cva(
+export const statCardVariants = cva(
     'relative flex flex-col p-5 rounded-lg border border-solid transition-all duration-300 hover:-translate-y-0.5 overflow-hidden',
     {
         variants: {
@@ -20,21 +20,6 @@ const statCardVariants = cva(
         },
     },
 );
-
-interface StatCardProps extends VariantProps<typeof statCardVariants> {
-    title: string;
-    value: string | number;
-    icon: keyof typeof icons;
-    description?: string;
-    trend?: {
-        value: number;
-        label: string;
-        isPositive: boolean;
-    };
-    progress?: number;
-    color?: 'accent' | 'success' | 'warning' | 'error' | 'info';
-    className?: string;
-}
 
 const StatCard: React.FC<StatCardProps> = ({
     title,

@@ -1,16 +1,7 @@
-import { IssuePageLooks } from '@/types/Issues';
-import { Project } from '@/types/Projects';
+import { MainLayoutProps } from '@/types/Components';
 import React from 'react';
 import Sidebar from '../Components/Organisms/Sidebar/Sidebar';
 import TopNav from '../Components/Organisms/TopNav/TopNav';
-
-interface MainLayoutProps {
-    children: React.ReactNode;
-    selectedLook: IssuePageLooks;
-    setSelectedLook: (look: IssuePageLooks) => void;
-    projects: Project[];
-    project: Project;
-}
 
 const MainLayout: React.FC<MainLayoutProps> = ({
     children,

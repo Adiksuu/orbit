@@ -2,14 +2,7 @@ import Badge from '@/Components/Atoms/Badge/Badge';
 import Icon from '@/Components/Atoms/Icon/Icon';
 import StatusDot from '@/Components/Atoms/StatusDot/StatusDot';
 import IssueElement from '@/Components/Molecules/IssueElement/IssueElement';
-import { Issue, IssuePriority } from '@/types/Issues';
-
-interface BoardColumnProps {
-    issues: Issue[];
-    priority: IssuePriority;
-    activeIssue: Issue | null;
-    setActiveIssue: (issue: Issue | null) => void;
-}
+import { BoardColumnProps } from '@/types/Components';
 
 function BoardColumn({
     issues,

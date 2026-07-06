@@ -1,9 +1,4 @@
-import { ReactNode } from 'react';
-
-interface IssuePropertyProps {
-    label: string;
-    children: ReactNode;
-}
+import { IssuePropertyProps } from '@/types/Components';
 
 const IssueProperty = ({ label, children }: IssuePropertyProps) => {
     return (

@@ -1,12 +1,6 @@
 import Icon from '@/Components/Atoms/Icon/Icon';
+import { DropdownTriggerProps } from '@/types/Components';
 import { cn } from '@/utils/cn';
-import React from 'react';
-
-interface DropdownTriggerProps {
-    label: React.ReactNode;
-    onClick: () => void;
-    disabled?: boolean;
-}
 
 export default function DropdownTrigger({
     label,

@@ -1,0 +1,212 @@
+import { badgeVariants } from '@/Components/Atoms/Badge/Badge';
+import { dropdownItemVariants } from '@/Components/Atoms/DropdownItem/DropdownItem';
+import { iconButtonVariants } from '@/Components/Atoms/IconButton/IconButton';
+import { statusDotVariants } from '@/Components/Atoms/StatusDot/StatusDot';
+import { statCardVariants } from '@/Components/Molecules/StatCard/StatCard';
+import {
+    Issue,
+    IssuePageLooks,
+    IssuePriority,
+    ProductivityTrendProps,
+} from '@/types/Issues';
+import { Project } from '@/types/Projects';
+import type { VariantProps } from 'class-variance-authority';
+import { icons } from 'lucide-react';
+import React, {
+    ButtonHTMLAttributes,
+    ChangeEvent,
+    HTMLAttributes,
+    ReactNode,
+} from 'react';
+
+export interface AvatarProps {
+    src?: string;
+    alt?: string;
+    size?: 'sm' | 'md' | 'lg';
+    initials?: string;
+}
+export interface BadgeProps
+    extends
+        Omit<HTMLAttributes<HTMLSpanElement>, 'color'>,
+        VariantProps<typeof badgeVariants> {
+    children: ReactNode;
+}
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+    children: ReactNode;
+    className?: string;
+    isBox?: boolean;
+    isDisabled?: boolean;
+}
+export interface DropdownItemProps
+    extends
+        ButtonHTMLAttributes<HTMLButtonElement>,
+        VariantProps<typeof dropdownItemVariants> {
+    label: ReactNode;
+}
+export interface ChildrenItemProps {
+    children: ReactNode;
+}
+export interface DropdownTriggerProps {
+    label: ReactNode;
+    onClick: () => void;
+    disabled?: boolean;
+}
+export interface IconProps {
+    name: keyof typeof icons;
+    size?: number;
+    color?: string;
+    className?: string;
+}
+export interface IconButtonProps
+    extends
+        ButtonHTMLAttributes<HTMLButtonElement>,
+        VariantProps<typeof iconButtonVariants> {
+    iconName: keyof typeof icons;
+    iconColor?: string;
+    iconSize?: number;
+    isLink?: boolean;
+    link?: string;
+}
+export interface InputProps {
+    value: string;
+    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    placeholder?: string;
+    isDisabled?: boolean;
+    type?: string;
+}
+export interface ModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    children: ReactNode;
+    size?: 'sm' | 'md' | 'lg';
+}
+export interface ProgressRingProps {
+    radius?: number;
+    stroke?: number;
+    progress: number;
+    colorClass?: string;
+    bgColorClass?: string;
+}
+export interface StatusDotProps extends VariantProps<typeof statusDotVariants> {
+    status: 'open' | 'closed' | 'low' | 'medium' | 'high';
+    className?: string;
+}
+export interface TextAreaProps {
+    value: string;
+    onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
+    placeholder?: string;
+    isDisabled?: boolean;
+}
+export interface BoardColumnProps {
+    issues: Issue[];
+    priority: IssuePriority;
+    activeIssue: Issue | null;
+    setActiveIssue: (issue: Issue | null) => void;
+}
+export interface FilterButtonProps {
+    icon?: keyof typeof icons;
+    label: string;
+    value?: string;
+    onClick?: () => void;
+}
+export interface IssueElementProps {
+    issue: Issue;
+    activeIssue: Issue | null;
+    setActiveIssue: (issue: Issue | null) => void;
+    type?: 'list' | 'board';
+}
+export interface IssuePropertyProps {
+    label: string;
+    children: ReactNode;
+}
+export interface ModalFooterProps {
+    onCancel: () => void;
+    submitLabel?: string;
+    cancelLabel?: string;
+    isSubmitting?: boolean;
+    children?: ReactNode;
+}
+export interface ModalHeaderProps {
+    title: string;
+    onClose: () => void;
+    icon?: ReactNode;
+}
+export interface NavItemProps {
+    icon: keyof typeof icons;
+    label: string;
+    isActive?: boolean;
+    badge?: string | number;
+    onClick?: () => void;
+    iconClassName?: string;
+    link?: string;
+}
+export interface PaginationProps {
+    links: Array<{ url: string | null; label: string; active: boolean }>;
+    from: number;
+    to: number;
+    total: number;
+}
+export interface ProjectCardProps {
+    project: Project;
+    issues: Issue[];
+}
+export interface SidebarFieldProps {
+    label: string;
+    children: React.ReactNode;
+}
+export interface StatCardProps extends VariantProps<typeof statCardVariants> {
+    title: string;
+    value: string | number;
+    icon: keyof typeof icons;
+    description?: string;
+    trend?: {
+        value: number;
+        label: string;
+        isPositive: boolean;
+    };
+    progress?: number;
+    color?: 'accent' | 'success' | 'warning' | 'error' | 'info';
+    className?: string;
+}
+export interface UserBadgeProps {
+    name: string;
+    email?: string;
+    avatarSrc?: string;
+    size?: 'sm' | 'md' | 'lg';
+    showDetails?: boolean;
+}
+export interface DashboardVisualsProps {
+    issues: Issue[];
+    productivity_trend: ProductivityTrendProps[];
+}
+export interface IssueBoardProps {
+    issues: Issue[];
+    activeIssue: Issue | null;
+    setActiveIssue: (issue: Issue | null) => void;
+}
+export interface IssueDetailProps {
+    activeIssue: Issue;
+    setActiveIssue: (issue: Issue | null) => void;
+}
+export interface IssueTableProps {
+    issues: Issue[];
+    activeIssue: Issue | null;
+    setActiveIssue: (issue: Issue | null) => void;
+}
+export interface NewIssueModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    project: Project;
+}
+export interface TopNavProps {
+    selectedLook: IssuePageLooks;
+    setSelectedLook: (look: IssuePageLooks) => void;
+    project: Project;
+}
+export interface MainLayoutProps {
+    children: ReactNode;
+    selectedLook: IssuePageLooks;
+    setSelectedLook: (look: IssuePageLooks) => void;
+    projects: Project[];
+    project: Project;
+}

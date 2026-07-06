@@ -1,13 +1,7 @@
+import { PaginationProps } from '@/types/Components';
 import { Link } from '@inertiajs/react';
 import { cva } from 'class-variance-authority';
 import Icon from '../../Atoms/Icon/Icon';
-
-interface PaginationProps {
-    links: Array<{ url: string | null; label: string; active: boolean }>;
-    from: number;
-    to: number;
-    total: number;
-}
 
 const paginationVariants = cva(
     'flex items-center justify-center min-w-[32px] h-[32px] px-2 rounded-md text-sm text-white no-underline transition-all duration-100 ease-in-out border border-solid border-transparent cursor-pointer',

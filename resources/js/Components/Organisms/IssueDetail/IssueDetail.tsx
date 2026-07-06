@@ -1,4 +1,5 @@
-import { Issue, IssueLabel } from '@/types/Issues';
+import { IssueDetailProps } from '@/types/Components';
+import { IssueLabel, IssuePriority, Status } from '@/types/Issues';
 import { formatDate, formatTimeAgo } from '@/utils/time';
 import { useForm } from '@inertiajs/react';
 import { cva } from 'class-variance-authority';
@@ -15,14 +16,6 @@ import StatusDot from '../../Atoms/StatusDot/StatusDot';
 import TextArea from '../../Atoms/TextArea/TextArea';
 import IssueProperty from '../../Molecules/IssueProperty/IssueProperty';
 import UserBadge from '../../Molecules/UserBadge/UserBadge';
-
-interface IssueDetailProps {
-    activeIssue: Issue;
-    setActiveIssue: (issue: Issue | null) => void;
-}
-
-type Status = 'open' | 'closed';
-type Priority = 'high' | 'medium' | 'low';
 
 const priorityVariants = cva('', {
     variants: {
@@ -43,7 +36,7 @@ const AVAILABLE_LABELS: IssueLabel[] = [
     'chore',
 ];
 const STATUSES: Status[] = ['open', 'closed'];
-const PRIORITIES: Priority[] = ['high', 'medium', 'low'];
+const PRIORITIES: IssuePriority[] = ['high', 'medium', 'low'];
 
 const IssueDetail = ({ activeIssue, setActiveIssue }: IssueDetailProps) => {
     const [isEditing, setIsEditing] = useState(false);
@@ -273,7 +266,7 @@ const IssueDetail = ({ activeIssue, setActiveIssue }: IssueDetailProps) => {
                                 <span
                                     className={priorityVariants({
                                         priority:
-                                            activeIssue.priority as Priority,
+                                            activeIssue.priority as IssuePriority,
                                     })}
                                 >
                                     {activeIssue.priority}

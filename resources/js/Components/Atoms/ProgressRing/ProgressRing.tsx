@@ -1,12 +1,5 @@
+import { ProgressRingProps } from '@/types/Components';
 import React from 'react';
-
-interface ProgressRingProps {
-    radius?: number;
-    stroke?: number;
-    progress: number; // 0 to 100
-    colorClass?: string;
-    bgColorClass?: string;
-}
 
 const ProgressRing: React.FC<ProgressRingProps> = ({
     radius = 18,
