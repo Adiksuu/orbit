@@ -1,3 +1,4 @@
+import IconButton from '@/Components/Atoms/IconButton/IconButton';
 import { Project, ProjectColors } from '@/types/Projects';
 import React from 'react';
 import Icon from '../../Atoms/Icon/Icon';
@@ -52,17 +53,31 @@ const Sidebar: React.FC<{ projects: Project[]; project?: Project }> = ({
                         link={'/'}
                         isActive={!project}
                     />
+                    <NavItem
+                        icon="LayoutList"
+                        label="Projects"
+                        badge={'Ctrl P'}
+                        link={'/projects'}
+                    />
                     <NavItem icon="Inbox" label="Inbox" badge={3} />
                     <NavItem icon="Settings" label="Settings" />
                 </nav>
                 <div className={'mt-6 flex min-h-0 flex-1 flex-col'}>
-                    <h3
+                    <div
                         className={
-                            'mb-2 shrink-0 px-3 text-sm font-semibold text-zinc-400'
+                            'mb-2 flex shrink-0 items-center justify-between px-3'
                         }
                     >
-                        PROJECTS
-                    </h3>
+                        <h3 className={'text-sm font-semibold text-zinc-400'}>
+                            PROJECTS
+                        </h3>
+                        <IconButton
+                            iconName={'PackagePlus'}
+                            className={'text-zinc-400 hover:text-white'}
+                            isLink={true}
+                            link={'/projects/new'}
+                        ></IconButton>
+                    </div>
                     <nav className={'flex min-h-0 flex-col overflow-y-auto'}>
                         {projects.map((projectElement: Project) => {
                             return (

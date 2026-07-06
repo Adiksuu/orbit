@@ -1,3 +1,4 @@
+import { Link } from '@inertiajs/react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { icons } from 'lucide-react';
 import React from 'react';
@@ -14,19 +15,27 @@ interface IconButtonProps
     iconName: keyof typeof icons;
     iconColor?: string;
     iconSize?: number;
+    isLink?: boolean;
+    link?: string;
 }
 
 const IconButton = ({
     iconName,
-    iconColor = '#999',
+    iconColor,
     iconSize = 14,
     className,
+    isLink = false,
+    link = '',
     ...props
 }: IconButtonProps) => {
-    return (
+    return !isLink ? (
         <button className={iconButtonVariants({ className })} {...props}>
             <Icon name={iconName} size={iconSize} color={iconColor} />
         </button>
+    ) : (
+        <Link className={iconButtonVariants({ className })} href={link}>
+            <Icon name={iconName} size={iconSize} color={iconColor} />
+        </Link>
     );
 };
 

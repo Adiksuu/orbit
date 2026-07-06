@@ -16,12 +16,12 @@ interface NavItemProps {
 }
 
 const classVariants = cva(
-    'flex items-center justify-between py-2 px-3 rounded-md cursor-pointer transition-all duration-100 ease-in-out text-zinc-400 mb-[2px] hover:bg-[var(--bg-light-color)] hover:text-white',
+    'flex items-center justify-between py-2 px-3 rounded-md cursor-pointer transition-all duration-100 ease-in-out mb-[2px] hover:bg-[var(--bg-light-color)] hover:text-white',
     {
         variants: {
             isActive: {
                 true: 'bg-[var(--accent-color-opacity)] text-white',
-                false: '',
+                false: 'text-zinc-400',
             },
         },
         defaultVariants: {
