@@ -1,0 +1,78 @@
+import { ProjectColors } from '@/types/Projects';
+
+export const getColorTheme = (colorName: ProjectColors) => {
+    const colors = {
+        red: {
+            badgeBg: 'bg-red-500/10 text-red-400',
+            border: 'hover:border-red-500/30 shadow-red-500/5',
+            gradient: 'from-red-500/5 to-transparent',
+            accent: 'bg-red-500',
+            textGroupHover: 'group-hover:text-red-500',
+        },
+        orange: {
+            badgeBg: 'bg-orange-500/10 text-orange-400',
+            border: 'hover:border-orange-500/30 shadow-orange-500/5',
+            gradient: 'from-orange-500/5 to-transparent',
+            accent: 'bg-orange-500',
+            textGroupHover: 'group-hover:text-orange-500',
+        },
+        yellow: {
+            badgeBg: 'bg-yellow-500/10 text-yellow-400',
+            border: 'hover:border-yellow-500/30 shadow-yellow-500/5',
+            gradient: 'from-yellow-500/5 to-transparent',
+            accent: 'bg-yellow-500',
+            textGroupHover: 'group-hover:text-yellow-500',
+        },
+        green: {
+            badgeBg: 'bg-green-500/10 text-green-400',
+            border: 'hover:border-green-500/30 shadow-green-500/5',
+            gradient: 'from-green-500/5 to-transparent',
+            accent: 'bg-green-500',
+            textGroupHover: 'group-hover:text-green-500',
+        },
+        lime: {
+            badgeBg: 'bg-lime-500/10 text-lime-400',
+            border: 'hover:border-lime-500/30 shadow-lime-500/5',
+            gradient: 'from-lime-500/5 to-transparent',
+            accent: 'bg-lime-500',
+            textGroupHover: 'group-hover:text-lime-500',
+        },
+        blue: {
+            badgeBg: 'bg-blue-500/10 text-blue-400',
+            border: 'hover:border-blue-500/30 shadow-blue-500/5',
+            gradient: 'from-blue-500/5 to-transparent',
+            accent: 'bg-blue-500',
+            textGroupHover: 'group-hover:text-blue-500',
+        },
+        sky: {
+            badgeBg: 'bg-sky-500/10 text-sky-400',
+            border: 'hover:border-sky-500/30 shadow-sky-500/5',
+            gradient: 'from-sky-500/5 to-transparent',
+            accent: 'bg-sky-500',
+            textGroupHover: 'group-hover:text-sky-500',
+        },
+        violet: {
+            badgeBg: 'bg-violet-500/10 text-violet-400',
+            border: 'hover:border-violet-500/30 shadow-violet-500/5',
+            gradient: 'from-violet-500/5 to-transparent',
+            accent: 'bg-violet-500',
+            textGroupHover: 'group-hover:text-violet-500',
+        },
+        purple: {
+            badgeBg: 'bg-purple-500/10 text-purple-400',
+            border: 'hover:border-purple-500/30 shadow-purple-500/5',
+            gradient: 'from-purple-500/5 to-transparent',
+            accent: 'bg-purple-500',
+            textGroupHover: 'group-hover:text-purple-500',
+        },
+        pink: {
+            badgeBg: 'bg-pink-500/10 text-pink-400',
+            border: 'hover:border-pink-500/30 shadow-pink-500/5',
+            gradient: 'from-pink-500/5 to-transparent',
+            accent: 'bg-pink-500',
+            textGroupHover: 'group-hover:text-pink-500',
+        },
+    };
+
+    return colors[colorName] || colors.purple;
+};

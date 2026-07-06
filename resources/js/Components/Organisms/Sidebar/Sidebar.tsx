@@ -1,5 +1,7 @@
-import IconButton from '@/Components/Atoms/IconButton/IconButton';
-import { Project, ProjectColors } from '@/types/Projects';
+import Badge from '@/Components/Atoms/Badge/Badge';
+import { Project } from '@/types/Projects';
+import { getColorTheme } from '@/utils/colors';
+import { Link } from '@inertiajs/react';
 import React from 'react';
 import Icon from '../../Atoms/Icon/Icon';
 import NavItem from '../../Molecules/NavItem/NavItem';
@@ -9,23 +11,6 @@ const Sidebar: React.FC<{ projects: Project[]; project?: Project }> = ({
     projects,
     project,
 }) => {
-    const getTailwindColorFromName = (colorName: ProjectColors) => {
-        const colors = {
-            red: 'bg-red-500',
-            orange: 'bg-orange-500',
-            yellow: 'bg-yellow-500',
-            green: 'bg-green-500',
-            lime: 'bg-lime-500',
-            blue: 'bg-blue-500',
-            sky: 'bg-sky-500',
-            violet: 'bg-violet-500',
-            purple: 'bg-purple-500',
-            pink: 'bg-pink-500',
-        };
-
-        return colors[colorName];
-    };
-
     return (
         <aside
             className={
@@ -63,30 +48,41 @@ const Sidebar: React.FC<{ projects: Project[]; project?: Project }> = ({
                     <NavItem icon="Settings" label="Settings" />
                 </nav>
                 <div className={'mt-6 flex min-h-0 flex-1 flex-col'}>
-                    <div
+                    <Link
+                        href={'/projects/new'}
                         className={
-                            'mb-2 flex shrink-0 items-center justify-between px-3'
+                            'group mb-2 flex shrink-0 items-center justify-between px-3'
                         }
                     >
-                        <h3 className={'text-sm font-semibold text-zinc-400'}>
-                            PROJECTS
-                        </h3>
-                        <IconButton
-                            iconName={'PackagePlus'}
-                            className={'text-zinc-400 hover:text-white'}
-                            isLink={true}
-                            link={'/projects/new'}
-                        ></IconButton>
-                    </div>
+                        <div className="flex items-center gap-1.5">
+                            <h3
+                                className={
+                                    'text-sm font-semibold text-zinc-400 group-hover:text-white'
+                                }
+                            >
+                                PROJECTS
+                            </h3>
+                            <Icon
+                                name={'PackagePlus'}
+                                className={
+                                    'text-zinc-400 group-hover:text-white'
+                                }
+                            />
+                        </div>
+                        <Badge className={'rounded-full'}>
+                            {projects.length}
+                        </Badge>
+                    </Link>
                     <nav className={'flex min-h-0 flex-col overflow-y-auto'}>
                         {projects.map((projectElement: Project) => {
                             return (
                                 <NavItem
                                     key={projectElement.id}
                                     icon="FolderGit2"
-                                    iconClassName={`${getTailwindColorFromName(
-                                        projectElement.color,
-                                    )} h-5 w-5 rounded-md p-1`}
+                                    iconClassName={`${
+                                        getColorTheme(projectElement.color)
+                                            .accent
+                                    } h-5 w-5 rounded-md p-1`}
                                     label={
                                         projectElement.name.substring(0, 16) +
                                         '...'
