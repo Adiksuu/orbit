@@ -28,6 +28,7 @@ class Issue extends Model
     {
         return [
             'labels' => AsEnumArrayObject::class . ':' . IssueLabel::class,
+            'tags' => 'array',
         ];
     }
 
@@ -37,5 +38,8 @@ class Issue extends Model
 
     public function assignee(): BelongsTo {
         return $this->belongsTo(User::class, 'assignee_id');
+    }
+    public function project(): BelongsTo {
+        return $this->belongsTo(Project::class);
     }
 }

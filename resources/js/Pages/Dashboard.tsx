@@ -1,12 +1,13 @@
-import Icon from '@/Components/Atoms/Icon/Icon';
 import ProjectCard from '@/Components/Molecules/ProjectCard/ProjectCard';
 import StatCard from '@/Components/Molecules/StatCard/StatCard';
 import DashboardVisuals from '@/Components/Organisms/DashboardVisuals/DashboardVisuals';
 import IssueDetail from '@/Components/Organisms/IssueDetail/IssueDetail';
 import IssueTable from '@/Components/Organisms/IssueTable/IssueTable';
+import PageHeader from '@/Components/Organisms/PageHeader/PageHeader';
 import Sidebar from '@/Components/Organisms/Sidebar/Sidebar';
 import { Issue, ProductivityTrendProps } from '@/types/Issues';
 import { Project } from '@/types/Projects';
+import { Link } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 
 export default function Dashboard({
@@ -28,16 +29,6 @@ export default function Dashboard({
             }
         }
     }, [issues]);
-
-    const formattedDate = useMemo(() => {
-        const options: Intl.DateTimeFormatOptions = {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-        };
-        return new Date().toLocaleDateString('en-US', options);
-    }, []);
 
     const stats = useMemo(() => {
         const total = issues.length;
@@ -63,44 +54,7 @@ export default function Dashboard({
         >
             <Sidebar projects={projects} />
             <div className={'flex min-w-0 flex-1 flex-col'}>
-                <header
-                    className={
-                        'flex h-16 shrink-0 items-center justify-between border-b border-solid border-[var(--bg-light-color)] bg-[var(--bg-color)] px-6'
-                    }
-                >
-                    <div className="flex flex-col">
-                        <h1 className="text-sm font-semibold text-white">
-                            Dashboard
-                        </h1>
-                        <span className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
-                            {formattedDate}
-                        </span>
-                    </div>
-
-                    <div className="flex items-center gap-4">
-                        <button
-                            className={
-                                'flex cursor-pointer items-center justify-center rounded-md border-none bg-transparent p-1.5 hover:bg-[var(--bg-light-color)]'
-                            }
-                        >
-                            <Icon name="Search" size={18} color="#999" />
-                        </button>
-                        <button
-                            className={
-                                'flex cursor-pointer items-center justify-center rounded-md border-none bg-transparent p-1.5 hover:bg-[var(--bg-light-color)]'
-                            }
-                        >
-                            <Icon name="Bell" size={18} color="#999" />
-                        </button>
-                        <button
-                            className={
-                                'flex cursor-pointer items-center justify-center rounded-md border-none bg-transparent p-1.5 hover:bg-[var(--bg-light-color)]'
-                            }
-                        >
-                            <Icon name="Settings" size={18} color="#999" />
-                        </button>
-                    </div>
-                </header>
+                <PageHeader title={'Dashboard'} />
                 <div className="relative flex flex-1 overflow-hidden">
                     <main className="flex flex-1 flex-col gap-6 overflow-y-auto p-6">
                         <section className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -175,10 +129,12 @@ export default function Dashboard({
                                         />
                                     ))}
                                     {projects.length > 3 && (
-                                        <div className="cursor-pointer rounded-lg border border-dashed border-[var(--bg-light-color)] py-2.5 text-center text-xs font-semibold text-zinc-500 transition-colors hover:text-white">
+                                        <Link
+                                            href={'/projects'}
+                                            className="cursor-pointer rounded-lg border border-dashed border-[var(--bg-light-color)] py-2.5 text-center text-xs font-semibold text-zinc-500 transition-colors hover:text-white"
+                                        >
                                             View all {projects.length} projects
-                                            in sidebar
-                                        </div>
+                                        </Link>
                                     )}
                                 </div>
                             </div>

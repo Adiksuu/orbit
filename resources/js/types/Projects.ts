@@ -1,3 +1,5 @@
+import { Issue } from '@/types/Issues';
+
 export interface Project {
     id: number;
     name: string;
@@ -6,6 +8,7 @@ export interface Project {
     color: ProjectColors;
     created_at: number;
     updated_at: number;
+    issues?: Issue[];
 }
 
 export type ProjectColors =

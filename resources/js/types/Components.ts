@@ -238,6 +238,10 @@ export interface TopNavProps {
     setSelectedLook: (look: IssuePageLooks) => void;
     project: Project;
 }
+export interface PageHeaderProps {
+    title: string;
+    children?: ReactNode;
+}
 // OTHER COMPONENTS
 export interface MainLayoutProps {
     children: ReactNode;

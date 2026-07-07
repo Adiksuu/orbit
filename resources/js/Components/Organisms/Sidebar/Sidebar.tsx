@@ -1,17 +1,15 @@
 import Badge from '@/Components/Atoms/Badge/Badge';
 import { Project } from '@/types/Projects';
 import { getColorTheme } from '@/utils/colors';
-import { Link } from '@inertiajs/react';
-import React, { useState } from 'react';
+import { Link, usePage } from '@inertiajs/react';
+import { FC, useState } from 'react';
 import Icon from '../../Atoms/Icon/Icon';
 import NavItem from '../../Molecules/NavItem/NavItem';
 import UserBadge from '../../Molecules/UserBadge/UserBadge';
 
-const Sidebar: React.FC<{ projects: Project[]; project?: Project }> = ({
-    projects,
-    project,
-}) => {
+const Sidebar: FC<{ projects: Project[] }> = ({ projects }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const { url } = usePage();
 
     return (
         <>
@@ -54,16 +52,26 @@ const Sidebar: React.FC<{ projects: Project[]; project?: Project }> = ({
                             label="Dashboard"
                             badge="Ctrl D"
                             link={'/'}
-                            isActive={!project}
+                            isActive={url === '/'}
                         />
                         <NavItem
                             icon="LayoutList"
                             label="Projects"
                             badge={'Ctrl P'}
                             link={'/projects'}
+                            isActive={url === '/projects'}
                         />
-                        <NavItem icon="Inbox" label="Inbox" badge={3} />
-                        <NavItem icon="Settings" label="Settings" />
+                        <NavItem
+                            icon="Inbox"
+                            label="Inbox"
+                            badge={3}
+                            isActive={url === '/inbox'}
+                        />
+                        <NavItem
+                            icon="Settings"
+                            label="Settings"
+                            isActive={url === '/settings'}
+                        />
                     </nav>
 
                     <div className={'mt-6 flex min-h-0 flex-1 flex-col'}>
@@ -96,6 +104,7 @@ const Sidebar: React.FC<{ projects: Project[]; project?: Project }> = ({
                             className={'flex min-h-0 flex-col overflow-y-auto'}
                         >
                             {projects.map((projectElement: Project) => {
+                                const projectLink = `/projects/${projectElement.id}`;
                                 return (
                                     <NavItem
                                         key={projectElement.id}
@@ -111,9 +120,7 @@ const Sidebar: React.FC<{ projects: Project[]; project?: Project }> = ({
                                             ) + '...'
                                         }
                                         link={`/projects/${projectElement.id}`}
-                                        isActive={
-                                            projectElement.id === project?.id
-                                        }
+                                        isActive={url.startsWith(projectLink)}
                                     />
                                 );
                             })}

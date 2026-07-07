@@ -36,9 +36,6 @@ const TopNav: React.FC<TopNavProps> = ({
                         <h1 className={'m-0 text-sm font-semibold text-white'}>
                             {project.name}
                         </h1>
-                        <div className={'hidden md:block'}>
-                            <Icon name="Star" size={16} color="#999" />
-                        </div>
                     </div>
                     <nav className={'flex gap-6'}>
                         <button

@@ -25,3 +25,12 @@ export function formatTimeAgo(dateString: number | undefined): string {
         return `${seconds}s`;
     }
 }
+export const formattedDate = () => {
+    const options: Intl.DateTimeFormatOptions = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    };
+    return new Date().toLocaleDateString('en-US', options);
+};

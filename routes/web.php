@@ -9,3 +9,4 @@ Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 Route::patch('/issues/{issue}', [IssueController::class, 'update'])->name('issues.update');
 Route::post('/issues', [IssueController::class, 'store'])->name('issues.store');
 Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
+Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
