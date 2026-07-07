@@ -97,6 +97,11 @@ export interface TextAreaProps {
     placeholder?: string;
     isDisabled?: boolean;
 }
+export interface VisualCardProps {
+    children: ReactNode;
+    className?: string;
+}
+// MOLECULES COMPONENTS
 export interface BoardColumnProps {
     issues: Issue[];
     priority: IssuePriority;
@@ -175,6 +180,36 @@ export interface UserBadgeProps {
     size?: 'sm' | 'md' | 'lg';
     showDetails?: boolean;
 }
+export interface VisualCardHeaderProps {
+    title: string;
+    description: string;
+}
+export interface CompletionRatioCardProps {
+    open: number;
+    closed: number;
+    total: number;
+    closedPct: number;
+}
+export interface PriorityItem {
+    label: string;
+    status: IssuePriority;
+    count: number;
+    pct: number;
+}
+
+export interface PriorityBreakdownCardProps {
+    high: number;
+    medium: number;
+    low: number;
+    highPct: number;
+    mediumPct: number;
+    lowPct: number;
+}
+export interface ProductivityTrendCardProps {
+    trendData: ProductivityTrendProps[];
+    className?: string;
+}
+// ORGANISMS COMPONENTS
 export interface DashboardVisualsProps {
     issues: Issue[];
     productivity_trend: ProductivityTrendProps[];
@@ -203,6 +238,7 @@ export interface TopNavProps {
     setSelectedLook: (look: IssuePageLooks) => void;
     project: Project;
 }
+// OTHER COMPONENTS
 export interface MainLayoutProps {
     children: ReactNode;
     selectedLook: IssuePageLooks;
