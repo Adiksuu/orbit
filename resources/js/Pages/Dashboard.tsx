@@ -101,7 +101,7 @@ export default function Dashboard({
                         </button>
                     </div>
                 </header>
-                <div className="flex flex-1 overflow-hidden">
+                <div className="relative flex flex-1 overflow-hidden">
                     <main className="flex flex-1 flex-col gap-6 overflow-y-auto p-6">
                         <section className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
                             <StatCard
@@ -186,7 +186,7 @@ export default function Dashboard({
                     </main>
 
                     {activeIssue && (
-                        <div className="z-20 w-[420px] overflow-y-auto border-l border-solid border-l-[var(--bg-light-color)] bg-[var(--bg-color)]">
+                        <div className="absolute right-0 top-0 z-20 h-full w-full overflow-y-auto border-l border-solid border-l-[var(--bg-light-color)] bg-[var(--bg-color)] shadow-2xl sm:w-[420px]">
                             <IssueDetail
                                 activeIssue={activeIssue}
                                 setActiveIssue={setActiveIssue}

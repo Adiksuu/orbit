@@ -31,6 +31,7 @@ export default function Show({
     useEffect(() => {
         localStorage.setItem('selectedLook', selectedLook);
     }, [selectedLook]);
+
     useEffect(() => {
         if (activeIssue) {
             const updated = issues.data.find((i) => i.id === activeIssue.id);
@@ -51,7 +52,7 @@ export default function Show({
                 <FilterBar />
                 <div
                     className={
-                        'flex flex-1 overflow-hidden border-t border-solid border-[var(--bg-light-color)]'
+                        'relative flex flex-1 overflow-hidden border-t border-solid border-[var(--bg-light-color)]'
                     }
                 >
                     <div
@@ -100,7 +101,7 @@ export default function Show({
                     {activeIssue && (
                         <div
                             className={
-                                'w-[420px] overflow-y-auto bg-[var(--bg-color)]'
+                                'absolute right-0 top-0 z-10 h-full w-full overflow-y-auto border-l border-solid border-[var(--bg-light-color)] bg-[var(--bg-color)] shadow-2xl sm:w-[420px]'
                             }
                         >
                             <IssueDetail
