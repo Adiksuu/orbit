@@ -2,10 +2,10 @@ import StatusDot from '@/Components/Atoms/StatusDot/StatusDot';
 import { ProjectCardProps } from '@/types/Components';
 import { getColorTheme } from '@/utils/colors';
 import { Link } from '@inertiajs/react';
-import React from 'react';
+import { FC } from 'react';
 import Icon from '../../Atoms/Icon/Icon';
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ project, issues }) => {
+const ProjectCard: FC<ProjectCardProps> = ({ project, issues }) => {
     const projectIssues = issues.filter((i) => i.project_id === project.id);
     const totalIssuesCount = projectIssues.length;
     const closedIssuesCount = projectIssues.filter(
@@ -22,7 +22,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, issues }) => {
     return (
         <Link
             href={`/projects/${project.id}`}
-            className={`group flex flex-col justify-between rounded-lg border border-solid border-[var(--bg-light-color)] bg-[var(--bg-dark-color)] bg-gradient-to-br p-5 ${theme.gradient} transition-all duration-300 ${theme.border} hover:-translate-y-0.5 hover:shadow-lg`}
+            className={`group flex flex-col justify-between rounded-lg border border-solid border-[var(--bg-light-color)] bg-[var(--bg-dark-color)] bg-gradient-to-br p-4 sm:p-5 ${theme.gradient} transition-all duration-300 ${theme.border} hover:-translate-y-0.5 hover:shadow-lg`}
         >
             <div>
                 <div className="flex items-center justify-between gap-3">
@@ -36,7 +36,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, issues }) => {
                             {project.name}
                         </h4>
                     </div>
-                    <div className="rounded bg-zinc-800/40 p-1 opacity-0 transition-opacity group-hover:opacity-100">
+                    <div className="shrink-0 rounded bg-zinc-800/40 p-1 opacity-100 transition-opacity lg:opacity-0 lg:group-hover:opacity-100">
                         <Icon
                             name="ArrowRight"
                             size={12}
@@ -53,7 +53,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, issues }) => {
                     <span className="font-semibold text-zinc-300">
                         {completionRate}% Completed
                     </span>
-                    <span className="text-zinc-500">
+                    <span className="ml-2 whitespace-nowrap text-zinc-500">
                         {closedIssuesCount}/{totalIssuesCount} Issues
                     </span>
                 </div>
@@ -63,18 +63,21 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, issues }) => {
                         style={{ width: `${completionRate}%` }}
                     />
                 </div>
-                <div className="mt-4 flex items-center justify-between border-t border-solid border-zinc-800/60 pt-3.5 text-[11px]">
-                    <div className="flex items-center gap-3">
-                        <span className="flex items-center gap-1.5 text-zinc-400">
+                <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-solid border-zinc-800/60 pt-3.5 text-[11px]">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                        <span className="flex items-center gap-1.5 whitespace-nowrap text-zinc-400">
                             <StatusDot status={'open'} />
                             {openIssuesCount} Open
                         </span>
-                        <span className="flex items-center gap-1.5 text-zinc-400">
+                        <span className="flex items-center gap-1.5 whitespace-nowrap text-zinc-400">
                             <StatusDot status={'closed'} />
                             {closedIssuesCount} Closed
                         </span>
                     </div>
-                    <span className="rounded bg-zinc-800/40 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-zinc-500">
+                    <span
+                        className="inline-block max-w-[70px] truncate rounded bg-zinc-800/40 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-zinc-500 sm:max-w-[100px]"
+                        title={project.slug}
+                    >
                         {project.slug}
                     </span>
                 </div>
