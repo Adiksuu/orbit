@@ -1,3 +1,4 @@
+import EmptyStateCard from '@/Components/Molecules/EmptyStateCard/EmptyStateCard';
 import ProjectCard from '@/Components/Molecules/ProjectCard/ProjectCard';
 import StatCard from '@/Components/Molecules/StatCard/StatCard';
 import DashboardVisuals from '@/Components/Organisms/DashboardVisuals/DashboardVisuals';
@@ -46,15 +47,13 @@ export default function Dashboard({
         };
     }, [issues]);
 
+    const hasProjects = projects && projects.length > 0;
+
     return (
-        <div
-            className={
-                'flex h-screen w-screen overflow-hidden bg-[var(--bg-color)]'
-            }
-        >
+        <div className="flex h-screen w-screen overflow-hidden bg-[var(--bg-color)]">
             <Sidebar projects={projects} />
-            <div className={'flex min-w-0 flex-1 flex-col'}>
-                <PageHeader title={'Dashboard'} />
+            <div className="flex min-w-0 flex-1 flex-col">
+                <PageHeader title="Dashboard" />
                 <div className="relative flex flex-1 overflow-hidden">
                     <main className="flex flex-1 flex-col gap-6 overflow-y-auto p-6">
                         <section className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -87,10 +86,12 @@ export default function Dashboard({
                                 color="success"
                             />
                         </section>
+
                         <DashboardVisuals
                             issues={issues}
                             productivity_trend={productivity_trend}
                         />
+
                         <section className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                             <div className="flex min-h-[400px] flex-col lg:col-span-2">
                                 <div className="mb-2 flex items-center justify-between">
@@ -102,7 +103,7 @@ export default function Dashboard({
                                         latest issues
                                     </span>
                                 </div>
-                                <div className={'flex-1 overflow-y-auto'}>
+                                <div className="flex-1 overflow-y-auto">
                                     <IssueTable
                                         issues={issues.slice(0, 20)}
                                         activeIssue={activeIssue}
@@ -110,6 +111,7 @@ export default function Dashboard({
                                     />
                                 </div>
                             </div>
+
                             <div className="flex flex-col gap-4">
                                 <div className="mb-2 flex items-center justify-between">
                                     <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
@@ -121,20 +123,37 @@ export default function Dashboard({
                                     </span>
                                 </div>
                                 <div className="grid grid-cols-1 gap-4">
-                                    {projects.slice(0, 3).map((project) => (
-                                        <ProjectCard
-                                            key={project.id}
-                                            project={project}
-                                            issues={issues}
+                                    {hasProjects ? (
+                                        <>
+                                            {projects
+                                                .slice(0, 3)
+                                                .map((project) => (
+                                                    <ProjectCard
+                                                        key={project.id}
+                                                        project={project}
+                                                        issues={issues}
+                                                    />
+                                                ))}
+                                            {projects.length > 3 && (
+                                                <Link
+                                                    href="/projects"
+                                                    className="cursor-pointer rounded-lg border border-dashed border-[var(--bg-light-color)] py-2.5 text-center text-xs font-semibold text-zinc-500 transition-colors hover:text-white"
+                                                >
+                                                    View all {projects.length}{' '}
+                                                    projects
+                                                </Link>
+                                            )}
+                                        </>
+                                    ) : (
+                                        <EmptyStateCard
+                                            title={'Create your first project'}
+                                            description={
+                                                'Get started by setting up a workspace for your tasks and team activity.'
+                                            }
+                                            iconName={'FolderPlus'}
+                                            actionHref={'/projects/new'}
+                                            actionLabel={'Create Project'}
                                         />
-                                    ))}
-                                    {projects.length > 3 && (
-                                        <Link
-                                            href={'/projects'}
-                                            className="cursor-pointer rounded-lg border border-dashed border-[var(--bg-light-color)] py-2.5 text-center text-xs font-semibold text-zinc-500 transition-colors hover:text-white"
-                                        >
-                                            View all {projects.length} projects
-                                        </Link>
                                     )}
                                 </div>
                             </div>

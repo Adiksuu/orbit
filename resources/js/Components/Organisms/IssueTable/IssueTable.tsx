@@ -1,5 +1,5 @@
+import EmptyStateCard from '@/Components/Molecules/EmptyStateCard/EmptyStateCard';
 import { IssueElement } from '@/Components/Molecules/IssueElement/IssueElement';
-import IssueTableEmptyState from '@/Components/Molecules/IssueTableEmptyState/IssueTableEmptyState';
 import { IssueTableProps } from '@/types/Components';
 
 const IssueTable = ({
@@ -46,8 +46,14 @@ const IssueTable = ({
                         ))
                     ) : (
                         <tr>
-                            <td colSpan={6} className="p-0">
-                                <IssueTableEmptyState />
+                            <td colSpan={6} className="p-0 pt-3">
+                                <EmptyStateCard
+                                    title={'All done!'}
+                                    description={
+                                        'No issues found in this view. Everything is completed or no tasks have been assigned yet.'
+                                    }
+                                    iconName={'FolderPlus'}
+                                />
                             </td>
                         </tr>
                     )}

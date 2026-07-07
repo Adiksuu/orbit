@@ -209,6 +209,13 @@ export interface ProductivityTrendCardProps {
     trendData: ProductivityTrendProps[];
     className?: string;
 }
+export interface DashboardEmptyStateProps {
+    iconName: keyof typeof icons;
+    title: string;
+    description: string;
+    actionLabel?: string;
+    actionHref?: string;
+}
 // ORGANISMS COMPONENTS
 export interface DashboardVisualsProps {
     issues: Issue[];

@@ -1,8 +1,8 @@
 import Icon from '@/Components/Atoms/Icon/Icon';
+import EmptyStateCard from '@/Components/Molecules/EmptyStateCard/EmptyStateCard';
 import ProjectCard, {
     ProjectNewCard,
 } from '@/Components/Molecules/ProjectCard/ProjectCard';
-import ProjectEmptyState from '@/Components/Molecules/ProjectEmptyState/ProjectEmptyState';
 import PageHeader from '@/Components/Organisms/PageHeader/PageHeader';
 import Sidebar from '@/Components/Organisms/Sidebar/Sidebar';
 import { Project } from '@/types/Projects';
@@ -35,7 +35,15 @@ function Index({ projects }: { projects: Project[] }) {
                             <ProjectNewCard />
                         </section>
                     ) : (
-                        <ProjectEmptyState />
+                        <EmptyStateCard
+                            title={'Your dashboard is empty'}
+                            description={
+                                'It looks like you don’t have any projects yet. Create your first project to start organizing your work.'
+                            }
+                            iconName={'FolderPlus'}
+                            actionHref={'/projects/new'}
+                            actionLabel={'Create Project'}
+                        />
                     )}
                 </main>
             </div>
