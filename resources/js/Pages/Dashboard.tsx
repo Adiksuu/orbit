@@ -7,6 +7,7 @@ import PageHeader from '@/Components/Organisms/PageHeader/PageHeader';
 import Sidebar from '@/Components/Organisms/Sidebar/Sidebar';
 import { Issue, ProductivityTrendProps } from '@/types/Issues';
 import { Project } from '@/types/Projects';
+import { Link } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 
 export default function Dashboard({
@@ -128,10 +129,12 @@ export default function Dashboard({
                                         />
                                     ))}
                                     {projects.length > 3 && (
-                                        <div className="cursor-pointer rounded-lg border border-dashed border-[var(--bg-light-color)] py-2.5 text-center text-xs font-semibold text-zinc-500 transition-colors hover:text-white">
+                                        <Link
+                                            href={'/projects'}
+                                            className="cursor-pointer rounded-lg border border-dashed border-[var(--bg-light-color)] py-2.5 text-center text-xs font-semibold text-zinc-500 transition-colors hover:text-white"
+                                        >
                                             View all {projects.length} projects
-                                            in sidebar
-                                        </div>
+                                        </Link>
                                     )}
                                 </div>
                             </div>
