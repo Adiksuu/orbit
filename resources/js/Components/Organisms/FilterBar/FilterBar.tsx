@@ -5,7 +5,7 @@ const FilterBar: React.FC = () => {
     return (
         <div
             className={
-                'flex items-center justify-start gap-2 border-b border-solid border-[var(--bg-light-color)] px-4 py-3'
+                'flex items-center justify-start gap-2 overflow-x-auto border-b border-solid border-[var(--bg-light-color)] px-4 py-3'
             }
         >
             <FilterButton icon="ListFilter" label="Filter" />
