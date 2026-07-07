@@ -16,7 +16,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
                 'flex h-screen w-screen overflow-hidden bg-[var(--bg-color)]'
             }
         >
-            <Sidebar projects={projects} project={project} />
+            <Sidebar projects={projects} />
             <div className={'flex min-w-0 flex-1 flex-col'}>
                 <TopNav
                     selectedLook={selectedLook}
