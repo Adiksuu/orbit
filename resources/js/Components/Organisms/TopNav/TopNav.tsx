@@ -36,7 +36,9 @@ const TopNav: React.FC<TopNavProps> = ({
                         <h1 className={'m-0 text-sm font-semibold text-white'}>
                             {project.name}
                         </h1>
-                        <Icon name="Star" size={16} color="#999" />
+                        <div className={'hidden md:block'}>
+                            <Icon name="Star" size={16} color="#999" />
+                        </div>
                     </div>
                     <nav className={'flex gap-6'}>
                         <button
@@ -86,31 +88,33 @@ const TopNav: React.FC<TopNavProps> = ({
                                 New issue <Icon name={'Plus'} />
                             </Button>
                         </div>
-                        <button
-                            className={
-                                'flex cursor-pointer items-center justify-center rounded-md border-none bg-transparent p-1.5 hover:bg-[var(--bg-light-color)]'
-                            }
-                        >
-                            <Icon name="Search" size={18} color="#999" />
-                        </button>
-                        <button
-                            className={
-                                'flex cursor-pointer items-center justify-center rounded-md border-none bg-transparent p-1.5 hover:bg-[var(--bg-light-color)]'
-                            }
-                        >
-                            <Icon name="Bell" size={18} color="#999" />
-                        </button>
-                        <button
-                            className={
-                                'flex cursor-pointer items-center justify-center rounded-md border-none bg-transparent p-1.5 hover:bg-[var(--bg-light-color)]'
-                            }
-                        >
-                            <Icon
-                                name="CircleQuestionMark"
-                                size={18}
-                                color="#999"
-                            />
-                        </button>
+                        <div className={'hidden items-center gap-4 md:flex'}>
+                            <button
+                                className={
+                                    'flex cursor-pointer items-center justify-center rounded-md border-none bg-transparent p-1.5 hover:bg-[var(--bg-light-color)]'
+                                }
+                            >
+                                <Icon name="Search" size={18} color="#999" />
+                            </button>
+                            <button
+                                className={
+                                    'flex cursor-pointer items-center justify-center rounded-md border-none bg-transparent p-1.5 hover:bg-[var(--bg-light-color)]'
+                                }
+                            >
+                                <Icon name="Bell" size={18} color="#999" />
+                            </button>
+                            <button
+                                className={
+                                    'flex cursor-pointer items-center justify-center rounded-md border-none bg-transparent p-1.5 hover:bg-[var(--bg-light-color)]'
+                                }
+                            >
+                                <Icon
+                                    name="CircleQuestionMark"
+                                    size={18}
+                                    color="#999"
+                                />
+                            </button>
+                        </div>
                     </div>
                 </div>
             </header>
