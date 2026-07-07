@@ -29,4 +29,12 @@ class ProjectController extends Controller
             'issues' => $issues
         ]);
     }
+    public function index(Project $project): Response
+    {
+        $projects = Project::with('issues')->get();
+
+        return Inertia::render('Projects/Index', [
+            'projects' => $projects,
+        ]);
+    }
 }

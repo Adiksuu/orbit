@@ -7,6 +7,7 @@ import IssueTable from '@/Components/Organisms/IssueTable/IssueTable';
 import Sidebar from '@/Components/Organisms/Sidebar/Sidebar';
 import { Issue, ProductivityTrendProps } from '@/types/Issues';
 import { Project } from '@/types/Projects';
+import { formattedDate } from '@/utils/time';
 import { useEffect, useMemo, useState } from 'react';
 
 export default function Dashboard({
@@ -28,16 +29,6 @@ export default function Dashboard({
             }
         }
     }, [issues]);
-
-    const formattedDate = useMemo(() => {
-        const options: Intl.DateTimeFormatOptions = {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-        };
-        return new Date().toLocaleDateString('en-US', options);
-    }, []);
 
     const stats = useMemo(() => {
         const total = issues.length;
@@ -73,7 +64,7 @@ export default function Dashboard({
                             Dashboard
                         </h1>
                         <span className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
-                            {formattedDate}
+                            {formattedDate()}
                         </span>
                     </div>
 
