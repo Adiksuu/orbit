@@ -1,4 +1,5 @@
 import { IssueElement } from '@/Components/Molecules/IssueElement/IssueElement';
+import IssueTableEmptyState from '@/Components/Molecules/IssueTableEmptyState/IssueTableEmptyState';
 import { IssueTableProps } from '@/types/Components';
 
 const IssueTable = ({
@@ -6,6 +7,8 @@ const IssueTable = ({
     activeIssue,
     setActiveIssue,
 }: IssueTableProps) => {
+    const hasIssues = issues && issues.length > 0;
+
     return (
         <div className="flex-1 overflow-y-auto bg-[var(--bg-color)]">
             <table className="w-full border-collapse text-left text-sm">
@@ -32,14 +35,22 @@ const IssueTable = ({
                     </tr>
                 </thead>
                 <tbody>
-                    {issues.map((issue) => (
-                        <IssueElement
-                            key={issue.id}
-                            issue={issue}
-                            activeIssue={activeIssue}
-                            setActiveIssue={setActiveIssue}
-                        />
-                    ))}
+                    {hasIssues ? (
+                        issues.map((issue) => (
+                            <IssueElement
+                                key={issue.id}
+                                issue={issue}
+                                activeIssue={activeIssue}
+                                setActiveIssue={setActiveIssue}
+                            />
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan={6} className="p-0">
+                                <IssueTableEmptyState />
+                            </td>
+                        </tr>
+                    )}
                 </tbody>
             </table>
         </div>
