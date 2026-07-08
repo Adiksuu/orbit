@@ -31,6 +31,7 @@ test('it can store a new project', function () {
         'name' => 'New Project',
         'slug' => 'new-project',
         'description' => 'Test description',
+        'color' => 'blue',
     ];
 
     $project = $this->repository->store($data);
