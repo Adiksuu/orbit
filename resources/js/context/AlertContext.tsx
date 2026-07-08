@@ -1,6 +1,10 @@
 import { AlertContainer } from '@/Components/Organisms/AlertContainer/AlertContainer';
-import { PageProps } from '@/types';
-import { AlertItem, AlertType } from '@/types/Alert';
+import {
+    AlertContextType,
+    AlertItem,
+    AlertType,
+    InertiaPageProps,
+} from '@/types/Alert';
 import { usePage } from '@inertiajs/react';
 import {
     createContext,
@@ -10,20 +14,6 @@ import {
     useEffect,
     useState,
 } from 'react';
-interface InertiaPageProps extends PageProps {
-    flash: {
-        success?: string;
-        error?: string;
-        warning?: string;
-        information?: string;
-    };
-}
-
-interface AlertContextType {
-    addAlert: (message: string, type?: AlertType, duration?: number) => void;
-    removeAlert: (id: string) => void;
-    alerts: AlertItem[];
-}
 
 const AlertContext = createContext<AlertContextType | undefined>(undefined);
 
@@ -60,6 +50,9 @@ export const AlertProvider = ({ children }: { children: ReactNode }) => {
         }
         if (flash?.warning) {
             addAlert(flash.warning, 'warning');
+        }
+        if (flash?.information) {
+            addAlert(flash.information, 'information');
         }
     }, [flash, addAlert]);
 

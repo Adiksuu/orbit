@@ -26,7 +26,7 @@ class IssueController extends Controller
 
         $this->issueService->updateIssue($issue, $data);
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Issue has been updated successfully!');
     }
     public function store(Request $request): RedirectResponse
     {

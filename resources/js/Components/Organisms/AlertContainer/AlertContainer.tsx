@@ -1,11 +1,6 @@
 import { Alert } from '@/Components/Molecules/Alert/Alert';
-import { AlertItem } from '@/types/Alert';
+import { AlertContainerProps } from '@/types/Components';
 import { AnimatePresence } from 'framer-motion';
-
-interface AlertContainerProps {
-    alerts: AlertItem[];
-    removeAlert: (id: string) => void;
-}
 
 export const AlertContainer = ({
     alerts,
