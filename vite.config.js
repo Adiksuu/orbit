@@ -1,3 +1,5 @@
+/// <reference types="vitest" />
+
 import react from '@vitejs/plugin-react';
 import laravel from 'laravel-vite-plugin';
 import { defineConfig } from 'vite';
@@ -10,4 +12,10 @@ export default defineConfig({
         }),
         react(),
     ],
+    test: {
+        globals: true,
+        environment: 'jsdom',
+        setupFiles: './resources/js/tests/setup.ts',
+        css: true,
+    },
 });

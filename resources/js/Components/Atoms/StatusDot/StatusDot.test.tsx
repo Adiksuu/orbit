@@ -1,0 +1,43 @@
+import { render } from '@testing-library/react';
+import { describe, expect, test } from 'vitest';
+import StatusDot from './StatusDot';
+
+describe('StatusDot Component', () => {
+    test('renders a span element', () => {
+        const { container } = render(<StatusDot status="open" />);
+
+        expect(container.querySelector('span')).toBeInTheDocument();
+    });
+
+    test('applies the small size classes by default', () => {
+        const { container } = render(<StatusDot status="open" />);
+
+        expect(container.firstChild).toHaveClass('w-2', 'h-2');
+    });
+
+    test('applies the medium size classes when size is md', () => {
+        const { container } = render(<StatusDot status="open" size="md" />);
+
+        expect(container.firstChild).toHaveClass('w-2.5', 'h-2.5');
+    });
+
+    test.each([
+        ['open', 'bg-[var(--info-color)]'],
+        ['closed', 'bg-[var(--pending-color)]'],
+        ['low', 'bg-[var(--success-color)]'],
+        ['medium', 'bg-[var(--warning-color)]'],
+        ['high', 'bg-[var(--error-color)]'],
+    ] as const)('applies the correct color for status "%s"', (status, cls) => {
+        const { container } = render(<StatusDot status={status} />);
+
+        expect(container.firstChild).toHaveClass(cls);
+    });
+
+    test('merges an additional className', () => {
+        const { container } = render(
+            <StatusDot status="open" className="ml-2" />,
+        );
+
+        expect(container.firstChild).toHaveClass('ml-2', 'inline-block');
+    });
+});
