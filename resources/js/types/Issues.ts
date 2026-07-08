@@ -1,10 +1,5 @@
 export type IssueLabel =
-    | 'bug'
-    | 'feature'
-    | 'performance'
-    | 'design'
-    | 'ux'
-    | 'chore';
+    'bug' | 'feature' | 'performance' | 'design' | 'ux' | 'chore';
 
 export interface Issue {
     id: string;
