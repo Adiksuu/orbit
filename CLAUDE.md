@@ -22,6 +22,13 @@ Orbit is an issue/project tracker built as a Laravel + Inertia.js + React (TypeS
 - Run a single PHP test: `php artisan test --filter=IssueServiceTest` (tests use Pest).
 - `php artisan migrate` / `php artisan migrate:fresh --seed`.
 
+### Docker (Makefile wraps docker compose)
+The full stack also runs in Docker — two services, `app` (Laravel on :8000) and `vite` (assets on :5173). The `Makefile` is the entry point; targets run inside the containers:
+- `make setup` — build images (no cache) and start detached. `make up`/`make dev` — foreground; `make down` — detached; `make clean` — stop and drop volumes.
+- `make test` (PHP/Pest), `make test-js` (Vitest once), `make lint`, `make type-check` — run the suites inside the containers.
+- `make shell` (app shell), `make tinker`, `make migrate`, `make fresh` (migrate:fresh --seed), `make logs`.
+- Uses `.env.docker` for container config.
+
 ## Architecture
 
 ### Backend: layered Controller → Service → Repository
