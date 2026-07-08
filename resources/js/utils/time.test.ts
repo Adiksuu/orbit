@@ -1,0 +1,57 @@
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { formatDate, formatTimeAgo, formattedDate } from './time';
+
+const NOW = new Date('2026-07-08T12:00:00.000Z').getTime();
+const SECOND = 1000;
+const MINUTE = 60 * SECOND;
+const HOUR = 60 * MINUTE;
+const DAY = 24 * HOUR;
+
+beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(NOW);
+});
+
+afterEach(() => {
+    vi.useRealTimers();
+});
+
+describe('formatTimeAgo', () => {
+    test('returns days when the difference is a day or more', () => {
+        expect(formatTimeAgo(NOW - 2 * DAY)).toBe('2d');
+    });
+
+    test('returns hours when the difference is under a day', () => {
+        expect(formatTimeAgo(NOW - 3 * HOUR)).toBe('3h');
+    });
+
+    test('returns minutes when the difference is under an hour', () => {
+        expect(formatTimeAgo(NOW - 5 * MINUTE)).toBe('5m');
+    });
+
+    test('returns seconds when the difference is under a minute', () => {
+        expect(formatTimeAgo(NOW - 10 * SECOND)).toBe('10s');
+    });
+
+    test('falls back to "now" when no timestamp is given', () => {
+        expect(formatTimeAgo(undefined)).toBe('0s');
+    });
+});
+
+describe('formatDate', () => {
+    test('formats a timestamp as "DD.MM HH:mm"', () => {
+        expect(formatDate(NOW)).toMatch(/^\d{2}\.\d{2} \d{2}:\d{2}$/);
+    });
+
+    test('falls back to the current time when no timestamp is given', () => {
+        expect(formatDate(undefined)).toMatch(/^\d{2}\.\d{2} \d{2}:\d{2}$/);
+    });
+});
+
+describe('formattedDate', () => {
+    test('returns a long, human-readable date for today', () => {
+        const result = formattedDate();
+        expect(result).toContain('2026');
+        expect(result).toContain('July');
+    });
+});

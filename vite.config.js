@@ -12,6 +12,15 @@ export default defineConfig({
         }),
         react(),
     ],
+    server: {
+        host: '0.0.0.0',
+        port: 5173,
+        strictPort: true,
+        // HMR websocket connects back through the host-mapped port.
+        hmr: {
+            host: 'localhost',
+        },
+    },
     test: {
         globals: true,
         environment: 'jsdom',
