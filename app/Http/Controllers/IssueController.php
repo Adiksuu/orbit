@@ -42,6 +42,6 @@ class IssueController extends Controller
 
         $this->issueService->createIssue($data);
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Issue has been created successfully.');
     }
 }

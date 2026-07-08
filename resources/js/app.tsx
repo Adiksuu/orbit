@@ -20,9 +20,13 @@ createInertiaApp({
         const root = createRoot(el);
 
         root.render(
-            <AlertProvider>
-                <App {...props} />
-            </AlertProvider>,
+            <App {...props}>
+                {({ Component, props: pageProps, key }) => (
+                    <AlertProvider>
+                        <Component {...pageProps} key={key} />
+                    </AlertProvider>
+                )}
+            </App>,
         );
     },
     progress: {
