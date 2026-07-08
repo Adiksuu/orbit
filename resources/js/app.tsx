@@ -2,6 +2,7 @@ import '../css/app.scss';
 import '../css/global.css';
 import './bootstrap';
 
+import { AlertProvider } from '@/context/AlertContext';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
@@ -18,7 +19,11 @@ createInertiaApp({
     setup({ el, App, props }) {
         const root = createRoot(el);
 
-        root.render(<App {...props} />);
+        root.render(
+            <AlertProvider>
+                <App {...props} />
+            </AlertProvider>,
+        );
     },
     progress: {
         color: '#4B5563',
