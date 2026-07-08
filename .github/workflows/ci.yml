@@ -74,6 +74,12 @@ jobs:
           path: vendor
           key: composer-${{ hashFiles('composer.lock') }}
       - run: composer install --no-interaction --prefer-dist
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
       - run: cp .env.example .env
       - run: php artisan key:generate
       - run: composer test
