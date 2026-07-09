@@ -3,6 +3,7 @@ import { dropdownItemVariants } from '@/Components/Atoms/DropdownItem/DropdownIt
 import { iconButtonVariants } from '@/Components/Atoms/IconButton/IconButton';
 import { statusDotVariants } from '@/Components/Atoms/StatusDot/StatusDot';
 import { statCardVariants } from '@/Components/Molecules/StatCard/StatCard';
+import { AlertItem } from '@/types/Alert';
 import {
     Issue,
     IssuePageLooks,
@@ -248,6 +249,10 @@ export interface TopNavProps {
 export interface PageHeaderProps {
     title: string;
     children?: ReactNode;
+}
+export interface AlertContainerProps {
+    alerts: AlertItem[];
+    removeAlert: (id: string) => void;
 }
 // OTHER COMPONENTS
 export interface MainLayoutProps {
