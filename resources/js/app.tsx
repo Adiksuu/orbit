@@ -2,7 +2,9 @@ import '../css/app.scss';
 import '../css/global.css';
 import './bootstrap';
 
+import { ModalContainer } from '@/Components/Organisms/Modal';
 import { AlertProvider } from '@/context/AlertContext';
+import { ModalProvider } from '@/context/ModalContext';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
@@ -22,9 +24,12 @@ createInertiaApp({
         root.render(
             <App {...props}>
                 {({ Component, props: pageProps, key }) => (
-                    <AlertProvider>
-                        <Component {...pageProps} key={key} />
-                    </AlertProvider>
+                    <ModalProvider>
+                        <AlertProvider>
+                            <ModalContainer />
+                            <Component {...pageProps} key={key} />
+                        </AlertProvider>
+                    </ModalProvider>
                 )}
             </App>,
         );

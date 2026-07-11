@@ -1,13 +1,33 @@
 import { TextAreaProps } from '@/types/Components';
+import { cva } from 'class-variance-authority';
 
-function TextArea({ value, onChange, placeholder, isDisabled }: TextAreaProps) {
+export const textareaVariants = cva(
+    'w-full resize-y rounded-md border border-[var(--bg-light-color)] bg-[var(--bg-color)] px-3 py-[6px] text-sm text-white transition-none placeholder:text-slate-800 focus:border-[var(--accent-color)] disabled:cursor-not-allowed disabled:bg-[var(--bg-pending-color)]',
+    {
+        variants: {
+            variant: {
+                default: 'placeholder:text-slate-800',
+                modal: 'placeholder:text-slate-400',
+            },
+        },
+        defaultVariants: {
+            variant: 'default',
+        },
+    },
+);
+
+function TextArea({
+    value,
+    onChange,
+    placeholder,
+    isDisabled,
+    variant,
+}: TextAreaProps) {
     return (
         <textarea
             value={value}
             onChange={onChange}
-            className={
-                'w-full resize-y rounded-md border border-[var(--bg-light-color)] bg-[var(--bg-color)] px-3 py-[6px] text-sm text-white transition-none placeholder:text-slate-800 focus:border-[var(--accent-color)] disabled:cursor-not-allowed disabled:bg-[var(--bg-pending-color)]'
-            }
+            className={textareaVariants({ variant })}
             placeholder={placeholder}
             disabled={isDisabled}
         ></textarea>

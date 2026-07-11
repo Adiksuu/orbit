@@ -1,7 +1,9 @@
 import { badgeVariants } from '@/Components/Atoms/Badge/Badge';
 import { dropdownItemVariants } from '@/Components/Atoms/DropdownItem/DropdownItem';
 import { iconButtonVariants } from '@/Components/Atoms/IconButton/IconButton';
+import { inputVariants } from '@/Components/Atoms/Input/Input';
 import { statusDotVariants } from '@/Components/Atoms/StatusDot/StatusDot';
+import { textareaVariants } from '@/Components/Atoms/TextArea/TextArea';
 import { statCardVariants } from '@/Components/Molecules/StatCard/StatCard';
 import { AlertItem } from '@/types/Alert';
 import {
@@ -68,12 +70,13 @@ export interface IconButtonProps
     isLink?: boolean;
     link?: string;
 }
-export interface InputProps {
+export interface InputProps extends VariantProps<typeof inputVariants> {
     value: string;
     onChange: (e: ChangeEvent<HTMLInputElement>) => void;
     placeholder?: string;
     isDisabled?: boolean;
     type?: string;
+    className?: string;
 }
 export interface ModalProps {
     isOpen: boolean;
@@ -92,7 +95,7 @@ export interface StatusDotProps extends VariantProps<typeof statusDotVariants> {
     status: 'open' | 'closed' | 'low' | 'medium' | 'high';
     className?: string;
 }
-export interface TextAreaProps {
+export interface TextAreaProps extends VariantProps<typeof textareaVariants> {
     value: string;
     onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
     placeholder?: string;
@@ -240,6 +243,10 @@ export interface NewIssueModalProps {
     isOpen: boolean;
     onClose: () => void;
     project: Project;
+}
+export interface NewProjectModalProps {
+    isOpen: boolean;
+    onClose: () => void;
 }
 export interface TopNavProps {
     selectedLook: IssuePageLooks;
