@@ -1,3 +1,4 @@
+import IconButton from '@/Components/Atoms/IconButton/IconButton';
 import EmptyStateCard from '@/Components/Molecules/EmptyStateCard/EmptyStateCard';
 import { IssueElement } from '@/Components/Molecules/IssueElement/IssueElement';
 import { IssueTableProps } from '@/types/Components';
@@ -15,22 +16,40 @@ const IssueTable = ({
                 <thead>
                     <tr className="border-b border-solid border-[var(--bg-light-color)]">
                         <th className="w-[100px] px-4 py-3 font-medium text-zinc-400">
-                            ID
+                            <div className="flex items-center gap-1.5">
+                                <span>ID</span>
+                                <IconButton iconName="ArrowUp" iconSize={16} />
+                            </div>
                         </th>
                         <th className="px-4 py-3 font-medium text-zinc-400">
-                            Title
+                            <div className="flex items-center gap-1.5">
+                                <span>Title</span>
+                                <IconButton iconName="ArrowUp" iconSize={16} />
+                            </div>
                         </th>
                         <th className="px-4 py-3 font-medium text-zinc-400">
-                            Status
+                            <div className="flex items-center gap-1.5">
+                                <span>Status</span>
+                                <IconButton iconName="ArrowUp" iconSize={16} />
+                            </div>
                         </th>
                         <th className="px-4 py-3 font-medium text-zinc-400">
-                            Assignee
+                            <div className="flex items-center gap-1.5">
+                                <span>Assignee</span>
+                                <IconButton iconName="ArrowUp" iconSize={16} />
+                            </div>
                         </th>
                         <th className="px-4 py-3 font-medium text-zinc-400">
-                            Priority
+                            <div className="flex items-center gap-1.5">
+                                <span>Priority</span>
+                                <IconButton iconName="ArrowUp" iconSize={16} />
+                            </div>
                         </th>
                         <th className="px-4 py-3 font-medium text-zinc-400">
-                            Labels
+                            <div className="flex items-center gap-1.5">
+                                <span>Labels</span>
+                                <IconButton iconName="ArrowUp" iconSize={16} />
+                            </div>
                         </th>
                     </tr>
                 </thead>
