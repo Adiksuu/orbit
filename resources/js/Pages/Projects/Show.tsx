@@ -4,18 +4,33 @@ import IssueBoard from '@/Components/Organisms/IssueBoard/IssueBoard';
 import IssueDetail from '@/Components/Organisms/IssueDetail/IssueDetail';
 import IssueTable from '@/Components/Organisms/IssueTable/IssueTable';
 import MainLayout from '@/Layouts/MainLayout';
-import { Issue, IssuePageLooks, PaginatedResponse } from '@/types/Issues';
+import {
+    Issue,
+    IssuePageLooks,
+    PaginatedResponse,
+    Sorting,
+    SortingColumn,
+} from '@/types/Issues';
 import { Project } from '@/types/Projects';
 import { useEffect, useState } from 'react';
+
+interface QueryParams {
+    sort?: SortingColumn;
+    direction?: Sorting;
+    page?: string;
+    [key: string]: any;
+}
 
 export default function Show({
     project,
     issues,
     projects,
+    queryParams = {},
 }: {
     project: Project;
     issues: PaginatedResponse<Issue>;
     projects: Project[];
+    queryParams?: QueryParams;
 }) {
     const [activeIssue, setActiveIssue] = useState<Issue | null>(null);
     const [selectedLook, setSelectedLook] = useState<IssuePageLooks>(() => {
@@ -67,6 +82,7 @@ export default function Show({
                                         issues={issues.data}
                                         activeIssue={activeIssue}
                                         setActiveIssue={setActiveIssue}
+                                        queryParams={queryParams}
                                     />
                                 </div>
                                 <Pagination
