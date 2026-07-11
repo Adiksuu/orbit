@@ -33,6 +33,7 @@ export interface BadgeProps
         Omit<HTMLAttributes<HTMLSpanElement>, 'color'>,
         VariantProps<typeof badgeVariants> {
     children: ReactNode;
+    tooltip?: boolean;
 }
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     children: ReactNode;

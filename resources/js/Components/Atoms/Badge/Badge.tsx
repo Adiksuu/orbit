@@ -3,8 +3,11 @@ import { cn } from '@/utils/cn';
 import { cva } from 'class-variance-authority';
 import React from 'react';
 
+const tooltipStyles =
+    'absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 bg-[var(--bg-color)] text-[var(--text-gray-color)] px-2 py-1 rounded-md text-[10px] font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out pointer-events-none z-50 border border-zinc-800 shadow-lg translate-y-1 group-hover:translate-y-0';
+
 export const badgeVariants = cva(
-    'inline-flex items-center py-[2px] px-2 rounded-md text-[10px] font-medium whitespace-nowrap transition-colors border border-solid border-transparent',
+    'relative inline-flex items-center py-[2px] px-2 rounded-lg text-[10px] font-medium whitespace-nowrap transition-colors border border-solid border-transparent',
     {
         variants: {
             variant: {
@@ -37,14 +40,20 @@ const Badge: React.FC<BadgeProps> = ({
     variant,
     color,
     className,
+    tooltip,
     ...props
 }) => {
     return (
         <span
-            className={cn(badgeVariants({ variant, color }), className)}
+            className={cn(
+                'group',
+                badgeVariants({ variant, color }),
+                className,
+            )}
             {...props}
         >
             {children}
+            {tooltip && <span className={tooltipStyles}>{children}</span>}
         </span>
     );
 };

@@ -127,6 +127,7 @@ export const IssueElement = ({
                                 color={label}
                                 variant="default"
                                 className="px-1.5 py-0.5 text-[9px]"
+                                tooltip={true}
                             >
                                 {label}
                             </Badge>
@@ -194,7 +195,7 @@ export const IssueElement = ({
             <td className="px-4 py-2">
                 <div className="flex gap-1.5">
                     {issue.labels?.map((label, idx) => (
-                        <Badge key={idx} color={label}>
+                        <Badge key={idx} color={label} tooltip={true}>
                             {label}
                         </Badge>
                     ))}
