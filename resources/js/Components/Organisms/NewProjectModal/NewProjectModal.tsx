@@ -7,30 +7,34 @@ import SidebarField from '@/Components/Molecules/SidebarField/SidebarField';
 import { NewProjectModalProps } from '@/types/Components';
 import { AVAILABLE_COLORS } from '@/types/Projects';
 import { getColorTheme } from '@/utils/colors';
-import React, { useEffect, useState } from 'react';
+import { useForm } from '@inertiajs/react';
+import React, { useEffect } from 'react';
 
 const NewProjectModal: React.FC<NewProjectModalProps> = ({
     isOpen,
     onClose,
 }) => {
-    const [projectName, setProjectName] = useState('');
-    const [projectKey, setProjectKey] = useState('');
-    const [description, setDescription] = useState('');
-    const [selectedColor, setSelectedColor] = useState(AVAILABLE_COLORS[0]);
+    const { data, setData, post, processing, reset, errors } = useForm({
+        name: '',
+        slug: '',
+        description: '',
+        color: AVAILABLE_COLORS[0],
+    });
 
     useEffect(() => {
         if (isOpen) {
-            setProjectName('');
-            setProjectKey('');
-            setDescription('');
-            setSelectedColor(AVAILABLE_COLORS[0]);
+            reset();
         }
-    }, [isOpen]);
+    }, [isOpen, reset]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Form submission will be handled by parent via onClose callback
-        // User will integrate with Inertia form submission
+        post(route('projects.store'), {
+            onSuccess: () => {
+                onClose();
+                reset();
+            },
+        });
     };
 
     return (
@@ -63,13 +67,18 @@ const NewProjectModal: React.FC<NewProjectModalProps> = ({
                                     </span>
                                 </label>
                                 <Input
-                                    value={projectName}
+                                    value={data.name}
                                     onChange={(e) =>
-                                        setProjectName(e.target.value)
+                                        setData('name', e.target.value)
                                     }
                                     placeholder="Enter project name"
                                     variant="modal"
                                 />
+                                {errors.name && (
+                                    <span className="text-xs text-[var(--error-color)]">
+                                        {errors.name}
+                                    </span>
+                                )}
                             </div>
                             <div className="flex flex-col gap-1.5">
                                 <label className="text-sm font-medium text-[var(--text-color)]">
@@ -80,13 +89,18 @@ const NewProjectModal: React.FC<NewProjectModalProps> = ({
                                     </span>
                                 </label>
                                 <Input
-                                    value={projectKey}
+                                    value={data.slug}
                                     onChange={(e) =>
-                                        setProjectKey(e.target.value)
+                                        setData('slug', e.target.value)
                                     }
                                     placeholder="e.g. MOB"
                                     variant="modal"
                                 />
+                                {errors.slug && (
+                                    <span className="text-xs text-[var(--error-color)]">
+                                        {errors.slug}
+                                    </span>
+                                )}
                                 <p className="text-xs text-[var(--text-gray-color)]">
                                     Unique key to identify your project
                                 </p>
@@ -96,13 +110,18 @@ const NewProjectModal: React.FC<NewProjectModalProps> = ({
                                     Description
                                 </label>
                                 <TextArea
-                                    value={description}
+                                    value={data.description}
                                     onChange={(e) =>
-                                        setDescription(e.target.value)
+                                        setData('description', e.target.value)
                                     }
                                     placeholder="Describe your project..."
                                     variant="modal"
                                 />
+                                {errors.description && (
+                                    <span className="text-xs text-[var(--error-color)]">
+                                        {errors.description}
+                                    </span>
+                                )}
                             </div>
                         </div>
                         <div className="flex flex-col gap-4">
@@ -113,10 +132,10 @@ const NewProjectModal: React.FC<NewProjectModalProps> = ({
                                             key={color}
                                             type="button"
                                             onClick={() =>
-                                                setSelectedColor(color)
+                                                setData('color', color)
                                             }
                                             className={`h-6 w-6 rounded-full border border-solid transition-transform ${getColorTheme(color).accent} ${
-                                                selectedColor === color
+                                                data.color === color
                                                     ? 'scale-110 border-white'
                                                     : 'border-transparent hover:scale-110'
                                             }`}
@@ -127,10 +146,10 @@ const NewProjectModal: React.FC<NewProjectModalProps> = ({
                             <ProjectCard
                                 project={{
                                     id: 0,
-                                    name: projectName,
-                                    slug: projectKey,
-                                    description: description,
-                                    color: selectedColor,
+                                    name: data.name,
+                                    slug: data.slug,
+                                    description: data.description,
+                                    color: data.color,
                                     created_at: 0,
                                     updated_at: 0,
                                 }}
@@ -143,14 +162,16 @@ const NewProjectModal: React.FC<NewProjectModalProps> = ({
                             type="button"
                             className="cursor-pointer rounded-lg border-none bg-transparent px-4 py-2 text-sm font-medium text-zinc-400 transition-colors duration-150 hover:text-white"
                             onClick={onClose}
+                            disabled={processing}
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
-                            className="flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-[var(--accent-color)] px-6 py-2 text-sm font-medium text-[var(--text-color)] transition-all duration-150 ease-in-out hover:bg-[var(--accent-light-color)]"
+                            disabled={processing}
+                            className="flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-[var(--accent-color)] px-6 py-2 text-sm font-medium text-[var(--text-color)] transition-all duration-150 ease-in-out hover:bg-[var(--accent-light-color)] disabled:opacity-50"
                         >
-                            Create project
+                            {processing ? 'Creating...' : 'Create project'}
                         </button>
                     </div>
                 </form>

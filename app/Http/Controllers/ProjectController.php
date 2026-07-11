@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use App\Services\IssueService;
 use App\Services\ProjectService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -36,5 +38,18 @@ class ProjectController extends Controller
         return Inertia::render('Projects/Index', [
             'projects' => $projects,
         ]);
+    }
+    public function store(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'name' => 'required|string|max:30',
+            'description' => 'nullable|string',
+            'slug' => 'required|string|max:30',
+            'color' => 'required|string'
+        ]);
+
+        $this->projectService->createProject($data);
+
+        return redirect()->back()->with('success', 'Project has been created successfully.');
     }
 }

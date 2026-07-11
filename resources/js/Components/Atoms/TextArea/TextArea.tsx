@@ -2,11 +2,11 @@ import { TextAreaProps } from '@/types/Components';
 import { cva } from 'class-variance-authority';
 
 export const textareaVariants = cva(
-    'w-full resize-y rounded-md border border-[var(--bg-light-color)] bg-[var(--bg-color)] px-3 py-[6px] text-sm text-white transition-none placeholder:text-slate-800 focus:border-[var(--accent-color)] disabled:cursor-not-allowed disabled:bg-[var(--bg-pending-color)]',
+    'w-full resize-y rounded-md border border-[var(--bg-light-color)] bg-[var(--bg-color)] px-3 py-[6px] text-sm text-white transition-none focus:border-[var(--accent-color)] disabled:cursor-not-allowed disabled:bg-[var(--bg-pending-color)]',
     {
         variants: {
             variant: {
-                default: 'placeholder:text-slate-800',
+                default: 'placeholder:text-slate-600',
                 modal: 'placeholder:text-slate-400',
             },
         },

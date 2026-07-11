@@ -7,7 +7,7 @@ export const inputVariants = cva(
     {
         variants: {
             variant: {
-                default: 'placeholder:text-slate-800',
+                default: 'placeholder:text-slate-600',
                 modal: 'placeholder:text-slate-400',
             },
         },

@@ -44,7 +44,7 @@ const ProjectCard: FC<ProjectCardProps> = ({ project, issues }) => {
                         />
                     </div>
                 </div>
-                <p className="mt-2.5 line-clamp-2 min-h-[2rem] text-xs leading-relaxed text-zinc-400">
+                <p className="mt-2.5 line-clamp-2 min-h-[2rem] break-all text-xs leading-relaxed text-zinc-400">
                     {project.description || 'No description provided.'}
                 </p>
             </div>
