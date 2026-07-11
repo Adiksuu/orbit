@@ -13,7 +13,7 @@ export const badgeVariants = cva(
             variant: {
                 default: 'bg-zinc-800 text-zinc-400 border border-transparent',
                 outline:
-                    'bg-transparent border border-[var(--bg-light-color)] text-zinc-400',
+                    'bg-transparent border-none border-[var(--bg-light-color)] text-zinc-400',
                 ghost: 'bg-transparent text-zinc-400',
             },
             color: {
@@ -53,7 +53,11 @@ const Badge: React.FC<BadgeProps> = ({
             {...props}
         >
             {children}
-            {tooltip && <span className={tooltipStyles}>{children}</span>}
+            {tooltip && (
+                <span className={tooltipStyles} aria-hidden="true">
+                    {children}
+                </span>
+            )}
         </span>
     );
 };

@@ -73,7 +73,7 @@ describe('IssueElement Component', () => {
                 />,
             );
 
-            expect(screen.getByText('feature')).toBeInTheDocument();
+            expect(screen.getAllByText('feature')[0]).toBeInTheDocument();
         });
 
         test('calls setActiveIssue with the issue when clicked', async () => {

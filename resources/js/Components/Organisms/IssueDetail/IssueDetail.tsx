@@ -15,6 +15,7 @@ import Input from '../../Atoms/Input/Input';
 import StatusDot from '../../Atoms/StatusDot/StatusDot';
 import TextArea from '../../Atoms/TextArea/TextArea';
 import IssueProperty from '../../Molecules/IssueProperty/IssueProperty';
+import LabelList from '../../Molecules/LabelList/LabelList';
 import UserBadge from '../../Molecules/UserBadge/UserBadge';
 
 const priorityVariants = cva('', {
@@ -323,11 +324,7 @@ const IssueDetail = ({ activeIssue, setActiveIssue }: IssueDetailProps) => {
                                 })}
                             </div>
                         ) : (
-                            activeIssue.labels?.map((label, idx) => (
-                                <Badge key={idx} color={label}>
-                                    {label}
-                                </Badge>
-                            ))
+                            <LabelList labels={activeIssue.labels || []} />
                         )}
                     </IssueProperty>
                     <IssueProperty label="Created">

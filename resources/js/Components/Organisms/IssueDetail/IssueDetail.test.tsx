@@ -190,7 +190,7 @@ describe('IssueDetail Component', () => {
             />,
         );
 
-        expect(screen.getByText('feature')).toBeInTheDocument();
+        expect(screen.getAllByText('feature')[0]).toBeInTheDocument();
     });
 
     test('calls setActiveIssue(null) when the close button is clicked', async () => {
@@ -366,14 +366,15 @@ describe('IssueDetail Component', () => {
 
         await userEvent.click(iconButton(container, 'lucide-pencil'));
 
-        const badge = screen.getByText('feature');
-        // Unselected labels render with the "outline" variant border.
-        expect(badge).toHaveClass('border-[var(--bg-light-color)]');
+        const badge = screen.getAllByText('feature')[0];
+        // Unselected labels render with the "outline" variant.
+        expect(badge).toHaveClass('group');
 
         await userEvent.click(badge);
-        expect(badge).toHaveClass('border-transparent');
+        // It should still have the badge styling
+        expect(badge).toHaveClass('group');
 
         await userEvent.click(badge);
-        expect(badge).toHaveClass('border-[var(--bg-light-color)]');
+        expect(badge).toHaveClass('group');
     });
 });

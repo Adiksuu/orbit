@@ -1,6 +1,7 @@
 import Avatar from '@/Components/Atoms/Avatar/Avatar';
 import Badge from '@/Components/Atoms/Badge/Badge';
 import StatusDot from '@/Components/Atoms/StatusDot/StatusDot';
+import LabelList from '@/Components/Molecules/LabelList/LabelList';
 import UserBadge from '@/Components/Molecules/UserBadge/UserBadge';
 import { IssueElementProps } from '@/types/Components';
 import { IssuePriority } from '@/types/Issues';
@@ -121,17 +122,11 @@ export const IssueElement = ({
                             <StatusDot status={issue.priority} />
                             <span className="text-[9px]">{issue.priority}</span>
                         </Badge>
-                        {issue.labels?.map((label, idx) => (
-                            <Badge
-                                key={idx}
-                                color={label}
-                                variant="default"
-                                className="px-1.5 py-0.5 text-[9px]"
-                                tooltip={true}
-                            >
-                                {label}
-                            </Badge>
-                        ))}
+                        <LabelList
+                            labels={issue.labels || []}
+                            variant="default"
+                            badgeClassName="px-1.5 py-0.5 text-[9px]"
+                        />
                     </div>
                     <div className="flex-shrink-0">
                         {issue.assignee ? (
@@ -193,13 +188,7 @@ export const IssueElement = ({
                 </div>
             </td>
             <td className="px-4 py-2">
-                <div className="flex gap-1.5">
-                    {issue.labels?.map((label, idx) => (
-                        <Badge key={idx} color={label} tooltip={true}>
-                            {label}
-                        </Badge>
-                    ))}
-                </div>
+                <LabelList labels={issue.labels || []} />
             </td>
         </tr>
     );

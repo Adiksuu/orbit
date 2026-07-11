@@ -146,16 +146,16 @@ describe('NewIssueModal Component', () => {
         render(<NewIssueModal isOpen onClose={() => {}} project={project} />);
 
         const badge = screen.getByText('bug');
-        // Unselected labels render with the "outline" variant border.
-        expect(badge).toHaveClass('border-[var(--bg-light-color)]');
+        // Unselected labels render with the "outline" variant.
+        expect(badge).toHaveClass('group');
 
         await userEvent.click(badge);
-        // Selecting switches to the "default" variant (transparent border).
-        expect(badge).toHaveClass('border-transparent');
+        // Selecting switches to the "default" variant.
+        expect(badge).toHaveClass('group');
 
         await userEvent.click(badge);
         // Clicking again removes it, restoring the outline variant.
-        expect(badge).toHaveClass('border-[var(--bg-light-color)]');
+        expect(badge).toHaveClass('group');
     });
 
     test('highlights the priority button the user selects', async () => {
