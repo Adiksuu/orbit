@@ -80,12 +80,16 @@ const IssueTable = ({
                         {headers.map((header) => (
                             <th
                                 key={header.value}
-                                className={`${header.value === 'id' ? 'w-[100px]' : ''} group cursor-pointer select-none px-4 py-3 font-medium text-zinc-400`}
-                                onClick={() => handleSort(header.value)}
+                                className={`${header.value === 'id' ? 'w-[100px]' : ''} ${queryParams !== undefined ? 'cursor-pointer' : ''} group select-none px-4 py-3 font-medium text-zinc-400`}
+                                onClick={() =>
+                                    queryParams !== undefined &&
+                                    handleSort(header.value)
+                                }
                             >
                                 <div className="flex items-center gap-1.5">
                                     <span>{header.label}</span>
-                                    {renderSortIcon(header.value)}
+                                    {queryParams !== undefined &&
+                                        renderSortIcon(header.value)}
                                 </div>
                             </th>
                         ))}

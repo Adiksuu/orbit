@@ -4,6 +4,14 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import IssueTable from './IssueTable';
 
+const mockAddAlert = vi.fn();
+
+vi.mock('@/context/AlertContext', () => ({
+    useAlert: () => ({
+        addAlert: mockAddAlert,
+    }),
+}));
+
 vi.mock('@inertiajs/react', () => {
     const mockRouterGet = vi.fn();
     return {
@@ -136,6 +144,10 @@ describe('IssueTable Component', () => {
             }),
             expect.any(Object),
         );
+        expect(mockAddAlert).toHaveBeenCalledWith(
+            'Sorting by title ascending',
+            'information',
+        );
     });
 
     test('toggles sort direction on same column click with AZ direction', async () => {
@@ -248,14 +260,9 @@ describe('IssueTable Component', () => {
         const titleHeader = screen.getByRole('columnheader', { name: 'Title' });
         await user.click(titleHeader);
 
-        expect(router.get).toHaveBeenCalledWith(
-            window.location.pathname,
-            expect.objectContaining({
-                sort: 'title',
-                direction: 'AZ',
-            }),
-            expect.any(Object),
-        );
+        // Should NOT call router.get because queryParams is undefined
+        expect(router.get).not.toHaveBeenCalled();
+        expect(mockAddAlert).not.toHaveBeenCalled();
     });
 
     test('renders table with proper structure', () => {
@@ -349,6 +356,7 @@ describe('IssueTable Component', () => {
                 issues={[]}
                 activeIssue={null}
                 setActiveIssue={() => {}}
+                queryParams={{}}
             />,
         );
 
