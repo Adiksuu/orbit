@@ -1,6 +1,7 @@
 import IconButton from '@/Components/Atoms/IconButton/IconButton';
 import EmptyStateCard from '@/Components/Molecules/EmptyStateCard/EmptyStateCard';
 import { IssueElement } from '@/Components/Molecules/IssueElement/IssueElement';
+import { useAlert } from '@/context/AlertContext';
 import { IssueTableProps } from '@/types/Components';
 import { Sorting, SortingColumn } from '@/types/Issues';
 import { router } from '@inertiajs/react';
@@ -11,6 +12,8 @@ const IssueTable = ({
     setActiveIssue,
     queryParams,
 }: IssueTableProps) => {
+    const { addAlert } = useAlert();
+
     const hasIssues = issues && issues.length > 0;
 
     const currentSort = queryParams?.sort as SortingColumn | undefined;
@@ -35,6 +38,10 @@ const IssueTable = ({
             preserveState: true,
             replace: true,
         });
+        addAlert(
+            `Sorting by ${column} ${nextDirection === 'AZ' ? 'ascending' : 'descending'}`,
+            'information',
+        );
     };
 
     const renderSortIcon = (column: SortingColumn) => {
