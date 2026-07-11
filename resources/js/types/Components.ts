@@ -238,6 +238,7 @@ export interface IssueTableProps {
     issues: Issue[];
     activeIssue: Issue | null;
     setActiveIssue: (issue: Issue | null) => void;
+    queryParams?: { sort?: string; direction?: string; [key: string]: any };
 }
 export interface NewIssueModalProps {
     isOpen: boolean;

@@ -26,15 +26,46 @@ class IssueRepository
     public function getAll(): Collection {
         return Issue::query()->with(['creator', 'assignee'])->latest()->get();
     }
-    public function getAllPaginated(string | int $projectID = 'all', int $perPage = 20): LengthAwarePaginator {
-        if ($projectID === 'all') {
-            return Issue::query()->with(['creator', 'assignee'])->paginate($perPage);
-        } else {
-            return Issue::query()
-                ->with(['creator', 'assignee'])
-                ->where('project_id', $projectID)
-                ->paginate($perPage);
+    public function getAllPaginated(string | int $projectID = 'all', int $perPage = 20, array $sortParams = []): LengthAwarePaginator {
+        $query = Issue::query()->with(['creator', 'assignee']);
+
+        if ($projectID !== 'all') {
+            $query->where('project_id', $projectID);
         }
+
+        $directionInput = $sortParams['direction'] ?? 'AZ';
+        $direction = $directionInput === 'ZA' ? 'desc' : 'asc';
+
+        $column = $sortParams['sort'] ?? null;
+        $allowedColumns = ['id', 'title', 'status', 'assignee', 'priority', 'labels'];
+
+        if ($column && in_array($column, $allowedColumns)) {
+            switch ($column) {
+                case 'id':
+                case 'title':
+                case 'status':
+                case 'labels':
+                    $query->orderBy($column, $direction);
+                    break;
+
+                case 'priority':
+                    if ($direction === 'asc') {
+                        $query->orderByRaw("CASE WHEN priority = 'high' THEN 1 WHEN priority = 'medium' THEN 2 WHEN priority = 'low' THEN 3 ELSE 4 END");
+                    } else {
+                        $query->orderByRaw("CASE WHEN priority = 'high' THEN 4 WHEN priority = 'medium' THEN 3 WHEN priority = 'low' THEN 2 ELSE 1 END");
+                    }
+                    break;
+
+                case 'assignee':
+                    $query->leftJoin('users', 'issues.assignee_id', '=', 'users.id')
+                        ->select('issues.*')
+                        ->orderBy('users.name', $direction);
+                    break;
+            }
+        } else {
+            $query->latest();
+        }
+        return $query->paginate($perPage)->withQueryString();
     }
     public function getProductivityTrend(): array
     {

@@ -18,7 +18,7 @@ class IssueService
         $data['user_id'] = auth()->id();
 
         $issue = $this->issueRepository->store($data);
-        $this->activityLogService->log($issue->project_id, "Added new task: #{$issue->id}");
+        $this->activityLogService->log($issue->project_id, "Added new task: #$issue->id");
 
         return $issue;
     }
@@ -31,9 +31,9 @@ class IssueService
         $this->issueRepository->update($issue, $data);
         return $issue;
     }
-    public function getAllByProjectID(int $projectID): LengthAwarePaginator
+    public function getAllByProjectID(int $projectID, array $sortParams = []): LengthAwarePaginator
     {
-        return $this->issueRepository->getAllPaginated($projectID);
+        return $this->issueRepository->getAllPaginated($projectID, 20, $sortParams);
     }
     public function getProductivityTrend(): array
     {

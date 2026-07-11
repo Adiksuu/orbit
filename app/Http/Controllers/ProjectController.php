@@ -23,12 +23,15 @@ class ProjectController extends Controller
     public function show(Project $project): Response
     {
         $projects = $this->projectService->getAll();
-        $issues = $this->issueService->getAllByProjectID($project->id);
+
+        $sortParams = request()->only(['sort', 'direction']);
+        $issues = $this->issueService->getAllByProjectID($project->id, $sortParams);
 
         return Inertia::render('Projects/Show', [
             'project' => $project,
             'projects' => $projects,
-            'issues' => $issues
+            'issues' => $issues,
+            'queryParams' => request()->query() ?: null,
         ]);
     }
     public function index(Project $project): Response
