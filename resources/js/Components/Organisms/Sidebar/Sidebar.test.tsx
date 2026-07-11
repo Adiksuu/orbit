@@ -12,6 +12,14 @@ vi.mock('@inertiajs/react', async () => {
         Link: ({ children, href, ...props }: Record<string, unknown>) =>
             React.createElement('a', { href, ...props }, children as never),
         usePage: () => ({ url: pageState.url }),
+        useForm: (initialData: Record<string, unknown>) => ({
+            data: initialData,
+            setData: vi.fn(),
+            post: vi.fn(),
+            processing: false,
+            reset: vi.fn(),
+            errors: {},
+        }),
     };
 });
 
