@@ -1,4 +1,5 @@
 import Badge from '@/Components/Atoms/Badge/Badge';
+import NewProjectModal from '@/Components/Organisms/NewProjectModal/NewProjectModal';
 import { Project } from '@/types/Projects';
 import { getColorTheme } from '@/utils/colors';
 import { Link, usePage } from '@inertiajs/react';
@@ -9,22 +10,27 @@ import UserBadge from '../../Molecules/UserBadge/UserBadge';
 
 const Sidebar: FC<{ projects: Project[] }> = ({ projects }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [isNewProjectModalOpen, setIsNewProjectModalOpen] = useState(false);
     const { url } = usePage();
 
     return (
         <>
+            {/* Samodzielny przycisk otwierający menu mobilne */}
             <button
                 onClick={() => setIsOpen(true)}
                 className="fixed left-4 top-4 z-40 rounded-md border border-solid border-[var(--bg-light-color)] bg-[var(--bg-dark-color)] p-2 text-zinc-400 hover:text-white md:hidden"
             >
                 <Icon name="Menu" size={20} />
             </button>
+
+            {/* Backdrop wyciągnięty na zewnątrz, zapobiegający bąbelkowaniu zdarzeń kliknięcia */}
             {isOpen && (
                 <div
                     className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden"
                     onClick={() => setIsOpen(false)}
                 />
             )}
+
             <aside
                 className={`fixed inset-y-0 left-0 z-50 flex h-screen w-[240px] shrink-0 flex-col justify-between border-r border-solid border-r-[var(--bg-light-color)] bg-[var(--bg-dark-color)] p-3 transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'} `}
             >
@@ -76,7 +82,10 @@ const Sidebar: FC<{ projects: Project[] }> = ({ projects }) => {
 
                     <div className={'mt-6 flex min-h-0 flex-1 flex-col'}>
                         <Link
-                            href={'/projects/new'}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                setIsNewProjectModalOpen(true);
+                            }}
                             className={
                                 'group mb-2 flex shrink-0 items-center justify-between px-3'
                             }
@@ -149,6 +158,11 @@ const Sidebar: FC<{ projects: Project[] }> = ({ projects }) => {
                     </div>
                 </div>
             </aside>
+
+            <NewProjectModal
+                isOpen={isNewProjectModalOpen}
+                onClose={() => setIsNewProjectModalOpen(false)}
+            />
         </>
     );
 };

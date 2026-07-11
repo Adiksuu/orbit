@@ -22,3 +22,16 @@ export type ProjectColors =
     | 'violet'
     | 'purple'
     | 'pink';
+
+export const AVAILABLE_COLORS: ProjectColors[] = [
+    'red',
+    'orange',
+    'yellow',
+    'green',
+    'lime',
+    'blue',
+    'sky',
+    'violet',
+    'purple',
+    'pink',
+];
