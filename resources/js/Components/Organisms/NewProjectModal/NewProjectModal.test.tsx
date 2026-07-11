@@ -9,7 +9,10 @@ const mockSetData = vi.fn();
 const mockOnClose = vi.fn();
 
 // Mock the global route function
-global.route = vi.fn((name: string) => `/api/routes/${name}`) as any;
+vi.stubGlobal(
+    'route',
+    vi.fn((name: string) => `/api/routes/${name}`),
+);
 
 let formState = {
     data: { name: '', slug: '', description: '', color: 'purple' },
@@ -21,7 +24,7 @@ let formState = {
 };
 
 vi.mock('@inertiajs/react', async (importOriginal) => {
-    const actual = await importOriginal();
+    const actual = (await importOriginal()) as any;
     return {
         ...actual,
         useForm: (initialData: Record<string, unknown>) => {
