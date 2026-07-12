@@ -2,6 +2,7 @@ import Badge from '@/Components/Atoms/Badge/Badge';
 import DropdownItem from '@/Components/Atoms/DropdownItem/DropdownItem';
 import DropdownMenu from '@/Components/Atoms/DropdownMenu/DropdownMenu';
 import DropdownTrigger from '@/Components/Atoms/DropdownTrigger/DropdownTrigger';
+import { useAlert } from '@/context/AlertContext';
 import { PaginationProps } from '@/types/Components';
 import { Link, router } from '@inertiajs/react';
 import { cva } from 'class-variance-authority';
@@ -38,6 +39,7 @@ const Pagination = ({
     queryParams,
 }: PaginationProps) => {
     const [dropdownVisible, setDropdownVisible] = useState(false);
+    const { addAlert } = useAlert();
 
     if (total === 0) return null;
 
@@ -54,6 +56,7 @@ const Pagination = ({
         queryParams?.perPage || rowsPerPageCounts[0].toString();
 
     const handlePerPageChange = (newPerPage: number) => {
+        addAlert(`Rows per page changed to ${newPerPage}`, 'information');
         const newParams = {
             ...queryParams,
             perPage: newPerPage,
