@@ -45,20 +45,20 @@ const IssueTable = ({
     };
 
     const renderSortIcon = (column: SortingColumn) => {
-        if (currentSort !== column) {
-            return (
-                <IconButton
-                    iconName="ArrowDown"
-                    iconSize={16}
-                    className="opacity-20 transition-opacity group-hover:opacity-50"
-                />
-            );
-        }
+        const isCurrent = currentSort === column;
+        const isAscending = isCurrent && currentDirection === 'AZ';
+
         return (
             <IconButton
-                iconName={currentDirection === 'AZ' ? 'ArrowUp' : 'ArrowDown'}
+                iconName="ArrowDown"
                 iconSize={16}
-                className="font-bold text-indigo-500"
+                className={`inline-block transform transition-transform duration-300 ${
+                    isAscending ? 'rotate-180' : 'rotate-0'
+                } ${
+                    isCurrent
+                        ? 'font-bold text-[--accent-color] opacity-100'
+                        : 'opacity-20 group-hover:opacity-50'
+                } `}
             />
         );
     };
