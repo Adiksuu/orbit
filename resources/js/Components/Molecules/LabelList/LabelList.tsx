@@ -7,12 +7,14 @@ interface LabelListProps {
     labels: IssueLabel[];
     variant?: 'default' | 'outline' | 'ghost';
     badgeClassName?: string;
+    isClosed?: boolean;
 }
 
 const LabelList: React.FC<LabelListProps> = ({
     labels,
     variant = 'default',
     badgeClassName,
+    isClosed = false,
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -49,7 +51,7 @@ const LabelList: React.FC<LabelListProps> = ({
                     color={label}
                     variant={variant}
                     tooltip={true}
-                    className={badgeClassName}
+                    className={cn(badgeClassName, isClosed && 'opacity-40')}
                 >
                     {label}
                 </Badge>
@@ -61,6 +63,7 @@ const LabelList: React.FC<LabelListProps> = ({
                         className={cn(
                             'cursor-pointer transition-colors hover:bg-zinc-700',
                             badgeClassName,
+                            isClosed && 'opacity-40',
                         )}
                         onClick={(e) => {
                             e.stopPropagation();
@@ -70,7 +73,7 @@ const LabelList: React.FC<LabelListProps> = ({
                         +{remainingLabels.length}
                     </Badge>
                     {isOpen && (
-                        <div className="absolute bottom-[calc(100%+8px)] left-0 z-[100] flex max-h-48 min-w-[140px] flex-col gap-2 rounded-xl border border-zinc-800 bg-zinc-900/95 p-3 shadow-2xl backdrop-blur-md">
+                        <div className="absolute right-0 top-[calc(100%+6px)] z-[100] flex max-h-48 min-w-[150px] flex-col gap-2 rounded-xl border border-zinc-800 bg-zinc-900/95 p-3 opacity-100 shadow-2xl backdrop-blur-md">
                             <div className="mb-1 flex items-center justify-between border-b border-zinc-800 pb-2">
                                 <span className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
                                     More Labels
@@ -95,7 +98,7 @@ const LabelList: React.FC<LabelListProps> = ({
                                     </Badge>
                                 ))}
                             </div>
-                            <div className="absolute -bottom-1.5 left-4 h-3 w-3 rotate-45 border-b border-r border-zinc-800 bg-zinc-900/95"></div>
+                            <div className="absolute -top-1.5 right-3 h-3 w-3 rotate-45 border-l border-t border-zinc-800 bg-zinc-900/95"></div>
                         </div>
                     )}
                 </div>

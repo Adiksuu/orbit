@@ -4,7 +4,7 @@ import { cva } from 'class-variance-authority';
 import React from 'react';
 
 const tooltipStyles =
-    'absolute bottom-[calc(100%+8px)] flex gap-1.5 items-center left-1/2 -translate-x-1/2 bg-[var(--bg-color)] text-[var(--text-gray-color)] px-2 py-1 rounded-md text-[10px] font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out pointer-events-none z-50 border border-zinc-800 shadow-lg translate-y-1 group-hover:translate-y-0';
+    'absolute top-[calc(100%+6px)] flex gap-1.5 items-center left-1/2 -translate-x-1/2 bg-[var(--bg-color)] text-[var(--text-gray-color)] px-2 py-1 rounded-md text-[10px] font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-200 ease-in-out pointer-events-none z-50 border border-zinc-800 shadow-lg -translate-y-1 group-hover:translate-y-0';
 
 export const badgeVariants = cva(
     'relative inline-flex items-center justify-center py-[2px] px-2 rounded-lg text-[10px] font-medium whitespace-nowrap transition-colors border border-solid border-transparent',
@@ -47,15 +47,13 @@ const Badge: React.FC<BadgeProps> = ({
     ...props
 }) => {
     return (
-        <span
-            className={cn(
-                'group',
-                badgeVariants({ variant, color }),
-                className,
-            )}
-            {...props}
-        >
-            {children}
+        <span className="group relative inline-flex">
+            <span
+                className={cn(badgeVariants({ variant, color }), className)}
+                {...props}
+            >
+                {children}
+            </span>
             {tooltip && (
                 <span className={tooltipStyles} aria-hidden="true">
                     {tooltipText ? tooltipText : children}
