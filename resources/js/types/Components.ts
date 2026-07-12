@@ -265,6 +265,18 @@ export interface AlertContainerProps {
     alerts: AlertItem[];
     removeAlert: (id: string) => void;
 }
+export interface BoardCardProps {
+    issue: Issue;
+    isActive: boolean;
+    onClick: () => void;
+    isClosed: boolean;
+}
+export interface ListRowProps {
+    issue: Issue;
+    isActive: boolean;
+    onClick: () => void;
+    isClosed: boolean;
+}
 // OTHER COMPONENTS
 export interface MainLayoutProps {
     children: ReactNode;
