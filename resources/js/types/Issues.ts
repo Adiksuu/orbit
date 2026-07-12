@@ -51,4 +51,4 @@ export type Status = 'open' | 'closed';
 
 export type Sorting = 'AZ' | 'ZA';
 export type SortingColumn =
-    'id' | 'title' | 'status' | 'assignee' | 'priority' | 'labels';
+    'id' | 'title' | 'status' | 'assignee' | 'priority' | 'labels' | 'updated';

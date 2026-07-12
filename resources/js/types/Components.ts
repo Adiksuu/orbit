@@ -34,6 +34,7 @@ export interface BadgeProps
         VariantProps<typeof badgeVariants> {
     children: ReactNode;
     tooltip?: boolean;
+    tooltipText?: ReactNode;
 }
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     children: ReactNode;

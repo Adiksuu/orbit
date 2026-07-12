@@ -43,6 +43,7 @@ const Badge: React.FC<BadgeProps> = ({
     color,
     className,
     tooltip,
+    tooltipText,
     ...props
 }) => {
     return (
@@ -57,7 +58,7 @@ const Badge: React.FC<BadgeProps> = ({
             {children}
             {tooltip && (
                 <span className={tooltipStyles} aria-hidden="true">
-                    {children}
+                    {tooltipText ? tooltipText : children}
                 </span>
             )}
         </span>

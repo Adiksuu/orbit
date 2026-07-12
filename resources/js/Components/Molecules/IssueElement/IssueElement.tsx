@@ -5,6 +5,7 @@ import LabelList from '@/Components/Molecules/LabelList/LabelList';
 import UserBadge from '@/Components/Molecules/UserBadge/UserBadge';
 import { IssueElementProps } from '@/types/Components';
 import { IssuePriority } from '@/types/Issues';
+import { formatDate, formatTimeAgo } from '@/utils/time';
 import { cva } from 'class-variance-authority';
 
 const priorityTextColor = cva('text-xs', {
@@ -157,8 +158,8 @@ export const IssueElement = ({
             onClick={() => setActiveIssue(issue)}
             className={listRowVariants({ isActive, isClosed })}
         >
-            <td className="w-[100px] px-4 py-2 text-[var(--text-gray-color)]">
-                {issue.id}
+            <td className="w-[100px] px-4 py-2 text-[var(--pending-color)]">
+                #{issue.id}
             </td>
             <td className={listTitleVariants({ isClosed })}>{issue.title}</td>
             <td className="px-4 py-2">
@@ -206,6 +207,15 @@ export const IssueElement = ({
             </td>
             <td className="px-4 py-2">
                 <LabelList labels={issue.labels || []} />
+            </td>
+            <td className="px-4 py-2">
+                <Badge
+                    tooltip={true}
+                    variant={'ghost'}
+                    tooltipText={formatTimeAgo(issue.created_at) + ' ago'}
+                >
+                    {formatDate(issue.created_at)}
+                </Badge>
             </td>
         </tr>
     );

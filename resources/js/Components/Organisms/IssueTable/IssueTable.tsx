@@ -70,6 +70,7 @@ const IssueTable = ({
         { label: 'Assignee', value: 'assignee' },
         { label: 'Priority', value: 'priority' },
         { label: 'Labels', value: 'labels' },
+        { label: 'Updated', value: 'updated' },
     ];
 
     return (
