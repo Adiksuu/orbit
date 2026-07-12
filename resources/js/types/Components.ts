@@ -243,6 +243,7 @@ export interface IssueTableProps {
     activeIssue: Issue | null;
     setActiveIssue: (issue: Issue | null) => void;
     queryParams?: { sort?: string; direction?: string; [key: string]: any };
+    pagination?: ReactNode;
 }
 export interface NewIssueModalProps {
     isOpen: boolean;
@@ -279,6 +280,7 @@ export interface ListRowProps {
     isClosed: boolean;
     handleSelectIssueCheckbox: (issue: Issue | string) => void;
 }
+
 // OTHER COMPONENTS
 export interface MainLayoutProps {
     children: ReactNode;

@@ -76,22 +76,20 @@ export default function Show({
                         }
                     >
                         {selectedLook === 'List' ? (
-                            <>
-                                <div className={'flex-1 overflow-y-auto'}>
-                                    <IssueTable
-                                        issues={issues.data}
-                                        activeIssue={activeIssue}
-                                        setActiveIssue={setActiveIssue}
-                                        queryParams={queryParams}
+                            <IssueTable
+                                issues={issues.data}
+                                activeIssue={activeIssue}
+                                setActiveIssue={setActiveIssue}
+                                queryParams={queryParams}
+                                pagination={
+                                    <Pagination
+                                        links={issues.links}
+                                        from={issues.from}
+                                        to={issues.to}
+                                        total={issues.total}
                                     />
-                                </div>
-                                <Pagination
-                                    links={issues.links}
-                                    from={issues.from}
-                                    to={issues.to}
-                                    total={issues.total}
-                                />
-                            </>
+                                }
+                            />
                         ) : (
                             <>
                                 <div
