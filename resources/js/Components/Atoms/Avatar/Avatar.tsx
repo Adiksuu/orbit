@@ -3,11 +3,11 @@ import { cva } from 'class-variance-authority';
 import React from 'react';
 
 const classVariants = cva(
-    'flex items-center justify-center rounded-md overflow-hidden bg-zinc-100 shrink-0',
+    'flex items-center justify-center rounded-full overflow-hidden bg-zinc-400 shrink-0',
     {
         variants: {
             size: {
-                sm: 'w-4 h-4 text-[10px]',
+                sm: 'w-5 h-5 text-[10px]',
                 md: 'w-6 h-6 text-xs',
                 lg: 'w-8 h-8 text-sm',
             },
@@ -28,7 +28,7 @@ const Avatar: React.FC<AvatarProps> = ({ src, alt, size = 'md', initials }) => {
                     className={'h-full w-full object-cover'}
                 />
             ) : (
-                <span className="font-medium text-zinc-800">{initials}</span>
+                <span className="font-medium text-white">{initials}</span>
             )}
         </div>
     );

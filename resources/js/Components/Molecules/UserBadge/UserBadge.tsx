@@ -29,7 +29,7 @@ const UserBadge: React.FC<UserBadgeProps> = ({
             <div className={'flex min-w-0 flex-col'}>
                 <span
                     className={
-                        'overflow-hidden overflow-ellipsis whitespace-nowrap text-sm font-medium'
+                        'overflow-hidden overflow-ellipsis whitespace-nowrap text-sm font-normal text-zinc-400'
                     }
                 >
                     {name}
@@ -37,7 +37,7 @@ const UserBadge: React.FC<UserBadgeProps> = ({
                 {showDetails && email && (
                     <span
                         className={
-                            'overflow-hidden overflow-ellipsis whitespace-nowrap text-xs text-zinc-400'
+                            'overflow-hidden overflow-ellipsis whitespace-nowrap text-xs font-normal text-zinc-400'
                         }
                     >
                         {email}
