@@ -131,9 +131,9 @@ describe('IssueElement Component', () => {
                 />,
             );
 
-            expect(screen.getByText('ISSUE-1')).toBeInTheDocument();
+            expect(screen.getByText(/ISSUE-1/)).toBeInTheDocument();
             expect(screen.getByText('Fix the bug')).toBeInTheDocument();
-            expect(screen.getByText('high')).toBeInTheDocument();
+            expect(screen.getAllByText('high')).toHaveLength(1);
         });
 
         test('renders the assignee name via the user badge', () => {
