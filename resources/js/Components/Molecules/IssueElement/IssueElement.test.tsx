@@ -122,7 +122,7 @@ describe('IssueElement Component', () => {
     });
 
     describe('list layout (default)', () => {
-        test('renders the id, title and capitalised priority in a table row', () => {
+        test('renders the id, title and priority in a table row', () => {
             renderInTable(
                 <IssueElement
                     issue={makeIssue()}
@@ -133,8 +133,7 @@ describe('IssueElement Component', () => {
 
             expect(screen.getByText('ISSUE-1')).toBeInTheDocument();
             expect(screen.getByText('Fix the bug')).toBeInTheDocument();
-            // "high" is rendered capitalised in the list layout.
-            expect(screen.getByText('High')).toBeInTheDocument();
+            expect(screen.getByText('high')).toBeInTheDocument();
         });
 
         test('renders the assignee name via the user badge', () => {

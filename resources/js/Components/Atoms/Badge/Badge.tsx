@@ -7,7 +7,7 @@ const tooltipStyles =
     'absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 bg-[var(--bg-color)] text-[var(--text-gray-color)] px-2 py-1 rounded-md text-[10px] font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out pointer-events-none z-50 border border-zinc-800 shadow-lg translate-y-1 group-hover:translate-y-0';
 
 export const badgeVariants = cva(
-    'relative inline-flex items-center py-[2px] px-2 rounded-lg text-[10px] font-medium whitespace-nowrap transition-colors border border-solid border-transparent',
+    'relative inline-flex items-center justify-center py-[2px] px-2 rounded-lg text-[10px] font-medium whitespace-nowrap transition-colors border border-solid border-transparent',
     {
         variants: {
             variant: {
@@ -24,9 +24,9 @@ export const badgeVariants = cva(
                 design: 'text-[#00bcd4] bg-[#00bcd4]/10 border-[#00bcd4]/20',
                 ux: 'text-[#009688] bg-[#009688]/10 border-[#009688]/20',
                 chore: 'text-[#e91e63] bg-[#e91e63]/10 border-[#e91e63]/20',
-                high: 'text-[#f44336]',
-                medium: 'text-[#ff9800]',
-                low: 'text-[#4caf50]',
+                high: 'text-[#f44336] border-[#f44336]/20 bg-transparent',
+                medium: 'text-[#ff9800] border-[#ff9800]/20 bg-transparent',
+                low: 'text-[#4caf50] border-[#4caf50]/20 bg-transparent',
             },
         },
         defaultVariants: {

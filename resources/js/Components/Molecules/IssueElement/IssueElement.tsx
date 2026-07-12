@@ -7,7 +7,7 @@ import { IssueElementProps } from '@/types/Components';
 import { IssuePriority } from '@/types/Issues';
 import { cva } from 'class-variance-authority';
 
-const priorityTextColor = cva('', {
+const priorityTextColor = cva('text-xs', {
     variants: {
         priority: {
             high: 'text-[#f44336]',
@@ -116,7 +116,7 @@ export const IssueElement = ({
                     <div className="flex flex-wrap items-center gap-1.5">
                         <Badge
                             color={issue.priority}
-                            variant="outline"
+                            variant="default"
                             className="flex items-center gap-1 px-1.5 py-0.5"
                         >
                             <StatusDot status={issue.priority} />
@@ -174,17 +174,22 @@ export const IssueElement = ({
             </td>
             <td className="px-4 py-2">
                 <div className="flex items-center gap-1">
-                    <Badge color={issue.priority} variant="ghost">
-                        <StatusDot status={issue.priority} />
-                    </Badge>
-                    <span
-                        className={priorityTextColor({
-                            priority: issue.priority as IssuePriority,
-                        })}
+                    <Badge
+                        color={issue.priority}
+                        variant="default"
+                        className={'flex gap-1.5'}
                     >
-                        {issue.priority.charAt(0).toUpperCase() +
-                            issue.priority.slice(1)}
-                    </span>
+                        <StatusDot status={issue.priority} />
+                        <span
+                            className={priorityTextColor({
+                                priority: issue.priority as IssuePriority,
+                            })}
+                        >
+                            <span className="text-[12px]">
+                                {issue.priority}
+                            </span>
+                        </span>
+                    </Badge>
                 </div>
             </td>
             <td className="px-4 py-2">
