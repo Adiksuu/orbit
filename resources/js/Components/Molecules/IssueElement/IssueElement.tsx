@@ -212,9 +212,9 @@ export const IssueElement = ({
                 <Badge
                     tooltip={true}
                     variant={'ghost'}
-                    tooltipText={formatTimeAgo(issue.created_at) + ' ago'}
+                    tooltipText={formatTimeAgo(issue.updated_at) + ' ago'}
                 >
-                    {formatDate(issue.created_at)}
+                    {formatDate(issue.updated_at)}
                 </Badge>
             </td>
         </tr>
