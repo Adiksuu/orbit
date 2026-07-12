@@ -37,7 +37,7 @@ class IssueRepository
         $direction = $directionInput === 'ZA' ? 'desc' : 'asc';
 
         $column = $sortParams['sort'] ?? null;
-        $allowedColumns = ['id', 'title', 'status', 'assignee', 'priority', 'labels'];
+        $allowedColumns = ['id', 'title', 'status', 'assignee', 'priority', 'labels', 'updated'];
 
         if ($column && in_array($column, $allowedColumns)) {
             switch ($column) {
@@ -60,6 +60,10 @@ class IssueRepository
                     $query->leftJoin('users', 'issues.assignee_id', '=', 'users.id')
                         ->select('issues.*')
                         ->orderBy('users.name', $direction);
+                    break;
+
+                case 'updated':
+                    $query->orderBy('updated_at', $direction);
                     break;
             }
         } else {
