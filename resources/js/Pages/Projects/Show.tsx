@@ -87,6 +87,7 @@ export default function Show({
                                         from={issues.from}
                                         to={issues.to}
                                         total={issues.total}
+                                        queryParams={queryParams}
                                     />
                                 }
                             />
@@ -108,6 +109,7 @@ export default function Show({
                                     from={issues.from}
                                     to={issues.to}
                                     total={issues.total}
+                                    queryParams={queryParams}
                                 />
                             </>
                         )}

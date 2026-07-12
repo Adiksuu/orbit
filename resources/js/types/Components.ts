@@ -51,6 +51,9 @@ export interface DropdownItemProps
 export interface ChildrenItemProps {
     children: ReactNode;
 }
+export interface DropdownMenuProps extends ChildrenItemProps {
+    direction?: 'top' | 'bottom';
+}
 export interface DropdownTriggerProps {
     label: ReactNode;
     onClick: () => void;
@@ -157,6 +160,7 @@ export interface PaginationProps {
     from: number;
     to: number;
     total: number;
+    queryParams?: { perPage?: string; page?: string; [key: string]: any };
 }
 export interface ProjectCardProps {
     project: Project;
