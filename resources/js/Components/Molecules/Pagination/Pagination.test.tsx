@@ -16,6 +16,17 @@ vi.mock('@inertiajs/react', () => ({
             {children}
         </a>
     ),
+    router: {
+        get: vi.fn(),
+    },
+}));
+
+vi.mock('@/context/AlertContext', () => ({
+    useAlert: () => ({
+        addAlert: vi.fn(),
+        removeAlert: vi.fn(),
+        alerts: [],
+    }),
 }));
 
 const buildLinks = () => [

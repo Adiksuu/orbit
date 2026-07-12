@@ -31,10 +31,9 @@ class IssueService
         $this->issueRepository->update($issue, $data);
         return $issue;
     }
-    public function getAllByProjectID(int $projectID, array $sortParams = [], int $perPage = 20): LengthAwarePaginator
+    public function getAllByProjectID(int $projectID, array $sortParams = [], int $perPage = 20, array $searchParams = []): LengthAwarePaginator
     {
-        error_log("Getting all issues for project ID: $projectID with sort params: " . json_encode($sortParams) . " and per page: $perPage");
-        return $this->issueRepository->getAllPaginated($projectID, $perPage, $sortParams);
+        return $this->issueRepository->getAllPaginated($projectID, $perPage, $sortParams, $searchParams);
     }
     public function getProductivityTrend(): array
     {

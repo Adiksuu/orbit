@@ -82,6 +82,9 @@ export interface InputProps extends VariantProps<typeof inputVariants> {
     isDisabled?: boolean;
     type?: string;
     className?: string;
+    onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+    id?: string;
+    ref?: React.Ref<HTMLInputElement> | null;
 }
 export interface ModalProps {
     isOpen: boolean;
