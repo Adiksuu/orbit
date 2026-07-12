@@ -31,7 +31,7 @@ describe('Avatar Component', () => {
     });
 
     test.each([
-        ['sm', ['w-4', 'h-4', 'text-[10px]']],
+        ['sm', ['w-5', 'h-5', 'text-[10px]']],
         ['md', ['w-6', 'h-6', 'text-xs']],
         ['lg', ['w-8', 'h-8', 'text-sm']],
     ] as const)(

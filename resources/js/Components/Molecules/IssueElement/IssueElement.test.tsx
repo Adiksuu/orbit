@@ -145,7 +145,7 @@ describe('IssueElement Component', () => {
                 />,
             );
 
-            expect(screen.getByText('Jane Doe')).toBeInTheDocument();
+            expect(screen.getAllByText('Jane Doe')).toHaveLength(2);
         });
 
         test('renders "Unassigned" when there is no assignee', () => {
@@ -157,7 +157,7 @@ describe('IssueElement Component', () => {
                 />,
             );
 
-            expect(screen.getByText('Unassigned')).toBeInTheDocument();
+            expect(screen.getAllByText('Unassigned')).toHaveLength(2);
         });
 
         test('calls setActiveIssue with the issue when the row is clicked', async () => {

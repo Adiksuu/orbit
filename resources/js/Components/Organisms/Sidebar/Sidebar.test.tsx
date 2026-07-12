@@ -158,14 +158,14 @@ describe('Sidebar Component', () => {
     test('renders user badge in the sidebar', () => {
         render(<Sidebar projects={[]} />);
 
-        expect(screen.getByText('John Doe')).toBeInTheDocument();
-        expect(screen.getByText('john@acme.com')).toBeInTheDocument();
+        expect(screen.getAllByText('John Doe')).toHaveLength(2);
+        expect(screen.getAllByText('john@acme.com')).toHaveLength(2);
     });
 
     test('renders organization badge at the top', () => {
         render(<Sidebar projects={[]} />);
 
-        expect(screen.getByText('Acme Inc.')).toBeInTheDocument();
+        expect(screen.getAllByText('Acme Inc.')).toHaveLength(2);
     });
 
     test('renders all projects when provided', () => {
@@ -182,7 +182,7 @@ describe('Sidebar Component', () => {
     });
 
     test('opens NewProjectModal when clicking PROJECTS', async () => {
-        const user = userEvent.setup();
+        userEvent.setup();
         render(<Sidebar projects={[]} />);
 
         const projectsLink = screen
