@@ -371,4 +371,70 @@ describe('IssueTable Component', () => {
             expect(cell).toHaveClass('group', 'cursor-pointer', 'select-none');
         });
     });
+
+    test('toggles all issues when clicking the header checkbox', async () => {
+        const user = userEvent.setup();
+        const issues = [
+            makeIssue({ title: 'Issue 1', id: 'ISSUE-1' }),
+            makeIssue({ title: 'Issue 2', id: 'ISSUE-2' }),
+        ];
+
+        render(
+            <IssueTable
+                issues={issues}
+                activeIssue={null}
+                setActiveIssue={() => {}}
+            />,
+        );
+
+        const headerCheckbox = screen.getAllByRole('checkbox')[0];
+        const rowCheckboxes = screen.getAllByRole('checkbox').slice(1);
+
+        // Initial state: none selected
+        expect(headerCheckbox).not.toBeChecked();
+        rowCheckboxes.forEach((cb) => expect(cb).not.toBeChecked());
+
+        // Click header checkbox -> select all
+        await user.click(headerCheckbox);
+        expect(headerCheckbox).toBeChecked();
+        rowCheckboxes.forEach((cb) => expect(cb).toBeChecked());
+
+        // Click header checkbox again -> deselect all
+        await user.click(headerCheckbox);
+        expect(headerCheckbox).not.toBeChecked();
+        rowCheckboxes.forEach((cb) => expect(cb).not.toBeChecked());
+    });
+
+    test('toggles individual issues correctly', async () => {
+        const user = userEvent.setup();
+        const issues = [
+            makeIssue({ title: 'Issue 1', id: 'ISSUE-1' }),
+            makeIssue({ title: 'Issue 2', id: 'ISSUE-2' }),
+        ];
+
+        render(
+            <IssueTable
+                issues={issues}
+                activeIssue={null}
+                setActiveIssue={() => {}}
+            />,
+        );
+
+        const rowCheckboxes = screen.getAllByRole('checkbox').slice(1);
+
+        // Select first issue
+        await user.click(rowCheckboxes[0]);
+        expect(rowCheckboxes[0]).toBeChecked();
+        expect(rowCheckboxes[1]).not.toBeChecked();
+
+        // Select second issue
+        await user.click(rowCheckboxes[1]);
+        expect(rowCheckboxes[0]).toBeChecked();
+        expect(rowCheckboxes[1]).toBeChecked();
+
+        // Deselect first issue
+        await user.click(rowCheckboxes[0]);
+        expect(rowCheckboxes[0]).not.toBeChecked();
+        expect(rowCheckboxes[1]).toBeChecked();
+    });
 });

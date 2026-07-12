@@ -1,4 +1,5 @@
 import Badge from '@/Components/Atoms/Badge/Badge';
+import IconButton from '@/Components/Atoms/IconButton/IconButton';
 import StatusDot from '@/Components/Atoms/StatusDot/StatusDot';
 import LabelList from '@/Components/Molecules/LabelList/LabelList';
 import UserBadge from '@/Components/Molecules/UserBadge/UserBadge';
@@ -15,6 +16,7 @@ export const ListRow = ({
     isActive,
     onClick,
     isClosed,
+    handleSelectIssueCheckbox,
 }: ListRowProps) => (
     <tr onClick={onClick} className={listRowVariants({ isActive })}>
         <td
@@ -24,11 +26,13 @@ export const ListRow = ({
             <input
                 type="checkbox"
                 className={cn(
-                    'h-3.5 w-3.5 cursor-pointer rounded border-zinc-700 bg-zinc-800/30',
+                    'h-3.5 w-3.5 cursor-pointer rounded border-zinc-700 bg-zinc-800/50 text-[var(--accent-color)] focus:ring-1 focus:ring-[var(--accent-color)] focus:ring-offset-zinc-950',
                     isClosed
                         ? 'opacity-20'
                         : 'opacity-60 group-hover/row:opacity-100',
                 )}
+                checked={issue?.isChecked}
+                onChange={() => handleSelectIssueCheckbox(issue)}
             />
         </td>
         <td
@@ -90,7 +94,8 @@ export const ListRow = ({
             className={`${tdClass} text-right`}
             onClick={(e) => e.stopPropagation()}
         >
-            <button
+            <IconButton
+                iconName={'Ellipsis'}
                 className={cn(
                     'rounded-md p-1 text-zinc-500 hover:bg-zinc-800/60',
                     isClosed
@@ -99,7 +104,7 @@ export const ListRow = ({
                 )}
             >
                 ...
-            </button>
+            </IconButton>
         </td>
     </tr>
 );

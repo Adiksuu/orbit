@@ -22,6 +22,7 @@ export interface Issue {
         updated_at: string;
     };
     labels?: IssueLabel[];
+    isChecked?: boolean;
 }
 
 export interface PaginatedResponse<T> {

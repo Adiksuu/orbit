@@ -125,6 +125,7 @@ export interface IssueElementProps {
     activeIssue: Issue | null;
     setActiveIssue: (issue: Issue | null) => void;
     type?: 'list' | 'board';
+    handleSelectIssueCheckbox: (issue: Issue | string) => void;
 }
 export interface IssuePropertyProps {
     label: string;
@@ -276,6 +277,7 @@ export interface ListRowProps {
     isActive: boolean;
     onClick: () => void;
     isClosed: boolean;
+    handleSelectIssueCheckbox: (issue: Issue | string) => void;
 }
 // OTHER COMPONENTS
 export interface MainLayoutProps {

@@ -3,8 +3,9 @@ import EmptyStateCard from '@/Components/Molecules/EmptyStateCard/EmptyStateCard
 import { IssueElement } from '@/Components/Molecules/IssueElement/IssueElement';
 import { useAlert } from '@/context/AlertContext';
 import { IssueTableProps } from '@/types/Components';
-import { Sorting, SortingColumn } from '@/types/Issues';
+import { Issue, Sorting, SortingColumn } from '@/types/Issues';
 import { router } from '@inertiajs/react';
+import { useState } from 'react';
 
 const IssueTable = ({
     issues,
@@ -73,6 +74,25 @@ const IssueTable = ({
         { label: 'Updated', value: 'updated' },
     ];
 
+    const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+    const handleSelectIssueCheckbox = (issue: Issue | string) => {
+        if (issue === 'all') {
+            if (selectedIds.length === issues.length && issues.length > 0) {
+                setSelectedIds([]);
+            } else {
+                setSelectedIds(issues.map((i) => i.id));
+            }
+        } else {
+            const issueId = typeof issue === 'string' ? issue : issue.id;
+            setSelectedIds((prev) =>
+                prev.includes(issueId)
+                    ? prev.filter((id) => id !== issueId)
+                    : [...prev, issueId],
+            );
+        }
+    };
+
     return (
         <div className="flex w-full flex-1 flex-col overflow-hidden bg-[var(--bg-color)] px-4 py-2">
             <div className="relative max-h-[calc(100vh-240px)] min-h-[300px] flex-1 overflow-auto rounded-xl border border-[var(--bg-light-color)] bg-[var(--bg-color)] shadow-xl">
@@ -83,6 +103,15 @@ const IssueTable = ({
                                 <input
                                     type="checkbox"
                                     className="h-3.5 w-3.5 cursor-pointer rounded border-zinc-700 bg-zinc-800/50 text-[var(--accent-color)] focus:ring-1 focus:ring-[var(--accent-color)] focus:ring-offset-zinc-950"
+                                    onChange={() =>
+                                        handleSelectIssueCheckbox('all')
+                                    }
+                                    checked={
+                                        issues.length > 0 &&
+                                        issues.every((issue) =>
+                                            selectedIds.includes(issue.id),
+                                        )
+                                    }
                                 />
                             </th>
                             {headers.map((header) => (
@@ -115,9 +144,17 @@ const IssueTable = ({
                             issues.map((issue) => (
                                 <IssueElement
                                     key={issue.id}
-                                    issue={issue}
+                                    issue={{
+                                        ...issue,
+                                        isChecked: selectedIds.includes(
+                                            issue.id,
+                                        ),
+                                    }}
                                     activeIssue={activeIssue}
                                     setActiveIssue={setActiveIssue}
+                                    handleSelectIssueCheckbox={
+                                        handleSelectIssueCheckbox
+                                    }
                                 />
                             ))
                         ) : (

@@ -7,6 +7,7 @@ export const IssueElement = ({
     activeIssue,
     setActiveIssue,
     type = 'list',
+    handleSelectIssueCheckbox,
 }: IssueElementProps) => {
     const props = {
         issue,
@@ -15,7 +16,14 @@ export const IssueElement = ({
         onClick: () => setActiveIssue(issue),
     };
 
-    return type === 'board' ? <BoardCard {...props} /> : <ListRow {...props} />;
+    return type === 'board' ? (
+        <BoardCard {...props} />
+    ) : (
+        <ListRow
+            {...props}
+            handleSelectIssueCheckbox={handleSelectIssueCheckbox}
+        />
+    );
 };
 
 export default IssueElement;
