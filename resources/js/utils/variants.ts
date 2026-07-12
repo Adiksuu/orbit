@@ -28,7 +28,7 @@ export const listRowVariants = cva(
     {
         variants: {
             isActive: {
-                true: 'bg-[var(--bg-light-color-hover)] text-[var(--text-color)] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[2px] before:bg-[var(--accent-color)] before:z-10',
+                true: 'bg-[var(--bg-light-color-hover)] text-[var(--text-color)]',
                 false: 'hover:bg-[var(--bg-light-color-hover)]/50 text-zinc-300 bg-[var(--bg-color)]',
             },
         },
