@@ -32,7 +32,10 @@ export const ListRow = ({
                         : 'opacity-60 group-hover/row:opacity-100',
                 )}
                 checked={issue?.isChecked}
-                onChange={() => handleSelectIssueCheckbox(issue)}
+                onChange={() =>
+                    handleSelectIssueCheckbox &&
+                    handleSelectIssueCheckbox(issue)
+                }
             />
         </td>
         <td
