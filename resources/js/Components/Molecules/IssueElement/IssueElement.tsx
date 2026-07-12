@@ -114,14 +114,16 @@ export const IssueElement = ({
                 </h4>
                 <div className="flex items-center justify-between gap-2 pt-1">
                     <div className="flex flex-wrap items-center gap-1.5">
-                        <Badge
-                            color={issue.priority}
-                            variant="default"
-                            className="flex items-center gap-1 px-1.5 py-0.5"
-                        >
-                            <StatusDot status={issue.priority} />
-                            <span className="text-[9px]">{issue.priority}</span>
-                        </Badge>
+                        <div className="flex items-center gap-1">
+                            <Badge
+                                color={issue.status}
+                                variant="default"
+                                className={'flex gap-1.5'}
+                            >
+                                <StatusDot status={issue.status} />
+                                <span>{issue.status}</span>
+                            </Badge>
+                        </div>
                         <LabelList
                             labels={issue.labels || []}
                             variant="default"
@@ -160,9 +162,15 @@ export const IssueElement = ({
             </td>
             <td className={listTitleVariants({ isClosed })}>{issue.title}</td>
             <td className="px-4 py-2">
-                <div className="flex items-center gap-2 text-[var(--text-gray-color)]">
-                    <StatusDot status={issue.status} />
-                    <span>{issue.status}</span>
+                <div className="flex items-center gap-1">
+                    <Badge
+                        color={issue.status}
+                        variant="default"
+                        className={'flex gap-1.5'}
+                    >
+                        <StatusDot status={issue.status} />
+                        <span>{issue.status}</span>
+                    </Badge>
                 </div>
             </td>
             <td className="px-4 py-2 text-[var(--text-color)]">
