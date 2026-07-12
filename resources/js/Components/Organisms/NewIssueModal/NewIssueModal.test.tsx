@@ -147,15 +147,15 @@ describe('NewIssueModal Component', () => {
 
         const badge = screen.getByText('bug');
         // Unselected labels render with the "outline" variant.
-        expect(badge).toHaveClass('group');
+        expect(badge.parentElement).toHaveClass('group');
 
         await userEvent.click(badge);
         // Selecting switches to the "default" variant.
-        expect(badge).toHaveClass('group');
+        expect(badge.parentElement).toHaveClass('group');
 
         await userEvent.click(badge);
         // Clicking again removes it, restoring the outline variant.
-        expect(badge).toHaveClass('group');
+        expect(badge.parentElement).toHaveClass('group');
     });
 
     test('highlights the priority button the user selects', async () => {

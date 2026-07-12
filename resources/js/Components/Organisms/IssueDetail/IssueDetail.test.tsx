@@ -368,13 +368,13 @@ describe('IssueDetail Component', () => {
 
         const badge = screen.getAllByText('feature')[0];
         // Unselected labels render with the "outline" variant.
-        expect(badge).toHaveClass('group');
+        expect(badge.parentElement).toHaveClass('group');
 
         await userEvent.click(badge);
         // It should still have the badge styling
-        expect(badge).toHaveClass('group');
+        expect(badge.parentElement).toHaveClass('group');
 
         await userEvent.click(badge);
-        expect(badge).toHaveClass('group');
+        expect(badge.parentElement).toHaveClass('group');
     });
 });

@@ -360,7 +360,12 @@ describe('IssueTable Component', () => {
             />,
         );
 
-        const headerCells = container.querySelectorAll('th');
+        // We only check sortable headers (ID, Title, etc.)
+        // Skip the first (checkbox) and last (settings) th
+        const headerCells = Array.from(container.querySelectorAll('th')).slice(
+            1,
+            -1,
+        );
         expect(headerCells.length).toBeGreaterThan(0);
         headerCells.forEach((cell) => {
             expect(cell).toHaveClass('group', 'cursor-pointer', 'select-none');
