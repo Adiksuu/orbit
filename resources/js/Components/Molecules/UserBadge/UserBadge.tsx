@@ -1,3 +1,4 @@
+import Badge from '@/Components/Atoms/Badge/Badge';
 import { UserBadgeProps } from '@/types/Components';
 import { cva } from 'class-variance-authority';
 import React from 'react';
@@ -22,17 +23,20 @@ const UserBadge: React.FC<UserBadgeProps> = ({
     avatarSrc,
     size = 'md',
     showDetails = false,
+    showName = true,
 }) => {
     return (
-        <div className={classVariants({ size })}>
+        <Badge
+            className={classVariants({ size })}
+            variant={'ghost'}
+            tooltip={true}
+        >
             <Avatar src={avatarSrc} initials={name.charAt(0)} size={size} />
             <div className={'flex min-w-0 flex-col'}>
                 <span
-                    className={
-                        'overflow-hidden overflow-ellipsis whitespace-nowrap text-sm font-normal text-zinc-400'
-                    }
+                    className={`overflow-hidden overflow-ellipsis whitespace-nowrap text-sm font-normal ${avatarSrc ? 'text-white' : 'text-zinc-400'}`}
                 >
-                    {name}
+                    {showName && name}
                 </span>
                 {showDetails && email && (
                     <span
@@ -44,7 +48,7 @@ const UserBadge: React.FC<UserBadgeProps> = ({
                     </span>
                 )}
             </div>
-        </div>
+        </Badge>
     );
 };
 

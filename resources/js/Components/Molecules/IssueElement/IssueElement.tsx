@@ -174,11 +174,15 @@ export const IssueElement = ({
                 </div>
             </td>
             <td className="px-4 py-2 text-[var(--text-color)]">
-                <UserBadge
-                    avatarSrc={issue.assignee?.avatar ?? undefined}
-                    name={issue.assignee ? issue.assignee.name : 'Unassigned'}
-                    size="sm"
-                />
+                <div className="flex items-center gap-1">
+                    <UserBadge
+                        avatarSrc={issue.assignee?.avatar ?? undefined}
+                        name={
+                            issue.assignee ? issue.assignee.name : 'Unassigned'
+                        }
+                        size="sm"
+                    />
+                </div>
             </td>
             <td className="px-4 py-2">
                 <div className="flex items-center gap-1">

@@ -184,6 +184,7 @@ export interface UserBadgeProps {
     avatarSrc?: string;
     size?: 'sm' | 'md' | 'lg';
     showDetails?: boolean;
+    showName?: boolean;
 }
 export interface VisualCardHeaderProps {
     title: string;
