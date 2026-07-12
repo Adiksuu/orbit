@@ -90,7 +90,7 @@ const Pagination = ({
                         onClick={() => setDropdownVisible(!dropdownVisible)}
                     />
                     {dropdownVisible && (
-                        <DropdownMenu>
+                        <DropdownMenu direction={'top'}>
                             {rowsPerPageCounts.map((count) => (
                                 <DropdownItem
                                     key={count}
