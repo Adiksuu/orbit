@@ -1,5 +1,9 @@
+import { useModal } from '@/context/ModalContext';
+import { useShortcuts } from '@/context/ShortcutContext';
 import { MainLayoutProps } from '@/types/Components';
-import React from 'react';
+import { ShortcutDefinition } from '@/types/Shortcuts';
+import { router } from '@inertiajs/react';
+import React, { useMemo } from 'react';
 import Sidebar from '../Components/Organisms/Sidebar/Sidebar';
 import TopNav from '../Components/Organisms/TopNav/TopNav';
 
@@ -10,6 +14,45 @@ const MainLayout: React.FC<MainLayoutProps> = ({
     projects,
     project,
 }) => {
+    const { closeAllModals } = useModal();
+
+    const shortcuts = useMemo(
+        (): ShortcutDefinition[] => [
+            {
+                key: 'g p',
+                description: 'Go to Projects',
+                category: 'Navigation',
+                action: () => router.visit('/projects'),
+            },
+            {
+                key: 'g b',
+                description: 'Go to Dashboard',
+                category: 'Navigation',
+                action: () => router.visit('/'),
+            },
+            {
+                key: 'escape',
+                description: 'Closes modal',
+                category: 'View',
+                action: () => closeAllModals(),
+            },
+            {
+                key: 'ctrl+f',
+                description: 'Focus Search',
+                category: 'Search',
+                action: () => {
+                    const searchInput = document.querySelector(
+                        'input[type="text"]',
+                    ) as HTMLInputElement;
+                    if (searchInput) searchInput.focus();
+                },
+            },
+        ],
+        [],
+    );
+
+    useShortcuts(shortcuts);
+
     return (
         <div
             className={

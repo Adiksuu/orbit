@@ -40,7 +40,12 @@ const Modal: React.FC<ModalProps> = ({
                 }
             `}</style>
             <div
-                className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm [animation:modalFadeIn_0.2s_ease-out]"
+                className={cn(
+                    'fixed inset-0 z-[1000] flex items-center justify-center p-4 [animation:modalFadeIn_0.2s_ease-out]',
+                    document.querySelector('.shortcut-modal-marker')
+                        ? 'bg-black/40 backdrop-blur-none'
+                        : 'bg-black/70 backdrop-blur-sm',
+                )}
                 onClick={onClose}
             >
                 <div
