@@ -13,6 +13,10 @@ const FilterBar: React.FC<FilterBarProps> = ({ queryParams = {} }) => {
     const [searchQuery, setSearchQuery] = useState(queryParams?.search || '');
     const input = useRef<HTMLInputElement>(null);
 
+    useEffect(() => {
+        setSearchQuery(queryParams?.search || '');
+    }, [queryParams?.search]);
+
     const activeFilterCount = Object.keys(queryParams || {}).filter((key) =>
         ['labels', 'status', 'assignee', 'priority'].includes(key),
     ).length;
@@ -29,19 +33,18 @@ const FilterBar: React.FC<FilterBarProps> = ({ queryParams = {} }) => {
     }, []);
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchQuery(e.target.value);
+        const value = e.target.value;
+        setSearchQuery(value);
+        router.get(
+            window.location.pathname,
+            { ...queryParams, search: value, page: 1 },
+            { preserveState: true, replace: true },
+        );
     };
 
     const handleSearchSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Escape') {
             input?.current?.blur();
-        }
-        if (e.key === 'Enter') {
-            router.get(
-                window.location.pathname,
-                { ...queryParams, search: searchQuery, page: 1 },
-                { preserveState: true },
-            );
         }
     };
 
@@ -57,6 +60,7 @@ const FilterBar: React.FC<FilterBarProps> = ({ queryParams = {} }) => {
                         value={searchQuery}
                         onChange={handleSearch}
                         onKeyDown={handleSearchSubmit}
+                        variant={'modal'}
                         ref={input}
                         className="ml-2.5 w-full border-none bg-transparent p-0 text-sm text-zinc-200 placeholder-zinc-500 shadow-none outline-none ring-0 focus:border-none focus:outline-none focus:ring-0"
                     />
