@@ -85,12 +85,6 @@ const FilterBar: React.FC<FilterBarProps> = ({ queryParams = {} }) => {
                         <FilterButton label="Priority" />
                     </div>
                 </div>
-
-                <div className="ml-auto flex shrink-0 items-center pl-2 sm:ml-0">
-                    <button className="flex items-center gap-2 whitespace-nowrap rounded-md bg-purple-600 px-4 py-1.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-purple-500 active:scale-95">
-                        New Issue
-                    </button>
-                </div>
             </div>
         </div>
     );
