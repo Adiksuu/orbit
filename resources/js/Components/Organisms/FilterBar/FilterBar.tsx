@@ -20,18 +20,6 @@ const FilterBar: React.FC<FilterBarProps> = ({ queryParams = {} }) => {
     const activeFilterCount = Object.keys(queryParams || {}).filter((key) =>
         ['labels', 'status', 'assignee', 'priority'].includes(key),
     ).length;
-
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-                e.preventDefault();
-                document.getElementById('global-search-input')?.focus();
-            }
-        };
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, []);
-
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setSearchQuery(value);
@@ -40,12 +28,6 @@ const FilterBar: React.FC<FilterBarProps> = ({ queryParams = {} }) => {
             { ...queryParams, search: value, page: 1 },
             { preserveState: true, replace: true },
         );
-    };
-
-    const handleSearchSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Escape') {
-            input?.current?.blur();
-        }
     };
 
     return (
@@ -59,14 +41,13 @@ const FilterBar: React.FC<FilterBarProps> = ({ queryParams = {} }) => {
                         placeholder="Search issue title, ID, labels..."
                         value={searchQuery}
                         onChange={handleSearch}
-                        onKeyDown={handleSearchSubmit}
                         variant={'modal'}
                         ref={input}
                         className="ml-2.5 w-full border-none bg-transparent p-0 text-sm text-zinc-200 placeholder-zinc-500 shadow-none outline-none ring-0 focus:border-none focus:outline-none focus:ring-0"
                     />
                     <div className="hidden select-none items-center gap-1 pl-2 sm:flex">
-                        <Badge tooltip={true} tooltipText={'Control + K'}>
-                            ⌘ K
+                        <Badge tooltip={true} tooltipText={'Control + F'}>
+                            ⌘ F
                         </Badge>
                     </div>
                 </div>

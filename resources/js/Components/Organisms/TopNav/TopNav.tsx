@@ -1,7 +1,9 @@
 import Badge from '@/Components/Atoms/Badge/Badge';
+import { useShortcuts } from '@/context/ShortcutContext';
 import { TopNavProps } from '@/types/Components';
+import { ShortcutDefinition } from '@/types/Shortcuts';
 import { cva } from 'class-variance-authority';
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import Button from '../../Atoms/Button/Button';
 import Icon from '../../Atoms/Icon/Icon';
 import NewIssueModal from '../NewIssueModal/NewIssueModal';
@@ -25,35 +27,37 @@ const TopNav: React.FC<TopNavProps> = ({
 }) => {
     const [isNewIssueModalOpen, setIsNewIssueModalOpen] = useState(false);
 
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            // Check for Ctrl+N or Cmd+N
-            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'i') {
-                // Always prevent default for this specific combination to block new windows
-                e.preventDefault();
-                e.stopPropagation();
+    const shortcuts = useMemo(
+        (): ShortcutDefinition[] => [
+            {
+                key: 'c',
+                description: 'Create issue',
+                category: 'Creation',
+                action: () => setIsNewIssueModalOpen(true),
+            },
+            {
+                key: 'ctrl+i',
+                description: 'Create issue',
+                category: 'Creation',
+                action: () => setIsNewIssueModalOpen(true),
+            },
+            {
+                key: '1',
+                description: 'List view',
+                category: 'View',
+                action: () => setSelectedLook('List'),
+            },
+            {
+                key: '2',
+                description: 'Board view',
+                category: 'View',
+                action: () => setSelectedLook('Board'),
+            },
+        ],
+        [setSelectedLook],
+    );
 
-                // Only open modal if not in an input field
-                if (
-                    !(e.target instanceof HTMLInputElement) &&
-                    !(e.target instanceof HTMLTextAreaElement)
-                ) {
-                    setIsNewIssueModalOpen(true);
-                }
-            }
-
-            // Close modal on Escape
-            if (e.key === 'Escape') {
-                setIsNewIssueModalOpen(false);
-            }
-        };
-
-        window.addEventListener('keydown', handleKeyDown, { capture: true });
-        return () =>
-            window.removeEventListener('keydown', handleKeyDown, {
-                capture: true,
-            });
-    }, []);
+    useShortcuts(shortcuts);
 
     return (
         <>

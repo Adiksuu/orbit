@@ -19,13 +19,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({
     const shortcuts = useMemo(
         (): ShortcutDefinition[] => [
             {
-                key: 'g p',
+                key: 'alt+p',
                 description: 'Go to Projects',
                 category: 'Navigation',
                 action: () => router.visit('/projects'),
             },
             {
-                key: 'g b',
+                key: 'alt+b',
                 description: 'Go to Dashboard',
                 category: 'Navigation',
                 action: () => router.visit('/'),
@@ -34,7 +34,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({
                 key: 'escape',
                 description: 'Closes modal',
                 category: 'View',
-                action: () => closeAllModals(),
+                action: () => {
+                    closeAllModals();
+                    const searchInput = document.querySelector(
+                        'input[type="text"]',
+                    ) as HTMLInputElement;
+                    if (searchInput) searchInput.blur();
+                },
             },
             {
                 key: 'ctrl+f',
@@ -48,7 +54,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
                 },
             },
         ],
-        [],
+        [closeAllModals],
     );
 
     useShortcuts(shortcuts);

@@ -68,13 +68,22 @@ export const ShortcutProvider: React.FC<{ children: React.ReactNode }> = ({
     }, [openModal]);
 
     useEffect(() => {
-        const unreg = register({
+        const unreg1 = register({
+            key: '?',
+            description: 'Show keyboard shortcuts',
+            category: 'Action',
+            action: handleOpenHelp,
+        });
+        const unreg2 = register({
             key: '/',
             description: 'Show keyboard shortcuts',
             category: 'Action',
             action: handleOpenHelp,
         });
-        return unreg;
+        return () => {
+            unreg1();
+            unreg2();
+        };
     }, [register, handleOpenHelp]);
 
     useEffect(() => {
@@ -97,10 +106,7 @@ export const ShortcutProvider: React.FC<{ children: React.ReactNode }> = ({
                 target?.isContentEditable ||
                 (target?.closest && target.closest('[contenteditable="true"]'));
 
-            if (isInput) {
-                if (event.key === 'Escape') {
-                    target.blur();
-                }
+            if (isInput && event.key !== 'Escape') {
                 return;
             }
 
@@ -110,8 +116,14 @@ export const ShortcutProvider: React.FC<{ children: React.ReactNode }> = ({
             let pressedKey = '';
             if (event.ctrlKey) pressedKey += 'ctrl+';
             if (event.altKey) pressedKey += 'alt+';
-            if (event.shiftKey) pressedKey += 'shift+';
             if (event.metaKey) pressedKey += 'meta+';
+
+            if (
+                event.shiftKey &&
+                (event.ctrlKey || event.altKey || event.metaKey)
+            ) {
+                pressedKey += 'shift+';
+            }
 
             pressedKey += key;
 
@@ -119,7 +131,12 @@ export const ShortcutProvider: React.FC<{ children: React.ReactNode }> = ({
                 event.ctrlKey || event.altKey || event.metaKey;
 
             if (!isModifierCombo) {
-                comboRef.current.push(pressedKey);
+                if (key !== 'escape') {
+                    comboRef.current.push(key);
+                } else {
+                    comboRef.current = ['escape'];
+                }
+
                 if (timerRef.current) clearTimeout(timerRef.current);
                 timerRef.current = setTimeout(() => {
                     comboRef.current = [];
@@ -132,10 +149,15 @@ export const ShortcutProvider: React.FC<{ children: React.ReactNode }> = ({
 
             const matchedShortcut = shortcuts.find((s) => {
                 if (s.disabled) return false;
-                const normalizedKey = s.key.toLowerCase().trim();
+                const normalizedKey = s.key
+                    .toLowerCase()
+                    .replace(/\s+/g, ' ')
+                    .trim();
                 return (
                     normalizedKey === currentCombo ||
-                    normalizedKey === pressedKey
+                    normalizedKey === pressedKey ||
+                    (key === '?' && normalizedKey === '?') ||
+                    (key === '/' && normalizedKey === '/')
                 );
             });
 
