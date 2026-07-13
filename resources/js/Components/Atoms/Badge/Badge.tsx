@@ -15,6 +15,7 @@ export const badgeVariants = cva(
                 outline:
                     'bg-transparent border-none border-[var(--bg-light-color)] text-zinc-400',
                 ghost: 'bg-transparent text-zinc-400',
+                avatar: 'px-0 text-zinc-400',
             },
             color: {
                 bug: 'text-[#f44336] bg-[#f44336]/10 border-[#f44336]/20',
@@ -47,7 +48,7 @@ const Badge: React.FC<BadgeProps> = ({
     ...props
 }) => {
     return (
-        <span className="group relative inline-flex">
+        <span className="group relative inline-flex w-fit">
             <span
                 className={cn(badgeVariants({ variant, color }), className)}
                 {...props}

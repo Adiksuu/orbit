@@ -83,7 +83,11 @@ afterEach(() => {
 describe('IssueDetail Component', () => {
     test('renders the issue title, status and priority in view mode', () => {
         render(
-            <IssueDetail activeIssue={makeIssue()} setActiveIssue={() => {}} />,
+            <IssueDetail
+                isOpen={true}
+                onClose={() => {}}
+                activeIssue={makeIssue()}
+            />,
         );
 
         expect(
@@ -97,8 +101,9 @@ describe('IssueDetail Component', () => {
     test('renders the description via markdown', () => {
         render(
             <IssueDetail
+                isOpen={true}
+                onClose={() => {}}
                 activeIssue={makeIssue({ description: 'Steps to reproduce' })}
-                setActiveIssue={() => {}}
             />,
         );
 
@@ -108,8 +113,9 @@ describe('IssueDetail Component', () => {
     test('shows a fallback when the issue has no description', () => {
         render(
             <IssueDetail
+                isOpen={true}
+                onClose={() => {}}
                 activeIssue={makeIssue({ description: undefined })}
-                setActiveIssue={() => {}}
             />,
         );
 
@@ -121,6 +127,8 @@ describe('IssueDetail Component', () => {
     test('renders the assignee name when the issue has one', () => {
         render(
             <IssueDetail
+                isOpen={true}
+                onClose={() => {}}
                 activeIssue={makeIssue({
                     assignee: {
                         id: 9,
@@ -132,7 +140,6 @@ describe('IssueDetail Component', () => {
                         updated_at: '',
                     },
                 })}
-                setActiveIssue={() => {}}
             />,
         );
 
@@ -143,11 +150,12 @@ describe('IssueDetail Component', () => {
     test('falls back to "Unassigned" and empty labels when neither is set', () => {
         render(
             <IssueDetail
+                isOpen={true}
+                onClose={() => {}}
                 activeIssue={makeIssue({
                     assignee: undefined,
                     labels: undefined,
                 })}
-                setActiveIssue={() => {}}
             />,
         );
 
@@ -157,11 +165,12 @@ describe('IssueDetail Component', () => {
     test('shows "opened" when created and updated timestamps match', () => {
         render(
             <IssueDetail
+                isOpen={true}
+                onClose={() => {}}
                 activeIssue={makeIssue({
                     created_at: 1_700_000_000_000,
                     updated_at: 1_700_000_000_000,
                 })}
-                setActiveIssue={() => {}}
             />,
         );
 
@@ -171,11 +180,12 @@ describe('IssueDetail Component', () => {
     test('shows "updated" when the issue has been modified since creation', () => {
         render(
             <IssueDetail
+                isOpen={true}
+                onClose={() => {}}
                 activeIssue={makeIssue({
                     created_at: 1_700_000_000_000,
                     updated_at: 1_700_000_500_000,
                 })}
-                setActiveIssue={() => {}}
             />,
         );
 
@@ -185,32 +195,38 @@ describe('IssueDetail Component', () => {
     test('renders the issue labels in view mode', () => {
         render(
             <IssueDetail
+                isOpen={true}
+                onClose={() => {}}
                 activeIssue={makeIssue({ labels: ['bug', 'feature'] })}
-                setActiveIssue={() => {}}
             />,
         );
 
         expect(screen.getAllByText('feature')[0]).toBeInTheDocument();
     });
 
-    test('calls setActiveIssue(null) when the close button is clicked', async () => {
-        const setActiveIssue = vi.fn();
+    test('calls onClose when the close button is clicked', async () => {
+        const onClose = vi.fn();
         const { container } = render(
             <IssueDetail
+                isOpen={true}
+                onClose={onClose}
                 activeIssue={makeIssue()}
-                setActiveIssue={setActiveIssue}
             />,
         );
 
         // In view mode the only X icon is the close button.
         await userEvent.click(iconButton(container, 'lucide-x'));
 
-        expect(setActiveIssue).toHaveBeenCalledWith(null);
+        expect(onClose).toHaveBeenCalled();
     });
 
     test('switches to an editable form when the edit button is clicked', async () => {
         const { container } = render(
-            <IssueDetail activeIssue={makeIssue()} setActiveIssue={() => {}} />,
+            <IssueDetail
+                isOpen={true}
+                onClose={() => {}}
+                activeIssue={makeIssue()}
+            />,
         );
 
         expect(
@@ -221,13 +237,17 @@ describe('IssueDetail Component', () => {
 
         expect(screen.getByPlaceholderText('Issue title')).toBeInTheDocument();
         expect(
-            screen.getByPlaceholderText('Issue description'),
+            screen.getByPlaceholderText('Add a description...'),
         ).toBeInTheDocument();
     });
 
     test('lets the user edit the title', async () => {
         const { container } = render(
-            <IssueDetail activeIssue={makeIssue()} setActiveIssue={() => {}} />,
+            <IssueDetail
+                isOpen={true}
+                onClose={() => {}}
+                activeIssue={makeIssue()}
+            />,
         );
 
         await userEvent.click(iconButton(container, 'lucide-pencil'));
@@ -241,12 +261,16 @@ describe('IssueDetail Component', () => {
 
     test('lets the user edit the description', async () => {
         const { container } = render(
-            <IssueDetail activeIssue={makeIssue()} setActiveIssue={() => {}} />,
+            <IssueDetail
+                isOpen={true}
+                onClose={() => {}}
+                activeIssue={makeIssue()}
+            />,
         );
 
         await userEvent.click(iconButton(container, 'lucide-pencil'));
 
-        const description = screen.getByPlaceholderText('Issue description');
+        const description = screen.getByPlaceholderText('Add a description...');
         await userEvent.clear(description);
         await userEvent.type(description, 'Updated steps');
 
@@ -256,7 +280,11 @@ describe('IssueDetail Component', () => {
     test('saves via the issues.update route and leaves edit mode on success', async () => {
         const issue = makeIssue();
         const { container } = render(
-            <IssueDetail activeIssue={issue} setActiveIssue={() => {}} />,
+            <IssueDetail
+                isOpen={true}
+                onClose={() => {}}
+                activeIssue={issue}
+            />,
         );
 
         await userEvent.click(iconButton(container, 'lucide-pencil'));
@@ -272,7 +300,11 @@ describe('IssueDetail Component', () => {
 
     test('cancels editing without saving', async () => {
         const { container } = render(
-            <IssueDetail activeIssue={makeIssue()} setActiveIssue={() => {}} />,
+            <IssueDetail
+                isOpen={true}
+                onClose={() => {}}
+                activeIssue={makeIssue()}
+            />,
         );
 
         await userEvent.click(iconButton(container, 'lucide-pencil'));
@@ -293,8 +325,9 @@ describe('IssueDetail Component', () => {
     test('opens the status dropdown while editing', async () => {
         const { container } = render(
             <IssueDetail
+                isOpen={true}
+                onClose={() => {}}
                 activeIssue={makeIssue({ status: 'open' })}
-                setActiveIssue={() => {}}
             />,
         );
 
@@ -314,8 +347,9 @@ describe('IssueDetail Component', () => {
     test('selects a status option and closes the dropdown', async () => {
         const { container } = render(
             <IssueDetail
+                isOpen={true}
+                onClose={() => {}}
                 activeIssue={makeIssue({ status: 'open' })}
-                setActiveIssue={() => {}}
             />,
         );
 
@@ -336,8 +370,9 @@ describe('IssueDetail Component', () => {
     test('opens the priority dropdown and selects an option', async () => {
         const { container } = render(
             <IssueDetail
+                isOpen={true}
+                onClose={() => {}}
                 activeIssue={makeIssue({ priority: 'high' })}
-                setActiveIssue={() => {}}
             />,
         );
 
@@ -359,8 +394,9 @@ describe('IssueDetail Component', () => {
     test('toggles a label on and off while editing', async () => {
         const { container } = render(
             <IssueDetail
+                isOpen={true}
+                onClose={() => {}}
                 activeIssue={makeIssue({ labels: [] })}
-                setActiveIssue={() => {}}
             />,
         );
 

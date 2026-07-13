@@ -1,5 +1,6 @@
 import Badge from '@/Components/Atoms/Badge/Badge';
 import { UserBadgeProps } from '@/types/Components';
+import { cn } from '@/utils/cn';
 import { cva } from 'class-variance-authority';
 import React from 'react';
 import Avatar from '../../Atoms/Avatar/Avatar';
@@ -24,12 +25,18 @@ const UserBadge: React.FC<UserBadgeProps> = ({
     size = 'md',
     showDetails = false,
     showName = true,
+    showTooltip = true,
+    className,
 }) => {
     return (
         <Badge
-            className={classVariants({ size })}
-            variant={'ghost'}
-            tooltip={true}
+            className={cn(
+                classVariants({ size }),
+                'w-fit self-start',
+                className,
+            )}
+            variant={'avatar'}
+            tooltip={showTooltip}
         >
             <Avatar src={avatarSrc} initials={name.charAt(0)} size={size} />
             <div className={'flex min-w-0 flex-col'}>

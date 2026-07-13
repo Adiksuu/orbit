@@ -58,6 +58,7 @@ export interface DropdownTriggerProps {
     label: ReactNode;
     onClick: () => void;
     disabled?: boolean;
+    className?: string;
 }
 export interface IconProps {
     name: keyof typeof icons;
@@ -194,6 +195,8 @@ export interface UserBadgeProps {
     size?: 'sm' | 'md' | 'lg';
     showDetails?: boolean;
     showName?: boolean;
+    showTooltip?: boolean;
+    className?: string;
 }
 export interface VisualCardHeaderProps {
     title: string;
@@ -242,8 +245,9 @@ export interface IssueBoardProps {
     setActiveIssue: (issue: Issue | null) => void;
 }
 export interface IssueDetailProps {
+    isOpen: boolean;
+    onClose: () => void;
     activeIssue: Issue;
-    setActiveIssue: (issue: Issue | null) => void;
 }
 export interface IssueTableProps {
     issues: Issue[];
