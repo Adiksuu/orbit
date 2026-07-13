@@ -22,6 +22,7 @@ export interface Issue {
         updated_at: string;
     };
     labels?: IssueLabel[];
+    isChecked?: boolean;
 }
 
 export interface PaginatedResponse<T> {
@@ -51,4 +52,4 @@ export type Status = 'open' | 'closed';
 
 export type Sorting = 'AZ' | 'ZA';
 export type SortingColumn =
-    'id' | 'title' | 'status' | 'assignee' | 'priority' | 'labels';
+    'id' | 'title' | 'status' | 'assignee' | 'priority' | 'labels' | 'updated';

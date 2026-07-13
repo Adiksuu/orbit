@@ -64,34 +64,29 @@ export default function Show({
             project={project}
         >
             <div className={'flex h-full flex-col'}>
-                <FilterBar />
+                <FilterBar queryParams={queryParams} />
                 <div
                     className={
                         'relative flex flex-1 overflow-hidden border-t border-solid border-[var(--bg-light-color)]'
                     }
                 >
-                    <div
-                        className={
-                            'flex flex-1 flex-col overflow-hidden border-r border-solid border-[var(--bg-light-color)]'
-                        }
-                    >
+                    <div className={'flex flex-1 flex-col overflow-hidden'}>
                         {selectedLook === 'List' ? (
-                            <>
-                                <div className={'flex-1 overflow-y-auto'}>
-                                    <IssueTable
-                                        issues={issues.data}
-                                        activeIssue={activeIssue}
-                                        setActiveIssue={setActiveIssue}
+                            <IssueTable
+                                issues={issues.data}
+                                activeIssue={activeIssue}
+                                setActiveIssue={setActiveIssue}
+                                queryParams={queryParams}
+                                pagination={
+                                    <Pagination
+                                        links={issues.links}
+                                        from={issues.from}
+                                        to={issues.to}
+                                        total={issues.total}
                                         queryParams={queryParams}
                                     />
-                                </div>
-                                <Pagination
-                                    links={issues.links}
-                                    from={issues.from}
-                                    to={issues.to}
-                                    total={issues.total}
-                                />
-                            </>
+                                }
+                            />
                         ) : (
                             <>
                                 <div
@@ -110,21 +105,17 @@ export default function Show({
                                     from={issues.from}
                                     to={issues.to}
                                     total={issues.total}
+                                    queryParams={queryParams}
                                 />
                             </>
                         )}
                     </div>
                     {activeIssue && (
-                        <div
-                            className={
-                                'absolute right-0 top-0 z-10 h-full w-full overflow-y-auto border-l border-solid border-[var(--bg-light-color)] bg-[var(--bg-color)] shadow-2xl sm:w-[420px]'
-                            }
-                        >
-                            <IssueDetail
-                                activeIssue={activeIssue}
-                                setActiveIssue={setActiveIssue}
-                            />
-                        </div>
+                        <IssueDetail
+                            isOpen={!!activeIssue}
+                            onClose={() => setActiveIssue(null)}
+                            activeIssue={activeIssue}
+                        />
                     )}
                 </div>
             </div>

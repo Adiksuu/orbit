@@ -73,7 +73,7 @@ describe('IssueElement Component', () => {
                 />,
             );
 
-            expect(screen.getByText('feature')).toBeInTheDocument();
+            expect(screen.getAllByText('feature')[0]).toBeInTheDocument();
         });
 
         test('calls setActiveIssue with the issue when clicked', async () => {
@@ -122,7 +122,7 @@ describe('IssueElement Component', () => {
     });
 
     describe('list layout (default)', () => {
-        test('renders the id, title and capitalised priority in a table row', () => {
+        test('renders the id, title and priority in a table row', () => {
             renderInTable(
                 <IssueElement
                     issue={makeIssue()}
@@ -131,10 +131,9 @@ describe('IssueElement Component', () => {
                 />,
             );
 
-            expect(screen.getByText('ISSUE-1')).toBeInTheDocument();
+            expect(screen.getByText(/ISSUE-1/)).toBeInTheDocument();
             expect(screen.getByText('Fix the bug')).toBeInTheDocument();
-            // "high" is rendered capitalised in the list layout.
-            expect(screen.getByText('High')).toBeInTheDocument();
+            expect(screen.getAllByText('high')).toHaveLength(1);
         });
 
         test('renders the assignee name via the user badge', () => {
@@ -146,7 +145,7 @@ describe('IssueElement Component', () => {
                 />,
             );
 
-            expect(screen.getByText('Jane Doe')).toBeInTheDocument();
+            expect(screen.getAllByText('Jane Doe')).toHaveLength(2);
         });
 
         test('renders "Unassigned" when there is no assignee', () => {
@@ -158,7 +157,7 @@ describe('IssueElement Component', () => {
                 />,
             );
 
-            expect(screen.getByText('Unassigned')).toBeInTheDocument();
+            expect(screen.getAllByText('Unassigned')).toHaveLength(2);
         });
 
         test('calls setActiveIssue with the issue when the row is clicked', async () => {

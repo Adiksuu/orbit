@@ -33,6 +33,8 @@ export interface BadgeProps
         Omit<HTMLAttributes<HTMLSpanElement>, 'color'>,
         VariantProps<typeof badgeVariants> {
     children: ReactNode;
+    tooltip?: boolean;
+    tooltipText?: ReactNode;
 }
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     children: ReactNode;
@@ -49,10 +51,14 @@ export interface DropdownItemProps
 export interface ChildrenItemProps {
     children: ReactNode;
 }
+export interface DropdownMenuProps extends ChildrenItemProps {
+    direction?: 'top' | 'bottom';
+}
 export interface DropdownTriggerProps {
     label: ReactNode;
     onClick: () => void;
     disabled?: boolean;
+    className?: string;
 }
 export interface IconProps {
     name: keyof typeof icons;
@@ -77,6 +83,9 @@ export interface InputProps extends VariantProps<typeof inputVariants> {
     isDisabled?: boolean;
     type?: string;
     className?: string;
+    onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+    id?: string;
+    ref?: React.Ref<HTMLInputElement> | null;
 }
 export interface ModalProps {
     isOpen: boolean;
@@ -123,6 +132,7 @@ export interface IssueElementProps {
     activeIssue: Issue | null;
     setActiveIssue: (issue: Issue | null) => void;
     type?: 'list' | 'board';
+    handleSelectIssueCheckbox?: (issue: Issue | string) => void;
 }
 export interface IssuePropertyProps {
     label: string;
@@ -154,6 +164,7 @@ export interface PaginationProps {
     from: number;
     to: number;
     total: number;
+    queryParams?: { perPage?: string; page?: string; [key: string]: any };
 }
 export interface ProjectCardProps {
     project: Project;
@@ -183,6 +194,9 @@ export interface UserBadgeProps {
     avatarSrc?: string;
     size?: 'sm' | 'md' | 'lg';
     showDetails?: boolean;
+    showName?: boolean;
+    showTooltip?: boolean;
+    className?: string;
 }
 export interface VisualCardHeaderProps {
     title: string;
@@ -231,14 +245,16 @@ export interface IssueBoardProps {
     setActiveIssue: (issue: Issue | null) => void;
 }
 export interface IssueDetailProps {
+    isOpen: boolean;
+    onClose: () => void;
     activeIssue: Issue;
-    setActiveIssue: (issue: Issue | null) => void;
 }
 export interface IssueTableProps {
     issues: Issue[];
     activeIssue: Issue | null;
     setActiveIssue: (issue: Issue | null) => void;
     queryParams?: { sort?: string; direction?: string; [key: string]: any };
+    pagination?: ReactNode;
 }
 export interface NewIssueModalProps {
     isOpen: boolean;
@@ -262,6 +278,20 @@ export interface AlertContainerProps {
     alerts: AlertItem[];
     removeAlert: (id: string) => void;
 }
+export interface BoardCardProps {
+    issue: Issue;
+    isActive: boolean;
+    onClick: () => void;
+    isClosed: boolean;
+}
+export interface ListRowProps {
+    issue: Issue;
+    isActive: boolean;
+    onClick: () => void;
+    isClosed: boolean;
+    handleSelectIssueCheckbox?: (issue: Issue | string) => void;
+}
+
 // OTHER COMPONENTS
 export interface MainLayoutProps {
     children: ReactNode;

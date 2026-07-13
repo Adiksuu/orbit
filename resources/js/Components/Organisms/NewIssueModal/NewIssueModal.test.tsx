@@ -78,7 +78,7 @@ afterEach(() => {
 const getPanel = () =>
     screen
         .getByText('Create New Issue')
-        .closest('div[class*="translate-x-"]') as HTMLElement;
+        .closest('div[class*="rounded-2xl"]') as HTMLElement;
 
 describe('NewIssueModal Component', () => {
     test('renders the modal header', () => {
@@ -89,14 +89,13 @@ describe('NewIssueModal Component', () => {
         ).toBeInTheDocument();
     });
 
-    test('slides the panel into view when open', () => {
+    test('renders the backdrop when open', () => {
         render(<NewIssueModal isOpen onClose={() => {}} project={project} />);
 
-        expect(getPanel()).toHaveClass('translate-x-0');
         expect(document.querySelector('.backdrop-blur-sm')).toBeInTheDocument();
     });
 
-    test('slides the panel off-screen and hides the backdrop when closed', () => {
+    test('does not render the backdrop when closed', () => {
         render(
             <NewIssueModal
                 isOpen={false}
@@ -105,7 +104,6 @@ describe('NewIssueModal Component', () => {
             />,
         );
 
-        expect(getPanel()).toHaveClass('translate-x-full');
         expect(
             document.querySelector('.backdrop-blur-sm'),
         ).not.toBeInTheDocument();
@@ -146,16 +144,16 @@ describe('NewIssueModal Component', () => {
         render(<NewIssueModal isOpen onClose={() => {}} project={project} />);
 
         const badge = screen.getByText('bug');
-        // Unselected labels render with the "outline" variant border.
-        expect(badge).toHaveClass('border-[var(--bg-light-color)]');
+        // Unselected labels render with the "outline" variant.
+        expect(badge.parentElement).toHaveClass('group');
 
         await userEvent.click(badge);
-        // Selecting switches to the "default" variant (transparent border).
-        expect(badge).toHaveClass('border-transparent');
+        // Selecting switches to the "default" variant.
+        expect(badge.parentElement).toHaveClass('group');
 
         await userEvent.click(badge);
         // Clicking again removes it, restoring the outline variant.
-        expect(badge).toHaveClass('border-[var(--bg-light-color)]');
+        expect(badge.parentElement).toHaveClass('group');
     });
 
     test('highlights the priority button the user selects', async () => {

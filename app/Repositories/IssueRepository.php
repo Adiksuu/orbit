@@ -26,7 +26,7 @@ class IssueRepository
     public function getAll(): Collection {
         return Issue::query()->with(['creator', 'assignee'])->latest()->get();
     }
-    public function getAllPaginated(string | int $projectID = 'all', int $perPage = 20, array $sortParams = []): LengthAwarePaginator {
+    public function getAllPaginated(string | int $projectID = 'all', int $perPage = 20, array $sortParams = [], array $searchParams = []): LengthAwarePaginator {
         $query = Issue::query()->with(['creator', 'assignee']);
 
         if ($projectID !== 'all') {
@@ -37,7 +37,7 @@ class IssueRepository
         $direction = $directionInput === 'ZA' ? 'desc' : 'asc';
 
         $column = $sortParams['sort'] ?? null;
-        $allowedColumns = ['id', 'title', 'status', 'assignee', 'priority', 'labels'];
+        $allowedColumns = ['id', 'title', 'status', 'assignee', 'priority', 'labels', 'updated'];
 
         if ($column && in_array($column, $allowedColumns)) {
             switch ($column) {
@@ -61,10 +61,32 @@ class IssueRepository
                         ->select('issues.*')
                         ->orderBy('users.name', $direction);
                     break;
+
+                case 'updated':
+                    $query->orderBy('updated_at', $direction);
+                    break;
             }
         } else {
             $query->latest();
         }
+
+        if ($searchParams) {
+            $query->where(function ($q) use ($searchParams) {
+                foreach ($searchParams as $key => $value) {
+                    if ($key === 'search') {
+                        $q->where(function ($sq) use ($value) {
+                            $sq->where('title', 'like', "%$value%")
+                                ->orWhere('description', 'like', "%$value%")
+                                ->orWhere('id', 'like', "%$value%")
+                                ->orWhere('labels', 'like', "%$value%");
+                        });
+                    } elseif (in_array($key, ['title', 'status', 'priority', 'labels'])) {
+                        $q->where($key, 'like', "%$value%");
+                    }
+                }
+            });
+        }
+
         return $query->paginate($perPage)->withQueryString();
     }
     public function getProductivityTrend(): array

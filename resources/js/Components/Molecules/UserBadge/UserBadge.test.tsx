@@ -6,13 +6,13 @@ describe('UserBadge Component', () => {
     test('renders the name', () => {
         render(<UserBadge name="Jane Doe" />);
 
-        expect(screen.getByText('Jane Doe')).toBeInTheDocument();
+        expect(screen.getAllByText('Jane Doe')).toHaveLength(2);
     });
 
     test('renders the initial (first character of the name) as the avatar fallback', () => {
         render(<UserBadge name="Jane Doe" />);
 
-        expect(screen.getByText('J')).toBeInTheDocument();
+        expect(screen.getAllByText('J')).toHaveLength(2);
     });
 
     test('hides the email by default even when one is provided', () => {
@@ -24,13 +24,13 @@ describe('UserBadge Component', () => {
     test('shows the email when showDetails is true and an email is provided', () => {
         render(<UserBadge name="Jane Doe" email="jane@acme.com" showDetails />);
 
-        expect(screen.getByText('jane@acme.com')).toBeInTheDocument();
+        expect(screen.getAllByText('jane@acme.com')).toHaveLength(2);
     });
 
     test('does not render an email element when showDetails is true but no email is passed', () => {
         render(<UserBadge name="Jane Doe" showDetails />);
 
-        expect(screen.getByText('Jane Doe')).toBeInTheDocument();
+        expect(screen.getAllByText('Jane Doe')).toHaveLength(2);
         expect(screen.queryByText('jane@acme.com')).not.toBeInTheDocument();
     });
 

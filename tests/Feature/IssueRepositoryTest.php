@@ -61,3 +61,53 @@ test('it returns issues ordered by priority', function () {
     expect($issues[1]->priority)->toBe('medium');
     expect($issues[2]->priority)->toBe('low');
 });
+
+test('it can search issues by title', function () {
+    $project = Project::factory()->create();
+    Issue::factory()->create(['project_id' => $project->id, 'title' => 'Searchable Title']);
+    Issue::factory()->create(['project_id' => $project->id, 'title' => 'Another Issue']);
+
+    $results = $this->repository->getAllPaginated($project->id, 10, [], ['search' => 'Searchable']);
+
+    expect($results->items())->toHaveCount(1);
+    expect($results->items()[0]->title)->toBe('Searchable Title');
+});
+
+test('it can search issues by description', function () {
+    $project = Project::factory()->create();
+    Issue::factory()->create(['project_id' => $project->id, 'description' => 'Target description']);
+    Issue::factory()->create(['project_id' => $project->id, 'description' => 'Other content']);
+
+    $results = $this->repository->getAllPaginated($project->id, 10, [], ['search' => 'Target']);
+
+    expect($results->items())->toHaveCount(1);
+    expect($results->items()[0]->description)->toBe('Target description');
+});
+
+test('it can search issues by ID', function () {
+    $project = Project::factory()->create();
+    $issue = Issue::factory()->create(['project_id' => $project->id, 'id' => 999]);
+    Issue::factory()->create(['project_id' => $project->id, 'id' => 888]);
+
+    $results = $this->repository->getAllPaginated($project->id, 10, [], ['search' => '999']);
+
+    expect($results->items())->toHaveCount(1);
+    expect($results->items()[0]->id)->toBe(999);
+});
+
+test('it can search issues by labels', function () {
+    $project = Project::factory()->create();
+    Issue::factory()->create([
+        'project_id' => $project->id,
+        'labels' => [\App\Enums\IssueLabel::BUG],
+    ]);
+    Issue::factory()->create([
+        'project_id' => $project->id,
+        'labels' => [\App\Enums\IssueLabel::FEATURE],
+    ]);
+
+    $results = $this->repository->getAllPaginated($project->id, 10, [], ['search' => 'bug']);
+
+    expect($results->items())->toHaveCount(1);
+});
+

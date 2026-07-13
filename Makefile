@@ -22,6 +22,16 @@ up dev:
 	docker compose up
 
 # Start the stack detached.
+up-d:
+	docker compose up -d
+	@echo ""
+	@echo "  Orbit is running (detached) — open the app in your browser:"
+	@echo ""
+	@echo "    App (Laravel):   http://localhost:8000"
+	@echo "    Vite (assets):   http://localhost:5173"
+	@echo ""
+
+# Stop the stack.
 down:
 	docker compose down
 

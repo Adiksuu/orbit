@@ -11,6 +11,8 @@ services:
             # Keep the image-installed dependencies instead of the host's.
             - /app/vendor
         restart: unless-stopped
+        tty: true
+        stdin_open: true
         networks:
             - orbit-network
 
@@ -28,6 +30,8 @@ services:
             # Keep the image-installed node_modules instead of the host's.
             - /app/node_modules
         restart: unless-stopped
+        tty: true
+        stdin_open: true
         networks:
             - orbit-network
 

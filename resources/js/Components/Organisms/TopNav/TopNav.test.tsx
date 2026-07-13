@@ -186,4 +186,26 @@ describe('TopNav Component', () => {
             ).not.toBeInTheDocument();
         });
     });
+
+    test('opens the new issue modal with the "Ctrl + I" shortcut', async () => {
+        render(
+            <TopNav
+                selectedLook="List"
+                setSelectedLook={() => {}}
+                project={project}
+            />,
+        );
+
+        expect(
+            document.querySelector('.backdrop-blur-sm'),
+        ).not.toBeInTheDocument();
+
+        fireEvent.keyDown(window, { key: 'I', ctrlKey: true });
+
+        await waitFor(() => {
+            expect(
+                document.querySelector('.backdrop-blur-sm'),
+            ).toBeInTheDocument();
+        });
+    });
 });

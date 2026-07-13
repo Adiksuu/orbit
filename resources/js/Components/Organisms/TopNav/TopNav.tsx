@@ -1,6 +1,7 @@
+import Badge from '@/Components/Atoms/Badge/Badge';
 import { TopNavProps } from '@/types/Components';
 import { cva } from 'class-variance-authority';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '../../Atoms/Button/Button';
 import Icon from '../../Atoms/Icon/Icon';
 import NewIssueModal from '../NewIssueModal/NewIssueModal';
@@ -23,6 +24,36 @@ const TopNav: React.FC<TopNavProps> = ({
     project,
 }) => {
     const [isNewIssueModalOpen, setIsNewIssueModalOpen] = useState(false);
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            // Check for Ctrl+N or Cmd+N
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'i') {
+                // Always prevent default for this specific combination to block new windows
+                e.preventDefault();
+                e.stopPropagation();
+
+                // Only open modal if not in an input field
+                if (
+                    !(e.target instanceof HTMLInputElement) &&
+                    !(e.target instanceof HTMLTextAreaElement)
+                ) {
+                    setIsNewIssueModalOpen(true);
+                }
+            }
+
+            // Close modal on Escape
+            if (e.key === 'Escape') {
+                setIsNewIssueModalOpen(false);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown, { capture: true });
+        return () =>
+            window.removeEventListener('keydown', handleKeyDown, {
+                capture: true,
+            });
+    }, []);
 
     return (
         <>
@@ -74,15 +105,19 @@ const TopNav: React.FC<TopNavProps> = ({
                 </div>
                 <div className={'flex items-center'}>
                     <div className={'flex items-center gap-4'}>
-                        <div
-                            className={
-                                'flex items-stretch overflow-hidden rounded-md bg-[var(--accent-color)]'
-                            }
-                        >
+                        <div className={'flex items-stretch'}>
                             <Button
                                 onClick={() => setIsNewIssueModalOpen(true)}
+                                className={'gap-4 rounded-lg'}
+                                id={'new-issue-button'}
                             >
-                                New issue <Icon name={'Plus'} />
+                                New issue
+                                <Badge
+                                    tooltip={true}
+                                    tooltipText={'Control + I'}
+                                >
+                                    ⌘ I
+                                </Badge>
                             </Button>
                         </div>
                         <div className={'hidden items-center gap-4 md:flex'}>

@@ -1,4 +1,6 @@
+import Badge from '@/Components/Atoms/Badge/Badge';
 import { UserBadgeProps } from '@/types/Components';
+import { cn } from '@/utils/cn';
 import { cva } from 'class-variance-authority';
 import React from 'react';
 import Avatar from '../../Atoms/Avatar/Avatar';
@@ -22,29 +24,38 @@ const UserBadge: React.FC<UserBadgeProps> = ({
     avatarSrc,
     size = 'md',
     showDetails = false,
+    showName = true,
+    showTooltip = true,
+    className,
 }) => {
     return (
-        <div className={classVariants({ size })}>
+        <Badge
+            className={cn(
+                classVariants({ size }),
+                'w-fit self-start',
+                className,
+            )}
+            variant={'avatar'}
+            tooltip={showTooltip}
+        >
             <Avatar src={avatarSrc} initials={name.charAt(0)} size={size} />
             <div className={'flex min-w-0 flex-col'}>
                 <span
-                    className={
-                        'overflow-hidden overflow-ellipsis whitespace-nowrap text-sm font-medium'
-                    }
+                    className={`overflow-hidden overflow-ellipsis whitespace-nowrap text-sm font-normal ${avatarSrc ? 'text-white' : 'text-zinc-400'}`}
                 >
-                    {name}
+                    {showName && name}
                 </span>
                 {showDetails && email && (
                     <span
                         className={
-                            'overflow-hidden overflow-ellipsis whitespace-nowrap text-xs text-zinc-400'
+                            'overflow-hidden overflow-ellipsis whitespace-nowrap text-xs font-normal text-zinc-400'
                         }
                     >
                         {email}
                     </span>
                 )}
             </div>
-        </div>
+        </Badge>
     );
 };
 

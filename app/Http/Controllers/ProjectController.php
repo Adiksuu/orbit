@@ -25,7 +25,9 @@ class ProjectController extends Controller
         $projects = $this->projectService->getAll();
 
         $sortParams = request()->only(['sort', 'direction']);
-        $issues = $this->issueService->getAllByProjectID($project->id, $sortParams);
+        $perPage = (int) request()->get('perPage', 10);
+        $searchParams = request()->only(['search']);
+        $issues = $this->issueService->getAllByProjectID($project->id, $sortParams, $perPage, $searchParams);
 
         return Inertia::render('Projects/Show', [
             'project' => $project,
