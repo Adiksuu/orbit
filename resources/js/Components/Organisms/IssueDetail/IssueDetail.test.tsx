@@ -288,7 +288,9 @@ describe('IssueDetail Component', () => {
         );
 
         await userEvent.click(iconButton(container, 'lucide-pencil'));
-        await userEvent.click(iconButton(container, 'lucide-check'));
+        await userEvent.click(
+            screen.getByRole('button', { name: /save changes/i }),
+        );
 
         expect(mockRoute).toHaveBeenCalledWith('issues.update', issue.id);
         expect(mockPatch).toHaveBeenCalledTimes(1);
@@ -310,11 +312,7 @@ describe('IssueDetail Component', () => {
         await userEvent.click(iconButton(container, 'lucide-pencil'));
         expect(screen.getByPlaceholderText('Issue title')).toBeInTheDocument();
 
-        // In edit mode the first X icon is the cancel button.
-        const cancel = container
-            .querySelectorAll('.lucide-x')[0]
-            ?.closest('button') as HTMLElement;
-        await userEvent.click(cancel);
+        await userEvent.click(screen.getByRole('button', { name: /cancel/i }));
 
         expect(
             screen.queryByPlaceholderText('Issue title'),
