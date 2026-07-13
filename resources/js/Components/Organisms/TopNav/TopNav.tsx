@@ -27,18 +27,32 @@ const TopNav: React.FC<TopNavProps> = ({
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (
-                (e.metaKey || e.ctrlKey) &&
-                e.key.toLowerCase() === 'i' &&
-                !(e.target instanceof HTMLInputElement) &&
-                !(e.target instanceof HTMLTextAreaElement)
-            ) {
+            // Check for Ctrl+N or Cmd+N
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'i') {
+                // Always prevent default for this specific combination to block new windows
                 e.preventDefault();
-                setIsNewIssueModalOpen(true);
+                e.stopPropagation();
+
+                // Only open modal if not in an input field
+                if (
+                    !(e.target instanceof HTMLInputElement) &&
+                    !(e.target instanceof HTMLTextAreaElement)
+                ) {
+                    setIsNewIssueModalOpen(true);
+                }
+            }
+
+            // Close modal on Escape
+            if (e.key === 'Escape') {
+                setIsNewIssueModalOpen(false);
             }
         };
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
+
+        window.addEventListener('keydown', handleKeyDown, { capture: true });
+        return () =>
+            window.removeEventListener('keydown', handleKeyDown, {
+                capture: true,
+            });
     }, []);
 
     return (
