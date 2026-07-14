@@ -42,6 +42,19 @@ describe('Modal Component', () => {
         expect(handleClose).toHaveBeenCalledTimes(1);
     });
 
+    test('calls onClose when Escape is pressed', async () => {
+        const handleClose = vi.fn();
+        render(
+            <Modal isOpen onClose={handleClose}>
+                <p>Body content</p>
+            </Modal>,
+        );
+
+        await userEvent.keyboard('{Escape}');
+
+        expect(handleClose).toHaveBeenCalledTimes(1);
+    });
+
     test('does not call onClose when the panel content is clicked', async () => {
         const handleClose = vi.fn();
         render(

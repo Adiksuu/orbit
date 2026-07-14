@@ -42,8 +42,6 @@ export const ShortcutHelpModal: React.FC = () => {
                     onChange={(e) => setSearch(e.target.value)}
                 />
             </div>
-
-            {/* Content */}
             <div className="scrollbar-thin scrollbar-thumb-[#333] max-h-[450px] flex-1 overflow-y-auto p-1.5">
                 {Object.keys(categories).length === 0 ? (
                     <div className="py-12 text-center text-sm text-[#555]">
@@ -119,8 +117,6 @@ export const ShortcutHelpModal: React.FC = () => {
                     ))
                 )}
             </div>
-
-            {/* Footer / Legend */}
             <div className="flex items-center gap-6 border-t border-[#333] bg-[#1a1a1a] px-4 py-2.5">
                 <div className="flex items-center gap-2 text-[10px] text-[#555]">
                     <kbd className="rounded border border-[#333] bg-[#222] px-1.5 py-0.5 text-[9px] font-bold text-[#777]">
