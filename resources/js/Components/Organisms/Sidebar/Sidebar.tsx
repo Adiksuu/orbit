@@ -1,9 +1,11 @@
 import Badge from '@/Components/Atoms/Badge/Badge';
 import NewProjectModal from '@/Components/Organisms/NewProjectModal/NewProjectModal';
+import { useShortcuts } from '@/context/ShortcutContext';
 import { Project } from '@/types/Projects';
+import { ShortcutDefinition } from '@/types/Shortcuts';
 import { getColorTheme } from '@/utils/colors';
 import { Link, usePage } from '@inertiajs/react';
-import { FC, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import Icon from '../../Atoms/Icon/Icon';
 import NavItem from '../../Molecules/NavItem/NavItem';
 import UserBadge from '../../Molecules/UserBadge/UserBadge';
@@ -13,17 +15,28 @@ const Sidebar: FC<{ projects: Project[] }> = ({ projects }) => {
     const [isNewProjectModalOpen, setIsNewProjectModalOpen] = useState(false);
     const { url } = usePage();
 
+    const shortcuts = useMemo(
+        (): ShortcutDefinition[] => [
+            {
+                key: 'p',
+                description: 'Create project',
+                category: 'Creation',
+                action: () => setIsNewProjectModalOpen(true),
+            },
+        ],
+        [],
+    );
+
+    useShortcuts(shortcuts);
+
     return (
         <>
-            {/* Samodzielny przycisk otwierający menu mobilne */}
             <button
                 onClick={() => setIsOpen(true)}
                 className="fixed left-4 top-4 z-40 rounded-md border border-solid border-[var(--bg-light-color)] bg-[var(--bg-dark-color)] p-2 text-zinc-400 hover:text-white md:hidden"
             >
                 <Icon name="Menu" size={20} />
             </button>
-
-            {/* Backdrop wyciągnięty na zewnątrz, zapobiegający bąbelkowaniu zdarzeń kliknięcia */}
             {isOpen && (
                 <div
                     className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden"
@@ -56,21 +69,20 @@ const Sidebar: FC<{ projects: Project[] }> = ({ projects }) => {
                         <NavItem
                             icon="LayoutDashboard"
                             label="Dashboard"
-                            badge="Ctrl D"
+                            badge="Alt B"
                             link={'/'}
                             isActive={url === '/'}
                         />
                         <NavItem
                             icon="LayoutList"
                             label="Projects"
-                            badge={'Ctrl P'}
+                            badge={'Alt P'}
                             link={'/projects'}
                             isActive={url === '/projects'}
                         />
                         <NavItem
                             icon="Inbox"
                             label="Inbox"
-                            badge={3}
                             isActive={url === '/inbox'}
                         />
                         <NavItem

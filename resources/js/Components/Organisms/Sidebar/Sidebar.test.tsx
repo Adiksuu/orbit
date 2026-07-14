@@ -41,6 +41,12 @@ vi.mock('@/Components/Organisms/NewProjectModal/NewProjectModal', () => ({
         ) : null,
 }));
 
+vi.mock('@/context/ShortcutContext', () => ({
+    useShortcuts: () => ({
+        triggerShortcut: vi.fn(),
+    }),
+}));
+
 const makeProject = (overrides: Partial<Project> = {}): Project => ({
     id: 1,
     name: 'Orbit',

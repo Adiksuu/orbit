@@ -1,26 +1,30 @@
-import Icon from '@/Components/Atoms/Icon/Icon';
+import Button from '@/Components/Atoms/Button/Button';
+import Keybind from '@/Components/Atoms/Keybind/Keybind';
 import EmptyStateCard from '@/Components/Molecules/EmptyStateCard/EmptyStateCard';
 import ProjectCard, {
     ProjectNewCard,
 } from '@/Components/Molecules/ProjectCard/ProjectCard';
 import PageHeader from '@/Components/Organisms/PageHeader/PageHeader';
 import Sidebar from '@/Components/Organisms/Sidebar/Sidebar';
+import { useShortcuts } from '@/context/ShortcutContext';
 import { Project } from '@/types/Projects';
-import { Link } from '@inertiajs/react';
 
 function Index({ projects }: { projects: Project[] }) {
+    const { triggerShortcut } = useShortcuts();
+
     return (
         <div className="flex h-screen w-screen overflow-hidden bg-[var(--bg-color)]">
             <Sidebar projects={projects} />
             <div className="flex min-w-0 flex-1 flex-col">
                 <PageHeader title={'Projects'}>
-                    <Link
-                        href="/projects/new"
-                        className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-md border-none bg-[var(--accent-color)] px-3 py-1.5 text-xs font-semibold text-white transition-all duration-150 hover:bg-[var(--accent-light-color)]"
+                    <Button
+                        className={'gap-4 rounded-lg'}
+                        id={'new-project-button'}
+                        onClick={() => triggerShortcut('p')}
                     >
-                        <Icon name="Plus" size={13} color="#fff" />
-                        New Project
-                    </Link>
+                        New project
+                        <Keybind tooltipText={'Press P'} keybind={'P'} />
+                    </Button>
                 </PageHeader>
                 <main className="flex flex-1 flex-col gap-6 overflow-y-auto p-6">
                     {projects.length > 0 ? (
@@ -41,7 +45,6 @@ function Index({ projects }: { projects: Project[] }) {
                                 'It looks like you don’t have any projects yet. Create your first project to start organizing your work.'
                             }
                             iconName={'FolderPlus'}
-                            actionHref={'/projects/new'}
                             actionLabel={'Create Project'}
                         />
                     )}
