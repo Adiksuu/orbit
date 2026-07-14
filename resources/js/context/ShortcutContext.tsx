@@ -126,6 +126,23 @@ export const ShortcutProvider: React.FC<{ children: React.ReactNode }> = ({
         return unreg;
     }, [registerBatch]);
 
+    const triggerShortcut = useCallback(
+        (key: string) => {
+            const normalizedKey = key.toLowerCase().replace(/\s+/g, ' ').trim();
+
+            const matchedShortcut = shortcuts.find((s) => {
+                if (s.disabled) return false;
+                return (
+                    s.key.toLowerCase().replace(/\s+/g, ' ').trim() ===
+                    normalizedKey
+                );
+            });
+
+            matchedShortcut?.action();
+        },
+        [shortcuts],
+    );
+
     const handleKeyDown = useCallback(
         (event: KeyboardEvent) => {
             const target = event.target as HTMLElement;
@@ -212,7 +229,7 @@ export const ShortcutProvider: React.FC<{ children: React.ReactNode }> = ({
 
     return (
         <ShortcutContext.Provider
-            value={{ register, registerBatch, shortcuts }}
+            value={{ register, registerBatch, shortcuts, triggerShortcut }}
         >
             {children}
         </ShortcutContext.Provider>

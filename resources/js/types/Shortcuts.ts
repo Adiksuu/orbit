@@ -12,4 +12,5 @@ export interface ShortcutContextType {
     register: (shortcut: ShortcutDefinition) => () => void;
     registerBatch: (shortcuts: ShortcutDefinition[]) => () => void;
     shortcuts: ShortcutDefinition[];
+    triggerShortcut: (key: string) => void;
 }

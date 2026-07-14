@@ -118,9 +118,12 @@ const TopNav: React.FC<TopNavProps> = ({
                                 New issue
                                 <Badge
                                     tooltip={true}
-                                    tooltipText={'Control + I'}
+                                    tooltipText={'Press Control + I'}
+                                    variant={'ghost'}
                                 >
-                                    ⌘ I
+                                    <kbd className="inline-flex h-5 min-w-[20px] items-center justify-center rounded border border-[#444] bg-[#222] px-1.5 font-mono text-[9px] font-bold text-[#888] shadow-sm group-hover:border-[#555] group-hover:text-[#ccc]">
+                                        ⌘ I
+                                    </kbd>
                                 </Badge>
                             </Button>
                         </div>

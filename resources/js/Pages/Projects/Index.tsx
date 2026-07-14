@@ -1,26 +1,38 @@
-import Icon from '@/Components/Atoms/Icon/Icon';
+import Badge from '@/Components/Atoms/Badge/Badge';
+import Button from '@/Components/Atoms/Button/Button';
 import EmptyStateCard from '@/Components/Molecules/EmptyStateCard/EmptyStateCard';
 import ProjectCard, {
     ProjectNewCard,
 } from '@/Components/Molecules/ProjectCard/ProjectCard';
 import PageHeader from '@/Components/Organisms/PageHeader/PageHeader';
 import Sidebar from '@/Components/Organisms/Sidebar/Sidebar';
+import { useShortcuts } from '@/context/ShortcutContext';
 import { Project } from '@/types/Projects';
-import { Link } from '@inertiajs/react';
 
 function Index({ projects }: { projects: Project[] }) {
+    const { triggerShortcut } = useShortcuts();
+
     return (
         <div className="flex h-screen w-screen overflow-hidden bg-[var(--bg-color)]">
             <Sidebar projects={projects} />
             <div className="flex min-w-0 flex-1 flex-col">
                 <PageHeader title={'Projects'}>
-                    <Link
-                        href="/projects/new"
-                        className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-md border-none bg-[var(--accent-color)] px-3 py-1.5 text-xs font-semibold text-white transition-all duration-150 hover:bg-[var(--accent-light-color)]"
+                    <Button
+                        className={'gap-4 rounded-lg'}
+                        id={'new-project-button'}
+                        onClick={() => triggerShortcut('p')}
                     >
-                        <Icon name="Plus" size={13} color="#fff" />
-                        New Project
-                    </Link>
+                        New project
+                        <Badge
+                            tooltip={true}
+                            tooltipText={'Press P'}
+                            variant={'ghost'}
+                        >
+                            <kbd className="inline-flex h-5 min-w-[20px] items-center justify-center rounded border border-[#444] bg-[#222] px-1.5 font-mono text-[9px] font-bold text-[#888] shadow-sm group-hover:border-[#555] group-hover:text-[#ccc]">
+                                P
+                            </kbd>
+                        </Badge>
+                    </Button>
                 </PageHeader>
                 <main className="flex flex-1 flex-col gap-6 overflow-y-auto p-6">
                     {projects.length > 0 ? (
@@ -41,7 +53,6 @@ function Index({ projects }: { projects: Project[] }) {
                                 'It looks like you don’t have any projects yet. Create your first project to start organizing your work.'
                             }
                             iconName={'FolderPlus'}
-                            actionHref={'/projects/new'}
                             actionLabel={'Create Project'}
                         />
                     )}
