@@ -1,11 +1,12 @@
 import IconButton from '@/Components/Atoms/IconButton/IconButton';
 import EmptyStateCard from '@/Components/Molecules/EmptyStateCard/EmptyStateCard';
 import { IssueElement } from '@/Components/Molecules/IssueElement/IssueElement';
+import SelectionDropdown from '@/Components/Molecules/SelectionDropdown/SelectionDropdown';
 import { useAlert } from '@/context/AlertContext';
 import { IssueTableProps } from '@/types/Components';
 import { Issue, Sorting, SortingColumn } from '@/types/Issues';
 import { router } from '@inertiajs/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const IssueTable = ({
     issues,
@@ -13,8 +14,56 @@ const IssueTable = ({
     setActiveIssue,
     queryParams,
     pagination,
+    project,
 }: IssueTableProps) => {
     const { addAlert } = useAlert();
+
+    const [enabledColumns, setEnabledColumns] = useState<
+        Record<string, boolean>
+    >(() => {
+        if (project?.columns) {
+            return project.columns;
+        }
+        return {
+            id: true,
+            title: true,
+            status: true,
+            assignee: true,
+            priority: true,
+            labels: true,
+            updated: true,
+        };
+    });
+
+    useEffect(() => {
+        if (project?.columns) {
+            setEnabledColumns(project.columns);
+        }
+    }, [project?.columns]);
+
+    const handleColumnToggle = (columnValue: string) => {
+        const nextEnabled = {
+            ...enabledColumns,
+            [columnValue]: !enabledColumns[columnValue],
+        };
+
+        setEnabledColumns(nextEnabled);
+
+        if (project) {
+            router.patch(
+                `/projects/${project.id}/columns`,
+                {
+                    columns: nextEnabled,
+                },
+                {
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        addAlert('Table columns updated', 'success');
+                    },
+                },
+            );
+        }
+    };
 
     const hasIssues = issues && issues.length > 0;
 
@@ -65,15 +114,17 @@ const IssueTable = ({
         );
     };
 
-    const headers: { label: string; value: SortingColumn }[] = [
-        { label: 'ID', value: 'id' },
-        { label: 'Title', value: 'title' },
-        { label: 'Status', value: 'status' },
-        { label: 'Assignee', value: 'assignee' },
-        { label: 'Priority', value: 'priority' },
-        { label: 'Labels', value: 'labels' },
-        { label: 'Updated', value: 'updated' },
-    ];
+    const headers = (
+        [
+            { label: 'ID', value: 'id' },
+            { label: 'Title', value: 'title' },
+            { label: 'Status', value: 'status' },
+            { label: 'Assignee', value: 'assignee' },
+            { label: 'Priority', value: 'priority' },
+            { label: 'Labels', value: 'labels' },
+            { label: 'Updated', value: 'updated' },
+        ] as { label: string; value: SortingColumn }[]
+    ).filter((h) => enabledColumns[h.value]);
 
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
@@ -133,10 +184,44 @@ const IssueTable = ({
                                     </th>
                                 ))}
                                 <th className="sticky top-0 z-30 w-[50px] border-b border-[var(--bg-light-color)] bg-[var(--bg-color)] px-4 py-3 text-right">
-                                    <IconButton
-                                        iconName="Settings"
-                                        iconSize={13}
-                                        className="text-zinc-500 opacity-40 transition-opacity hover:opacity-100"
+                                    <SelectionDropdown
+                                        options={[
+                                            { label: 'ID', value: 'id' },
+                                            { label: 'Title', value: 'title' },
+                                            {
+                                                label: 'Status',
+                                                value: 'status',
+                                            },
+                                            {
+                                                label: 'Assignee',
+                                                value: 'assignee',
+                                            },
+                                            {
+                                                label: 'Priority',
+                                                value: 'priority',
+                                            },
+                                            {
+                                                label: 'Labels',
+                                                value: 'labels',
+                                            },
+                                            {
+                                                label: 'Updated',
+                                                value: 'updated',
+                                            },
+                                        ]}
+                                        selectedValues={Object.entries(
+                                            enabledColumns,
+                                        )
+                                            .filter(([_, v]) => v)
+                                            .map(([k]) => k)}
+                                        onChange={handleColumnToggle}
+                                        trigger={
+                                            <IconButton
+                                                iconName="Settings"
+                                                iconSize={13}
+                                                className="text-zinc-500 opacity-40 transition-opacity hover:opacity-100"
+                                            />
+                                        }
                                     />
                                 </th>
                             </tr>
@@ -157,11 +242,15 @@ const IssueTable = ({
                                         handleSelectIssueCheckbox={
                                             handleSelectIssueCheckbox
                                         }
+                                        enabledColumns={enabledColumns}
                                     />
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan={9} className="p-0">
+                                    <td
+                                        colSpan={headers.length + 2}
+                                        className="p-0"
+                                    >
                                         <EmptyStateCard
                                             title={'All done!'}
                                             description={

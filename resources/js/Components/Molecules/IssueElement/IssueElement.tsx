@@ -8,6 +8,7 @@ export const IssueElement = ({
     setActiveIssue,
     type = 'list',
     handleSelectIssueCheckbox,
+    enabledColumns,
 }: IssueElementProps) => {
     const props = {
         issue,
@@ -22,6 +23,7 @@ export const IssueElement = ({
         <ListRow
             {...props}
             handleSelectIssueCheckbox={handleSelectIssueCheckbox}
+            enabledColumns={enabledColumns}
         />
     );
 };

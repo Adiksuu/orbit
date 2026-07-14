@@ -17,6 +17,15 @@ export const ListRow = ({
     onClick,
     isClosed,
     handleSelectIssueCheckbox,
+    enabledColumns = {
+        id: true,
+        title: true,
+        status: true,
+        assignee: true,
+        priority: true,
+        labels: true,
+        updated: true,
+    },
 }: ListRowProps) => (
     <tr onClick={onClick} className={listRowVariants({ isActive })}>
         <td
@@ -38,61 +47,75 @@ export const ListRow = ({
                 }
             />
         </td>
-        <td
-            className={`${tdClass} w-[70px] font-semibold text-[var(--pending-color)]`}
-        >
-            #{issue.id}
-        </td>
-        <td
-            className={`${tdClass} max-w-[300px] truncate pr-4 font-medium ${isClosed ? 'text-zinc-500 line-through' : 'text-zinc-200'}`}
-        >
-            {issue.title}
-        </td>
-        <td className={tdClass}>
-            <Badge
-                color={issue.status}
-                variant="default"
-                className="inline-flex h-6 items-center gap-1.5 rounded-md border border-zinc-700/20 bg-zinc-800/30 px-2 py-0.5 text-[11px] text-zinc-300"
+        {enabledColumns.id && (
+            <td
+                className={`${tdClass} w-[70px] font-semibold text-[var(--pending-color)]`}
             >
-                <StatusDot status={issue.status} />
-                {issue.status}
-            </Badge>
-        </td>
-        <td className={tdClass}>
-            <UserBadge
-                avatarSrc={issue.assignee?.avatar}
-                name={issue.assignee?.name ?? 'Unassigned'}
-                size="sm"
-            />
-        </td>
-        <td className={tdClass}>
-            <Badge
-                color={issue.priority}
-                variant="default"
-                className="inline-flex h-6 items-center gap-1.5 rounded-md border border-zinc-700/20 bg-zinc-800/30 px-2 py-0.5"
+                #{issue.id}
+            </td>
+        )}
+        {enabledColumns.title && (
+            <td
+                className={`${tdClass} max-w-[300px] truncate pr-4 font-medium ${isClosed ? 'text-zinc-500 line-through' : 'text-zinc-200'}`}
             >
-                <StatusDot status={issue.priority} />
-                <span
-                    className={priorityTextColor({
-                        priority: issue.priority as any,
-                    })}
+                {issue.title}
+            </td>
+        )}
+        {enabledColumns.status && (
+            <td className={tdClass}>
+                <Badge
+                    color={issue.status}
+                    variant="default"
+                    className="inline-flex h-6 items-center gap-1.5 rounded-md border border-zinc-700/20 bg-zinc-800/30 px-2 py-0.5 text-[11px] text-zinc-300"
                 >
-                    {issue.priority}
-                </span>
-            </Badge>
-        </td>
-        <td className={tdClass}>
-            <LabelList
-                labels={issue.labels || []}
-                badgeClassName="text-[10px] px-1.5 py-0.5"
-                isClosed={isClosed}
-            />
-        </td>
-        <td
-            className={`${tdClass} whitespace-nowrap font-medium text-zinc-400`}
-        >
-            {formatTimeAgo(issue.updated_at)} ago
-        </td>
+                    <StatusDot status={issue.status} />
+                    {issue.status}
+                </Badge>
+            </td>
+        )}
+        {enabledColumns.assignee && (
+            <td className={tdClass}>
+                <UserBadge
+                    avatarSrc={issue.assignee?.avatar}
+                    name={issue.assignee?.name ?? 'Unassigned'}
+                    size="sm"
+                />
+            </td>
+        )}
+        {enabledColumns.priority && (
+            <td className={tdClass}>
+                <Badge
+                    color={issue.priority}
+                    variant="default"
+                    className="inline-flex h-6 items-center gap-1.5 rounded-md border border-zinc-700/20 bg-zinc-800/30 px-2 py-0.5"
+                >
+                    <StatusDot status={issue.priority} />
+                    <span
+                        className={priorityTextColor({
+                            priority: issue.priority as any,
+                        })}
+                    >
+                        {issue.priority}
+                    </span>
+                </Badge>
+            </td>
+        )}
+        {enabledColumns.labels && (
+            <td className={tdClass}>
+                <LabelList
+                    labels={issue.labels || []}
+                    badgeClassName="text-[10px] px-1.5 py-0.5"
+                    isClosed={isClosed}
+                />
+            </td>
+        )}
+        {enabledColumns.updated && (
+            <td
+                className={`${tdClass} whitespace-nowrap font-medium text-zinc-400`}
+            >
+                {formatTimeAgo(issue.updated_at)} ago
+            </td>
+        )}
         <td
             className={`${tdClass} text-right`}
             onClick={(e) => e.stopPropagation()}

@@ -138,6 +138,7 @@ export interface IssueElementProps {
     setActiveIssue: (issue: Issue | null) => void;
     type?: 'list' | 'board';
     handleSelectIssueCheckbox?: (issue: Issue | string) => void;
+    enabledColumns?: Record<string, boolean>;
 }
 export interface IssuePropertyProps {
     label: string;
@@ -260,6 +261,7 @@ export interface IssueTableProps {
     setActiveIssue: (issue: Issue | null) => void;
     queryParams?: { sort?: string; direction?: string; [key: string]: any };
     pagination?: ReactNode;
+    project?: Project;
 }
 export interface NewIssueModalProps {
     isOpen: boolean;
@@ -295,6 +297,7 @@ export interface ListRowProps {
     onClick: () => void;
     isClosed: boolean;
     handleSelectIssueCheckbox?: (issue: Issue | string) => void;
+    enabledColumns?: Record<string, boolean>;
 }
 
 // OTHER COMPONENTS

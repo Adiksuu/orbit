@@ -9,6 +9,7 @@ export interface Project {
     created_at: number;
     updated_at: number;
     issues?: Issue[];
+    columns?: Record<string, boolean>;
 }
 
 export type ProjectColors =
