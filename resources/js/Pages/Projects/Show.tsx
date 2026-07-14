@@ -91,7 +91,7 @@ export default function Show({
                             <>
                                 <div
                                     className={
-                                        'flex flex-1 flex-row overflow-y-auto'
+                                        'flex flex-1 flex-row overflow-hidden'
                                     }
                                 >
                                     <IssueBoard
