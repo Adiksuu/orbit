@@ -39,7 +39,7 @@ const NewProjectModal: React.FC<NewProjectModalProps> = ({
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} size="lg">
-            <div className="flex h-full flex-col">
+            <div className="flex h-full flex-col overflow-y-auto">
                 <div className="flex items-start justify-between border-b border-[var(--bg-light-color)] p-6">
                     <div className="flex-1">
                         <h2 className="text-xl font-semibold text-[var(--text-color)]">
