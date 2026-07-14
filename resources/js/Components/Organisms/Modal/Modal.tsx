@@ -13,7 +13,7 @@ export const ModalOrg = ({ modal, onClose }: ModalOrgProps) => {
 
     return (
         <Modal isOpen={true} onClose={() => onClose(modal.id)} size="md">
-            <div className="flex h-full flex-col">
+            <div className="flex h-full flex-col overflow-y-auto">
                 {!isShortcutModal && (
                     <div className="flex items-start justify-between border-b border-[var(--border-color)] p-6">
                         <div className="flex-1">

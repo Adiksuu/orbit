@@ -77,7 +77,7 @@ const IssueDetail = ({ isOpen, onClose, activeIssue }: IssueDetailProps) => {
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} size="lg">
-            <div className="flex h-full flex-col">
+            <div className="flex h-full flex-col overflow-y-auto">
                 <div className="flex items-start justify-between border-b border-[var(--bg-light-color)] p-6">
                     <div className="flex-1">
                         <div className="flex items-center gap-2">
