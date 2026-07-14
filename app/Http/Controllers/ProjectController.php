@@ -38,7 +38,7 @@ class ProjectController extends Controller
     }
     public function index(Project $project): Response
     {
-        $projects = Project::with('issues')->get();
+        $projects = Project::with('issues')->latest()->get();
 
         return Inertia::render('Projects/Index', [
             'projects' => $projects,

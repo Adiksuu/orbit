@@ -1,8 +1,5 @@
-import { useShortcuts } from '@/context/ShortcutContext';
 import { MainLayoutProps } from '@/types/Components';
-import { ShortcutDefinition } from '@/types/Shortcuts';
-import { router } from '@inertiajs/react';
-import React, { useMemo } from 'react';
+import React from 'react';
 import Sidebar from '../Components/Organisms/Sidebar/Sidebar';
 import TopNav from '../Components/Organisms/TopNav/TopNav';
 
@@ -13,37 +10,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({
     projects,
     project,
 }) => {
-    const shortcuts = useMemo(
-        (): ShortcutDefinition[] => [
-            {
-                key: 'alt+p',
-                description: 'Go to Projects',
-                category: 'Navigation',
-                action: () => router.visit('/projects'),
-            },
-            {
-                key: 'alt+b',
-                description: 'Go to Dashboard',
-                category: 'Navigation',
-                action: () => router.visit('/'),
-            },
-            {
-                key: 'ctrl+f',
-                description: 'Focus Search',
-                category: 'Search',
-                action: () => {
-                    const searchInput = document.querySelector(
-                        'input[type="text"]',
-                    ) as HTMLInputElement;
-                    if (searchInput) searchInput.focus();
-                },
-            },
-        ],
-        [],
-    );
-
-    useShortcuts(shortcuts);
-
     return (
         <div
             className={
