@@ -1,4 +1,4 @@
-import Badge from '@/Components/Atoms/Badge/Badge';
+import Keybind from '@/Components/Atoms/Keybind/Keybind';
 import { NavItemProps } from '@/types/Components';
 import { Link } from '@inertiajs/react';
 import { cva } from 'class-variance-authority';
@@ -45,7 +45,10 @@ const NavItem: React.FC<NavItemProps> = ({
                 <span className={'text-sm font-normal'}>{label}</span>
             </div>
             {badge !== undefined && (
-                <Badge className={'rounded-full'}>{badge}</Badge>
+                <Keybind
+                    tooltipText={`Press ${badge}`}
+                    keybind={badge.toString()}
+                />
             )}
         </Link>
     );

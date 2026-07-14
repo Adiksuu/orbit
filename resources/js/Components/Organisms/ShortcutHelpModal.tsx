@@ -1,3 +1,4 @@
+import Keybind from '@/Components/Atoms/Keybind/Keybind';
 import { useShortcuts } from '@/context/ShortcutContext';
 import { ArrowDown, ArrowUp, CornerDownLeft, Search } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
@@ -77,14 +78,22 @@ export const ShortcutHelpModal: React.FC = () => {
                                                                         +
                                                                     </span>
                                                                 )}
-                                                                <kbd className="inline-flex h-5 min-w-[20px] items-center justify-center rounded border border-[#444] bg-[#222] px-1.5 font-mono text-[9px] font-bold text-[#888] shadow-sm group-hover:border-[#555] group-hover:text-[#ccc]">
-                                                                    {kPart ===
-                                                                        'control' ||
-                                                                    kPart ===
-                                                                        'ctrl'
-                                                                        ? 'CTRL'
-                                                                        : kPart.toUpperCase()}
-                                                                </kbd>
+                                                                <Keybind
+                                                                    tooltipText={
+                                                                        s.description
+                                                                    }
+                                                                    tooltip={
+                                                                        false
+                                                                    }
+                                                                    keybind={
+                                                                        kPart ===
+                                                                            'control' ||
+                                                                        kPart ===
+                                                                            'ctrl'
+                                                                            ? 'CTRL'
+                                                                            : kPart.toUpperCase()
+                                                                    }
+                                                                />
                                                             </React.Fragment>
                                                         ))}
                                                 </div>
@@ -102,9 +111,10 @@ export const ShortcutHelpModal: React.FC = () => {
                                                                         then
                                                                     </span>
                                                                 )}
-                                                                <kbd className="inline-flex h-5 min-w-[20px] items-center justify-center rounded border border-[#444] bg-[#222] px-1.5 font-mono text-[9px] font-bold text-[#888] shadow-sm group-hover:border-[#555] group-hover:text-[#ccc]">
-                                                                    {part.toUpperCase()}
-                                                                </kbd>
+                                                                <Keybind
+                                                                    tooltipText={`Press ${part.toUpperCase()}`}
+                                                                    keybind={part.toUpperCase()}
+                                                                />
                                                             </React.Fragment>
                                                         ))}
                                                 </div>
@@ -119,9 +129,7 @@ export const ShortcutHelpModal: React.FC = () => {
             </div>
             <div className="flex items-center gap-6 border-t border-[#333] bg-[#1a1a1a] px-4 py-2.5">
                 <div className="flex items-center gap-2 text-[10px] text-[#555]">
-                    <kbd className="rounded border border-[#333] bg-[#222] px-1.5 py-0.5 text-[9px] font-bold text-[#777]">
-                        ESC
-                    </kbd>
+                    <Keybind tooltipText={'Press ESC'} keybind={'ESC'} />
                     <span>close</span>
                 </div>
                 <div className="flex items-center gap-2 text-[10px] text-[#555]">

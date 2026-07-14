@@ -1,4 +1,4 @@
-import Badge from '@/Components/Atoms/Badge/Badge';
+import Keybind from '@/Components/Atoms/Keybind/Keybind';
 import { useShortcuts } from '@/context/ShortcutContext';
 import { TopNavProps } from '@/types/Components';
 import { ShortcutDefinition } from '@/types/Shortcuts';
@@ -116,15 +116,10 @@ const TopNav: React.FC<TopNavProps> = ({
                                 id={'new-issue-button'}
                             >
                                 New issue
-                                <Badge
-                                    tooltip={true}
-                                    tooltipText={'Press Control + I'}
-                                    variant={'ghost'}
-                                >
-                                    <kbd className="inline-flex h-5 min-w-[20px] items-center justify-center rounded border border-[#444] bg-[#222] px-1.5 font-mono text-[9px] font-bold text-[#888] shadow-sm group-hover:border-[#555] group-hover:text-[#ccc]">
-                                        ⌘ I
-                                    </kbd>
-                                </Badge>
+                                <Keybind
+                                    tooltipText={'Press ⌘ I'}
+                                    keybind={'⌘ I'}
+                                />
                             </Button>
                         </div>
                         <div className={'hidden items-center gap-4 md:flex'}>

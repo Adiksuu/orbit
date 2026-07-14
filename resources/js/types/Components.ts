@@ -114,6 +114,11 @@ export interface VisualCardProps {
     children: ReactNode;
     className?: string;
 }
+export interface KeybindProps {
+    tooltipText: string;
+    keybind: string;
+    tooltip?: boolean;
+}
 // MOLECULES COMPONENTS
 export interface BoardColumnProps {
     issues: Issue[];

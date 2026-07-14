@@ -1,5 +1,5 @@
-import Badge from '@/Components/Atoms/Badge/Badge';
 import Button from '@/Components/Atoms/Button/Button';
+import Keybind from '@/Components/Atoms/Keybind/Keybind';
 import EmptyStateCard from '@/Components/Molecules/EmptyStateCard/EmptyStateCard';
 import ProjectCard, {
     ProjectNewCard,
@@ -23,15 +23,7 @@ function Index({ projects }: { projects: Project[] }) {
                         onClick={() => triggerShortcut('p')}
                     >
                         New project
-                        <Badge
-                            tooltip={true}
-                            tooltipText={'Press P'}
-                            variant={'ghost'}
-                        >
-                            <kbd className="inline-flex h-5 min-w-[20px] items-center justify-center rounded border border-[#444] bg-[#222] px-1.5 font-mono text-[9px] font-bold text-[#888] shadow-sm group-hover:border-[#555] group-hover:text-[#ccc]">
-                                P
-                            </kbd>
-                        </Badge>
+                        <Keybind tooltipText={'Press P'} keybind={'P'} />
                     </Button>
                 </PageHeader>
                 <main className="flex flex-1 flex-col gap-6 overflow-y-auto p-6">

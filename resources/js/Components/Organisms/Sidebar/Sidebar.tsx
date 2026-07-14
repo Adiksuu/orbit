@@ -83,7 +83,6 @@ const Sidebar: FC<{ projects: Project[] }> = ({ projects }) => {
                         <NavItem
                             icon="Inbox"
                             label="Inbox"
-                            badge={3}
                             isActive={url === '/inbox'}
                         />
                         <NavItem
