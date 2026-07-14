@@ -16,7 +16,8 @@ class Project extends Model
         'name',
         'slug',
         'description',
-        'color'
+        'color',
+        'columns'
     ];
     protected $casts = [
         'columns' => 'array',

@@ -57,4 +57,21 @@ class ProjectController extends Controller
 
         return redirect()->back()->with('success', 'Project has been created successfully.');
     }
+    public function updateColumns(Request $request, Project $project): RedirectResponse
+    {
+        $validated = $request->validate([
+            'columns' => 'required|array',
+            'columns.id' => 'sometimes|boolean',
+            'columns.title' => 'sometimes|boolean',
+            'columns.status' => 'sometimes|boolean',
+            'columns.assignee' => 'sometimes|boolean',
+            'columns.priority' => 'sometimes|boolean',
+            'columns.labels' => 'sometimes|boolean',
+            'columns.updated_at' => 'sometimes|boolean',
+        ]);
+
+        $this->projectService->updateColumns($project, $validated['columns']);
+
+        return redirect()->back()->with('success', 'Columns configuration updated successfully.');
+    }
 }

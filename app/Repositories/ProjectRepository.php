@@ -16,4 +16,8 @@ class ProjectRepository
     public function store(array $data): Project {
         return Project::query()->create($data);
     }
+    public function update(Project $project, array $data): Project {
+        $project->update($data);
+        return $project;
+    }
 }
