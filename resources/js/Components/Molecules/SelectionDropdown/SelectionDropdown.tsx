@@ -1,14 +1,11 @@
 import Icon from '@/Components/Atoms/Icon/Icon';
+import { useModal } from '@/context/ModalContext';
+import { useShortcuts } from '@/context/ShortcutContext';
+import { SelectionDropdownProps } from '@/types/Components';
+import { ShortcutDefinition } from '@/types/Shortcuts';
 import { cn } from '@/utils/cn';
-import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-
-interface SelectionDropdownProps {
-    options: { label: string; value: string }[];
-    selectedValues: string[];
-    onChange: (value: string) => void;
-    trigger: ReactNode;
-}
 
 export default function SelectionDropdown({
     options,
@@ -22,6 +19,8 @@ export default function SelectionDropdown({
     const [coords, setCoords] = useState<{ top: number; left: number } | null>(
         null,
     );
+    const { getIfAnyModalIsOpened } = useModal();
+    console.log(getIfAnyModalIsOpened());
 
     const updateCoords = useCallback(() => {
         if (triggerRef.current) {
@@ -33,12 +32,12 @@ export default function SelectionDropdown({
         }
     }, []);
 
-    const toggleDropdown = () => {
+    const toggleDropdown = useCallback(() => {
         if (!isOpen) {
             updateCoords();
         }
         setIsOpen(!isOpen);
-    };
+    }, [isOpen, updateCoords]);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -70,6 +69,24 @@ export default function SelectionDropdown({
             });
         };
     }, [isOpen, updateCoords]);
+
+    const shortcuts = useMemo(
+        (): ShortcutDefinition[] => [
+            {
+                key: 'alt+s',
+                description: 'Open selection dropdown',
+                category: 'Search',
+                action: () => {
+                    if (!getIfAnyModalIsOpened()) {
+                        toggleDropdown();
+                    }
+                },
+            },
+        ],
+        [getIfAnyModalIsOpened, toggleDropdown],
+    );
+
+    useShortcuts(shortcuts);
 
     return (
         <>

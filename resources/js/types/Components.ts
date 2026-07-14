@@ -240,6 +240,12 @@ export interface DashboardEmptyStateProps {
     actionLabel?: string;
     actionHref?: string;
 }
+export interface SelectionDropdownProps {
+    options: { label: string; value: string }[];
+    selectedValues: string[];
+    onChange: (value: string) => void;
+    trigger: ReactNode;
+}
 // ORGANISMS COMPONENTS
 export interface DashboardVisualsProps {
     issues: Issue[];
