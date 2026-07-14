@@ -35,6 +35,15 @@ class ProjectFactory extends Factory
             'slug' => fake()->slug(),
             'description' => fake()->paragraph(),
             'color' => fake()->randomElement($availableColors),
+            'columns' => [
+                'id' => fake()->boolean(),
+                'title' => fake()->boolean(),
+                'status' => fake()->boolean(),
+                'assignee' => fake()->boolean(),
+                'priority' => fake()->boolean(),
+                'labels' => fake()->boolean(),
+                'updated_at' => fake()->boolean(),
+            ],
         ];
     }
 }
