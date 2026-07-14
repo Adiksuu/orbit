@@ -147,8 +147,8 @@ const IssueTable = ({
 
     return (
         <div className="flex w-full flex-1 flex-col overflow-hidden bg-[var(--bg-color)] px-4 py-2">
-            <div className="relative flex max-h-[calc(100vh-240px)] flex-col overflow-hidden rounded-xl border border-[var(--bg-light-color)] bg-[var(--bg-color)] shadow-xl">
-                <div className="flex-1 overflow-auto">
+            <div className="relative flex max-h-[calc(100vh-240px)] flex-col overflow-y-hidden rounded-xl border border-[var(--bg-light-color)] bg-[var(--bg-color)] shadow-xl">
+                <div className="flex-1 overflow-x-auto">
                     <table className="w-full border-separate border-spacing-0 text-left text-xs">
                         <thead>
                             <tr>
