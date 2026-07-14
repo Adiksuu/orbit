@@ -1,6 +1,7 @@
 import { ShortcutHelpModal } from '@/Components/Organisms/ShortcutHelpModal';
 import { useModal } from '@/context/ModalContext';
 import { ShortcutContextType, ShortcutDefinition } from '@/types/Shortcuts';
+import { router } from '@inertiajs/react';
 import React, {
     createContext,
     useCallback,
@@ -95,6 +96,35 @@ export const ShortcutProvider: React.FC<{ children: React.ReactNode }> = ({
         });
         return unreg;
     }, [register, handleOpenHelp]);
+
+    useEffect(() => {
+        const unreg = registerBatch([
+            {
+                key: 'alt+p',
+                description: 'Go to Projects',
+                category: 'Navigation',
+                action: () => router.visit('/projects'),
+            },
+            {
+                key: 'alt+b',
+                description: 'Go to Dashboard',
+                category: 'Navigation',
+                action: () => router.visit('/'),
+            },
+            {
+                key: 'ctrl+f',
+                description: 'Focus Search',
+                category: 'Search',
+                action: () => {
+                    const searchInput = document.querySelector(
+                        'input[type="text"]',
+                    ) as HTMLInputElement;
+                    if (searchInput) searchInput.focus();
+                },
+            },
+        ]);
+        return unreg;
+    }, [registerBatch]);
 
     const handleKeyDown = useCallback(
         (event: KeyboardEvent) => {
