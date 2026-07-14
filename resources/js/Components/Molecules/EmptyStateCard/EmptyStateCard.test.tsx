@@ -2,6 +2,12 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, test, vi } from 'vitest';
 import EmptyStateCard from './EmptyStateCard';
 
+vi.mock('@/context/ShortcutContext', () => ({
+    useShortcuts: () => ({
+        triggerShortcut: vi.fn(),
+    }),
+}));
+
 vi.mock('@inertiajs/react', () => ({
     Link: ({
         children,

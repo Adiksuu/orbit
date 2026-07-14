@@ -4,6 +4,12 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, test, vi } from 'vitest';
 import ProjectCard, { ProjectNewCard } from './ProjectCard';
 
+vi.mock('@/context/ShortcutContext', () => ({
+    useShortcuts: () => ({
+        triggerShortcut: vi.fn(),
+    }),
+}));
+
 vi.mock('@inertiajs/react', () => ({
     Link: ({
         children,

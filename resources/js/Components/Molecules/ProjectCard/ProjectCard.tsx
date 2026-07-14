@@ -90,7 +90,8 @@ export function ProjectNewCard() {
     const { triggerShortcut } = useShortcuts();
 
     return (
-        <div
+        <Link
+            href="/projects/new"
             className="group flex min-h-[160px] cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-[var(--bg-light-color)] bg-transparent transition-all duration-300 hover:border-[var(--accent-color)] hover:bg-[var(--accent-color-opacity)]"
             onClick={() => triggerShortcut('p')}
         >
@@ -104,7 +105,7 @@ export function ProjectNewCard() {
             <span className="text-xs font-semibold text-zinc-500 transition-colors duration-200 group-hover:text-[var(--accent-color)]">
                 New Project
             </span>
-        </div>
+        </Link>
     );
 }
 
