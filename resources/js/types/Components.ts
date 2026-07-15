@@ -75,6 +75,7 @@ export interface IconButtonProps
     iconSize?: number;
     isLink?: boolean;
     link?: string;
+    children?: ReactNode;
 }
 export interface InputProps extends VariantProps<typeof inputVariants> {
     value: string;
@@ -140,6 +141,8 @@ export interface IssueElementProps {
     handleSelectIssueCheckbox?: (issue: Issue | string) => void;
     enabledColumns?: Record<string, boolean>;
     rowHeight?: number;
+    isExpanded?: boolean;
+    onToggleExpand?: () => void;
 }
 export interface IssuePropertyProps {
     label: string;
@@ -247,6 +250,24 @@ export interface SelectionDropdownProps {
     onChange: (value: string) => void;
     trigger: ReactNode;
 }
+export interface DetailAttributesProps {
+    issue: Issue;
+}
+export interface DetailSystemInfoProps {
+    issue: Issue;
+}
+export interface DetailDescriptionProps {
+    issue: Issue;
+    onOpenDetails: () => void;
+}
+export interface InfoItemProps {
+    label: string;
+    children: ReactNode;
+}
+export interface IssueRowDetailProps {
+    issue: Issue;
+    onOpenDetails: () => void;
+}
 // ORGANISMS COMPONENTS
 export interface DashboardVisualsProps {
     issues: Issue[];
@@ -306,6 +327,8 @@ export interface ListRowProps {
     handleSelectIssueCheckbox?: (issue: Issue | string) => void;
     enabledColumns?: Record<string, boolean>;
     rowHeight?: number;
+    isExpanded?: boolean;
+    onToggleExpand?: () => void;
 }
 
 // OTHER COMPONENTS
