@@ -237,9 +237,7 @@ export const ListRow = ({
                                   ? 'opacity-100'
                                   : 'opacity-0 group-hover/row:opacity-100',
                         )}
-                    >
-                        ...
-                    </IconButton>
+                    ></IconButton>
                 </td>
             </tr>
             <AnimatePresence initial={false}>
