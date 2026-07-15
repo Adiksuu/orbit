@@ -77,6 +77,7 @@ export default function Show({
                                 activeIssue={activeIssue}
                                 setActiveIssue={setActiveIssue}
                                 queryParams={queryParams}
+                                project={project}
                                 pagination={
                                     <Pagination
                                         links={issues.links}

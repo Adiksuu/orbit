@@ -8,12 +8,18 @@ export const IssueElement = ({
     setActiveIssue,
     type = 'list',
     handleSelectIssueCheckbox,
+    enabledColumns,
+    rowHeight,
+    isExpanded,
+    onToggleExpand,
 }: IssueElementProps) => {
     const props = {
         issue,
         isActive: activeIssue?.id === issue.id,
         isClosed: issue.status === 'closed',
         onClick: () => setActiveIssue(issue),
+        isExpanded,
+        onToggleExpand,
     };
 
     return type === 'board' ? (
@@ -22,6 +28,8 @@ export const IssueElement = ({
         <ListRow
             {...props}
             handleSelectIssueCheckbox={handleSelectIssueCheckbox}
+            enabledColumns={enabledColumns}
+            rowHeight={rowHeight}
         />
     );
 };

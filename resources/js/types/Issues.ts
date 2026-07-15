@@ -21,8 +21,30 @@ export interface Issue {
         password: string;
         updated_at: string;
     };
+    reporter?: {
+        avatar?: string;
+        name: string;
+    };
+    creator?: {
+        avatar?: string;
+        name: string;
+    };
     labels?: IssueLabel[];
     isChecked?: boolean;
+    key?: string;
+    milestone?: string;
+    sprint?: string;
+    parent_issue?: {
+        id: string;
+        title: string;
+    };
+    due_date?: string | number;
+    completed_at?: string | number;
+    comments_count?: number;
+    attachments_count?: number;
+    activity_count?: number;
+    type?: string;
+    visibility?: string;
 }
 
 export interface PaginatedResponse<T> {

@@ -16,4 +16,7 @@ export interface ModalContextType {
     ) => string;
     closeModal: (id: string) => void;
     closeAllModals: () => void;
+    getIfAnyModalIsOpened: () => boolean;
+    registerExternalModal: (id: string) => void;
+    unregisterExternalModal: (id: string) => void;
 }

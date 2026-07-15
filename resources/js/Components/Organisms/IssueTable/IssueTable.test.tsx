@@ -12,6 +12,12 @@ vi.mock('@/context/AlertContext', () => ({
     }),
 }));
 
+vi.mock('@/context/ModalContext', () => ({
+    useModal: () => ({
+        getIfAnyModalIsOpened: vi.fn(() => false),
+    }),
+}));
+
 vi.mock('@/context/ShortcutContext', () => ({
     useShortcuts: () => ({
         triggerShortcut: vi.fn(),
