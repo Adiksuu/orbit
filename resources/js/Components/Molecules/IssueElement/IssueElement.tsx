@@ -9,6 +9,7 @@ export const IssueElement = ({
     type = 'list',
     handleSelectIssueCheckbox,
     enabledColumns,
+    rowHeight,
 }: IssueElementProps) => {
     const props = {
         issue,
@@ -24,6 +25,7 @@ export const IssueElement = ({
             {...props}
             handleSelectIssueCheckbox={handleSelectIssueCheckbox}
             enabledColumns={enabledColumns}
+            rowHeight={rowHeight}
         />
     );
 };

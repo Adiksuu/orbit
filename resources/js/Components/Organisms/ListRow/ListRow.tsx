@@ -9,7 +9,7 @@ import { formatTimeAgo } from '@/utils/time';
 import { listRowVariants, priorityTextColor } from '@/utils/variants';
 
 const tdClass =
-    'px-4 py-2.5 border-b border-zinc-800/40 group-last/row:border-b-0 align-middle';
+    'px-4 border-b border-zinc-800/40 group-last/row:border-b-0 align-middle';
 
 export const ListRow = ({
     issue,
@@ -26,11 +26,17 @@ export const ListRow = ({
         labels: true,
         updated: true,
     },
+    rowHeight = 44,
 }: ListRowProps) => (
-    <tr onClick={onClick} className={listRowVariants({ isActive })}>
+    <tr
+        onClick={onClick}
+        className={listRowVariants({ isActive })}
+        style={{ height: rowHeight }}
+    >
         <td
             className={`${tdClass} w-[48px] text-center`}
             onClick={(e) => e.stopPropagation()}
+            data-column="checkbox"
         >
             <input
                 type="checkbox"
@@ -50,19 +56,21 @@ export const ListRow = ({
         {enabledColumns.id && (
             <td
                 className={`${tdClass} w-[70px] font-semibold text-[var(--pending-color)]`}
+                data-column="id"
             >
                 #{issue.id}
             </td>
         )}
         {enabledColumns.title && (
             <td
-                className={`${tdClass} max-w-[300px] truncate pr-4 font-medium ${isClosed ? 'text-zinc-500 line-through' : 'text-zinc-200'}`}
+                className={`${tdClass} truncate pr-4 font-medium ${isClosed ? 'text-zinc-500 line-through' : 'text-zinc-200'}`}
+                data-column="title"
             >
                 {issue.title}
             </td>
         )}
         {enabledColumns.status && (
-            <td className={tdClass}>
+            <td className={tdClass} data-column="status">
                 <Badge
                     color={issue.status}
                     variant="default"
@@ -74,7 +82,7 @@ export const ListRow = ({
             </td>
         )}
         {enabledColumns.assignee && (
-            <td className={tdClass}>
+            <td className={tdClass} data-column="assignee">
                 <UserBadge
                     avatarSrc={issue.assignee?.avatar}
                     name={issue.assignee?.name ?? 'Unassigned'}
@@ -83,7 +91,7 @@ export const ListRow = ({
             </td>
         )}
         {enabledColumns.priority && (
-            <td className={tdClass}>
+            <td className={tdClass} data-column="priority">
                 <Badge
                     color={issue.priority}
                     variant="default"
@@ -101,7 +109,7 @@ export const ListRow = ({
             </td>
         )}
         {enabledColumns.labels && (
-            <td className={tdClass}>
+            <td className={tdClass} data-column="labels">
                 <LabelList
                     labels={issue.labels || []}
                     badgeClassName="text-[10px] px-1.5 py-0.5"
@@ -112,6 +120,7 @@ export const ListRow = ({
         {enabledColumns.updated && (
             <td
                 className={`${tdClass} whitespace-nowrap font-medium text-zinc-400`}
+                data-column="updated"
             >
                 {formatTimeAgo(issue.updated_at)} ago
             </td>
@@ -119,6 +128,7 @@ export const ListRow = ({
         <td
             className={`${tdClass} text-right`}
             onClick={(e) => e.stopPropagation()}
+            data-column="actions"
         >
             <IconButton
                 iconName={'Ellipsis'}

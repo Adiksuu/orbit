@@ -139,6 +139,7 @@ export interface IssueElementProps {
     type?: 'list' | 'board';
     handleSelectIssueCheckbox?: (issue: Issue | string) => void;
     enabledColumns?: Record<string, boolean>;
+    rowHeight?: number;
 }
 export interface IssuePropertyProps {
     label: string;
@@ -241,7 +242,7 @@ export interface DashboardEmptyStateProps {
     actionHref?: string;
 }
 export interface SelectionDropdownProps {
-    options: { label: string; value: string }[];
+    options: { label: string; value: string; disabled?: boolean }[];
     selectedValues: string[];
     onChange: (value: string) => void;
     trigger: ReactNode;
@@ -304,6 +305,7 @@ export interface ListRowProps {
     isClosed: boolean;
     handleSelectIssueCheckbox?: (issue: Issue | string) => void;
     enabledColumns?: Record<string, boolean>;
+    rowHeight?: number;
 }
 
 // OTHER COMPONENTS

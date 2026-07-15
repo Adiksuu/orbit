@@ -118,37 +118,60 @@ export default function SelectionDropdown({
                         </div>
                         <div className="space-y-0.5">
                             {options.map((option) => {
+                                if (
+                                    option.value === 'sep1' ||
+                                    option.value === 'sep2' ||
+                                    option.value === 'separator'
+                                ) {
+                                    return (
+                                        <div
+                                            key={option.value}
+                                            className="my-1 border-t border-zinc-800"
+                                        />
+                                    );
+                                }
                                 const isSelected = selectedValues.includes(
                                     option.value,
                                 );
                                 return (
                                     <button
                                         key={option.value}
-                                        onClick={() => onChange(option.value)}
+                                        onClick={() =>
+                                            !option.disabled &&
+                                            onChange(option.value)
+                                        }
+                                        disabled={option.disabled}
                                         className={cn(
                                             'group flex w-full items-center justify-between rounded-md px-2 py-1.5 text-xs transition-all duration-200',
                                             isSelected
                                                 ? 'bg-[var(--accent-color)]/10 text-zinc-100'
                                                 : 'text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200',
+                                            option.disabled &&
+                                                'cursor-default opacity-50 hover:bg-transparent',
                                         )}
                                     >
                                         <div className="flex items-center gap-2">
-                                            <div
-                                                className={cn(
-                                                    'flex h-4 w-4 items-center justify-center rounded border transition-all duration-200',
-                                                    isSelected
-                                                        ? 'border-[var(--accent-color)] bg-[var(--accent-color)]'
-                                                        : 'border-zinc-700 bg-zinc-800 group-hover:border-zinc-600',
+                                            {option.value !== 'reset_sizes' &&
+                                                !option.value.startsWith(
+                                                    'row_',
+                                                ) && (
+                                                    <div
+                                                        className={cn(
+                                                            'flex h-4 w-4 items-center justify-center rounded border transition-all duration-200',
+                                                            isSelected
+                                                                ? 'border-[var(--accent-color)] bg-[var(--accent-color)]'
+                                                                : 'border-zinc-700 bg-zinc-800 group-hover:border-zinc-600',
+                                                        )}
+                                                    >
+                                                        {isSelected && (
+                                                            <Icon
+                                                                name="Check"
+                                                                size={10}
+                                                                className="text-white"
+                                                            />
+                                                        )}
+                                                    </div>
                                                 )}
-                                            >
-                                                {isSelected && (
-                                                    <Icon
-                                                        name="Check"
-                                                        size={10}
-                                                        className="text-white"
-                                                    />
-                                                )}
-                                            </div>
                                             <span className="font-medium">
                                                 {option.label}
                                             </span>
