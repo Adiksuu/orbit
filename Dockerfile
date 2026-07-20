@@ -50,7 +50,7 @@ CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
 # -----------------------------------------------------------------------------
 # Node / Vite dev server
 # -----------------------------------------------------------------------------
-FROM node:20-alpine AS node
+FROM node:26-alpine AS node
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
