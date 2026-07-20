@@ -22,6 +22,8 @@ class Issue extends Model
         'user_id',
         'assignee_id',
         'labels',
+        'start_date',
+        'end_date',
     ];
 
     protected function casts(): array

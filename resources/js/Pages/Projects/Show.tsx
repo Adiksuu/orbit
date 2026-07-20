@@ -1,4 +1,5 @@
 import Pagination from '@/Components/Molecules/Pagination/Pagination';
+import CalendarView from '@/Components/Organisms/CalendarView/CalendarView';
 import FilterBar from '@/Components/Organisms/FilterBar/FilterBar';
 import IssueBoard from '@/Components/Organisms/IssueBoard/IssueBoard';
 import IssueDetail from '@/Components/Organisms/IssueDetail/IssueDetail';
@@ -36,7 +37,7 @@ export default function Show({
     const [selectedLook, setSelectedLook] = useState<IssuePageLooks>(() => {
         if (typeof window !== 'undefined') {
             const saved = localStorage.getItem('selectedLook');
-            if (saved === 'List' || saved === 'Board') {
+            if (saved === 'List' || saved === 'Board' || saved === 'Calendar') {
                 return saved;
             }
         }
@@ -88,7 +89,7 @@ export default function Show({
                                     />
                                 }
                             />
-                        ) : (
+                        ) : selectedLook === 'Board' ? (
                             <>
                                 <div
                                     className={
@@ -109,6 +110,12 @@ export default function Show({
                                     queryParams={queryParams}
                                 />
                             </>
+                        ) : (
+                            <CalendarView
+                                issues={issues.data}
+                                activeIssue={activeIssue}
+                                setActiveIssue={setActiveIssue}
+                            />
                         )}
                     </div>
                     {activeIssue && (

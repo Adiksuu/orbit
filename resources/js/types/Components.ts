@@ -41,6 +41,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     className?: string;
     isBox?: boolean;
     isDisabled?: boolean;
+    type?: 'button' | 'submit' | 'reset';
 }
 export interface DropdownItemProps
     extends
@@ -269,6 +270,11 @@ export interface IssueRowDetailProps {
     onOpenDetails: () => void;
 }
 // ORGANISMS COMPONENTS
+export interface CalendarViewProps {
+    issues: Issue[];
+    activeIssue: Issue | null;
+    setActiveIssue: (issue: Issue | null) => void;
+}
 export interface DashboardVisualsProps {
     issues: Issue[];
     productivity_trend: ProductivityTrendProps[];

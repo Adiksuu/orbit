@@ -30,6 +30,8 @@ class IssueFactory extends Factory
             'user_id' => User::factory(),
             'assignee_id' => fake()->boolean(90) ? User::factory() : null,
             'labels' => fake()->randomElements($availableLabels, rand(0, 2)),
+            'start_date' => now(),
+            'end_date' => now()->addDays(rand(1, 30)),
         ];
     }
 }

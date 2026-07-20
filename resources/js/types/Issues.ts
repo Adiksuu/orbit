@@ -39,6 +39,8 @@ export interface Issue {
         title: string;
     };
     due_date?: string | number;
+    start_date?: string;
+    end_date?: string;
     completed_at?: string | number;
     comments_count?: number;
     attachments_count?: number;
@@ -63,7 +65,7 @@ export interface PaginatedResponse<T> {
     total: number;
 }
 
-export type IssuePageLooks = 'List' | 'Board';
+export type IssuePageLooks = 'List' | 'Board' | 'Calendar';
 export type IssuePriority = 'high' | 'medium' | 'low';
 
 export interface ProductivityTrendProps {
