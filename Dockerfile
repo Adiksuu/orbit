@@ -11,7 +11,7 @@
 # -----------------------------------------------------------------------------
 # PHP / Laravel application
 # -----------------------------------------------------------------------------
-FROM php:8.4-cli AS php
+FROM php:8.5-cli AS php
 
 # System libraries + PHP extensions required by Laravel and SQLite.
 RUN apt-get update && apt-get install -y --no-install-recommends \
