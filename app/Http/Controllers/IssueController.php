@@ -22,6 +22,8 @@ class IssueController extends Controller
             'priority' => 'sometimes|required|string',
             'assignee_id' => 'sometimes|nullable|exists:users,id',
             'labels' => 'sometimes|nullable|array',
+            'start_date' => 'sometimes|nullable|date',
+            'end_date' => 'sometimes|nullable|date',
         ]);
 
         $this->issueService->updateIssue($issue, $data);
@@ -38,6 +40,8 @@ class IssueController extends Controller
             'status' => 'required|string',
             'assignee_id' => 'nullable|exists:users,id',
             'labels' => 'nullable|array',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date',
         ]);
 
         $this->issueService->createIssue($data);
