@@ -6,12 +6,11 @@ import Input from '@/Components/Atoms/Input/Input';
 import Modal from '@/Components/Atoms/Modal/Modal';
 import StatusDot from '@/Components/Atoms/StatusDot/StatusDot';
 import TextArea from '@/Components/Atoms/TextArea/TextArea';
-import Calendar from '@/Components/Molecules/Calendar/Calendar';
+import DatePickerOverlay from '@/Components/Molecules/DatePickerOverlay/DatePickerOverlay';
 import SidebarField from '@/Components/Molecules/SidebarField/SidebarField';
 import { NewIssueModalProps } from '@/types/Components';
 import { IssueLabel, IssuePriority } from '@/types/Issues';
 import { useForm } from '@inertiajs/react';
-import { AnimatePresence } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 
 const PRIORITIES: IssuePriority[] = ['low', 'medium', 'high'];
@@ -253,88 +252,32 @@ const NewIssueModal: React.FC<NewIssueModalProps> = ({
                     </div>
                 </form>
 
-                <AnimatePresence>
-                    {(showStartDate || showEndDate) && (
-                        <div
-                            className="absolute inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-[2px]"
-                            onClick={() => {
-                                setShowStartDate(false);
-                                setShowEndDate(false);
-                            }}
-                        >
-                            <div onClick={(e) => e.stopPropagation()}>
-                                {showStartDate && (
-                                    <Calendar
-                                        selectedDate={
-                                            data.start_date
-                                                ? new Date(
-                                                      data.start_date.replace(
-                                                          /-/g,
-                                                          '/',
-                                                      ),
-                                                  )
-                                                : undefined
-                                        }
-                                        onSelect={(date) => {
-                                            const newStartDate =
-                                                toLocalDateString(date);
-                                            setData((prev: any) => ({
-                                                ...prev,
-                                                start_date: newStartDate,
-                                                end_date:
-                                                    prev.end_date &&
-                                                    prev.end_date < newStartDate
-                                                        ? newStartDate
-                                                        : prev.end_date,
-                                            }));
-                                        }}
-                                        onClose={() => setShowStartDate(false)}
-                                    />
-                                )}
-                                {showEndDate && (
-                                    <Calendar
-                                        selectedDate={
-                                            data.end_date
-                                                ? new Date(
-                                                      data.end_date.replace(
-                                                          /-/g,
-                                                          '/',
-                                                      ),
-                                                  )
-                                                : undefined
-                                        }
-                                        minDate={
-                                            data.start_date
-                                                ? new Date(
-                                                      data.start_date.replace(
-                                                          /-/g,
-                                                          '/',
-                                                      ),
-                                                  )
-                                                : undefined
-                                        }
-                                        rangeStart={
-                                            data.start_date
-                                                ? new Date(
-                                                      data.start_date.replace(
-                                                          /-/g,
-                                                          '/',
-                                                      ),
-                                                  )
-                                                : undefined
-                                        }
-                                        onSelect={(date) => {
-                                            const newEndDate =
-                                                toLocalDateString(date);
-                                            setData('end_date', newEndDate);
-                                        }}
-                                        onClose={() => setShowEndDate(false)}
-                                    />
-                                )}
-                            </div>
-                        </div>
-                    )}
-                </AnimatePresence>
+                <DatePickerOverlay
+                    isOpen={showStartDate || showEndDate}
+                    showStartDate={showStartDate}
+                    showEndDate={showEndDate}
+                    startDate={data.start_date}
+                    endDate={data.end_date}
+                    onClose={() => {
+                        setShowStartDate(false);
+                        setShowEndDate(false);
+                    }}
+                    onSelectStart={(date) => {
+                        const newStartDate = toLocalDateString(date);
+                        setData((prev: any) => ({
+                            ...prev,
+                            start_date: newStartDate,
+                            end_date:
+                                prev.end_date && prev.end_date < newStartDate
+                                    ? newStartDate
+                                    : prev.end_date,
+                        }));
+                    }}
+                    onSelectEnd={(date) => {
+                        const newEndDate = toLocalDateString(date);
+                        setData('end_date', newEndDate);
+                    }}
+                />
             </div>
         </Modal>
     );
