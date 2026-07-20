@@ -275,12 +275,19 @@ const NewIssueModal: React.FC<NewIssueModalProps> = ({
                                                   )
                                                 : undefined
                                         }
-                                        onSelect={(date) =>
-                                            setData(
-                                                'start_date',
-                                                toLocalDateString(date),
-                                            )
-                                        }
+                                        onSelect={(date) => {
+                                            const newStartDate =
+                                                toLocalDateString(date);
+                                            setData((prev: any) => ({
+                                                ...prev,
+                                                start_date: newStartDate,
+                                                end_date:
+                                                    prev.end_date &&
+                                                    prev.end_date < newStartDate
+                                                        ? newStartDate
+                                                        : prev.end_date,
+                                            }));
+                                        }}
                                         onClose={() => setShowStartDate(false)}
                                     />
                                 )}
@@ -296,12 +303,31 @@ const NewIssueModal: React.FC<NewIssueModalProps> = ({
                                                   )
                                                 : undefined
                                         }
-                                        onSelect={(date) =>
-                                            setData(
-                                                'end_date',
-                                                toLocalDateString(date),
-                                            )
+                                        minDate={
+                                            data.start_date
+                                                ? new Date(
+                                                      data.start_date.replace(
+                                                          /-/g,
+                                                          '/',
+                                                      ),
+                                                  )
+                                                : undefined
                                         }
+                                        rangeStart={
+                                            data.start_date
+                                                ? new Date(
+                                                      data.start_date.replace(
+                                                          /-/g,
+                                                          '/',
+                                                      ),
+                                                  )
+                                                : undefined
+                                        }
+                                        onSelect={(date) => {
+                                            const newEndDate =
+                                                toLocalDateString(date);
+                                            setData('end_date', newEndDate);
+                                        }}
                                         onClose={() => setShowEndDate(false)}
                                     />
                                 )}

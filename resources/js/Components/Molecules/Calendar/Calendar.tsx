@@ -6,12 +6,16 @@ interface CalendarProps {
     selectedDate?: Date;
     onSelect: (date: Date) => void;
     onClose: () => void;
+    minDate?: Date;
+    rangeStart?: Date;
 }
 
 const Calendar: React.FC<CalendarProps> = ({
     selectedDate,
     onSelect,
     onClose,
+    minDate,
+    rangeStart,
 }) => {
     const [currentMonth, setCurrentMonth] = useState(
         selectedDate || new Date(),
@@ -140,7 +144,7 @@ const Calendar: React.FC<CalendarProps> = ({
                 ))}
             </div>
 
-            <div className="grid grid-cols-7 gap-1.5">
+            <div className="grid grid-cols-7">
                 {days.map((dateObj, i) => {
                     const selected = isSelected(
                         dateObj.day,
@@ -153,24 +157,93 @@ const Calendar: React.FC<CalendarProps> = ({
                         dateObj.year,
                     );
 
+                    const isBeforeMinDate = () => {
+                        if (!minDate) return false;
+                        // Create a date object for the day being rendered
+                        const date = new Date(
+                            dateObj.year,
+                            dateObj.month,
+                            dateObj.day,
+                        );
+                        // Create a date object for minDate normalized to midnight
+                        const min = new Date(
+                            minDate.getFullYear(),
+                            minDate.getMonth(),
+                            minDate.getDate(),
+                        );
+                        return date < min;
+                    };
+
+                    const isInRange = () => {
+                        if (!rangeStart || !selectedDate) return false;
+                        const date = new Date(
+                            dateObj.year,
+                            dateObj.month,
+                            dateObj.day,
+                        );
+                        const start = new Date(
+                            rangeStart.getFullYear(),
+                            rangeStart.getMonth(),
+                            rangeStart.getDate(),
+                        );
+                        const end = new Date(
+                            selectedDate.getFullYear(),
+                            selectedDate.getMonth(),
+                            selectedDate.getDate(),
+                        );
+                        return date >= start && date <= end;
+                    };
+
+                    const isRangeStart = () => {
+                        if (!rangeStart) return false;
+                        return (
+                            rangeStart.getDate() === dateObj.day &&
+                            rangeStart.getMonth() === dateObj.month &&
+                            rangeStart.getFullYear() === dateObj.year
+                        );
+                    };
+
+                    const isRangeEnd = () => {
+                        if (!selectedDate) return false;
+                        return (
+                            selectedDate.getDate() === dateObj.day &&
+                            selectedDate.getMonth() === dateObj.month &&
+                            selectedDate.getFullYear() === dateObj.year
+                        );
+                    };
+
+                    const disabled = isBeforeMinDate();
+                    const inRange = isInRange();
+                    const rangeStartNode = isRangeStart();
+                    const rangeEndNode = isRangeEnd();
+
                     return (
-                        <button
+                        <div
                             key={i}
-                            type="button"
-                            onClick={() => {
-                                onSelect(
-                                    new Date(
-                                        dateObj.year,
-                                        dateObj.month,
-                                        dateObj.day,
-                                    ),
-                                );
-                                onClose();
-                            }}
-                            className={`flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl text-[13px] transition-all duration-200 ${!dateObj.currentMonth ? 'opacity-20' : 'text-[var(--text-color)]'} ${selected ? 'bg-[var(--accent-color)] font-bold !text-white !opacity-100 shadow-[0_0_20px_rgba(var(--accent-color-rgb),0.4)]' : 'hover:bg-white/[0.08]'} ${today && !selected ? 'border border-[var(--accent-color)]' : ''} `}
+                            className="relative flex items-center justify-center py-1"
                         >
-                            {dateObj.day}
-                        </button>
+                            {inRange && (
+                                <div
+                                    className={`absolute z-0 h-9 w-full bg-white/[0.04] ${rangeStartNode || i % 7 === 0 ? 'rounded-l-xl' : ''} ${rangeEndNode || i % 7 === 6 ? 'rounded-r-xl' : ''} `}
+                                />
+                            )}
+                            <button
+                                type="button"
+                                disabled={disabled}
+                                onClick={() => {
+                                    onSelect(
+                                        new Date(
+                                            dateObj.year,
+                                            dateObj.month,
+                                            dateObj.day,
+                                        ),
+                                    );
+                                }}
+                                className={`relative z-10 flex h-9 w-9 items-center justify-center rounded-xl text-[13px] transition-all duration-200 ${!dateObj.currentMonth ? 'opacity-20' : 'text-[var(--text-color)]'} ${selected ? 'bg-[var(--accent-color)] font-bold !text-white !opacity-100 shadow-[0_0_20px_rgba(0,0,0,0.4)]' : inRange ? 'text-[var(--accent-color)]' : 'hover:bg-white/[0.08]'} ${today && !selected ? 'border border-[var(--accent-color)]' : 'border border-transparent'} ${disabled ? 'cursor-not-allowed opacity-5 grayscale' : 'cursor-pointer'} `}
+                            >
+                                {dateObj.day}
+                            </button>
+                        </div>
                     );
                 })}
             </div>
@@ -180,7 +253,6 @@ const Calendar: React.FC<CalendarProps> = ({
                     type="button"
                     onClick={() => {
                         onSelect(new Date());
-                        onClose();
                     }}
                     className="cursor-pointer text-[11px] font-medium text-[var(--accent-color)] hover:underline"
                 >
