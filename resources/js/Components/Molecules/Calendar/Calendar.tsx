@@ -1,4 +1,5 @@
 import Icon from '@/Components/Atoms/Icon/Icon';
+import { useAlert } from '@/context/AlertContext';
 import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 
@@ -20,6 +21,7 @@ const Calendar: React.FC<CalendarProps> = ({
     const [currentMonth, setCurrentMonth] = useState(
         selectedDate || new Date(),
     );
+    const { addAlert } = useAlert();
 
     const daysInMonth = (year: number, month: number) =>
         new Date(year, month + 1, 0).getDate();
@@ -229,8 +231,19 @@ const Calendar: React.FC<CalendarProps> = ({
                             )}
                             <button
                                 type="button"
-                                disabled={disabled}
                                 onClick={() => {
+                                    if (disabled) {
+                                        addAlert(
+                                            'This date is not selectable.',
+                                            'error',
+                                        );
+                                        return;
+                                    } else {
+                                        addAlert(
+                                            'Date selected successfully.',
+                                            'success',
+                                        );
+                                    }
                                     onSelect(
                                         new Date(
                                             dateObj.year,
