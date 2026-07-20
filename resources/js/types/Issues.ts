@@ -65,7 +65,7 @@ export interface PaginatedResponse<T> {
     total: number;
 }
 
-export type IssuePageLooks = 'List' | 'Board';
+export type IssuePageLooks = 'List' | 'Board' | 'Calendar';
 export type IssuePriority = 'high' | 'medium' | 'low';
 
 export interface ProductivityTrendProps {

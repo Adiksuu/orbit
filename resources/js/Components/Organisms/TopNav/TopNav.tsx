@@ -53,6 +53,12 @@ const TopNav: React.FC<TopNavProps> = ({
                 category: 'View',
                 action: () => setSelectedLook('Board'),
             },
+            {
+                key: '3',
+                description: 'Calendar view',
+                category: 'View',
+                action: () => setSelectedLook('Calendar'),
+            },
         ],
         [setSelectedLook],
     );
@@ -104,6 +110,22 @@ const TopNav: React.FC<TopNavProps> = ({
                                 }
                             />
                             Board
+                        </button>
+                        <button
+                            className={buttonVariants({
+                                isActive: selectedLook === 'Calendar',
+                            })}
+                            onClick={() => setSelectedLook('Calendar')}
+                        >
+                            <Icon
+                                name={'CalendarDays'}
+                                className={
+                                    selectedLook === 'Calendar'
+                                        ? 'text-white'
+                                        : 'text-zinc-400'
+                                }
+                            />
+                            Calendar
                         </button>
                     </nav>
                 </div>

@@ -270,6 +270,11 @@ export interface IssueRowDetailProps {
     onOpenDetails: () => void;
 }
 // ORGANISMS COMPONENTS
+export interface CalendarViewProps {
+    issues: Issue[];
+    activeIssue: Issue | null;
+    setActiveIssue: (issue: Issue | null) => void;
+}
 export interface DashboardVisualsProps {
     issues: Issue[];
     productivity_trend: ProductivityTrendProps[];
