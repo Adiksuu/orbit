@@ -1,14 +1,18 @@
 import Badge from '@/Components/Atoms/Badge/Badge';
+import Button from '@/Components/Atoms/Button/Button';
+import Icon from '@/Components/Atoms/Icon/Icon';
 import IconButton from '@/Components/Atoms/IconButton/IconButton';
 import Input from '@/Components/Atoms/Input/Input';
 import Modal from '@/Components/Atoms/Modal/Modal';
 import StatusDot from '@/Components/Atoms/StatusDot/StatusDot';
 import TextArea from '@/Components/Atoms/TextArea/TextArea';
+import Calendar from '@/Components/Molecules/Calendar/Calendar';
 import SidebarField from '@/Components/Molecules/SidebarField/SidebarField';
 import { NewIssueModalProps } from '@/types/Components';
 import { IssueLabel, IssuePriority } from '@/types/Issues';
 import { useForm } from '@inertiajs/react';
-import React, { useEffect } from 'react';
+import { AnimatePresence } from 'framer-motion';
+import React, { useEffect, useState } from 'react';
 
 const PRIORITIES: IssuePriority[] = ['low', 'medium', 'high'];
 const LABELS: IssueLabel[] = [
@@ -25,6 +29,9 @@ const NewIssueModal: React.FC<NewIssueModalProps> = ({
     onClose,
     project,
 }) => {
+    const [showStartDate, setShowStartDate] = useState(false);
+    const [showEndDate, setShowEndDate] = useState(false);
+
     const { data, setData, post, processing, reset, errors } = useForm({
         title: '',
         description: '',
@@ -33,6 +40,10 @@ const NewIssueModal: React.FC<NewIssueModalProps> = ({
         priority: 'medium',
         assignee_id: '',
         labels: [] as IssueLabel[],
+        start_date: new Date().toISOString().split('T')[0],
+        end_date: new Date(new Date().setDate(new Date().getDate() + 7))
+            .toISOString()
+            .split('T')[0],
     });
 
     useEffect(() => {
@@ -50,6 +61,13 @@ const NewIssueModal: React.FC<NewIssueModalProps> = ({
                 reset();
             },
         });
+    };
+
+    const toLocalDateString = (date: Date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     };
 
     const toggleLabel = (label: IssueLabel) => {
@@ -167,6 +185,53 @@ const NewIssueModal: React.FC<NewIssueModalProps> = ({
                                     ))}
                                 </div>
                             </SidebarField>
+
+                            <div className="flex flex-col gap-4">
+                                <SidebarField label="Start Date">
+                                    <div className="relative">
+                                        <Button
+                                            type={'button'}
+                                            onClick={() => {
+                                                setShowStartDate(true);
+                                                setShowEndDate(false);
+                                            }}
+                                            className="flex w-full cursor-pointer items-center gap-3 rounded-lg border border-[var(--bg-light-color)] bg-white/[0.02] px-3 py-2.5 text-[var(--text-color)] hover:border-white/10 hover:bg-white/[0.05]"
+                                        >
+                                            <Icon
+                                                name="Calendar"
+                                                size={16}
+                                                className="text-[var(--text-gray-color)]"
+                                            />
+                                            <span className="flex-1 text-left">
+                                                {data.start_date ||
+                                                    'Select date'}
+                                            </span>
+                                        </Button>
+                                    </div>
+                                </SidebarField>
+
+                                <SidebarField label="End Date">
+                                    <div className="relative">
+                                        <Button
+                                            type={'button'}
+                                            onClick={() => {
+                                                setShowEndDate(true);
+                                                setShowStartDate(false);
+                                            }}
+                                            className="flex w-full cursor-pointer items-center gap-3 rounded-lg border border-[var(--bg-light-color)] bg-white/[0.02] px-3 py-2.5 text-[var(--text-color)] hover:border-white/10 hover:bg-white/[0.05]"
+                                        >
+                                            <Icon
+                                                name="Calendar"
+                                                size={16}
+                                                className="text-[var(--text-gray-color)]"
+                                            />
+                                            <span className="flex-1 text-left">
+                                                {data.end_date || 'Select date'}
+                                            </span>
+                                        </Button>
+                                    </div>
+                                </SidebarField>
+                            </div>
                         </div>
                     </div>
                     <div className="flex items-center justify-end gap-3 border-t border-[var(--bg-light-color)] px-6 py-4">
@@ -187,6 +252,63 @@ const NewIssueModal: React.FC<NewIssueModalProps> = ({
                         </button>
                     </div>
                 </form>
+
+                <AnimatePresence>
+                    {(showStartDate || showEndDate) && (
+                        <div
+                            className="absolute inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-[2px]"
+                            onClick={() => {
+                                setShowStartDate(false);
+                                setShowEndDate(false);
+                            }}
+                        >
+                            <div onClick={(e) => e.stopPropagation()}>
+                                {showStartDate && (
+                                    <Calendar
+                                        selectedDate={
+                                            data.start_date
+                                                ? new Date(
+                                                      data.start_date.replace(
+                                                          /-/g,
+                                                          '/',
+                                                      ),
+                                                  )
+                                                : undefined
+                                        }
+                                        onSelect={(date) =>
+                                            setData(
+                                                'start_date',
+                                                toLocalDateString(date),
+                                            )
+                                        }
+                                        onClose={() => setShowStartDate(false)}
+                                    />
+                                )}
+                                {showEndDate && (
+                                    <Calendar
+                                        selectedDate={
+                                            data.end_date
+                                                ? new Date(
+                                                      data.end_date.replace(
+                                                          /-/g,
+                                                          '/',
+                                                      ),
+                                                  )
+                                                : undefined
+                                        }
+                                        onSelect={(date) =>
+                                            setData(
+                                                'end_date',
+                                                toLocalDateString(date),
+                                            )
+                                        }
+                                        onClose={() => setShowEndDate(false)}
+                                    />
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </AnimatePresence>
             </div>
         </Modal>
     );

@@ -41,6 +41,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     className?: string;
     isBox?: boolean;
     isDisabled?: boolean;
+    type?: 'button' | 'submit' | 'reset';
 }
 export interface DropdownItemProps
     extends

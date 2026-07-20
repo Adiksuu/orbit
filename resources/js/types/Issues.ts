@@ -39,6 +39,8 @@ export interface Issue {
         title: string;
     };
     due_date?: string | number;
+    start_date?: string;
+    end_date?: string;
     completed_at?: string | number;
     comments_count?: number;
     attachments_count?: number;
