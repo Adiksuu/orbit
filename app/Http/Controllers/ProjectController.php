@@ -38,7 +38,7 @@ class ProjectController extends Controller
     }
     public function index(Project $project): Response
     {
-        $projects = Project::with('issues')->get();
+        $projects = Project::with('issues')->latest()->get();
 
         return Inertia::render('Projects/Index', [
             'projects' => $projects,
@@ -56,5 +56,24 @@ class ProjectController extends Controller
         $this->projectService->createProject($data);
 
         return redirect()->back()->with('success', 'Project has been created successfully.');
+    }
+    public function updateColumns(Request $request, Project $project): RedirectResponse
+    {
+        $validated = $request->validate([
+            'columns' => 'required|array',
+            'columns.id' => 'sometimes|boolean',
+            'columns.title' => 'sometimes|boolean',
+            'columns.status' => 'sometimes|boolean',
+            'columns.assignee' => 'sometimes|boolean',
+            'columns.priority' => 'sometimes|boolean',
+            'columns.labels' => 'sometimes|boolean',
+            'columns.updated' => 'sometimes|boolean',
+            'columns.start_date' => 'sometimes|boolean',
+            'columns.end_date' => 'sometimes|boolean',
+        ]);
+
+        $this->projectService->updateColumns($project, $validated['columns']);
+
+        return redirect()->back()->with('success', 'Columns configuration updated successfully.');
     }
 }

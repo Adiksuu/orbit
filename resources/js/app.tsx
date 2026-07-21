@@ -5,6 +5,7 @@ import './bootstrap';
 import { ModalContainer } from '@/Components/Organisms/Modal';
 import { AlertProvider } from '@/context/AlertContext';
 import { ModalProvider } from '@/context/ModalContext';
+import { ShortcutProvider } from '@/context/ShortcutContext';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
@@ -26,8 +27,10 @@ createInertiaApp({
                 {({ Component, props: pageProps, key }) => (
                     <ModalProvider>
                         <AlertProvider>
-                            <ModalContainer />
-                            <Component {...pageProps} key={key} />
+                            <ShortcutProvider>
+                                <ModalContainer />
+                                <Component {...pageProps} key={key} />
+                            </ShortcutProvider>
                         </AlertProvider>
                     </ModalProvider>
                 )}

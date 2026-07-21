@@ -7,10 +7,15 @@ import {
     useState,
 } from 'react';
 
-const ModalContext = createContext<ModalContextType | undefined>(undefined);
+export const ModalContext = createContext<ModalContextType | undefined>(
+    undefined,
+);
 
 export const ModalProvider = ({ children }: { children: ReactNode }) => {
     const [modals, setModals] = useState<ModalContent[]>([]);
+    const [externalModals, setExternalModals] = useState<Set<string>>(
+        new Set(),
+    );
 
     const openModal = useCallback(
         (
@@ -36,11 +41,42 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
 
     const closeAllModals = useCallback(() => {
         setModals([]);
+        setExternalModals(new Set());
     }, []);
+
+    const registerExternalModal = useCallback((id: string) => {
+        setExternalModals((prev) => {
+            if (prev.has(id)) return prev;
+            const next = new Set(prev);
+            next.add(id);
+            return next;
+        });
+    }, []);
+
+    const unregisterExternalModal = useCallback((id: string) => {
+        setExternalModals((prev) => {
+            if (!prev.has(id)) return prev;
+            const next = new Set(prev);
+            next.delete(id);
+            return next;
+        });
+    }, []);
+
+    const getIfAnyModalIsOpened = useCallback(() => {
+        return modals.length > 0 || externalModals.size > 0;
+    }, [modals, externalModals]);
 
     return (
         <ModalContext.Provider
-            value={{ modals, openModal, closeModal, closeAllModals }}
+            value={{
+                modals,
+                openModal,
+                closeModal,
+                closeAllModals,
+                getIfAnyModalIsOpened,
+                registerExternalModal,
+                unregisterExternalModal,
+            }}
         >
             {children}
         </ModalContext.Provider>

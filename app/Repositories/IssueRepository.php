@@ -37,7 +37,7 @@ class IssueRepository
         $direction = $directionInput === 'ZA' ? 'desc' : 'asc';
 
         $column = $sortParams['sort'] ?? null;
-        $allowedColumns = ['id', 'title', 'status', 'assignee', 'priority', 'labels', 'updated'];
+        $allowedColumns = ['id', 'title', 'status', 'assignee', 'priority', 'labels', 'updated', 'start_date', 'end_date'];
 
         if ($column && in_array($column, $allowedColumns)) {
             switch ($column) {
@@ -64,6 +64,12 @@ class IssueRepository
 
                 case 'updated':
                     $query->orderBy('updated_at', $direction);
+                    break;
+                case 'start_date':
+                    $query->orderBy('start_date', $direction);
+                    break;
+                case 'end_date':
+                    $query->orderBy('end_date', $direction);
                     break;
             }
         } else {

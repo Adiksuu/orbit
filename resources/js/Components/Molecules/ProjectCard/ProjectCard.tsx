@@ -1,8 +1,9 @@
 import StatusDot from '@/Components/Atoms/StatusDot/StatusDot';
+import { useShortcuts } from '@/context/ShortcutContext';
 import { ProjectCardProps } from '@/types/Components';
 import { getColorTheme } from '@/utils/colors';
 import { Link } from '@inertiajs/react';
-import { Component, FC } from 'react';
+import { FC } from 'react';
 import Icon from '../../Atoms/Icon/Icon';
 
 const ProjectCard: FC<ProjectCardProps> = ({ project, issues }) => {
@@ -85,27 +86,27 @@ const ProjectCard: FC<ProjectCardProps> = ({ project, issues }) => {
         </Link>
     );
 };
+export function ProjectNewCard() {
+    const { triggerShortcut } = useShortcuts();
 
-export class ProjectNewCard extends Component {
-    render() {
-        return (
-            <Link
-                href="/projects/new"
-                className="group flex min-h-[160px] flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-[var(--bg-light-color)] bg-transparent transition-all duration-300 hover:border-[var(--accent-color)] hover:bg-[var(--accent-color-opacity)]"
-            >
-                <div className="flex h-10 w-10 items-center justify-center rounded-full border border-dashed border-[var(--bg-light-color)] transition-all duration-300 group-hover:border-[var(--accent-color)] group-hover:bg-[var(--accent-color-opacity)]">
-                    <Icon
-                        name="Plus"
-                        size={18}
-                        className="text-zinc-500 transition-colors duration-200 group-hover:text-[var(--accent-color)]"
-                    />
-                </div>
-                <span className="text-xs font-semibold text-zinc-500 transition-colors duration-200 group-hover:text-[var(--accent-color)]">
-                    New Project
-                </span>
-            </Link>
-        );
-    }
+    return (
+        <Link
+            href="/projects/new"
+            className="group flex min-h-[160px] cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-[var(--bg-light-color)] bg-transparent transition-all duration-300 hover:border-[var(--accent-color)] hover:bg-[var(--accent-color-opacity)]"
+            onClick={() => triggerShortcut('p')}
+        >
+            <div className="flex h-10 w-10 items-center justify-center rounded-full border border-dashed border-[var(--bg-light-color)] transition-all duration-300 group-hover:border-[var(--accent-color)] group-hover:bg-[var(--accent-color-opacity)]">
+                <Icon
+                    name="Plus"
+                    size={18}
+                    className="text-zinc-500 transition-colors duration-200 group-hover:text-[var(--accent-color)]"
+                />
+            </div>
+            <span className="text-xs font-semibold text-zinc-500 transition-colors duration-200 group-hover:text-[var(--accent-color)]">
+                New Project
+            </span>
+        </Link>
+    );
 }
 
 export default ProjectCard;

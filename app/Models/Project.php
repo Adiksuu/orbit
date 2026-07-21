@@ -16,8 +16,13 @@ class Project extends Model
         'name',
         'slug',
         'description',
-        'color'
+        'color',
+        'columns'
     ];
+    protected $casts = [
+        'columns' => 'array',
+    ];
+
     public function issues(): HasMany
     {
         return $this->hasMany(Issue::class);

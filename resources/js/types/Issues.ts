@@ -21,8 +21,32 @@ export interface Issue {
         password: string;
         updated_at: string;
     };
+    reporter?: {
+        avatar?: string;
+        name: string;
+    };
+    creator?: {
+        avatar?: string;
+        name: string;
+    };
     labels?: IssueLabel[];
     isChecked?: boolean;
+    key?: string;
+    milestone?: string;
+    sprint?: string;
+    parent_issue?: {
+        id: string;
+        title: string;
+    };
+    due_date?: string | number;
+    start_date?: string;
+    end_date?: string;
+    completed_at?: string | number;
+    comments_count?: number;
+    attachments_count?: number;
+    activity_count?: number;
+    type?: string;
+    visibility?: string;
 }
 
 export interface PaginatedResponse<T> {
@@ -41,7 +65,7 @@ export interface PaginatedResponse<T> {
     total: number;
 }
 
-export type IssuePageLooks = 'List' | 'Board';
+export type IssuePageLooks = 'List' | 'Board' | 'Calendar';
 export type IssuePriority = 'high' | 'medium' | 'low';
 
 export interface ProductivityTrendProps {
@@ -52,4 +76,12 @@ export type Status = 'open' | 'closed';
 
 export type Sorting = 'AZ' | 'ZA';
 export type SortingColumn =
-    'id' | 'title' | 'status' | 'assignee' | 'priority' | 'labels' | 'updated';
+    | 'id'
+    | 'title'
+    | 'status'
+    | 'assignee'
+    | 'priority'
+    | 'labels'
+    | 'updated'
+    | 'start_date'
+    | 'end_date';

@@ -1,3 +1,5 @@
+import { ModalProvider } from '@/context/ModalContext';
+import { ShortcutProvider } from '@/context/ShortcutContext';
 import { Project } from '@/types/Projects';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
@@ -10,6 +12,7 @@ vi.mock('@inertiajs/react', async () => {
     return {
         Link: ({ children, href, ...props }: Record<string, unknown>) =>
             React.createElement('a', { href, ...props }, children as never),
+        usePage: () => ({ props: { auth: { user: { id: 1 } } } }),
         useForm: (initial: Record<string, unknown>) => {
             const initialRef = React.useRef(initial);
             const [data, setDataState] =
@@ -60,15 +63,23 @@ afterEach(() => {
     vi.clearAllMocks();
 });
 
+const renderTopNav = (props: any) => {
+    return render(
+        <ModalProvider>
+            <ShortcutProvider>
+                <TopNav {...props} />
+            </ShortcutProvider>
+        </ModalProvider>,
+    );
+};
+
 describe('TopNav Component', () => {
     test('renders the project name', () => {
-        render(
-            <TopNav
-                selectedLook="List"
-                setSelectedLook={() => {}}
-                project={project}
-            />,
-        );
+        renderTopNav({
+            selectedLook: 'List',
+            setSelectedLook: () => {},
+            project: project,
+        });
 
         expect(
             screen.getByRole('heading', { name: 'Orbit' }),
@@ -76,13 +87,11 @@ describe('TopNav Component', () => {
     });
 
     test('renders the List and Board view toggles', () => {
-        render(
-            <TopNav
-                selectedLook="List"
-                setSelectedLook={() => {}}
-                project={project}
-            />,
-        );
+        renderTopNav({
+            selectedLook: 'List',
+            setSelectedLook: () => {},
+            project: project,
+        });
 
         expect(
             screen.getByRole('button', { name: /list/i }),
@@ -93,13 +102,11 @@ describe('TopNav Component', () => {
     });
 
     test('highlights the currently selected view', () => {
-        render(
-            <TopNav
-                selectedLook="List"
-                setSelectedLook={() => {}}
-                project={project}
-            />,
-        );
+        renderTopNav({
+            selectedLook: 'List',
+            setSelectedLook: () => {},
+            project: project,
+        });
 
         expect(screen.getByRole('button', { name: /list/i })).toHaveClass(
             'text-white',
@@ -111,13 +118,11 @@ describe('TopNav Component', () => {
 
     test('switches the view when a toggle is clicked', async () => {
         const setSelectedLook = vi.fn();
-        render(
-            <TopNav
-                selectedLook="List"
-                setSelectedLook={setSelectedLook}
-                project={project}
-            />,
-        );
+        renderTopNav({
+            selectedLook: 'List',
+            setSelectedLook: setSelectedLook,
+            project: project,
+        });
 
         fireEvent.click(screen.getByRole('button', { name: /board/i }));
 
@@ -126,13 +131,11 @@ describe('TopNav Component', () => {
 
     test('switches back to the List view when the List toggle is clicked', async () => {
         const setSelectedLook = vi.fn();
-        render(
-            <TopNav
-                selectedLook="Board"
-                setSelectedLook={setSelectedLook}
-                project={project}
-            />,
-        );
+        renderTopNav({
+            selectedLook: 'Board',
+            setSelectedLook: setSelectedLook,
+            project: project,
+        });
 
         fireEvent.click(screen.getByRole('button', { name: /list/i }));
 
@@ -140,13 +143,11 @@ describe('TopNav Component', () => {
     });
 
     test('opens the new issue modal when the "New issue" button is clicked', async () => {
-        render(
-            <TopNav
-                selectedLook="List"
-                setSelectedLook={() => {}}
-                project={project}
-            />,
-        );
+        renderTopNav({
+            selectedLook: 'List',
+            setSelectedLook: () => {},
+            project: project,
+        });
 
         expect(
             document.querySelector('.backdrop-blur-sm'),
@@ -162,13 +163,11 @@ describe('TopNav Component', () => {
     });
 
     test('closes the new issue modal when the backdrop is clicked', async () => {
-        render(
-            <TopNav
-                selectedLook="List"
-                setSelectedLook={() => {}}
-                project={project}
-            />,
-        );
+        renderTopNav({
+            selectedLook: 'List',
+            setSelectedLook: () => {},
+            project: project,
+        });
 
         fireEvent.click(screen.getByRole('button', { name: /new issue/i }));
 
@@ -188,19 +187,17 @@ describe('TopNav Component', () => {
     });
 
     test('opens the new issue modal with the "Ctrl + I" shortcut', async () => {
-        render(
-            <TopNav
-                selectedLook="List"
-                setSelectedLook={() => {}}
-                project={project}
-            />,
-        );
+        renderTopNav({
+            selectedLook: 'List',
+            setSelectedLook: () => {},
+            project: project,
+        });
 
         expect(
             document.querySelector('.backdrop-blur-sm'),
         ).not.toBeInTheDocument();
 
-        fireEvent.keyDown(window, { key: 'I', ctrlKey: true });
+        fireEvent.keyDown(window, { key: 'i', ctrlKey: true });
 
         await waitFor(() => {
             expect(

@@ -41,6 +41,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     className?: string;
     isBox?: boolean;
     isDisabled?: boolean;
+    type?: 'button' | 'submit' | 'reset';
 }
 export interface DropdownItemProps
     extends
@@ -75,6 +76,7 @@ export interface IconButtonProps
     iconSize?: number;
     isLink?: boolean;
     link?: string;
+    children?: ReactNode;
 }
 export interface InputProps extends VariantProps<typeof inputVariants> {
     value: string;
@@ -114,6 +116,11 @@ export interface VisualCardProps {
     children: ReactNode;
     className?: string;
 }
+export interface KeybindProps {
+    tooltipText: string;
+    keybind: string;
+    tooltip?: boolean;
+}
 // MOLECULES COMPONENTS
 export interface BoardColumnProps {
     issues: Issue[];
@@ -133,6 +140,10 @@ export interface IssueElementProps {
     setActiveIssue: (issue: Issue | null, isEditing?: boolean) => void;
     type?: 'list' | 'board';
     handleSelectIssueCheckbox?: (issue: Issue | string) => void;
+    enabledColumns?: Record<string, boolean>;
+    rowHeight?: number;
+    isExpanded?: boolean;
+    onToggleExpand?: () => void;
 }
 export interface IssuePropertyProps {
     label: string;
@@ -234,7 +245,36 @@ export interface DashboardEmptyStateProps {
     actionLabel?: string;
     actionHref?: string;
 }
+export interface SelectionDropdownProps {
+    options: { label: string; value: string; disabled?: boolean }[];
+    selectedValues: string[];
+    onChange: (value: string) => void;
+    trigger: ReactNode;
+}
+export interface DetailAttributesProps {
+    issue: Issue;
+}
+export interface DetailSystemInfoProps {
+    issue: Issue;
+}
+export interface DetailDescriptionProps {
+    issue: Issue;
+    onOpenDetails: () => void;
+}
+export interface InfoItemProps {
+    label: string;
+    children: ReactNode;
+}
+export interface IssueRowDetailProps {
+    issue: Issue;
+    onOpenDetails: () => void;
+}
 // ORGANISMS COMPONENTS
+export interface CalendarViewProps {
+    issues: Issue[];
+    activeIssue: Issue | null;
+    setActiveIssue: (issue: Issue | null) => void;
+}
 export interface DashboardVisualsProps {
     issues: Issue[];
     productivity_trend: ProductivityTrendProps[];
@@ -256,6 +296,7 @@ export interface IssueTableProps {
     setActiveIssue: (issue: Issue | null, isEditing?: boolean) => void;
     queryParams?: { sort?: string; direction?: string; [key: string]: any };
     pagination?: ReactNode;
+    project?: Project;
 }
 export interface NewIssueModalProps {
     isOpen: boolean;
@@ -292,6 +333,10 @@ export interface ListRowProps {
     onModify?: () => void;
     isClosed: boolean;
     handleSelectIssueCheckbox?: (issue: Issue | string) => void;
+    enabledColumns?: Record<string, boolean>;
+    rowHeight?: number;
+    isExpanded?: boolean;
+    onToggleExpand?: () => void;
 }
 
 // OTHER COMPONENTS

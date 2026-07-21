@@ -23,6 +23,7 @@ function Button({
     onClick,
     isBox = false,
     isDisabled,
+    type = 'submit',
     ...props
 }: ButtonProps) {
     return (
@@ -30,6 +31,7 @@ function Button({
             className={cn(buttonVariants({ isBox }), className)}
             onClick={onClick}
             disabled={isDisabled}
+            type={type}
             {...props}
         >
             {children}

@@ -11,7 +11,7 @@
 # -----------------------------------------------------------------------------
 # PHP / Laravel application
 # -----------------------------------------------------------------------------
-FROM php:8.4-cli AS php
+FROM php:8.5-cli AS php
 
 # System libraries + PHP extensions required by Laravel and SQLite.
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -50,7 +50,7 @@ CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
 # -----------------------------------------------------------------------------
 # Node / Vite dev server
 # -----------------------------------------------------------------------------
-FROM node:20-alpine AS node
+FROM node:26-alpine AS node
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 

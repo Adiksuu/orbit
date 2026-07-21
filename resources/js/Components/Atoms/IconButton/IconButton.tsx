@@ -14,11 +14,13 @@ const IconButton = ({
     className,
     isLink = false,
     link = '',
+    children,
     ...props
 }: IconButtonProps) => {
     return !isLink ? (
         <button className={iconButtonVariants({ className })} {...props}>
             <Icon name={iconName} size={iconSize} color={iconColor} />
+            {children}
         </button>
     ) : (
         <Link className={iconButtonVariants({ className })} href={link}>

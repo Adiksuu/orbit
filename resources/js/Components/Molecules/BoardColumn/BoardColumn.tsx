@@ -11,7 +11,7 @@ function BoardColumn({
     setActiveIssue,
 }: BoardColumnProps) {
     return (
-        <div className="flex h-full w-[310px] flex-shrink-0 flex-col rounded-xl border border-zinc-800/60 bg-[#121212] p-3 shadow-lg shadow-black/20">
+        <div className="flex h-full w-[calc(100vw-3.5rem)] flex-shrink-0 snap-center flex-col rounded-xl border border-zinc-800/60 bg-[#121212] p-3 shadow-lg shadow-black/20 sm:w-[310px]">
             <div className="mb-3.5 flex items-center justify-between px-1">
                 <div className="flex items-center gap-2">
                     <StatusDot status={priority} size="sm" />

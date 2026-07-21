@@ -24,4 +24,14 @@ class ProjectService
     public function getAll(): Collection {
         return $this->projectRepository->getAll();
     }
+    public function updateColumns(Project $project, array $newColumns): Project {
+        $currentColumns = $project->columns ?? [];
+        $updatedColumns = array_merge($currentColumns, $newColumns);
+
+        $project = $this->projectRepository->update($project, ['columns' => $updatedColumns]);
+
+        $this->activityLogService->log($project->id, "Updated visible columns configuration");
+
+        return $project;
+    }
 }
