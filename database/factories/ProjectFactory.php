@@ -43,6 +43,8 @@ class ProjectFactory extends Factory
                 'priority' => fake()->boolean(),
                 'labels' => fake()->boolean(),
                 'updated_at' => fake()->boolean(),
+                'start_date' => fake()->boolean(),
+                'end_date' => fake()->boolean(),
             ],
         ];
     }

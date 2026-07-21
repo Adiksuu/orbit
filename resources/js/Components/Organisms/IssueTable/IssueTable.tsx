@@ -28,6 +28,8 @@ const IssueTable = ({
         priority: 140,
         labels: 200,
         updated: 150,
+        start_date: 150,
+        end_date: 150,
     };
 
     const {
@@ -141,6 +143,8 @@ const IssueTable = ({
             priority: true,
             labels: true,
             updated: true,
+            start_date: false,
+            end_date: false,
         };
     });
 
@@ -254,6 +258,8 @@ const IssueTable = ({
             { label: 'Priority', value: 'priority' },
             { label: 'Labels', value: 'labels' },
             { label: 'Updated', value: 'updated' },
+            { label: 'Start', value: 'start_date' },
+            { label: 'End', value: 'end_date' },
         ] as { label: string; value: SortingColumn }[]
     ).filter((h) => enabledColumns[h.value]);
 
