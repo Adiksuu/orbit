@@ -398,6 +398,14 @@ const IssueTable = ({
                                                 label: 'Updated',
                                                 value: 'updated',
                                             },
+                                            {
+                                                label: 'Start Date',
+                                                value: 'start_date',
+                                            },
+                                            {
+                                                label: 'End Date',
+                                                value: 'end_date',
+                                            },
                                         ]}
                                         selectedValues={[
                                             ...Object.entries(enabledColumns)
