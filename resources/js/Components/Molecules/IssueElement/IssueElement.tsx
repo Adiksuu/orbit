@@ -17,14 +17,10 @@ export const IssueElement = ({
         issue,
         isActive: activeIssue?.id === issue.id,
         isClosed: issue.status === 'closed',
-<<<<<<< HEAD
         onClick: () => setActiveIssue(issue, false),
         onModify: () => setActiveIssue(issue, true),
-=======
-        onClick: () => setActiveIssue(issue),
         isExpanded,
         onToggleExpand,
->>>>>>> origin/master
     };
 
     return type === 'board' ? (
