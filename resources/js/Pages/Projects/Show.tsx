@@ -32,7 +32,14 @@ export default function Show({
     projects: Project[];
     queryParams?: QueryParams;
 }) {
-    const [activeIssue, setActiveIssue] = useState<Issue | null>(null);
+    const [activeIssue, _setActiveIssue] = useState<Issue | null>(null);
+    const [isEditing, setIsEditing] = useState(false);
+
+    const setActiveIssue = (issue: Issue | null, edit: boolean = false) => {
+        _setActiveIssue(issue);
+        setIsEditing(edit);
+    };
+
     const [selectedLook, setSelectedLook] = useState<IssuePageLooks>(() => {
         if (typeof window !== 'undefined') {
             const saved = localStorage.getItem('selectedLook');
@@ -115,6 +122,7 @@ export default function Show({
                             isOpen={!!activeIssue}
                             onClose={() => setActiveIssue(null)}
                             activeIssue={activeIssue}
+                            initialIsEditing={isEditing}
                         />
                     )}
                 </div>

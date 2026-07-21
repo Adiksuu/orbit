@@ -20,7 +20,13 @@ export default function Dashboard({
     projects: Project[];
     productivity_trend: ProductivityTrendProps[];
 }) {
-    const [activeIssue, setActiveIssue] = useState<Issue | null>(null);
+    const [activeIssue, _setActiveIssue] = useState<Issue | null>(null);
+    const [isEditing, setIsEditing] = useState(false);
+
+    const setActiveIssue = (issue: Issue | null, edit: boolean = false) => {
+        _setActiveIssue(issue);
+        setIsEditing(edit);
+    };
 
     useEffect(() => {
         if (activeIssue) {
@@ -165,6 +171,7 @@ export default function Dashboard({
                             isOpen={!!activeIssue}
                             onClose={() => setActiveIssue(null)}
                             activeIssue={activeIssue}
+                            initialIsEditing={isEditing}
                         />
                     )}
                 </div>
