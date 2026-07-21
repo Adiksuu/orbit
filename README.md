@@ -1,1 +1,249 @@
-SOON
+# Orbit
+
+Orbit is an issue and project tracker: create projects, track issues through a
+workflow, and see progress on a dashboard — as a List, a Kanban Board, or a
+Calendar, whichever fits the moment. It's built as a single Laravel +
+Inertia.js + React monolith, so there's no separate API to stand up and no
+client/server version drift to manage.
+
+## What's inside
+
+- **Projects** with a name, color, description, and a slug-based URL. Each
+  project has its own issue list, board, and calendar view.
+- **Issues** with title, description, status, priority (high / medium / low),
+  labels (bug, feature, performance, design, ux, chore), an assignee, a
+  creator, and optional start/end dates.
+- **Three ways to look at the same data**: a sortable, searchable, paginated
+  table; a status-grouped board; and a calendar laid out by issue dates. Your
+  last choice is remembered per browser.
+- **Configurable table columns** — toggle which issue fields show up in the
+  list view, saved per project.
+- **A dashboard** with productivity trends, priority breakdowns, and
+  completion ratios across every project.
+- **An activity log** recording who did what, so project history isn't lost.
+
+## Tech stack
+
+| Layer      | Technology                                                |
+| ---------- | ---------------------------------------------------------- |
+| Backend    | PHP 8.3+, Laravel 13                                       |
+| Bridge     | Inertia.js 2 (no REST/JSON API — Laravel renders React pages directly) |
+| Frontend   | React 18, TypeScript, Vite                                 |
+| Styling    | Tailwind CSS (dark theme only), `class-variance-authority` |
+| Database   | SQLite by default (swappable via Laravel's standard `DB_*` env vars) |
+| Testing    | Pest (PHP), Vitest + Testing Library (React)                |
+
+The backend follows a layered **Controller → Service → Repository**
+architecture: controllers stay thin (validate, delegate, redirect),
+services own business logic and side effects (like writing to the
+activity log), and repositories own every Eloquent query. The frontend
+follows **atomic design** — Atoms, Molecules, and Organisms compose upward
+into the Inertia pages under `resources/js/Pages`.
+
+## Getting started
+
+There are two ways to run Orbit: **Docker**, which needs nothing but Docker
+itself installed, or a **native setup**, which needs PHP, Composer, and
+Node.js on your machine but skips the container layer entirely. Either one
+gets you a fully working local instance with its own SQLite database.
+
+### Option A — Docker (recommended)
+
+All you need is [Docker](https://www.docker.com/) and `make`.
+
+```bash
+git clone https://github.com/Adiksuu/orbit.git
+cd orbit
+make setup
+```
+
+`make setup` builds the images, starts the stack in the background, and
+bootstraps everything on first boot — `.env`, the SQLite file, the app key,
+and migrations are all handled automatically by the container entrypoint.
+
+Once it's up:
+
+| Service          | URL                     |
+| ---------------- | ----------------------- |
+| App (Laravel)    | http://localhost:8000   |
+| Vite (assets/HMR)| http://localhost:5173   |
+
+Useful commands from here (see the `Makefile` for the full list):
+
+```bash
+make up          # start in the foreground (Ctrl+C to stop)
+make down         # stop the stack
+make logs         # tail logs from every service
+make shell        # open a shell in the app container
+make migrate      # run new migrations
+make fresh        # drop and re-migrate with seed data
+make test         # run the PHP (Pest) suite
+make test-js      # run the frontend (Vitest) suite
+make lint         # lint the frontend
+make type-check   # type-check the frontend
+make clean        # stop the stack and remove volumes
+```
+
+### Option B — Native (PHP + Node directly)
+
+You'll need PHP 8.3+, Composer, and Node.js installed locally.
+
+```bash
+git clone https://github.com/Adiksuu/orbit.git
+cd orbit
+composer setup
+```
+
+`composer setup` installs PHP and npm dependencies, copies `.env.example` to
+`.env`, generates an app key, runs migrations, and builds the frontend
+assets — a complete one-shot bootstrap.
+
+To seed the database with demo projects, issues, users, and activity log
+entries:
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+Then start the full local stack — Laravel server, queue listener, log
+tailing, and the Vite dev server, all together:
+
+```bash
+composer dev
+```
+
+The app is served at whatever URL `php artisan serve` prints (typically
+http://localhost:8000).
+
+## Everyday commands
+
+### Frontend
+
+```bash
+npm run dev            # Vite dev server with HMR
+npm run build           # type-check (tsc) then production build
+npm run lint             # ESLint over resources/js, auto-fixing
+npm test                 # Vitest in watch mode
+npm run test:watch       # explicit watch mode
+npm run test:coverage    # Vitest with coverage
+```
+
+Run a single frontend test:
+
+```bash
+npx vitest run resources/js/Components/Atoms/Button/Button.test.tsx -t "test name"
+```
+
+### Backend
+
+```bash
+composer test                                  # clears config, then runs the Pest suite
+php artisan test --filter=IssueServiceTest      # run a single PHP test
+php artisan migrate                             # apply new migrations
+php artisan migrate:fresh --seed                # rebuild the schema with demo data
+```
+
+## Deploying to production
+
+Orbit is a standard Laravel application, so it deploys the same way any
+Laravel + Vite app does. The Dockerfile's `php` target is production-ready
+as a starting point; adapt the steps below to whatever host you use
+(a VPS, Forge, Vapor, Fly.io, Railway, a Kubernetes cluster — anything that
+can run PHP-FPM/Nginx or Docker).
+
+1. **Provide a real database.** SQLite is convenient for local development,
+   but for production point `DB_CONNECTION` at MySQL or PostgreSQL (or keep
+   SQLite if your traffic and durability needs are modest — Laravel supports
+   it natively either way) and set the matching `DB_*` variables.
+2. **Set production environment variables.** Copy `.env.example`, set
+   `APP_ENV=production`, `APP_DEBUG=false`, a real `APP_URL`, and generate a
+   fresh `APP_KEY` with `php artisan key:generate`. Never reuse a local
+   `.env` in production.
+3. **Install dependencies for production.**
+   ```bash
+   composer install --no-dev --optimize-autoloader
+   npm ci
+   npm run build
+   ```
+   `npm run build` type-checks and produces the hashed, minified assets in
+   `public/build` that Laravel's Vite integration serves — there is no
+   separate frontend deploy step or Vite dev server in production.
+4. **Migrate the database.**
+   ```bash
+   php artisan migrate --force
+   ```
+5. **Cache framework config for performance.**
+   ```bash
+   php artisan config:cache
+   php artisan route:cache
+   php artisan view:cache
+   ```
+6. **Serve the app.** Point a real web server (Nginx or Apache with
+   PHP-FPM) at the `public/` directory, or run the container image built
+   from the `php` target in `Dockerfile` behind a reverse proxy. Run a queue
+   worker (`php artisan queue:work`) if you rely on queued jobs, and put a
+   process supervisor (systemd, Supervisor, or your platform's process
+   manager) in front of both.
+
+Because Orbit has no separate API, there's nothing extra to deploy or version
+— one Laravel deployment serves both the pages and the assets.
+
+## Testing
+
+Two independent test suites cover the app:
+
+- **PHP (Pest)** — `tests/Feature` extends the base `TestCase` with
+  `RefreshDatabase` and runs against an in-memory SQLite database. Coverage
+  focuses on the Service and Repository layers per domain (Issue, Project,
+  User, ActivityLog).
+- **React (Vitest + Testing Library)** — jsdom environment with global test
+  APIs enabled. Test files sit next to the component they cover, e.g.
+  `Button/Button.test.tsx`.
+
+Continuous integration runs type-checking, linting, both test suites, and a
+production build on every push and pull request against `master`.
+
+## Project structure
+
+```
+app/
+  Http/Controllers/   Thin HTTP layer — validate, delegate, redirect
+  Services/           Business logic and side effects (activity logging, etc.)
+  Repositories/       All Eloquent query logic
+  Models/             Issue, Project, User, ActivityLog
+  Enums/              IssueLabel and friends
+
+resources/js/
+  Pages/              Inertia pages, resolved by name (Dashboard, Projects/Show, ...)
+  Components/
+    Atoms/            Smallest building blocks (Button, Badge, Input, ...)
+    Molecules/         Composed from atoms (BoardColumn, IssueRowDetail, ...)
+    Organisms/         Composed from molecules (IssueBoard, IssueTable, CalendarView, ...)
+  Layouts/            Page shells (sidebar, top nav, ...)
+  types/              Shared TypeScript types (Issues, Projects, Users, ...)
+  utils/              cn() (Tailwind class merging), colors, time helpers
+
+database/
+  migrations/         Schema history
+  factories/          Model factories used by the seeder and tests
+  seeders/            Demo data generator
+
+routes/web.php        All application routes
+```
+
+## Conventions worth knowing
+
+- Issue labels are stored as a cast enum array (`App\Enums\IssueLabel`) —
+  add new labels there, not as free-form strings.
+- Mutating routes (`issues.store`, `issues.update`, `projects.store`, ...)
+  return a redirect rather than JSON; Inertia re-fetches the page props and
+  re-renders, so controllers never hand-build response payloads.
+- The theme is dark-only, driven by CSS custom properties in
+  `resources/css/variables.scss` and consumed via Tailwind arbitrary values
+  like `bg-[var(--bg-color)]`. Prefer these variables over hardcoded colors.
+- Prettier (single quotes, auto-organized imports, Tailwind class sorting)
+  and ESLint should both pass clean before a commit.
+
+## License
+
+Licensed under the MIT License.
