@@ -12,18 +12,21 @@ export const useTableResizing = (
     const storageKey = `orbit_table_sizing_${projectId}`;
 
     const [config, setConfig] = useState<SizingConfig>(() => {
-        const saved = localStorage.getItem(storageKey);
-        if (saved) {
-            try {
+        try {
+            const saved =
+                typeof localStorage !== 'undefined'
+                    ? localStorage.getItem(storageKey)
+                    : null;
+            if (saved) {
                 const parsed = JSON.parse(saved);
                 // Merge with default widths to ensure new columns have a width
                 return {
                     ...parsed,
                     columnWidths: { ...defaultWidths, ...parsed.columnWidths },
                 };
-            } catch (e) {
-                console.error('Failed to parse table sizing config', e);
             }
+        } catch (e) {
+            console.error('Failed to parse table sizing config', e);
         }
         return {
             columnWidths: defaultWidths,
@@ -34,7 +37,7 @@ export const useTableResizing = (
     const debouncedSave = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => {
-        if (!projectId) return;
+        if (!projectId || typeof localStorage === 'undefined') return;
 
         if (debouncedSave.current) {
             clearTimeout(debouncedSave.current);

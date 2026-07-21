@@ -90,7 +90,7 @@ describe('IssueElement Component', () => {
 
             await userEvent.click(screen.getByText('Fix the bug'));
 
-            expect(setActiveIssue).toHaveBeenCalledWith(issue);
+            expect(setActiveIssue).toHaveBeenCalledWith(issue, false);
         });
 
         test('applies active styling when this issue is the active one', () => {
@@ -173,7 +173,7 @@ describe('IssueElement Component', () => {
 
             await userEvent.click(screen.getByText('Fix the bug'));
 
-            expect(setActiveIssue).toHaveBeenCalledWith(issue);
+            expect(setActiveIssue).toHaveBeenCalledWith(issue, false);
         });
     });
 });
