@@ -68,6 +68,8 @@ class ProjectController extends Controller
             'columns.priority' => 'sometimes|boolean',
             'columns.labels' => 'sometimes|boolean',
             'columns.updated' => 'sometimes|boolean',
+            'columns.start_date' => 'sometimes|boolean',
+            'columns.end_date' => 'sometimes|boolean',
         ]);
 
         $this->projectService->updateColumns($project, $validated['columns']);

@@ -31,6 +31,8 @@ export const ListRow = ({
         priority: true,
         labels: true,
         updated: true,
+        start_date: false,
+        end_date: false,
     },
     rowHeight = 44,
     isExpanded,
@@ -217,6 +219,28 @@ export const ListRow = ({
                         data-column="updated"
                     >
                         {formatTimeAgo(issue.updated_at)} ago
+                    </td>
+                )}
+                {enabledColumns.start_date && (
+                    <td
+                        className={cn(
+                            isExpanded ? expandedTdClass : tdClass,
+                            'whitespace-nowrap font-medium text-zinc-400',
+                        )}
+                        data-column="start_date"
+                    >
+                        {issue.start_date}
+                    </td>
+                )}
+                {enabledColumns.end_date && (
+                    <td
+                        className={cn(
+                            isExpanded ? expandedTdClass : tdClass,
+                            'whitespace-nowrap font-medium text-zinc-400',
+                        )}
+                        data-column="end_date"
+                    >
+                        {issue.end_date}
                     </td>
                 )}
                 <td

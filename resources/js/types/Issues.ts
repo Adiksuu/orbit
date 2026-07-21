@@ -76,4 +76,12 @@ export type Status = 'open' | 'closed';
 
 export type Sorting = 'AZ' | 'ZA';
 export type SortingColumn =
-    'id' | 'title' | 'status' | 'assignee' | 'priority' | 'labels' | 'updated';
+    | 'id'
+    | 'title'
+    | 'status'
+    | 'assignee'
+    | 'priority'
+    | 'labels'
+    | 'updated'
+    | 'start_date'
+    | 'end_date';
