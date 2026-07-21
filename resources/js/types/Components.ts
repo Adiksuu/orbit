@@ -126,7 +126,7 @@ export interface BoardColumnProps {
     issues: Issue[];
     priority: IssuePriority;
     activeIssue: Issue | null;
-    setActiveIssue: (issue: Issue | null) => void;
+    setActiveIssue: (issue: Issue | null, isEditing?: boolean) => void;
 }
 export interface FilterButtonProps {
     icon?: keyof typeof icons;
@@ -137,7 +137,7 @@ export interface FilterButtonProps {
 export interface IssueElementProps {
     issue: Issue;
     activeIssue: Issue | null;
-    setActiveIssue: (issue: Issue | null) => void;
+    setActiveIssue: (issue: Issue | null, isEditing?: boolean) => void;
     type?: 'list' | 'board';
     handleSelectIssueCheckbox?: (issue: Issue | string) => void;
     enabledColumns?: Record<string, boolean>;
@@ -282,17 +282,18 @@ export interface DashboardVisualsProps {
 export interface IssueBoardProps {
     issues: Issue[];
     activeIssue: Issue | null;
-    setActiveIssue: (issue: Issue | null) => void;
+    setActiveIssue: (issue: Issue | null, isEditing?: boolean) => void;
 }
 export interface IssueDetailProps {
     isOpen: boolean;
     onClose: () => void;
     activeIssue: Issue;
+    initialIsEditing?: boolean;
 }
 export interface IssueTableProps {
     issues: Issue[];
     activeIssue: Issue | null;
-    setActiveIssue: (issue: Issue | null) => void;
+    setActiveIssue: (issue: Issue | null, isEditing?: boolean) => void;
     queryParams?: { sort?: string; direction?: string; [key: string]: any };
     pagination?: ReactNode;
     project?: Project;
@@ -329,6 +330,7 @@ export interface ListRowProps {
     issue: Issue;
     isActive: boolean;
     onClick: () => void;
+    onModify?: () => void;
     isClosed: boolean;
     handleSelectIssueCheckbox?: (issue: Issue | string) => void;
     enabledColumns?: Record<string, boolean>;

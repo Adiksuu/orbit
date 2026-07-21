@@ -17,7 +17,8 @@ export const IssueElement = ({
         issue,
         isActive: activeIssue?.id === issue.id,
         isClosed: issue.status === 'closed',
-        onClick: () => setActiveIssue(issue),
+        onClick: () => setActiveIssue(issue, false),
+        onModify: () => setActiveIssue(issue, true),
         isExpanded,
         onToggleExpand,
     };

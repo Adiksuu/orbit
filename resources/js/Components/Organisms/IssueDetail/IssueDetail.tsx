@@ -44,8 +44,13 @@ const AVAILABLE_LABELS: IssueLabel[] = [
 const STATUSES: Status[] = ['open', 'closed'];
 const PRIORITIES: IssuePriority[] = ['high', 'medium', 'low'];
 
-const IssueDetail = ({ isOpen, onClose, activeIssue }: IssueDetailProps) => {
-    const [isEditing, setIsEditing] = useState(false);
+const IssueDetail = ({
+    isOpen,
+    onClose,
+    activeIssue,
+    initialIsEditing = false,
+}: IssueDetailProps) => {
+    const [isEditing, setIsEditing] = useState(initialIsEditing);
     const [isStatusOpen, setIsStatusOpen] = useState(false);
     const [isPriorityOpen, setIsPriorityOpen] = useState(false);
     const [showStartDate, setShowStartDate] = useState(false);
@@ -75,7 +80,7 @@ const IssueDetail = ({ isOpen, onClose, activeIssue }: IssueDetailProps) => {
     };
 
     const handleCancel = () => {
-        setIsEditing(false);
+        setIsEditing(initialIsEditing);
         setData({
             title: activeIssue.title,
             description: activeIssue.description || '',
@@ -88,8 +93,15 @@ const IssueDetail = ({ isOpen, onClose, activeIssue }: IssueDetailProps) => {
     };
 
     useEffect(() => {
-        handleCancel();
-    }, [activeIssue]);
+        setIsEditing(initialIsEditing);
+        setData({
+            title: activeIssue.title,
+            description: activeIssue.description || '',
+            status: activeIssue.status,
+            priority: activeIssue.priority,
+            labels: activeIssue.labels || [],
+        });
+    }, [activeIssue, initialIsEditing]);
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} size="lg">

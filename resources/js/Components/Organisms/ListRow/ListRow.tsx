@@ -1,4 +1,7 @@
 import Badge from '@/Components/Atoms/Badge/Badge';
+import DropdownItem from '@/Components/Atoms/DropdownItem/DropdownItem';
+import DropdownMenu from '@/Components/Atoms/DropdownMenu/DropdownMenu';
+import Icon from '@/Components/Atoms/Icon/Icon';
 import IconButton from '@/Components/Atoms/IconButton/IconButton';
 import StatusDot from '@/Components/Atoms/StatusDot/StatusDot';
 import { IssueRowDetail } from '@/Components/Molecules/IssueRowDetail/IssueRowDetail';
@@ -10,6 +13,7 @@ import { formatTimeAgo } from '@/utils/time';
 import { listRowVariants, priorityTextColor } from '@/utils/variants';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
 const tdClass =
     'px-4 border-b border-zinc-800/40 group-last/row:border-b-0 align-middle';
@@ -21,6 +25,7 @@ export const ListRow = ({
     issue,
     isActive,
     onClick,
+    onModify,
     isClosed,
     handleSelectIssueCheckbox,
     enabledColumns = {
@@ -38,6 +43,29 @@ export const ListRow = ({
     isExpanded,
     onToggleExpand,
 }: ListRowProps) => {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+    const menuRef = useRef<HTMLTableDataCellElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                menuRef.current &&
+                !menuRef.current.contains(event.target as Node)
+            ) {
+                setIsMenuOpen(false);
+            }
+        };
+
+        if (isMenuOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isMenuOpen]);
+
     const handleRowClick = (e: React.MouseEvent) => {
         const target = e.target as HTMLElement;
         if (
@@ -47,7 +75,7 @@ export const ListRow = ({
             return;
         }
 
-        onClick(); // Always open details modal
+        onClick();
     };
 
     const handleExpandClick = (e: React.MouseEvent) => {
@@ -66,10 +94,29 @@ export const ListRow = ({
         }
     };
 
+    const handleContextMenu = (e: React.MouseEvent) => {
+        e.preventDefault();
+        setMenuPosition({ x: e.clientX, y: e.clientY });
+        setIsMenuOpen(true);
+    };
+
+    const handleEllipsisClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        const rect = e.currentTarget.getBoundingClientRect();
+        setMenuPosition({ x: rect.left, y: rect.bottom });
+        setIsMenuOpen(!isMenuOpen);
+    };
+
+    const handleAction = (action: () => void) => {
+        action();
+        setIsMenuOpen(false);
+    };
+
     return (
         <>
             <tr
                 onClick={handleRowClick}
+                onContextMenu={handleContextMenu}
                 onKeyDown={handleKeyDown}
                 tabIndex={0}
                 role="button"
@@ -250,18 +297,78 @@ export const ListRow = ({
                     )}
                     onClick={(e) => e.stopPropagation()}
                     data-column="actions"
+                    ref={menuRef}
                 >
                     <IconButton
                         iconName={'Ellipsis'}
+                        onClick={handleEllipsisClick}
                         className={cn(
                             'rounded-md p-1 text-zinc-500 hover:bg-zinc-800/60',
                             isClosed
                                 ? 'opacity-20'
-                                : isExpanded
+                                : isMenuOpen || isExpanded
                                   ? 'opacity-100'
                                   : 'opacity-0 group-hover/row:opacity-100',
                         )}
                     ></IconButton>
+                    {isMenuOpen && (
+                        <div
+                            className="fixed z-[9999] w-48 shadow-2xl"
+                            style={{
+                                top: `${menuPosition.y}px`,
+                                left: `${menuPosition.x > window.innerWidth - 200 ? menuPosition.x - 192 : menuPosition.x}px`,
+                            }}
+                        >
+                            <DropdownMenu>
+                                <DropdownItem
+                                    label={
+                                        <div className="flex items-center gap-2">
+                                            <Icon name="Maximize2" size={14} />
+                                            <span>Open in modal</span>
+                                        </div>
+                                    }
+                                    onClick={() => handleAction(onClick)}
+                                    variant="info"
+                                />
+                                <DropdownItem
+                                    label={
+                                        <div className="flex items-center gap-2">
+                                            <Icon
+                                                name="ExternalLink"
+                                                size={14}
+                                            />
+                                            <span>Open details</span>
+                                        </div>
+                                    }
+                                    onClick={() => handleAction(onClick)}
+                                    variant="success"
+                                />
+                                <DropdownItem
+                                    label={
+                                        <div className="flex items-center gap-2">
+                                            <Icon name="Pencil" size={14} />
+                                            <span>Modify</span>
+                                        </div>
+                                    }
+                                    onClick={() =>
+                                        onModify && handleAction(onModify)
+                                    }
+                                    variant="warning"
+                                />
+                                <div className="my-1 border-t border-zinc-800/50" />
+                                <DropdownItem
+                                    label={
+                                        <div className="flex items-center gap-2">
+                                            <Icon name="Trash2" size={14} />
+                                            <span>Remove</span>
+                                        </div>
+                                    }
+                                    disabled
+                                    variant="danger"
+                                />
+                            </DropdownMenu>
+                        </div>
+                    )}
                 </td>
             </tr>
             <AnimatePresence initial={false}>
