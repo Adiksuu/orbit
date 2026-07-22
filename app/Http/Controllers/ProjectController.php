@@ -43,6 +43,7 @@ class ProjectController extends Controller
             'issues' => $issues,
             'queryParams' => request()->query() ?: null,
             'filters' => $filters,
+            'savedFilters' => $project->savedFilters()->latest()->get(),
         ]);
     }
 

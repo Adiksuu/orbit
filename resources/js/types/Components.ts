@@ -5,6 +5,7 @@ import { inputVariants } from '@/Components/Atoms/Input/Input';
 import { statusDotVariants } from '@/Components/Atoms/StatusDot/StatusDot';
 import { textareaVariants } from '@/Components/Atoms/TextArea/TextArea';
 import { statCardVariants } from '@/Components/Molecules/StatCard/StatCard';
+import { SavedFilter } from '@/hooks/useSavedFilters';
 import { AlertItem } from '@/types/Alert';
 import {
     Issue,
@@ -143,6 +144,7 @@ export interface FilterDropdownProps {
     onOpenChange: (isOpen: boolean) => void;
 }
 export interface SavedFiltersDropdownProps {
+    savedFilters?: SavedFilter[];
     queryParams?: Record<string, any>;
     projectId?: number | string;
     isOpen: boolean;

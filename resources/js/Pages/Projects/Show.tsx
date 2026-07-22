@@ -4,6 +4,7 @@ import FilterBar from '@/Components/Organisms/FilterBar/FilterBar';
 import IssueBoard from '@/Components/Organisms/IssueBoard/IssueBoard';
 import IssueDetail from '@/Components/Organisms/IssueDetail/IssueDetail';
 import IssueTable from '@/Components/Organisms/IssueTable/IssueTable';
+import { SavedFilter } from '@/hooks/useSavedFilters';
 import MainLayout from '@/Layouts/MainLayout';
 import {
     Issue,
@@ -27,11 +28,13 @@ export default function Show({
     issues,
     projects,
     queryParams = {},
+    savedFilters,
 }: {
     project: Project;
     issues: PaginatedResponse<Issue>;
     projects: Project[];
     queryParams?: QueryParams;
+    savedFilters: SavedFilter[];
 }) {
     const [activeIssue, _setActiveIssue] = useState<Issue | null>(null);
     const [isEditing, setIsEditing] = useState(false);
@@ -72,7 +75,11 @@ export default function Show({
             project={project}
         >
             <div className={'flex h-full flex-col'}>
-                <FilterBar queryParams={queryParams} project={project} />
+                <FilterBar
+                    queryParams={queryParams}
+                    project={project}
+                    savedFilters={savedFilters}
+                />
                 <div
                     className={
                         'relative flex flex-1 overflow-hidden border-t border-solid border-[var(--bg-light-color)]'

@@ -1,6 +1,7 @@
 import Icon from '@/Components/Atoms/Icon/Icon';
 import Input from '@/Components/Atoms/Input/Input';
 import Keybind from '@/Components/Atoms/Keybind/Keybind';
+import { SavedFilter } from '@/hooks/useSavedFilters';
 import { FilterDropdownType } from '@/types/Components';
 import { Project } from '@/types/Projects';
 import { router } from '@inertiajs/react';
@@ -13,9 +14,14 @@ type OpenPanel = FilterDropdownType | 'saved' | null;
 interface FilterBarProps {
     queryParams?: Record<string, any>;
     project?: Project;
+    savedFilters: SavedFilter[];
 }
 
-const FilterBar: React.FC<FilterBarProps> = ({ queryParams = {}, project }) => {
+const FilterBar: React.FC<FilterBarProps> = ({
+    queryParams = {},
+    project,
+    savedFilters,
+}) => {
     const [searchQuery, setSearchQuery] = useState(queryParams?.search || '');
     const [openFilter, setOpenFilter] = useState<OpenPanel>(null);
     const input = useRef<HTMLInputElement>(null);
@@ -60,6 +66,7 @@ const FilterBar: React.FC<FilterBarProps> = ({ queryParams = {}, project }) => {
                     <SavedFiltersDropdown
                         queryParams={queryParams}
                         projectId={project?.id}
+                        savedFilters={savedFilters}
                         isOpen={openFilter === 'saved'}
                         onOpenChange={(isOpen) =>
                             setOpenFilter(isOpen ? 'saved' : null)

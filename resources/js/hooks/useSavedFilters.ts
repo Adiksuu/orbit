@@ -1,50 +1,54 @@
-import { useCallback, useEffect, useState } from 'react';
+import { router } from '@inertiajs/react';
+import { useCallback } from 'react';
 
 export interface SavedFilter {
-    id: string;
+    id: number;
+    project_id: number;
     name: string;
-    filters: Record<string, string>;
-    createdAt: number;
+    context: string;
+    query_params: Record<string, any>;
+    created_at?: string;
 }
 
-export const useSavedFilters = (projectId: number | string | undefined) => {
-    const storageKey = `orbit_saved_filters_${projectId ?? 'all'}`;
-
-    const [savedFilters, setSavedFilters] = useState<SavedFilter[]>(() => {
-        try {
-            const saved =
-                typeof localStorage !== 'undefined'
-                    ? localStorage.getItem(storageKey)
-                    : null;
-            return saved ? JSON.parse(saved) : [];
-        } catch (e) {
-            console.error('Failed to parse saved filters', e);
-            return [];
-        }
-    });
-
-    useEffect(() => {
-        if (typeof localStorage === 'undefined') return;
-        localStorage.setItem(storageKey, JSON.stringify(savedFilters));
-    }, [savedFilters, storageKey]);
+export const useSavedFilters = (
+    initialSavedFilters: SavedFilter[] = [],
+    projectId?: number | string,
+) => {
+    const context = projectId ? `project_${projectId}` : 'project_issues';
 
     const saveFilter = useCallback(
-        (name: string, filters: Record<string, string>) => {
-            const entry: SavedFilter = {
-                id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-                name,
-                filters,
-                createdAt: Date.now(),
-            };
-            setSavedFilters((prev) => [entry, ...prev]);
-            return entry;
+        (name: string, queryParams: Record<string, any>) => {
+            if (!projectId) {
+                console.error('SavedFilterError: Lack of projectId');
+                return;
+            }
+
+            router.post(
+                '/saved-filters',
+                {
+                    project_id: projectId,
+                    name,
+                    context,
+                    query_params: queryParams,
+                },
+                {
+                    preserveScroll: true,
+                    preserveState: true,
+                    onError: (errors) => {
+                        console.error('Validation errors:', errors);
+                    },
+                },
+            );
         },
-        [],
+        [projectId, context],
     );
 
-    const deleteFilter = useCallback((id: string) => {
-        setSavedFilters((prev) => prev.filter((f) => f.id !== id));
+    const deleteFilter = useCallback((id: number) => {
+        router.delete(`/saved-filters/${id}`, {
+            preserveScroll: true,
+            preserveState: true,
+        });
     }, []);
 
-    return { savedFilters, saveFilter, deleteFilter };
+    return { savedFilters: initialSavedFilters, saveFilter, deleteFilter };
 };

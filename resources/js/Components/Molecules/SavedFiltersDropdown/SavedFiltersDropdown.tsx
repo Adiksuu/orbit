@@ -32,11 +32,13 @@ const pickFilters = (
     return result;
 };
 
-const describeFilters = (filters: Record<string, string>) =>
-    Object.entries(filters)
+const describeFilters = (filters: Record<string, any>) =>
+    Object.entries(pickFilters(filters))
         .map(
             ([key, value]) =>
-                `${FILTER_LABELS[key as (typeof FILTERABLE_KEYS)[number]]}: ${value
+                `${FILTER_LABELS[key as (typeof FILTERABLE_KEYS)[number]]}: ${String(
+                    value,
+                )
                     .split(',')
                     .join(', ')}`,
         )
@@ -45,13 +47,16 @@ const describeFilters = (filters: Record<string, string>) =>
 const PANEL_WIDTH = 288;
 
 const SavedFiltersDropdown: React.FC<SavedFiltersDropdownProps> = ({
+    savedFilters: initialSavedFilters = [],
     queryParams = {},
     projectId,
     isOpen,
     onOpenChange,
 }) => {
-    const { savedFilters, saveFilter, deleteFilter } =
-        useSavedFilters(projectId);
+    const { savedFilters, saveFilter, deleteFilter } = useSavedFilters(
+        initialSavedFilters,
+        projectId,
+    );
     const [name, setName] = useState('');
 
     const triggerRef = useRef<HTMLDivElement>(null);
@@ -111,7 +116,7 @@ const SavedFiltersDropdown: React.FC<SavedFiltersDropdownProps> = ({
         };
     }, [isOpen, onOpenChange, updateCoords]);
 
-    const applyParams = (nextFilters: Record<string, string>) => {
+    const applyParams = (nextFilters: Record<string, any>) => {
         const nextParams: Record<string, any> = { ...queryParams, page: 1 };
         FILTERABLE_KEYS.forEach((key) => delete nextParams[key]);
         Object.assign(nextParams, nextFilters);
@@ -122,14 +127,14 @@ const SavedFiltersDropdown: React.FC<SavedFiltersDropdownProps> = ({
         });
     };
 
-    const handleApply = (id: string) => {
+    const handleApply = (id: number) => {
         const saved = savedFilters.find((f) => f.id === id);
         if (!saved) return;
-        applyParams(saved.filters);
+        applyParams(saved.query_params);
         onOpenChange(false);
     };
 
-    const handleDelete = (event: React.MouseEvent, id: string) => {
+    const handleDelete = (event: React.MouseEvent, id: number) => {
         event.stopPropagation();
         deleteFilter(id);
     };
@@ -263,8 +268,10 @@ const SavedFiltersDropdown: React.FC<SavedFiltersDropdownProps> = ({
                             <div className="scrollbar-hide space-y-0.5 overflow-y-auto px-1.5 pb-1.5">
                                 {savedFilters.map((filter) => {
                                     const isActiveView =
-                                        JSON.stringify(filter.filters) ===
-                                        activeFiltersSignature;
+                                        JSON.stringify(
+                                            pickFilters(filter.query_params),
+                                        ) === activeFiltersSignature;
+
                                     return (
                                         <div
                                             key={filter.id}
@@ -312,7 +319,7 @@ const SavedFiltersDropdown: React.FC<SavedFiltersDropdownProps> = ({
                                                 </p>
                                                 <p className="truncate text-[10px] text-zinc-500">
                                                     {describeFilters(
-                                                        filter.filters,
+                                                        filter.query_params,
                                                     )}
                                                 </p>
                                             </div>
