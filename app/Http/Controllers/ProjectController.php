@@ -20,22 +20,32 @@ class ProjectController extends Controller
         $this->issueService = $issueService;
     }
 
-    public function show(Project $project): Response
+    public function show(Request $request, Project $project): Response
     {
         $projects = $this->projectService->getAll();
 
         $sortParams = request()->only(['sort', 'direction']);
         $perPage = (int) request()->get('perPage', 10);
         $searchParams = request()->only(['search']);
-        $issues = $this->issueService->getAllByProjectID($project->id, $sortParams, $perPage, $searchParams);
+        $filters = [
+            'labels' => array_filter(explode(',', $request->query('labels', ''))),
+            'status' => array_filter(explode(',', $request->query('status', ''))),
+            'priority' => array_filter(explode(',', $request->query('priority', ''))),
+            'assignee' => request()->query('assignee'),
+        ];
+
+        $issues = $this->issueService->getAllByProjectID($project->id, $sortParams, $perPage, $searchParams, $filters);
+
 
         return Inertia::render('Projects/Show', [
             'project' => $project,
             'projects' => $projects,
             'issues' => $issues,
             'queryParams' => request()->query() ?: null,
+            'filters' => $filters,
         ]);
     }
+
     public function index(Project $project): Response
     {
         $projects = Project::with('issues')->latest()->get();

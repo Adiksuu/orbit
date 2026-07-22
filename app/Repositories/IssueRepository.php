@@ -26,7 +26,7 @@ class IssueRepository
     public function getAll(): Collection {
         return Issue::query()->with(['creator', 'assignee'])->latest()->get();
     }
-    public function getAllPaginated(string | int $projectID = 'all', int $perPage = 20, array $sortParams = [], array $searchParams = []): LengthAwarePaginator {
+    public function getAllPaginated(string | int $projectID = 'all', int $perPage = 20, array $sortParams = [], array $searchParams = [], array $filters = []): LengthAwarePaginator {
         $query = Issue::query()->with(['creator', 'assignee']);
 
         if ($projectID !== 'all') {
@@ -83,7 +83,7 @@ class IssueRepository
                         $q->where(function ($sq) use ($value) {
                             $sq->where('title', 'like', "%$value%")
                                 ->orWhere('description', 'like', "%$value%")
-                                ->orWhere('id', 'like', "%$value%")
+                                ->orWhere('issues.id', 'like', "%$value%")
                                 ->orWhere('labels', 'like', "%$value%");
                         });
                     } elseif (in_array($key, ['title', 'status', 'priority', 'labels'])) {
@@ -91,6 +91,36 @@ class IssueRepository
                     }
                 }
             });
+        }
+
+        if (!empty($filters)) {
+            foreach (['status', 'priority'] as $field) {
+                if (!empty($filters[$field])) {
+                    $values = is_array($filters[$field]) ? $filters[$field] : explode(',', $filters[$field]);
+                    $query->whereIn($field, array_filter($values));
+                }
+            }
+            if (!empty($filters['labels'])) {
+                $labels = is_array($filters['labels']) ? $filters['labels'] : explode(',', $filters['labels']);
+                $labels = array_filter($labels);
+
+                if (!empty($labels)) {
+                    $query->where(function ($q) use ($labels) {
+                        foreach ($labels as $label) {
+                            $q->orWhere('labels', 'like', '%' . trim($label) . '%');
+                        }
+                    });
+                }
+            }
+            if (!empty($filters['assignee'])) {
+                $assigneeParam = is_array($filters['assignee'])
+                    ? implode(',', $filters['assignee'])
+                    : $filters['assignee'];
+
+                if (in_array(strtolower($assigneeParam), ['unassigned', 'null', 'none'])) {
+                    $query->whereNull('assignee_id');
+                }
+            }
         }
 
         return $query->paginate($perPage)->withQueryString();

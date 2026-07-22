@@ -1,0 +1,283 @@
+import Badge from '@/Components/Atoms/Badge/Badge';
+import Icon from '@/Components/Atoms/Icon/Icon';
+import StatusDot from '@/Components/Atoms/StatusDot/StatusDot';
+import { FilterDropdownProps, FilterDropdownType } from '@/types/Components';
+import { cn } from '@/utils/cn';
+import { router } from '@inertiajs/react';
+import React, {
+    ReactNode,
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from 'react';
+import { createPortal } from 'react-dom';
+import FilterButton from '../FilterButton/FilterButton';
+
+interface FilterOption {
+    value: string;
+    render: () => ReactNode;
+}
+
+interface FilterConfig {
+    paramKey: string;
+    label: string;
+    multiSelect: boolean;
+    options: FilterOption[];
+}
+
+const optionRow = (value: string, label: string, dot: ReactNode) => (
+    <span className="flex items-center gap-2">
+        {dot}
+        <span className="font-medium capitalize">{label}</span>
+    </span>
+);
+
+const FILTER_CONFIG: Record<FilterDropdownType, FilterConfig> = {
+    labels: {
+        paramKey: 'labels',
+        label: 'Labels',
+        multiSelect: true,
+        options: ['bug', 'feature', 'performance', 'design', 'ux', 'chore'].map(
+            (value) => ({
+                value,
+                render: () => <Badge color={value as any}>{value}</Badge>,
+            }),
+        ),
+    },
+    status: {
+        paramKey: 'status',
+        label: 'Status',
+        multiSelect: false,
+        options: [
+            { value: 'open', label: 'Open' },
+            { value: 'closed', label: 'Closed' },
+        ].map(({ value, label }) => ({
+            value,
+            render: () =>
+                optionRow(
+                    value,
+                    label,
+                    <StatusDot status={value as any} size="sm" />,
+                ),
+        })),
+    },
+    priority: {
+        paramKey: 'priority',
+        label: 'Priority',
+        multiSelect: true,
+        options: [
+            { value: 'high', label: 'High' },
+            { value: 'medium', label: 'Medium' },
+            { value: 'low', label: 'Low' },
+        ].map(({ value, label }) => ({
+            value,
+            render: () =>
+                optionRow(
+                    value,
+                    label,
+                    <StatusDot status={value as any} size="sm" />,
+                ),
+        })),
+    },
+    assignee: {
+        paramKey: 'assignee',
+        label: 'Assignee',
+        multiSelect: false,
+        options: [
+            // { value: 'me', label: 'Assigned to me', icon: 'User' as const },
+            {
+                value: 'unassigned',
+                label: 'Unassigned',
+                icon: 'UserX' as const,
+            },
+        ].map(({ value, label, icon }) => ({
+            value,
+            render: () =>
+                optionRow(
+                    value,
+                    label,
+                    <Icon name={icon} size={13} color="#999" />,
+                ),
+        })),
+    },
+};
+
+const PANEL_WIDTH = 224;
+
+const FilterDropdown: React.FC<FilterDropdownProps> = ({
+    type,
+    queryParams = {},
+    isOpen,
+    onOpenChange,
+}) => {
+    const config = FILTER_CONFIG[type];
+    const triggerRef = useRef<HTMLDivElement>(null);
+    const panelRef = useRef<HTMLDivElement>(null);
+    const [coords, setCoords] = useState<{ top: number; left: number } | null>(
+        null,
+    );
+
+    const selected = useMemo(() => {
+        const raw = queryParams?.[config.paramKey];
+        return raw ? String(raw).split(',').filter(Boolean) : [];
+    }, [queryParams, config.paramKey]);
+
+    const updateCoords = useCallback(() => {
+        if (!triggerRef.current) return;
+        const rect = triggerRef.current.getBoundingClientRect();
+        setCoords({
+            top: rect.bottom + 8,
+            left: Math.min(rect.left, window.innerWidth - PANEL_WIDTH - 12),
+        });
+    }, []);
+
+    useEffect(() => {
+        if (isOpen) updateCoords();
+    }, [isOpen, updateCoords]);
+
+    useEffect(() => {
+        if (!isOpen) return;
+
+        const handleClickOutside = (event: MouseEvent) => {
+            const target = event.target as Node;
+            if (
+                panelRef.current?.contains(target) ||
+                triggerRef.current?.contains(target)
+            ) {
+                return;
+            }
+            onOpenChange(false);
+        };
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') onOpenChange(false);
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener('keydown', handleKeyDown);
+        window.addEventListener('resize', updateCoords);
+        window.addEventListener('scroll', updateCoords, true);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener('resize', updateCoords);
+            window.removeEventListener('scroll', updateCoords, true);
+        };
+    }, [isOpen, onOpenChange, updateCoords]);
+
+    const applyFilter = (values: string[]) => {
+        const nextParams: Record<string, any> = { ...queryParams, page: 1 };
+        if (values.length > 0) {
+            nextParams[config.paramKey] = values.join(',');
+        } else {
+            delete nextParams[config.paramKey];
+        }
+        router.get(window.location.pathname, nextParams, {
+            preserveState: true,
+            replace: true,
+        });
+    };
+
+    const toggleValue = (value: string) => {
+        if (config.multiSelect) {
+            const next = selected.includes(value)
+                ? selected.filter((v) => v !== value)
+                : [...selected, value];
+            applyFilter(next);
+        } else {
+            applyFilter(selected.includes(value) ? [] : [value]);
+        }
+    };
+
+    return (
+        <>
+            <div ref={triggerRef}>
+                <FilterButton
+                    label={config.label}
+                    value={
+                        selected.length > 0
+                            ? String(selected.length)
+                            : undefined
+                    }
+                    isActive={selected.length > 0 || isOpen}
+                    onClick={() => onOpenChange(!isOpen)}
+                />
+            </div>
+
+            {isOpen &&
+                coords &&
+                createPortal(
+                    <div
+                        ref={panelRef}
+                        style={{
+                            position: 'fixed',
+                            top: coords.top,
+                            left: coords.left,
+                            zIndex: 9999,
+                        }}
+                        className="animate-in fade-in zoom-in-95 w-56 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/95 p-1.5 shadow-2xl backdrop-blur-md duration-100"
+                    >
+                        <div className="flex items-center justify-between px-2 py-1.5">
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+                                Filter by {config.label}
+                            </p>
+                            {selected.length > 0 && (
+                                <button
+                                    type="button"
+                                    onClick={() => applyFilter([])}
+                                    className="cursor-pointer text-[10px] font-medium text-zinc-500 transition-colors hover:text-zinc-200"
+                                >
+                                    Clear
+                                </button>
+                            )}
+                        </div>
+                        <div className="space-y-0.5">
+                            {config.options.map((option) => {
+                                const isSelected = selected.includes(
+                                    option.value,
+                                );
+                                return (
+                                    <button
+                                        key={option.value}
+                                        type="button"
+                                        onClick={() =>
+                                            toggleValue(option.value)
+                                        }
+                                        className={cn(
+                                            'group flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-xs transition-all duration-150',
+                                            isSelected
+                                                ? 'bg-[var(--accent-color)]/10 text-zinc-100'
+                                                : 'text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200',
+                                        )}
+                                    >
+                                        <div
+                                            className={cn(
+                                                'flex h-4 w-4 shrink-0 items-center justify-center rounded border transition-all duration-150',
+                                                isSelected
+                                                    ? 'border-[var(--accent-color)] bg-[var(--accent-color)]'
+                                                    : 'border-zinc-700 bg-zinc-800 group-hover:border-zinc-600',
+                                            )}
+                                        >
+                                            {isSelected && (
+                                                <Icon
+                                                    name="Check"
+                                                    size={10}
+                                                    className="text-white"
+                                                />
+                                            )}
+                                        </div>
+                                        {option.render()}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>,
+                    document.body,
+                )}
+        </>
+    );
+};
+
+export default FilterDropdown;

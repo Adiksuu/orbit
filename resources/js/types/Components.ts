@@ -132,7 +132,15 @@ export interface FilterButtonProps {
     icon?: keyof typeof icons;
     label: string;
     value?: string;
+    isActive?: boolean;
     onClick?: () => void;
+}
+export type FilterDropdownType = 'labels' | 'status' | 'assignee' | 'priority';
+export interface FilterDropdownProps {
+    type: FilterDropdownType;
+    queryParams?: Record<string, any>;
+    isOpen: boolean;
+    onOpenChange: (isOpen: boolean) => void;
 }
 export interface IssueElementProps {
     issue: Issue;
