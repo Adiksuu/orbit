@@ -142,6 +142,12 @@ export interface FilterDropdownProps {
     isOpen: boolean;
     onOpenChange: (isOpen: boolean) => void;
 }
+export interface SavedFiltersDropdownProps {
+    queryParams?: Record<string, any>;
+    projectId?: number | string;
+    isOpen: boolean;
+    onOpenChange: (isOpen: boolean) => void;
+}
 export interface IssueElementProps {
     issue: Issue;
     activeIssue: Issue | null;

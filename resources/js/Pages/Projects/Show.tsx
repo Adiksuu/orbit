@@ -72,7 +72,7 @@ export default function Show({
             project={project}
         >
             <div className={'flex h-full flex-col'}>
-                <FilterBar queryParams={queryParams} />
+                <FilterBar queryParams={queryParams} project={project} />
                 <div
                     className={
                         'relative flex flex-1 overflow-hidden border-t border-solid border-[var(--bg-light-color)]'
