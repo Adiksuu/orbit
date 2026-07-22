@@ -1,4 +1,5 @@
 import Icon from '@/Components/Atoms/Icon/Icon';
+import { useAlert } from '@/context/AlertContext';
 import { useSavedFilters } from '@/hooks/useSavedFilters';
 import { SavedFiltersDropdownProps } from '@/types/Components';
 import { cn } from '@/utils/cn';
@@ -53,6 +54,8 @@ const SavedFiltersDropdown: React.FC<SavedFiltersDropdownProps> = ({
     isOpen,
     onOpenChange,
 }) => {
+    const { addAlert } = useAlert();
+
     const { savedFilters, saveFilter, deleteFilter } = useSavedFilters(
         initialSavedFilters,
         projectId,
@@ -125,6 +128,7 @@ const SavedFiltersDropdown: React.FC<SavedFiltersDropdownProps> = ({
             preserveState: true,
             replace: true,
         });
+        addAlert('Filters applied successfully', 'success');
     };
 
     const handleApply = (id: number) => {
