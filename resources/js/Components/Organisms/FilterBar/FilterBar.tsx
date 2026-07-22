@@ -1,9 +1,11 @@
 import Icon from '@/Components/Atoms/Icon/Icon';
 import Input from '@/Components/Atoms/Input/Input';
 import Keybind from '@/Components/Atoms/Keybind/Keybind';
+import { FilterDropdownType } from '@/types/Components';
 import { router } from '@inertiajs/react';
 import React, { useEffect, useRef, useState } from 'react';
 import FilterButton from '../../Molecules/FilterButton/FilterButton';
+import FilterDropdown from '../../Molecules/FilterDropdown/FilterDropdown';
 
 interface FilterBarProps {
     queryParams?: Record<string, any>;
@@ -11,6 +13,9 @@ interface FilterBarProps {
 
 const FilterBar: React.FC<FilterBarProps> = ({ queryParams = {} }) => {
     const [searchQuery, setSearchQuery] = useState(queryParams?.search || '');
+    const [openFilter, setOpenFilter] = useState<FilterDropdownType | null>(
+        null,
+    );
     const input = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
@@ -58,10 +63,38 @@ const FilterBar: React.FC<FilterBarProps> = ({ queryParams = {} }) => {
                         label={`Filters ${activeFilterCount > 0 ? `(${activeFilterCount})` : ''}`}
                     />
                     <div className="hidden items-center gap-2 lg:flex">
-                        <FilterButton label="Labels" />
-                        <FilterButton label="Status" />
-                        <FilterButton label="Assignee" />
-                        <FilterButton label="Priority" />
+                        <FilterDropdown
+                            type="labels"
+                            queryParams={queryParams}
+                            isOpen={openFilter === 'labels'}
+                            onOpenChange={(isOpen) =>
+                                setOpenFilter(isOpen ? 'labels' : null)
+                            }
+                        />
+                        <FilterDropdown
+                            type="status"
+                            queryParams={queryParams}
+                            isOpen={openFilter === 'status'}
+                            onOpenChange={(isOpen) =>
+                                setOpenFilter(isOpen ? 'status' : null)
+                            }
+                        />
+                        <FilterDropdown
+                            type="assignee"
+                            queryParams={queryParams}
+                            isOpen={openFilter === 'assignee'}
+                            onOpenChange={(isOpen) =>
+                                setOpenFilter(isOpen ? 'assignee' : null)
+                            }
+                        />
+                        <FilterDropdown
+                            type="priority"
+                            queryParams={queryParams}
+                            isOpen={openFilter === 'priority'}
+                            onOpenChange={(isOpen) =>
+                                setOpenFilter(isOpen ? 'priority' : null)
+                            }
+                        />
                     </div>
                 </div>
             </div>

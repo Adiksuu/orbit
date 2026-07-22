@@ -25,7 +25,11 @@ describe('FilterButton Component', () => {
 
     test('renders a leading icon when the icon prop is provided', () => {
         const { container } = render(
-            <FilterButton label="Filter" icon="ListFilter" />,
+            <FilterButton
+                label="Filter"
+                icon="ListFilter"
+                onClick={() => {}}
+            />,
         );
 
         // Leading icon + trailing chevron = 2 svgs.
@@ -33,9 +37,17 @@ describe('FilterButton Component', () => {
     });
 
     test('renders only the trailing chevron when no icon prop is provided', () => {
-        const { container } = render(<FilterButton label="Status" />);
+        const { container } = render(
+            <FilterButton label="Status" onClick={() => {}} />,
+        );
 
         expect(container.querySelectorAll('svg')).toHaveLength(1);
+    });
+
+    test('does not render the trailing chevron when no onClick is provided', () => {
+        const { container } = render(<FilterButton label="Status" />);
+
+        expect(container.querySelectorAll('svg')).toHaveLength(0);
     });
 
     test('calls onClick when clicked', async () => {
