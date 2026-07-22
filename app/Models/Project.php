@@ -27,4 +27,8 @@ class Project extends Model
     {
         return $this->hasMany(Issue::class);
     }
+    public function savedFilters(): HasMany
+    {
+        return $this->hasMany(SavedFilter::class);
+    }
 }

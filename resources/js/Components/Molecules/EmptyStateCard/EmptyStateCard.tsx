@@ -18,7 +18,7 @@ function DashboardEmptyState({
             onClick={() => triggerShortcut('p')}
             className="hover:bg-[var(--accent-color)]/[0.02] group flex flex-col items-center justify-center bg-zinc-900/20 p-8 text-center transition-all duration-200"
         >
-            <div className="group-hover:border-[var(--accent-color)]/30 mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-500 transition-colors group-hover:text-[var(--accent-color)]">
+            <div className="group-hover:border-purple-500/30 mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-500 transition-colors group-hover:text-[var(--accent-color)]">
                 <Icon name={iconName} size={22} />
             </div>
 

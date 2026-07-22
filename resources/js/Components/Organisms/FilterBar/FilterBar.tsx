@@ -1,30 +1,35 @@
 import Icon from '@/Components/Atoms/Icon/Icon';
 import Input from '@/Components/Atoms/Input/Input';
 import Keybind from '@/Components/Atoms/Keybind/Keybind';
+import { SavedFilter } from '@/hooks/useSavedFilters';
 import { FilterDropdownType } from '@/types/Components';
+import { Project } from '@/types/Projects';
 import { router } from '@inertiajs/react';
 import React, { useEffect, useRef, useState } from 'react';
-import FilterButton from '../../Molecules/FilterButton/FilterButton';
 import FilterDropdown from '../../Molecules/FilterDropdown/FilterDropdown';
+import SavedFiltersDropdown from '../../Molecules/SavedFiltersDropdown/SavedFiltersDropdown';
+
+type OpenPanel = FilterDropdownType | 'saved' | null;
 
 interface FilterBarProps {
     queryParams?: Record<string, any>;
+    project?: Project;
+    savedFilters: SavedFilter[];
 }
 
-const FilterBar: React.FC<FilterBarProps> = ({ queryParams = {} }) => {
+const FilterBar: React.FC<FilterBarProps> = ({
+    queryParams = {},
+    project,
+    savedFilters,
+}) => {
     const [searchQuery, setSearchQuery] = useState(queryParams?.search || '');
-    const [openFilter, setOpenFilter] = useState<FilterDropdownType | null>(
-        null,
-    );
+    const [openFilter, setOpenFilter] = useState<OpenPanel>(null);
     const input = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         setSearchQuery(queryParams?.search || '');
     }, [queryParams?.search]);
 
-    const activeFilterCount = Object.keys(queryParams || {}).filter((key) =>
-        ['labels', 'status', 'assignee', 'priority'].includes(key),
-    ).length;
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setSearchQuery(value);
@@ -58,9 +63,14 @@ const FilterBar: React.FC<FilterBarProps> = ({ queryParams = {} }) => {
 
             <div className="scrollbar-hide flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
                 <div className="flex shrink-0 items-center gap-2 pl-1">
-                    <FilterButton
-                        icon="ListFilter"
-                        label={`Filters ${activeFilterCount > 0 ? `(${activeFilterCount})` : ''}`}
+                    <SavedFiltersDropdown
+                        queryParams={queryParams}
+                        projectId={project?.id}
+                        savedFilters={savedFilters}
+                        isOpen={openFilter === 'saved'}
+                        onOpenChange={(isOpen) =>
+                            setOpenFilter(isOpen ? 'saved' : null)
+                        }
                     />
                     <div className="hidden items-center gap-2 lg:flex">
                         <FilterDropdown
