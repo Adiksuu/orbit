@@ -49,7 +49,7 @@ const FILTER_CONFIG: Record<FilterDropdownType, FilterConfig> = {
     status: {
         paramKey: 'status',
         label: 'Status',
-        multiSelect: true,
+        multiSelect: false,
         options: [
             { value: 'open', label: 'Open' },
             { value: 'closed', label: 'Closed' },
@@ -86,7 +86,7 @@ const FILTER_CONFIG: Record<FilterDropdownType, FilterConfig> = {
         label: 'Assignee',
         multiSelect: false,
         options: [
-            { value: 'me', label: 'Assigned to me', icon: 'User' as const },
+            // { value: 'me', label: 'Assigned to me', icon: 'User' as const },
             {
                 value: 'unassigned',
                 label: 'Unassigned',
