@@ -1,4 +1,4 @@
-import { ShortcutHelpModal } from '@/Components/Organisms/ShortcutHelpModal';
+import { ShortcutHelpModal } from '@/Components/Organisms/ShortcutHelpModal/ShortcutHelpModal';
 import { useModal } from '@/context/ModalContext';
 import { ShortcutContextType, ShortcutDefinition } from '@/types/Shortcuts';
 import { router } from '@inertiajs/react';
