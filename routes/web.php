@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\IssueController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SavedFilterController;
 use Illuminate\Support\Facades\Route;
@@ -15,3 +16,7 @@ Route::post('/projects', [ProjectController::class, 'store'])->name('projects.st
 Route::patch('/projects/{project}/columns', [ProjectController::class, 'updateColumns'])->name('projects.columns.update');
 Route::post('/saved-filters', [SavedFilterController::class, 'store'])->name('saved-filters.store');
 Route::delete('/saved-filters/{savedFilter}', [SavedFilterController::class, 'destroy'])->name('saved-filters.destroy');
+Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+Route::post('/notifications', [NotificationController::class, 'store'])->name('notifications.store');
+Route::delete('/notifications/{notification}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
+Route::post('/notifications/{notification}', [NotificationController::class, 'update'])->name('notifications.update');
