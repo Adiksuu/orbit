@@ -2,11 +2,16 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
 {
+    public function __construct(
+        protected NotificationService $notificationService
+    ) {}
+
     /**
      * The root template that is loaded on the first page visit.
      *
@@ -40,6 +45,7 @@ class HandleInertiaRequests extends Middleware
                 'warning' => fn () => $request->session()->get('warning'),
                 'information' => fn () => $request->session()->get('information'),
             ],
+            'notifications' => fn () => $this->notificationService->getAll(),
         ];
     }
 }

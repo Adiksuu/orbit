@@ -18,5 +18,6 @@ Route::post('/saved-filters', [SavedFilterController::class, 'store'])->name('sa
 Route::delete('/saved-filters/{savedFilter}', [SavedFilterController::class, 'destroy'])->name('saved-filters.destroy');
 Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 Route::post('/notifications', [NotificationController::class, 'store'])->name('notifications.store');
+Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
 Route::delete('/notifications/{notification}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
 Route::post('/notifications/{notification}', [NotificationController::class, 'update'])->name('notifications.update');

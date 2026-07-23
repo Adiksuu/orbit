@@ -51,4 +51,11 @@ class NotificationController extends Controller
 
         return response()->json();
     }
+
+    public function markAllAsRead(): RedirectResponse
+    {
+        $this->notificationService->markAllAsRead();
+
+        return redirect()->back();
+    }
 }

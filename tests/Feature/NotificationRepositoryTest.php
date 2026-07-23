@@ -40,3 +40,13 @@ test('it can update a notification', function () {
     expect($updated->title)->toBe('New Title');
     $this->assertDatabaseHas('notifications', ['id' => $notification->id, 'title' => 'New Title']);
 });
+
+test('it can mark all unread notifications as read', function () {
+    Notification::factory()->count(2)->create(['read' => false]);
+    Notification::factory()->create(['read' => true]);
+
+    $count = $this->repository->markAllAsRead();
+
+    expect($count)->toBe(2);
+    expect(Notification::where('read', false)->count())->toBe(0);
+});

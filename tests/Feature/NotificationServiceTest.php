@@ -52,3 +52,13 @@ test('it can update a notification', function () {
 
     expect($result)->toBe($notification);
 });
+
+test('it can mark all notifications as read', function () {
+    $this->notificationRepository->shouldReceive('markAllAsRead')
+        ->once()
+        ->andReturn(2);
+
+    $result = $this->service->markAllAsRead();
+
+    expect($result)->toBe(2);
+});

@@ -21,4 +21,9 @@ class NotificationRepository
 
         return $notification;
     }
+
+    public function markAllAsRead(): int
+    {
+        return Notification::query()->where('read', false)->update(['read' => true]);
+    }
 }

@@ -21,4 +21,7 @@ class NotificationService
     public function update(Notification $notification, array $data): Notification {
         return $this->notificationRepository->update($notification, $data);
     }
+    public function markAllAsRead(): int {
+        return $this->notificationRepository->markAllAsRead();
+    }
 }
