@@ -28,7 +28,9 @@ class IssueController extends Controller
 
         $this->issueService->updateIssue($issue, $data);
 
-        return redirect()->back()->with('success', 'Issue has been updated successfully!');
+        return redirect()->back()
+            ->with('success', 'Issue has been updated successfully!')
+            ->with('action_url', route('projects.show', $issue->project_id) . '?issue=' . $issue->id);
     }
     public function store(Request $request): RedirectResponse
     {
@@ -44,8 +46,10 @@ class IssueController extends Controller
             'end_date' => 'nullable|date|after_or_equal:start_date',
         ]);
 
-        $this->issueService->createIssue($data);
+        $issue = $this->issueService->createIssue($data);
 
-        return redirect()->back()->with('success', 'Issue has been created successfully.');
+        return redirect()->back()
+            ->with('success', 'Issue has been created successfully.')
+            ->with('action_url', route('projects.show', $issue->project_id) . '?issue=' . $issue->id);
     }
 }

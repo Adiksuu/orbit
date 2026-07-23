@@ -5,7 +5,8 @@ import {
     AlertType,
     InertiaPageProps,
 } from '@/types/Alert';
-import { usePage } from '@inertiajs/react';
+import { NotificationTypes } from '@/types/Notification';
+import { useForm, usePage } from '@inertiajs/react';
 import {
     createContext,
     ReactNode,
@@ -17,14 +18,39 @@ import {
 
 const AlertContext = createContext<AlertContextType | undefined>(undefined);
 
+const toNotificationType = (type: AlertType): NotificationTypes =>
+    type === 'information' ? 'info' : type;
+
 export const AlertProvider = ({ children }: { children: ReactNode }) => {
     const [alerts, setAlerts] = useState<AlertItem[]>([]);
 
+    const { post, transform } = useForm();
+
     const addAlert = useCallback(
-        (message: string, type: AlertType = 'success', duration = 4000) => {
+        (
+            message: string,
+            type: AlertType = 'success',
+            duration = 4000,
+            actionUrl?: string,
+        ) => {
             const id = Math.random().toString(36).substring(2, 9);
 
-            setAlerts((prev) => [...prev, { id, message, type }]);
+            setAlerts((prev) => [...prev, { id, message, type, actionUrl }]);
+
+            const notificationType = toNotificationType(type);
+            transform(() => ({
+                type: notificationType,
+                title:
+                    notificationType.charAt(0).toUpperCase() +
+                    notificationType.slice(1),
+                message,
+                read: false,
+                action_url: actionUrl ?? null,
+            }));
+            post('/notifications', {
+                preserveScroll: true,
+                preserveState: true,
+            });
 
             if (duration) {
                 setTimeout(() => {
@@ -32,7 +58,7 @@ export const AlertProvider = ({ children }: { children: ReactNode }) => {
                 }, duration);
             }
         },
-        [],
+        [post, transform],
     );
 
     const removeAlert = useCallback((id: string) => {
@@ -43,16 +69,16 @@ export const AlertProvider = ({ children }: { children: ReactNode }) => {
 
     useEffect(() => {
         if (flash?.success) {
-            addAlert(flash.success, 'success');
+            addAlert(flash.success, 'success', 4000, flash.action_url);
         }
         if (flash?.error) {
-            addAlert(flash.error, 'error');
+            addAlert(flash.error, 'error', 4000, flash.action_url);
         }
         if (flash?.warning) {
-            addAlert(flash.warning, 'warning');
+            addAlert(flash.warning, 'warning', 4000, flash.action_url);
         }
         if (flash?.information) {
-            addAlert(flash.information, 'information');
+            addAlert(flash.information, 'information', 4000, flash.action_url);
         }
     }, [flash, addAlert]);
 

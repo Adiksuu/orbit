@@ -53,7 +53,7 @@ interface AlertProps {
 }
 
 export const Alert = ({ alert, onClose }: AlertProps) => {
-    const { message, type } = alert;
+    const { message, type, actionUrl } = alert;
 
     const intent = (
         alertIcons[type as AlertIntent] ? type : 'information'
@@ -75,6 +75,14 @@ export const Alert = ({ alert, onClose }: AlertProps) => {
 
             <div className="flex-1 select-none text-sm font-medium leading-5">
                 {message}
+                {actionUrl && (
+                    <a
+                        href={actionUrl}
+                        className="mt-1 block text-xs font-semibold underline underline-offset-2 hover:opacity-80"
+                    >
+                        View details
+                    </a>
+                )}
             </div>
 
             <button
