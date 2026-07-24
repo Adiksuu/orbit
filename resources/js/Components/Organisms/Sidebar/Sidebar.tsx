@@ -81,11 +81,6 @@ const Sidebar: FC<{ projects: Project[] }> = ({ projects }) => {
                             isActive={url === '/projects'}
                         />
                         <NavItem
-                            icon="Inbox"
-                            label="Inbox"
-                            isActive={url === '/inbox'}
-                        />
-                        <NavItem
                             icon="Settings"
                             label="Settings"
                             isActive={url === '/settings'}
