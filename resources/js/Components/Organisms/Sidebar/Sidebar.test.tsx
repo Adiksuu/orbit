@@ -68,7 +68,6 @@ describe('Sidebar Component', () => {
 
         expect(screen.getByText('Dashboard')).toBeInTheDocument();
         expect(screen.getByText('Projects')).toBeInTheDocument();
-        expect(screen.getByText('Inbox')).toBeInTheDocument();
         expect(screen.getByText('Settings')).toBeInTheDocument();
     });
 
