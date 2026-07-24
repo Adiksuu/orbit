@@ -7,7 +7,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SavedFilterController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
 Route::patch('/issues/{issue}', [IssueController::class, 'update'])->name('issues.update');
 Route::post('/issues', [IssueController::class, 'store'])->name('issues.store');
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
@@ -21,3 +21,5 @@ Route::post('/notifications', [NotificationController::class, 'store'])->name('n
 Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
 Route::delete('/notifications/{notification}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
 Route::post('/notifications/{notification}', [NotificationController::class, 'update'])->name('notifications.update');
+
+require __DIR__.'/auth.php';

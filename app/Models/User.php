@@ -17,6 +17,20 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'avatar'
+//        'avatar',
+//        'type'
     ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
 }
