@@ -88,6 +88,8 @@ export interface InputProps extends VariantProps<typeof inputVariants> {
     className?: string;
     onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
     id?: string;
+    name?: string;
+    autoComplete?: string;
     ref?: React.Ref<HTMLInputElement> | null;
 }
 export interface ModalProps {
@@ -121,6 +123,18 @@ export interface KeybindProps {
     tooltipText: string;
     keybind: string;
     tooltip?: boolean;
+}
+export interface CheckboxProps {
+    checked: boolean;
+    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    label?: ReactNode;
+    id?: string;
+    isDisabled?: boolean;
+    className?: string;
+}
+export interface DividerProps {
+    label?: ReactNode;
+    className?: string;
 }
 // MOLECULES COMPONENTS
 export interface BoardColumnProps {
@@ -285,6 +299,38 @@ export interface IssueRowDetailProps {
     issue: Issue;
     onOpenDetails: () => void;
 }
+export interface FormFieldProps {
+    id: string;
+    label: string;
+    type?: string;
+    value: string;
+    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    placeholder?: string;
+    error?: string;
+    required?: boolean;
+    icon?: keyof typeof icons;
+    autoComplete?: string;
+    isDisabled?: boolean;
+}
+export interface PasswordFieldProps {
+    id: string;
+    label: string;
+    value: string;
+    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    placeholder?: string;
+    error?: string;
+    required?: boolean;
+    autoComplete?: string;
+    isDisabled?: boolean;
+}
+export interface SocialLoginButtonsProps {
+    className?: string;
+}
+export interface AuthFormHeaderProps {
+    icon: keyof typeof icons;
+    title: string;
+    description: string;
+}
 // ORGANISMS COMPONENTS
 export interface CalendarViewProps {
     issues: Issue[];
@@ -355,6 +401,11 @@ export interface ListRowProps {
     onToggleExpand?: () => void;
 }
 
+export interface AuthShowcaseProps {
+    title: ReactNode;
+    description: ReactNode;
+}
+
 // OTHER COMPONENTS
 export interface MainLayoutProps {
     children: ReactNode;
@@ -362,4 +413,9 @@ export interface MainLayoutProps {
     setSelectedLook: (look: IssuePageLooks) => void;
     projects: Project[];
     project: Project;
+}
+export interface GuestLayoutProps {
+    children: ReactNode;
+    showcaseTitle: ReactNode;
+    showcaseDescription: ReactNode;
 }

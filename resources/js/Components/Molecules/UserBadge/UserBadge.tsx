@@ -48,7 +48,7 @@ const UserBadge: React.FC<UserBadgeProps> = ({
                 {showDetails && email && (
                     <span
                         className={
-                            'overflow-hidden overflow-ellipsis whitespace-nowrap text-xs font-normal text-zinc-400'
+                            'text-2xs overflow-hidden overflow-ellipsis whitespace-nowrap font-normal text-zinc-400'
                         }
                     >
                         {email}

@@ -1,11 +1,14 @@
 import Badge from '@/Components/Atoms/Badge/Badge';
+import DropdownItem from '@/Components/Atoms/DropdownItem/DropdownItem';
+import DropdownMenu from '@/Components/Atoms/DropdownMenu/DropdownMenu';
 import NewProjectModal from '@/Components/Organisms/NewProjectModal/NewProjectModal';
 import { useShortcuts } from '@/context/ShortcutContext';
+import { PageProps } from '@/types';
 import { Project } from '@/types/Projects';
 import { ShortcutDefinition } from '@/types/Shortcuts';
 import { getColorTheme } from '@/utils/colors';
-import { Link, usePage } from '@inertiajs/react';
-import { FC, useMemo, useState } from 'react';
+import { Link, router, usePage } from '@inertiajs/react';
+import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import Icon from '../../Atoms/Icon/Icon';
 import NavItem from '../../Molecules/NavItem/NavItem';
 import UserBadge from '../../Molecules/UserBadge/UserBadge';
@@ -13,7 +16,30 @@ import UserBadge from '../../Molecules/UserBadge/UserBadge';
 const Sidebar: FC<{ projects: Project[] }> = ({ projects }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isNewProjectModalOpen, setIsNewProjectModalOpen] = useState(false);
-    const { url } = usePage();
+    const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+    const userMenuRef = useRef<HTMLDivElement>(null);
+    const {
+        url,
+        props: { auth },
+    } = usePage<PageProps>();
+
+    useEffect(() => {
+        if (!isUserMenuOpen) return;
+
+        const handleClickOutside = (event: MouseEvent) => {
+            if (!userMenuRef.current?.contains(event.target as Node)) {
+                setIsUserMenuOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () =>
+            document.removeEventListener('mousedown', handleClickOutside);
+    }, [isUserMenuOpen]);
+
+    const handleLogout = () => {
+        router.post(route('logout'));
+    };
 
     const shortcuts = useMemo(
         (): ShortcutDefinition[] => [
@@ -146,23 +172,40 @@ const Sidebar: FC<{ projects: Project[] }> = ({ projects }) => {
 
                 <div
                     className={
-                        'shrink-0 border-t border-solid border-[var(--bg-light-color)] pt-3'
+                        'relative shrink-0 border-t border-solid border-[var(--bg-light-color)] pt-3'
                     }
+                    ref={userMenuRef}
                 >
                     <div
+                        onClick={() => setIsUserMenuOpen((prev) => !prev)}
                         className={
                             'flex cursor-pointer items-center justify-between rounded-md px-3 py-2 hover:bg-[var(--bg-light-color)]'
                         }
                     >
                         <UserBadge
-                            name="John Doe"
-                            email="john@acme.com"
-                            avatarSrc="/path/to/user.png"
+                            name={auth.user.name}
+                            email={auth.user.email}
                             size="md"
                             showDetails
+                            showTooltip={false}
                         />
                         <Icon name="ChevronDown" size={14} color="#999" />
                     </div>
+
+                    {isUserMenuOpen && (
+                        <DropdownMenu direction="top">
+                            <DropdownItem
+                                label={
+                                    <>
+                                        <Icon name="LogOut" size={14} />
+                                        Log out
+                                    </>
+                                }
+                                onClick={handleLogout}
+                                variant="danger"
+                            />
+                        </DropdownMenu>
+                    )}
                 </div>
             </aside>
 
