@@ -11,6 +11,10 @@ class UserService
 {
     public function __construct(protected UserRepository $userRepository) {}
 
+    public function getAssignableUsers() {
+        return $this->userRepository->getAssignableUsers();
+    }
+
     public function updateProfile(User $user, array $data, ?UploadedFile $avatarFile = null): User {
         if ($avatarFile) {
             if ($user->avatar) {

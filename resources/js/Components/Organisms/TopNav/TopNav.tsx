@@ -25,6 +25,7 @@ const TopNav: React.FC<TopNavProps> = ({
     selectedLook,
     setSelectedLook,
     project,
+    users,
 }) => {
     const [isNewIssueModalOpen, setIsNewIssueModalOpen] = useState(false);
     const [showNotificationsPopup, setShowNotificationsPopup] = useState(false);
@@ -186,6 +187,7 @@ const TopNav: React.FC<TopNavProps> = ({
                 isOpen={isNewIssueModalOpen}
                 onClose={() => setIsNewIssueModalOpen(false)}
                 project={project}
+                users={users}
             />
         </>
     );

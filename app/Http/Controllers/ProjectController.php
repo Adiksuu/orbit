@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use App\Services\IssueService;
 use App\Services\ProjectService;
+use App\Services\UserService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -14,10 +15,12 @@ class ProjectController extends Controller
 {
     protected ProjectService $projectService;
     protected IssueService $issueService;
+    protected UserService $userService;
 
-    public function __construct(ProjectService $projectService, IssueService $issueService) {
+    public function __construct(ProjectService $projectService, IssueService $issueService, UserService $userService) {
         $this->projectService = $projectService;
         $this->issueService = $issueService;
+        $this->userService = $userService;
     }
 
     public function show(Request $request, Project $project): Response
@@ -44,6 +47,7 @@ class ProjectController extends Controller
             'queryParams' => request()->query() ?: null,
             'filters' => $filters,
             'savedFilters' => $project->savedFilters()->latest()->get(),
+            'users' => $this->userService->getAssignableUsers(),
         ]);
     }
 

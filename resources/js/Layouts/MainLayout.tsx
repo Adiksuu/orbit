@@ -9,6 +9,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
     setSelectedLook,
     projects,
     project,
+    users,
 }) => {
     return (
         <div
@@ -22,6 +23,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
                     selectedLook={selectedLook}
                     setSelectedLook={setSelectedLook}
                     project={project}
+                    users={users}
                 />
                 <main className={'flex flex-1 flex-col overflow-y-auto'}>
                     {children}

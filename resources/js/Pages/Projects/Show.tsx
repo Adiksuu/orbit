@@ -14,6 +14,7 @@ import {
     SortingColumn,
 } from '@/types/Issues';
 import { Project } from '@/types/Projects';
+import { AssignableUser } from '@/types/Users';
 import { useEffect, useState } from 'react';
 
 interface QueryParams {
@@ -29,12 +30,14 @@ export default function Show({
     projects,
     queryParams = {},
     savedFilters,
+    users,
 }: {
     project: Project;
     issues: PaginatedResponse<Issue>;
     projects: Project[];
     queryParams?: QueryParams;
     savedFilters: SavedFilter[];
+    users: AssignableUser[];
 }) {
     const [activeIssue, _setActiveIssue] = useState<Issue | null>(null);
     const [isEditing, setIsEditing] = useState(false);
@@ -86,6 +89,7 @@ export default function Show({
             setSelectedLook={setSelectedLook}
             projects={projects}
             project={project}
+            users={users}
         >
             <div className={'flex h-full flex-col'}>
                 <FilterBar
@@ -151,6 +155,7 @@ export default function Show({
                             onClose={() => setActiveIssue(null)}
                             activeIssue={activeIssue}
                             initialIsEditing={isEditing}
+                            users={users}
                         />
                     )}
                 </div>

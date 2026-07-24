@@ -18,7 +18,6 @@ export interface Issue {
         email: string;
         id: number;
         name: string;
-        password: string;
         updated_at: string;
     };
     reporter?: {

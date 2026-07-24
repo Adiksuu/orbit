@@ -182,8 +182,9 @@ describe('Sidebar Component', () => {
     test('renders user badge in the sidebar', () => {
         render(<Sidebar projects={[]} />);
 
-        expect(screen.getAllByText('John Doe')).toHaveLength(2);
-        expect(screen.getAllByText('john@acme.com')).toHaveLength(2);
+        // The footer badge disables its tooltip, so the name/email render once.
+        expect(screen.getAllByText('John Doe')).toHaveLength(1);
+        expect(screen.getAllByText('john@acme.com')).toHaveLength(1);
     });
 
     test('opens the user menu and logs out when clicked', async () => {

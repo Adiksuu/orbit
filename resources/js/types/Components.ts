@@ -14,6 +14,7 @@ import {
     ProductivityTrendProps,
 } from '@/types/Issues';
 import { Project } from '@/types/Projects';
+import { AssignableUser } from '@/types/Users';
 import type { VariantProps } from 'class-variance-authority';
 import { icons } from 'lucide-react';
 import React, {
@@ -351,6 +352,7 @@ export interface IssueDetailProps {
     onClose: () => void;
     activeIssue: Issue;
     initialIsEditing?: boolean;
+    users: AssignableUser[];
 }
 export interface IssueTableProps {
     issues: Issue[];
@@ -364,6 +366,7 @@ export interface NewIssueModalProps {
     isOpen: boolean;
     onClose: () => void;
     project: Project;
+    users: AssignableUser[];
 }
 export interface NewProjectModalProps {
     isOpen: boolean;
@@ -373,6 +376,7 @@ export interface TopNavProps {
     selectedLook: IssuePageLooks;
     setSelectedLook: (look: IssuePageLooks) => void;
     project: Project;
+    users: AssignableUser[];
 }
 export interface PageHeaderProps {
     title: string;
@@ -413,6 +417,7 @@ export interface MainLayoutProps {
     setSelectedLook: (look: IssuePageLooks) => void;
     projects: Project[];
     project: Project;
+    users: AssignableUser[];
 }
 export interface GuestLayoutProps {
     children: ReactNode;

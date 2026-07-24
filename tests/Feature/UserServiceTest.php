@@ -14,6 +14,18 @@ beforeEach(function () {
     $this->service = new UserService($this->userRepository);
 });
 
+test('it delegates fetching assignable users to the repository', function () {
+    $users = User::factory()->count(2)->make();
+
+    $this->userRepository->shouldReceive('getAssignableUsers')
+        ->once()
+        ->andReturn($users);
+
+    $result = $this->service->getAssignableUsers();
+
+    expect($result)->toBe($users);
+});
+
 test('it can update profile without avatar', function () {
     $user = User::factory()->create();
     $data = ['name' => 'New Name'];
