@@ -1,4 +1,5 @@
 import Keybind from '@/Components/Atoms/Keybind/Keybind';
+import NotificationsPopup from '@/Components/Organisms/NotificationsPopup/NotificationsPopup';
 import { useShortcuts } from '@/context/ShortcutContext';
 import { TopNavProps } from '@/types/Components';
 import { ShortcutDefinition } from '@/types/Shortcuts';
@@ -26,6 +27,7 @@ const TopNav: React.FC<TopNavProps> = ({
     project,
 }) => {
     const [isNewIssueModalOpen, setIsNewIssueModalOpen] = useState(false);
+    const [showNotificationsPopup, setShowNotificationsPopup] = useState(false);
 
     const shortcuts = useMemo(
         (): ShortcutDefinition[] => [
@@ -156,6 +158,11 @@ const TopNav: React.FC<TopNavProps> = ({
                                 className={
                                     'flex cursor-pointer items-center justify-center rounded-md border-none bg-transparent p-1.5 hover:bg-[var(--bg-light-color)]'
                                 }
+                                onClick={() =>
+                                    setShowNotificationsPopup(
+                                        !showNotificationsPopup,
+                                    )
+                                }
                             >
                                 <Icon name="Bell" size={18} color="#999" />
                             </button>
@@ -172,6 +179,7 @@ const TopNav: React.FC<TopNavProps> = ({
                             </button>
                         </div>
                     </div>
+                    {showNotificationsPopup && <NotificationsPopup />}
                 </div>
             </header>
             <NewIssueModal

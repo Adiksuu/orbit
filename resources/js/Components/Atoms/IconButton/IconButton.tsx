@@ -25,6 +25,7 @@ const IconButton = ({
     ) : (
         <Link className={iconButtonVariants({ className })} href={link}>
             <Icon name={iconName} size={iconSize} color={iconColor} />
+            {children}
         </Link>
     );
 };

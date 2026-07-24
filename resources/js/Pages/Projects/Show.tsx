@@ -67,6 +67,19 @@ export default function Show({
         }
     }, [issues]);
 
+    useEffect(() => {
+        const issueId = queryParams?.issue;
+        if (!issueId) return;
+
+        const target = issues.data.find(
+            (i) => String(i.id) === String(issueId),
+        );
+        if (target) {
+            setActiveIssue(target);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     return (
         <MainLayout
             selectedLook={selectedLook}

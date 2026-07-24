@@ -1,3 +1,5 @@
+import { Notification } from './Notification';
+
 export interface User {
     id: number;
     name: string;
@@ -11,4 +13,5 @@ export type PageProps<
     auth: {
         user: User;
     };
+    notifications: Notification[];
 };

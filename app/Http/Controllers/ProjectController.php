@@ -64,9 +64,11 @@ class ProjectController extends Controller
             'color' => 'required|string'
         ]);
 
-        $this->projectService->createProject($data);
+        $project = $this->projectService->createProject($data);
 
-        return redirect()->back()->with('success', 'Project has been created successfully.');
+        return redirect()->back()
+            ->with('success', 'Project has been created successfully.')
+            ->with('action_url', route('projects.show', $project->id));
     }
     public function updateColumns(Request $request, Project $project): RedirectResponse
     {

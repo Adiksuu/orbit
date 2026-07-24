@@ -19,3 +19,9 @@
     --text-color: #f3f3f3;
     --text-gray-color: #999;
 }
+
+@layer utilities {
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+}
