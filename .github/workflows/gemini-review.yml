@@ -55,7 +55,7 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           BASE_REF=$(gh pr view $PR_NUMBER --repo $REPO --json baseRefName -q .baseRefName)
-          git fetch origin $BASE_REF --depth=1 || true
+          git fetch origin $BASE_REF
           git diff origin/$BASE_REF...HEAD > diff.txt
 
           if [ ! -s diff.txt ]; then
@@ -84,7 +84,7 @@ jobs:
               f"```diff\n{diff_text}\n```"
           )
 
-          url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key={api_key}"
+          url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key={api_key}"
           payload = json.dumps({"contents": [{"parts": [{"text": prompt}]}]}).encode("utf-8")
 
           req = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"})
