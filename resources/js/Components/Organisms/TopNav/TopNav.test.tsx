@@ -79,6 +79,7 @@ describe('TopNav Component', () => {
             selectedLook: 'List',
             setSelectedLook: () => {},
             project: project,
+            users: [],
         });
 
         expect(
@@ -91,6 +92,7 @@ describe('TopNav Component', () => {
             selectedLook: 'List',
             setSelectedLook: () => {},
             project: project,
+            users: [],
         });
 
         expect(
@@ -106,6 +108,7 @@ describe('TopNav Component', () => {
             selectedLook: 'List',
             setSelectedLook: () => {},
             project: project,
+            users: [],
         });
 
         expect(screen.getByRole('button', { name: /list/i })).toHaveClass(
@@ -122,6 +125,7 @@ describe('TopNav Component', () => {
             selectedLook: 'List',
             setSelectedLook: setSelectedLook,
             project: project,
+            users: [],
         });
 
         fireEvent.click(screen.getByRole('button', { name: /board/i }));
@@ -135,6 +139,7 @@ describe('TopNav Component', () => {
             selectedLook: 'Board',
             setSelectedLook: setSelectedLook,
             project: project,
+            users: [],
         });
 
         fireEvent.click(screen.getByRole('button', { name: /list/i }));
@@ -147,6 +152,7 @@ describe('TopNav Component', () => {
             selectedLook: 'List',
             setSelectedLook: () => {},
             project: project,
+            users: [],
         });
 
         expect(
@@ -167,6 +173,7 @@ describe('TopNav Component', () => {
             selectedLook: 'List',
             setSelectedLook: () => {},
             project: project,
+            users: [],
         });
 
         fireEvent.click(screen.getByRole('button', { name: /new issue/i }));
@@ -191,6 +198,7 @@ describe('TopNav Component', () => {
             selectedLook: 'List',
             setSelectedLook: () => {},
             project: project,
+            users: [],
         });
 
         expect(

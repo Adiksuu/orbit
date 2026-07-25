@@ -1,4 +1,5 @@
 import { Issue } from '@/types/Issues';
+import { AssignableUser } from '@/types/Users';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
@@ -71,6 +72,11 @@ const makeIssue = (overrides: Partial<Issue> = {}): Issue => ({
 const iconButton = (container: HTMLElement, iconClass: string) =>
     container.querySelector(`.${iconClass}`)?.closest('button') as HTMLElement;
 
+const users: AssignableUser[] = [
+    { id: 1, name: 'Ada Lovelace', avatar: '/ada.png' },
+    { id: 2, name: 'Grace Hopper', avatar: null },
+];
+
 beforeEach(() => {
     vi.stubGlobal('route', mockRoute);
 });
@@ -85,6 +91,7 @@ describe('IssueDetail Component', () => {
         render(
             <IssueDetail
                 isOpen={true}
+                users={users}
                 onClose={() => {}}
                 activeIssue={makeIssue()}
             />,
@@ -102,6 +109,7 @@ describe('IssueDetail Component', () => {
         render(
             <IssueDetail
                 isOpen={true}
+                users={users}
                 onClose={() => {}}
                 activeIssue={makeIssue({ description: 'Steps to reproduce' })}
             />,
@@ -114,6 +122,7 @@ describe('IssueDetail Component', () => {
         render(
             <IssueDetail
                 isOpen={true}
+                users={users}
                 onClose={() => {}}
                 activeIssue={makeIssue({ description: undefined })}
             />,
@@ -128,6 +137,7 @@ describe('IssueDetail Component', () => {
         render(
             <IssueDetail
                 isOpen={true}
+                users={users}
                 onClose={() => {}}
                 activeIssue={makeIssue({
                     assignee: {
@@ -135,7 +145,6 @@ describe('IssueDetail Component', () => {
                         name: 'Ada Lovelace',
                         avatar: '/ada.png',
                         email: 'ada@orbit.dev',
-                        password: '',
                         created_at: '',
                         updated_at: '',
                     },
@@ -151,6 +160,7 @@ describe('IssueDetail Component', () => {
         render(
             <IssueDetail
                 isOpen={true}
+                users={users}
                 onClose={() => {}}
                 activeIssue={makeIssue({
                     assignee: undefined,
@@ -166,6 +176,7 @@ describe('IssueDetail Component', () => {
         render(
             <IssueDetail
                 isOpen={true}
+                users={users}
                 onClose={() => {}}
                 activeIssue={makeIssue({
                     created_at: 1_700_000_000_000,
@@ -181,6 +192,7 @@ describe('IssueDetail Component', () => {
         render(
             <IssueDetail
                 isOpen={true}
+                users={users}
                 onClose={() => {}}
                 activeIssue={makeIssue({
                     created_at: 1_700_000_000_000,
@@ -196,6 +208,7 @@ describe('IssueDetail Component', () => {
         render(
             <IssueDetail
                 isOpen={true}
+                users={users}
                 onClose={() => {}}
                 activeIssue={makeIssue({ labels: ['bug', 'feature'] })}
             />,
@@ -209,6 +222,7 @@ describe('IssueDetail Component', () => {
         const { container } = render(
             <IssueDetail
                 isOpen={true}
+                users={users}
                 onClose={onClose}
                 activeIssue={makeIssue()}
             />,
@@ -224,6 +238,7 @@ describe('IssueDetail Component', () => {
         const { container } = render(
             <IssueDetail
                 isOpen={true}
+                users={users}
                 onClose={() => {}}
                 activeIssue={makeIssue()}
             />,
@@ -245,6 +260,7 @@ describe('IssueDetail Component', () => {
         const { container } = render(
             <IssueDetail
                 isOpen={true}
+                users={users}
                 onClose={() => {}}
                 activeIssue={makeIssue()}
             />,
@@ -263,6 +279,7 @@ describe('IssueDetail Component', () => {
         const { container } = render(
             <IssueDetail
                 isOpen={true}
+                users={users}
                 onClose={() => {}}
                 activeIssue={makeIssue()}
             />,
@@ -282,6 +299,7 @@ describe('IssueDetail Component', () => {
         const { container } = render(
             <IssueDetail
                 isOpen={true}
+                users={users}
                 onClose={() => {}}
                 activeIssue={issue}
             />,
@@ -304,6 +322,7 @@ describe('IssueDetail Component', () => {
         const { container } = render(
             <IssueDetail
                 isOpen={true}
+                users={users}
                 onClose={() => {}}
                 activeIssue={makeIssue()}
             />,
@@ -324,6 +343,7 @@ describe('IssueDetail Component', () => {
         const { container } = render(
             <IssueDetail
                 isOpen={true}
+                users={users}
                 onClose={() => {}}
                 activeIssue={makeIssue({ status: 'open' })}
             />,
@@ -346,6 +366,7 @@ describe('IssueDetail Component', () => {
         const { container } = render(
             <IssueDetail
                 isOpen={true}
+                users={users}
                 onClose={() => {}}
                 activeIssue={makeIssue({ status: 'open' })}
             />,
@@ -369,6 +390,7 @@ describe('IssueDetail Component', () => {
         const { container } = render(
             <IssueDetail
                 isOpen={true}
+                users={users}
                 onClose={() => {}}
                 activeIssue={makeIssue({ priority: 'high' })}
             />,
@@ -393,6 +415,7 @@ describe('IssueDetail Component', () => {
         const { container } = render(
             <IssueDetail
                 isOpen={true}
+                users={users}
                 onClose={() => {}}
                 activeIssue={makeIssue({ labels: [] })}
             />,
@@ -410,5 +433,100 @@ describe('IssueDetail Component', () => {
 
         await userEvent.click(badge);
         expect(badge.parentElement).toHaveClass('group');
+    });
+
+    test('shows the assignee picker with the current assignee while editing', async () => {
+        const { container } = render(
+            <IssueDetail
+                isOpen={true}
+                users={users}
+                onClose={() => {}}
+                activeIssue={makeIssue({ assignee_id: 1 })}
+            />,
+        );
+
+        await userEvent.click(iconButton(container, 'lucide-pencil'));
+
+        expect(screen.getAllByText('Ada Lovelace').length).toBeGreaterThan(0);
+        expect(screen.queryByText('Grace Hopper')).not.toBeInTheDocument();
+    });
+
+    test('opens the assignee dropdown and reassigns the issue', async () => {
+        const { container } = render(
+            <IssueDetail
+                isOpen={true}
+                users={users}
+                onClose={() => {}}
+                activeIssue={makeIssue({ assignee_id: undefined })}
+            />,
+        );
+
+        await userEvent.click(iconButton(container, 'lucide-pencil'));
+
+        const assigneeTrigger = screen
+            .getByText('Unassigned')
+            .closest('button') as HTMLElement;
+        await userEvent.click(assigneeTrigger);
+
+        expect(screen.getByText('Ada Lovelace')).toBeInTheDocument();
+        expect(screen.getByText('Grace Hopper')).toBeInTheDocument();
+
+        await userEvent.click(screen.getByText('Grace Hopper'));
+
+        expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+        expect(screen.getAllByText('Grace Hopper').length).toBeGreaterThan(0);
+    });
+
+    test('can clear an existing assignee back to "Unassigned"', async () => {
+        const issue = makeIssue({ assignee_id: 1 });
+        const { container } = render(
+            <IssueDetail
+                isOpen={true}
+                users={users}
+                onClose={() => {}}
+                activeIssue={issue}
+            />,
+        );
+
+        await userEvent.click(iconButton(container, 'lucide-pencil'));
+
+        const assigneeTrigger = screen
+            .getAllByText('Ada Lovelace')[0]
+            .closest('button') as HTMLElement;
+        await userEvent.click(assigneeTrigger);
+
+        const unassignedOption = screen
+            .getAllByText('Unassigned')
+            .find((el) => el.closest('button'));
+        await userEvent.click(unassignedOption as HTMLElement);
+
+        expect(screen.queryByText('Ada Lovelace')).not.toBeInTheDocument();
+        expect(screen.getByText('Unassigned')).toBeInTheDocument();
+    });
+
+    test('resets the assignee back to the original on cancel', async () => {
+        const issue = makeIssue({ assignee_id: 1 });
+        const { container } = render(
+            <IssueDetail
+                isOpen={true}
+                users={users}
+                onClose={() => {}}
+                activeIssue={issue}
+            />,
+        );
+
+        await userEvent.click(iconButton(container, 'lucide-pencil'));
+
+        const assigneeTrigger = screen
+            .getAllByText('Ada Lovelace')[0]
+            .closest('button') as HTMLElement;
+        await userEvent.click(assigneeTrigger);
+        await userEvent.click(screen.getByText('Grace Hopper'));
+
+        await userEvent.click(screen.getByRole('button', { name: /cancel/i }));
+        await userEvent.click(iconButton(container, 'lucide-pencil'));
+
+        expect(screen.getAllByText('Ada Lovelace').length).toBeGreaterThan(0);
+        expect(screen.queryByText('Grace Hopper')).not.toBeInTheDocument();
     });
 });

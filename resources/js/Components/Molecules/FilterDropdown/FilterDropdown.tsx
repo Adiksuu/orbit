@@ -1,7 +1,9 @@
+import Avatar from '@/Components/Atoms/Avatar/Avatar';
 import Badge from '@/Components/Atoms/Badge/Badge';
 import Icon from '@/Components/Atoms/Icon/Icon';
 import StatusDot from '@/Components/Atoms/StatusDot/StatusDot';
 import { FilterDropdownProps, FilterDropdownType } from '@/types/Components';
+import { AssignableUser } from '@/types/Users';
 import { cn } from '@/utils/cn';
 import { router } from '@inertiajs/react';
 import React, {
@@ -84,9 +86,8 @@ const FILTER_CONFIG: Record<FilterDropdownType, FilterConfig> = {
     assignee: {
         paramKey: 'assignee',
         label: 'Assignee',
-        multiSelect: false,
+        multiSelect: true,
         options: [
-            // { value: 'me', label: 'Assigned to me', icon: 'User' as const },
             {
                 value: 'unassigned',
                 label: 'Unassigned',
@@ -104,15 +105,42 @@ const FILTER_CONFIG: Record<FilterDropdownType, FilterConfig> = {
     },
 };
 
+const buildAssigneeConfig = (users: AssignableUser[]): FilterConfig => ({
+    ...FILTER_CONFIG.assignee,
+    options: [
+        ...FILTER_CONFIG.assignee.options,
+        ...users.map((user) => ({
+            value: String(user.id),
+            render: () =>
+                optionRow(
+                    String(user.id),
+                    user.name,
+                    <Avatar
+                        src={user.avatar ?? undefined}
+                        initials={user.name.charAt(0)}
+                        size="sm"
+                    />,
+                ),
+        })),
+    ],
+});
+
 const PANEL_WIDTH = 224;
 
 const FilterDropdown: React.FC<FilterDropdownProps> = ({
     type,
     queryParams = {},
+    users = [],
     isOpen,
     onOpenChange,
 }) => {
-    const config = FILTER_CONFIG[type];
+    const config = useMemo(
+        () =>
+            type === 'assignee'
+                ? buildAssigneeConfig(users)
+                : FILTER_CONFIG[type],
+        [type, users],
+    );
     const triggerRef = useRef<HTMLDivElement>(null);
     const panelRef = useRef<HTMLDivElement>(null);
     const [coords, setCoords] = useState<{ top: number; left: number } | null>(

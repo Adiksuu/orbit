@@ -1,4 +1,5 @@
 import { Project } from '@/types/Projects';
+import { AssignableUser } from '@/types/Users';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
@@ -64,6 +65,11 @@ const project: Project = {
     updated_at: 0,
 };
 
+const users: AssignableUser[] = [
+    { id: 1, name: 'Ada Lovelace', avatar: '/ada.png' },
+    { id: 2, name: 'Grace Hopper', avatar: null },
+];
+
 beforeEach(() => {
     vi.stubGlobal('route', mockRoute);
 });
@@ -82,7 +88,14 @@ const getPanel = () =>
 
 describe('NewIssueModal Component', () => {
     test('renders the modal header', () => {
-        render(<NewIssueModal isOpen onClose={() => {}} project={project} />);
+        render(
+            <NewIssueModal
+                isOpen
+                onClose={() => {}}
+                project={project}
+                users={users}
+            />,
+        );
 
         expect(
             screen.getByRole('heading', { name: /create new issue/i }),
@@ -90,7 +103,14 @@ describe('NewIssueModal Component', () => {
     });
 
     test('renders the backdrop when open', () => {
-        render(<NewIssueModal isOpen onClose={() => {}} project={project} />);
+        render(
+            <NewIssueModal
+                isOpen
+                onClose={() => {}}
+                project={project}
+                users={users}
+            />,
+        );
 
         expect(document.querySelector('.backdrop-blur-sm')).toBeInTheDocument();
     });
@@ -101,6 +121,7 @@ describe('NewIssueModal Component', () => {
                 isOpen={false}
                 onClose={() => {}}
                 project={project}
+                users={users}
             />,
         );
 
@@ -110,7 +131,14 @@ describe('NewIssueModal Component', () => {
     });
 
     test('renders a button for every priority and label option', () => {
-        render(<NewIssueModal isOpen onClose={() => {}} project={project} />);
+        render(
+            <NewIssueModal
+                isOpen
+                onClose={() => {}}
+                project={project}
+                users={users}
+            />,
+        );
 
         ['low', 'medium', 'high'].forEach((p) =>
             expect(
@@ -123,7 +151,14 @@ describe('NewIssueModal Component', () => {
     });
 
     test('lets the user type a title', async () => {
-        render(<NewIssueModal isOpen onClose={() => {}} project={project} />);
+        render(
+            <NewIssueModal
+                isOpen
+                onClose={() => {}}
+                project={project}
+                users={users}
+            />,
+        );
 
         const title = screen.getByPlaceholderText('Issue title');
         await userEvent.type(title, 'Broken login');
@@ -132,7 +167,14 @@ describe('NewIssueModal Component', () => {
     });
 
     test('lets the user type a description', async () => {
-        render(<NewIssueModal isOpen onClose={() => {}} project={project} />);
+        render(
+            <NewIssueModal
+                isOpen
+                onClose={() => {}}
+                project={project}
+                users={users}
+            />,
+        );
 
         const description = screen.getByPlaceholderText('Add a description...');
         await userEvent.type(description, 'Fails on submit');
@@ -141,7 +183,14 @@ describe('NewIssueModal Component', () => {
     });
 
     test('toggles a label on and off when its badge is clicked', async () => {
-        render(<NewIssueModal isOpen onClose={() => {}} project={project} />);
+        render(
+            <NewIssueModal
+                isOpen
+                onClose={() => {}}
+                project={project}
+                users={users}
+            />,
+        );
 
         const badge = screen.getByText('bug');
         // Unselected labels render with the "outline" variant.
@@ -157,7 +206,14 @@ describe('NewIssueModal Component', () => {
     });
 
     test('highlights the priority button the user selects', async () => {
-        render(<NewIssueModal isOpen onClose={() => {}} project={project} />);
+        render(
+            <NewIssueModal
+                isOpen
+                onClose={() => {}}
+                project={project}
+                users={users}
+            />,
+        );
 
         const high = screen.getByRole('button', { name: /high/i });
         expect(high).not.toHaveClass('bg-[var(--bg-light-color)]');
@@ -170,7 +226,12 @@ describe('NewIssueModal Component', () => {
     test('submits the form, posting to the issues.store route and closing on success', async () => {
         const handleClose = vi.fn();
         render(
-            <NewIssueModal isOpen onClose={handleClose} project={project} />,
+            <NewIssueModal
+                isOpen
+                onClose={handleClose}
+                project={project}
+                users={users}
+            />,
         );
 
         await userEvent.click(
@@ -186,7 +247,14 @@ describe('NewIssueModal Component', () => {
 
     test('disables the submit button and shows a pending label while submitting', () => {
         formState.processing = true;
-        render(<NewIssueModal isOpen onClose={() => {}} project={project} />);
+        render(
+            <NewIssueModal
+                isOpen
+                onClose={() => {}}
+                project={project}
+                users={users}
+            />,
+        );
 
         const submit = screen.getByRole('button', { name: /creating/i });
         expect(submit).toBeInTheDocument();
@@ -195,7 +263,14 @@ describe('NewIssueModal Component', () => {
 
     test('shows validation errors returned from the server', () => {
         formState.errors = { title: 'The title field is required.' };
-        render(<NewIssueModal isOpen onClose={() => {}} project={project} />);
+        render(
+            <NewIssueModal
+                isOpen
+                onClose={() => {}}
+                project={project}
+                users={users}
+            />,
+        );
 
         expect(
             screen.getByText('The title field is required.'),
@@ -204,10 +279,86 @@ describe('NewIssueModal Component', () => {
 
     test('shows a validation error for the description field', () => {
         formState.errors = { description: 'The description is too long.' };
-        render(<NewIssueModal isOpen onClose={() => {}} project={project} />);
+        render(
+            <NewIssueModal
+                isOpen
+                onClose={() => {}}
+                project={project}
+                users={users}
+            />,
+        );
 
         expect(
             screen.getByText('The description is too long.'),
         ).toBeInTheDocument();
+    });
+
+    test('defaults the assignee picker to "Unassigned"', () => {
+        render(
+            <NewIssueModal
+                isOpen
+                onClose={() => {}}
+                project={project}
+                users={users}
+            />,
+        );
+
+        expect(screen.getByText('Unassigned')).toBeInTheDocument();
+    });
+
+    test('lists every user plus an "Unassigned" option when the assignee picker opens', async () => {
+        render(
+            <NewIssueModal
+                isOpen
+                onClose={() => {}}
+                project={project}
+                users={users}
+            />,
+        );
+
+        expect(screen.queryByText('Ada Lovelace')).not.toBeInTheDocument();
+
+        await userEvent.click(screen.getByText('Unassigned'));
+
+        expect(screen.getByText('Ada Lovelace')).toBeInTheDocument();
+        expect(screen.getByText('Grace Hopper')).toBeInTheDocument();
+        expect(screen.getAllByText('Unassigned').length).toBeGreaterThan(1);
+    });
+
+    test('selects a user as the assignee and closes the dropdown', async () => {
+        render(
+            <NewIssueModal
+                isOpen
+                onClose={() => {}}
+                project={project}
+                users={users}
+            />,
+        );
+
+        await userEvent.click(screen.getByText('Unassigned'));
+        await userEvent.click(screen.getByText('Ada Lovelace'));
+
+        expect(screen.queryByText('Grace Hopper')).not.toBeInTheDocument();
+        expect(screen.getByText('Ada Lovelace')).toBeInTheDocument();
+    });
+
+    test('can reassign back to "Unassigned" after picking a user', async () => {
+        render(
+            <NewIssueModal
+                isOpen
+                onClose={() => {}}
+                project={project}
+                users={users}
+            />,
+        );
+
+        await userEvent.click(screen.getByText('Unassigned'));
+        await userEvent.click(screen.getByText('Ada Lovelace'));
+        await userEvent.click(screen.getByText('Ada Lovelace'));
+
+        const unassignedOptions = screen.getAllByText('Unassigned');
+        await userEvent.click(unassignedOptions[unassignedOptions.length - 1]);
+
+        expect(screen.queryByText('Ada Lovelace')).not.toBeInTheDocument();
     });
 });

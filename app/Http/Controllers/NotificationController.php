@@ -14,25 +14,13 @@ class NotificationController extends Controller
     ) {}
     public function index()
     {
-        return $this->notificationService->getAll();
-    }
-
-    public function store(Request $request)
-    {
-        $data = $request->validate([
-            'type' => 'required|in:success,info,warning,error',
-            'title' => 'required|string',
-            'message' => 'required|string',
-            'read' => 'boolean',
-            'action_url' => 'nullable|string'
-        ]);
-
-        $this->notificationService->store($data);
-        return redirect()->back();
+        return $this->notificationService->getAllForUser(auth()->id());
     }
 
     public function update(Request $request, Notification $notification): RedirectResponse
     {
+        abort_if($notification->user_id !== auth()->id(), 403);
+
         $validated = $request->validate([
             'type' => 'required|in:success,info,warning,error',
             'title' => 'required|string',
@@ -47,6 +35,8 @@ class NotificationController extends Controller
 
     public function destroy(Notification $notification)
     {
+        abort_if($notification->user_id !== auth()->id(), 403);
+
         $notification->delete();
 
         return response()->json();
@@ -54,7 +44,7 @@ class NotificationController extends Controller
 
     public function markAllAsRead(): RedirectResponse
     {
-        $this->notificationService->markAllAsRead();
+        $this->notificationService->markAllAsReadForUser(auth()->id());
 
         return redirect()->back();
     }

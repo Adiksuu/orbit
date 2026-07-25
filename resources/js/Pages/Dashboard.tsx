@@ -8,6 +8,7 @@ import PageHeader from '@/Components/Organisms/PageHeader/PageHeader';
 import Sidebar from '@/Components/Organisms/Sidebar/Sidebar';
 import { Issue, ProductivityTrendProps } from '@/types/Issues';
 import { Project } from '@/types/Projects';
+import { AssignableUser } from '@/types/Users';
 import { Link } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -15,10 +16,12 @@ export default function Dashboard({
     issues,
     projects,
     productivity_trend,
+    users,
 }: {
     issues: Issue[];
     projects: Project[];
     productivity_trend: ProductivityTrendProps[];
+    users: AssignableUser[];
 }) {
     const [activeIssue, _setActiveIssue] = useState<Issue | null>(null);
     const [isEditing, setIsEditing] = useState(false);
@@ -172,6 +175,7 @@ export default function Dashboard({
                             onClose={() => setActiveIssue(null)}
                             activeIssue={activeIssue}
                             initialIsEditing={isEditing}
+                            users={users}
                         />
                     )}
                 </div>

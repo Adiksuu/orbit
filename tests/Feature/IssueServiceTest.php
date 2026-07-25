@@ -5,6 +5,7 @@ use App\Models\User;
 use App\Repositories\IssueRepository;
 use App\Services\ActivityLogService;
 use App\Services\IssueService;
+use App\Services\NotificationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -12,7 +13,8 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->issueRepository = Mockery::mock(IssueRepository::class);
     $this->activityLogService = Mockery::mock(ActivityLogService::class);
-    $this->service = new IssueService($this->issueRepository, $this->activityLogService);
+    $this->notificationService = Mockery::mock(NotificationService::class);
+    $this->service = new IssueService($this->issueRepository, $this->activityLogService, $this->notificationService);
 });
 
 test('it can create an issue and log activity', function () {
@@ -37,4 +39,192 @@ test('it can create an issue and log activity', function () {
     $result = $this->service->createIssue($data);
 
     expect($result)->toBe($issue);
+});
+
+test('it notifies the assignee when creating an issue assigned to someone else', function () {
+    $creator = User::factory()->create();
+    $assignee = User::factory()->create(['name' => 'Alice']);
+    $this->actingAs($creator);
+
+    $data = ['project_id' => 5, 'title' => 'New Issue', 'assignee_id' => $assignee->id];
+    $issue = new Issue(['id' => 42, 'project_id' => 5, 'title' => 'New Issue', 'assignee_id' => $assignee->id]);
+
+    $this->issueRepository->shouldReceive('store')->once()->andReturn($issue);
+    $this->activityLogService->shouldReceive('log')->once();
+
+    $this->notificationService->shouldReceive('notify')
+        ->once()
+        ->with(
+            $assignee->id,
+            'info',
+            'You were assigned to an issue',
+            Mockery::on(fn ($message) => str_contains($message, 'assigned you to "New Issue" (#42)')),
+            Mockery::on(fn ($url) => str_contains($url, '/projects/5?issue=42'))
+        );
+
+    $this->service->createIssue($data);
+});
+
+test('it does not notify the creator when they assign the issue to themselves', function () {
+    $creator = User::factory()->create();
+    $this->actingAs($creator);
+
+    $data = ['project_id' => 5, 'title' => 'New Issue', 'assignee_id' => $creator->id];
+    $issue = new Issue(['id' => 42, 'project_id' => 5, 'title' => 'New Issue', 'assignee_id' => $creator->id]);
+
+    $this->issueRepository->shouldReceive('store')->once()->andReturn($issue);
+    $this->activityLogService->shouldReceive('log')->once();
+
+    $this->notificationService->shouldNotReceive('notify');
+
+    $this->service->createIssue($data);
+});
+
+test('updateIssue logs activity and notifies only the actor when there is no assignee', function () {
+    $actor = User::factory()->create();
+    $this->actingAs($actor);
+
+    $project = App\Models\Project::factory()->create();
+    $issue = Issue::factory()->create([
+        'project_id' => $project->id,
+        'assignee_id' => null,
+        'title' => 'Bug report',
+        'status' => 'open',
+    ]);
+
+    $this->issueRepository->shouldReceive('update')
+        ->once()
+        ->andReturnUsing(function ($issue, $data) {
+            $issue->fill($data);
+            $issue->syncOriginal();
+            return $issue;
+        });
+
+    $this->activityLogService->shouldReceive('log')
+        ->once()
+        ->with($project->id, Mockery::on(fn ($body) => str_contains($body, 'status changed from "open" to "closed"')));
+
+    $this->notificationService->shouldReceive('notify')
+        ->once()
+        ->with(
+            $actor->id,
+            'info',
+            "Issue #{$issue->id} updated",
+            Mockery::on(fn ($message) => str_contains($message, 'status changed from "open" to "closed"')),
+            Mockery::any()
+        );
+
+    $this->service->updateIssue($issue, ['status' => 'closed']);
+});
+
+test('updateIssue also notifies the current assignee when they are not the actor', function () {
+    $actor = User::factory()->create(['name' => 'Bob']);
+    $assignee = User::factory()->create(['name' => 'Alice']);
+    $this->actingAs($actor);
+
+    $project = App\Models\Project::factory()->create();
+    $issue = Issue::factory()->create([
+        'project_id' => $project->id,
+        'assignee_id' => $assignee->id,
+        'status' => 'open',
+    ]);
+
+    $this->issueRepository->shouldReceive('update')
+        ->once()
+        ->andReturnUsing(function ($issue, $data) {
+            $issue->fill($data);
+            $issue->syncOriginal();
+            return $issue;
+        });
+
+    $this->activityLogService->shouldReceive('log')->once();
+
+    $this->notificationService->shouldReceive('notify')
+        ->once()
+        ->with($actor->id, 'info', Mockery::any(), Mockery::any(), Mockery::any());
+
+    $this->notificationService->shouldReceive('notify')
+        ->once()
+        ->with(
+            $assignee->id,
+            'info',
+            "Issue #{$issue->id} updated",
+            Mockery::on(fn ($message) => str_contains($message, 'Bob updated') && str_contains($message, 'assigned to you')),
+            Mockery::any()
+        );
+
+    $this->service->updateIssue($issue, ['status' => 'closed']);
+});
+
+test('updateIssue notifies the newly assigned user and the previously assigned user', function () {
+    $actor = User::factory()->create(['name' => 'Bob']);
+    $oldAssignee = User::factory()->create(['name' => 'Alice']);
+    $newAssignee = User::factory()->create(['name' => 'Carol']);
+    $this->actingAs($actor);
+
+    $project = App\Models\Project::factory()->create();
+    $issue = Issue::factory()->create([
+        'project_id' => $project->id,
+        'assignee_id' => $oldAssignee->id,
+    ]);
+
+    $this->issueRepository->shouldReceive('update')
+        ->once()
+        ->andReturnUsing(function ($issue, $data) {
+            $issue->fill($data);
+            $issue->syncOriginal();
+            return $issue;
+        });
+
+    $this->activityLogService->shouldReceive('log')->once();
+
+    $this->notificationService->shouldReceive('notify')
+        ->once()
+        ->with($actor->id, 'info', Mockery::any(), Mockery::any(), Mockery::any());
+
+    $this->notificationService->shouldReceive('notify')
+        ->once()
+        ->with(
+            $oldAssignee->id,
+            'info',
+            'You were unassigned from an issue',
+            Mockery::on(fn ($message) => str_contains($message, 'Bob unassigned you')),
+            Mockery::any()
+        );
+
+    $this->notificationService->shouldReceive('notify')
+        ->once()
+        ->with(
+            $newAssignee->id,
+            'info',
+            'You were assigned to an issue',
+            Mockery::on(fn ($message) => str_contains($message, 'Bob assigned you')),
+            Mockery::any()
+        );
+
+    $this->service->updateIssue($issue, ['assignee_id' => $newAssignee->id]);
+});
+
+test('updateIssue does not log or notify anything when nothing actually changed', function () {
+    $actor = User::factory()->create();
+    $this->actingAs($actor);
+
+    $project = App\Models\Project::factory()->create();
+    $issue = Issue::factory()->create([
+        'project_id' => $project->id,
+        'assignee_id' => null,
+        'status' => 'open',
+    ]);
+
+    $this->issueRepository->shouldReceive('update')
+        ->once()
+        ->andReturnUsing(function ($issue, $data) {
+            $issue->fill($data);
+            return $issue;
+        });
+
+    $this->activityLogService->shouldNotReceive('log');
+    $this->notificationService->shouldNotReceive('notify');
+
+    $this->service->updateIssue($issue, ['status' => 'open']);
 });

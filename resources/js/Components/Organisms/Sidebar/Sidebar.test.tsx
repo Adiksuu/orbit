@@ -5,6 +5,12 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import Sidebar from './Sidebar';
 
 const pageState = vi.hoisted(() => ({ url: '/' }));
+const mockRouterPost = vi.hoisted(() => vi.fn());
+
+vi.stubGlobal(
+    'route',
+    vi.fn((name: string) => `/${name}`),
+);
 
 vi.mock('@inertiajs/react', async () => {
     const React = await import('react');
@@ -20,7 +26,19 @@ vi.mock('@inertiajs/react', async () => {
                 { href, onClick, ...props },
                 children as never,
             ),
-        usePage: () => ({ url: pageState.url }),
+        usePage: () => ({
+            url: pageState.url,
+            props: {
+                auth: {
+                    user: {
+                        id: 1,
+                        name: 'John Doe',
+                        email: 'john@acme.com',
+                    },
+                },
+            },
+        }),
+        router: { post: mockRouterPost },
         useForm: (initialData: Record<string, unknown>) => ({
             data: initialData,
             setData: vi.fn(),
@@ -61,6 +79,7 @@ const makeProject = (overrides: Partial<Project> = {}): Project => ({
 describe('Sidebar Component', () => {
     beforeEach(() => {
         pageState.url = '/';
+        mockRouterPost.mockClear();
     });
 
     test('renders the primary navigation items', () => {
@@ -101,7 +120,7 @@ describe('Sidebar Component', () => {
             />,
         );
 
-        expect(screen.getByText('Orbit...')).toBeInTheDocument();
+        expect(screen.getByText('Orbit')).toBeInTheDocument();
         expect(screen.getByText('A Very Long Proj...')).toBeInTheDocument();
     });
 
@@ -163,8 +182,35 @@ describe('Sidebar Component', () => {
     test('renders user badge in the sidebar', () => {
         render(<Sidebar projects={[]} />);
 
-        expect(screen.getAllByText('John Doe')).toHaveLength(2);
-        expect(screen.getAllByText('john@acme.com')).toHaveLength(2);
+        // The footer badge disables its tooltip, so the name/email render once.
+        expect(screen.getAllByText('John Doe')).toHaveLength(1);
+        expect(screen.getAllByText('john@acme.com')).toHaveLength(1);
+    });
+
+    test('opens the user menu and logs out when clicked', async () => {
+        const user = userEvent.setup();
+        render(<Sidebar projects={[]} />);
+
+        expect(screen.queryByText('Log out')).not.toBeInTheDocument();
+
+        await user.click(screen.getAllByText('John Doe')[0]);
+        const logoutItem = screen.getByText('Log out');
+        expect(logoutItem).toBeInTheDocument();
+
+        await user.click(logoutItem);
+
+        expect(mockRouterPost).toHaveBeenCalledWith('/logout');
+    });
+
+    test('closes the user menu when clicking outside', async () => {
+        const user = userEvent.setup();
+        render(<Sidebar projects={[]} />);
+
+        await user.click(screen.getAllByText('John Doe')[0]);
+        expect(screen.getByText('Log out')).toBeInTheDocument();
+
+        await user.click(document.body);
+        expect(screen.queryByText('Log out')).not.toBeInTheDocument();
     });
 
     test('renders organization badge at the top', () => {
@@ -181,9 +227,9 @@ describe('Sidebar Component', () => {
         ];
         render(<Sidebar projects={projects} />);
 
-        expect(screen.getByText('Project A...')).toBeInTheDocument();
-        expect(screen.getByText('Project B...')).toBeInTheDocument();
-        expect(screen.getByText('Project C...')).toBeInTheDocument();
+        expect(screen.getByText('Project A')).toBeInTheDocument();
+        expect(screen.getByText('Project B')).toBeInTheDocument();
+        expect(screen.getByText('Project C')).toBeInTheDocument();
     });
 
     test('opens NewProjectModal when clicking PROJECTS', async () => {
@@ -220,7 +266,7 @@ describe('Sidebar Component', () => {
     test('renders project links with correct href', () => {
         render(<Sidebar projects={[makeProject({ id: 5, name: 'Orbit' })]} />);
 
-        const projectLink = screen.getByText('Orbit...').closest('a');
+        const projectLink = screen.getByText('Orbit').closest('a');
         expect(projectLink).toHaveAttribute('href', '/projects/5');
     });
 
@@ -240,7 +286,7 @@ describe('Sidebar Component', () => {
             />,
         );
 
-        const projectLink = screen.getByText('Test Project...').closest('a');
+        const projectLink = screen.getByText('Test Project').closest('a');
         expect(projectLink).toHaveClass('text-white');
     });
 });

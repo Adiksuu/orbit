@@ -14,6 +14,7 @@ import {
     ProductivityTrendProps,
 } from '@/types/Issues';
 import { Project } from '@/types/Projects';
+import { AssignableUser } from '@/types/Users';
 import type { VariantProps } from 'class-variance-authority';
 import { icons } from 'lucide-react';
 import React, {
@@ -88,6 +89,8 @@ export interface InputProps extends VariantProps<typeof inputVariants> {
     className?: string;
     onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
     id?: string;
+    name?: string;
+    autoComplete?: string;
     ref?: React.Ref<HTMLInputElement> | null;
 }
 export interface ModalProps {
@@ -122,6 +125,18 @@ export interface KeybindProps {
     keybind: string;
     tooltip?: boolean;
 }
+export interface CheckboxProps {
+    checked: boolean;
+    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    label?: ReactNode;
+    id?: string;
+    isDisabled?: boolean;
+    className?: string;
+}
+export interface DividerProps {
+    label?: ReactNode;
+    className?: string;
+}
 // MOLECULES COMPONENTS
 export interface BoardColumnProps {
     issues: Issue[];
@@ -140,6 +155,7 @@ export type FilterDropdownType = 'labels' | 'status' | 'assignee' | 'priority';
 export interface FilterDropdownProps {
     type: FilterDropdownType;
     queryParams?: Record<string, any>;
+    users?: AssignableUser[];
     isOpen: boolean;
     onOpenChange: (isOpen: boolean) => void;
 }
@@ -185,6 +201,7 @@ export interface NavItemProps {
     onClick?: () => void;
     iconClassName?: string;
     link?: string;
+    preserveScroll?: boolean;
 }
 export interface PaginationProps {
     links: Array<{ url: string | null; label: string; active: boolean }>;
@@ -285,6 +302,38 @@ export interface IssueRowDetailProps {
     issue: Issue;
     onOpenDetails: () => void;
 }
+export interface FormFieldProps {
+    id: string;
+    label: string;
+    type?: string;
+    value: string;
+    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    placeholder?: string;
+    error?: string;
+    required?: boolean;
+    icon?: keyof typeof icons;
+    autoComplete?: string;
+    isDisabled?: boolean;
+}
+export interface PasswordFieldProps {
+    id: string;
+    label: string;
+    value: string;
+    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    placeholder?: string;
+    error?: string;
+    required?: boolean;
+    autoComplete?: string;
+    isDisabled?: boolean;
+}
+export interface SocialLoginButtonsProps {
+    className?: string;
+}
+export interface AuthFormHeaderProps {
+    icon: keyof typeof icons;
+    title: string;
+    description: string;
+}
 // ORGANISMS COMPONENTS
 export interface CalendarViewProps {
     issues: Issue[];
@@ -305,6 +354,7 @@ export interface IssueDetailProps {
     onClose: () => void;
     activeIssue: Issue;
     initialIsEditing?: boolean;
+    users: AssignableUser[];
 }
 export interface IssueTableProps {
     issues: Issue[];
@@ -318,6 +368,7 @@ export interface NewIssueModalProps {
     isOpen: boolean;
     onClose: () => void;
     project: Project;
+    users: AssignableUser[];
 }
 export interface NewProjectModalProps {
     isOpen: boolean;
@@ -327,6 +378,7 @@ export interface TopNavProps {
     selectedLook: IssuePageLooks;
     setSelectedLook: (look: IssuePageLooks) => void;
     project: Project;
+    users: AssignableUser[];
 }
 export interface PageHeaderProps {
     title: string;
@@ -355,6 +407,11 @@ export interface ListRowProps {
     onToggleExpand?: () => void;
 }
 
+export interface AuthShowcaseProps {
+    title: ReactNode;
+    description: ReactNode;
+}
+
 // OTHER COMPONENTS
 export interface MainLayoutProps {
     children: ReactNode;
@@ -362,4 +419,10 @@ export interface MainLayoutProps {
     setSelectedLook: (look: IssuePageLooks) => void;
     projects: Project[];
     project: Project;
+    users: AssignableUser[];
+}
+export interface GuestLayoutProps {
+    children: ReactNode;
+    showcaseTitle: ReactNode;
+    showcaseDescription: ReactNode;
 }

@@ -30,12 +30,15 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             variant,
             onKeyDown,
             id,
+            name,
+            autoComplete,
         },
         ref,
     ) => {
         return (
             <input
                 id={id}
+                name={name}
                 value={value}
                 onChange={onChange}
                 className={cn(inputVariants({ variant }), className)}
@@ -43,6 +46,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 disabled={isDisabled}
                 type={type}
                 onKeyDown={onKeyDown}
+                autoComplete={autoComplete}
                 ref={ref}
             />
         );

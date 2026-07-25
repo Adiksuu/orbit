@@ -95,6 +95,55 @@ test('it can search issues by ID', function () {
     expect($results->items()[0]->id)->toBe(999);
 });
 
+test('it can filter issues by a single assignee', function () {
+    $project = Project::factory()->create();
+    $assignee = User::factory()->create();
+    Issue::factory()->create(['project_id' => $project->id, 'assignee_id' => $assignee->id]);
+    Issue::factory()->create(['project_id' => $project->id, 'assignee_id' => User::factory()->create()->id]);
+
+    $results = $this->repository->getAllPaginated($project->id, 10, [], [], ['assignee' => (string) $assignee->id]);
+
+    expect($results->items())->toHaveCount(1);
+    expect($results->items()[0]->assignee_id)->toBe($assignee->id);
+});
+
+test('it can filter issues by multiple assignees', function () {
+    $project = Project::factory()->create();
+    $first = User::factory()->create();
+    $second = User::factory()->create();
+    $third = User::factory()->create();
+    Issue::factory()->create(['project_id' => $project->id, 'assignee_id' => $first->id]);
+    Issue::factory()->create(['project_id' => $project->id, 'assignee_id' => $second->id]);
+    Issue::factory()->create(['project_id' => $project->id, 'assignee_id' => $third->id]);
+
+    $results = $this->repository->getAllPaginated($project->id, 10, [], [], ['assignee' => "{$first->id},{$second->id}"]);
+
+    expect($results->items())->toHaveCount(2);
+});
+
+test('it can filter issues by assignee combined with unassigned', function () {
+    $project = Project::factory()->create();
+    $assignee = User::factory()->create();
+    Issue::factory()->create(['project_id' => $project->id, 'assignee_id' => $assignee->id]);
+    Issue::factory()->create(['project_id' => $project->id, 'assignee_id' => null]);
+    Issue::factory()->create(['project_id' => $project->id, 'assignee_id' => User::factory()->create()->id]);
+
+    $results = $this->repository->getAllPaginated($project->id, 10, [], [], ['assignee' => "{$assignee->id},unassigned"]);
+
+    expect($results->items())->toHaveCount(2);
+});
+
+test('it can still filter unassigned issues only', function () {
+    $project = Project::factory()->create();
+    Issue::factory()->create(['project_id' => $project->id, 'assignee_id' => null]);
+    Issue::factory()->create(['project_id' => $project->id, 'assignee_id' => User::factory()->create()->id]);
+
+    $results = $this->repository->getAllPaginated($project->id, 10, [], [], ['assignee' => 'unassigned']);
+
+    expect($results->items())->toHaveCount(1);
+    expect($results->items()[0]->assignee_id)->toBeNull();
+});
+
 test('it can search issues by labels', function () {
     $project = Project::factory()->create();
     Issue::factory()->create([

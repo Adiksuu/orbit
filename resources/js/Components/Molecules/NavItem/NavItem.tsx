@@ -28,12 +28,14 @@ const NavItem: React.FC<NavItemProps> = ({
     onClick,
     iconClassName,
     link,
+    preserveScroll = false,
 }) => {
     return (
         <Link
             className={classVariants({ isActive })}
             onClick={onClick}
             href={link}
+            preserveScroll={preserveScroll}
         >
             <div className={'flex items-center gap-3'}>
                 <Icon

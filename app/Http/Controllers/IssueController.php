@@ -26,10 +26,17 @@ class IssueController extends Controller
             'end_date' => 'sometimes|nullable|date|after_or_equal:start_date',
         ]);
 
+        $before = $this->issueService->snapshot($issue);
+
         $this->issueService->updateIssue($issue, $data);
 
+        $changesSummary = $this->issueService->summarizeChanges($issue, $before);
+        $message = $changesSummary
+            ? "Issue #{$issue->id} \"{$issue->title}\" updated: {$changesSummary}."
+            : "Issue #{$issue->id} \"{$issue->title}\" saved — no changes detected.";
+
         return redirect()->back()
-            ->with('success', 'Issue has been updated successfully!')
+            ->with('success', $message)
             ->with('action_url', route('projects.show', $issue->project_id) . '?issue=' . $issue->id);
     }
     public function store(Request $request): RedirectResponse
@@ -49,7 +56,7 @@ class IssueController extends Controller
         $issue = $this->issueService->createIssue($data);
 
         return redirect()->back()
-            ->with('success', 'Issue has been created successfully.')
+            ->with('success', "Issue #{$issue->id} \"{$issue->title}\" has been created successfully.")
             ->with('action_url', route('projects.show', $issue->project_id) . '?issue=' . $issue->id);
     }
 }

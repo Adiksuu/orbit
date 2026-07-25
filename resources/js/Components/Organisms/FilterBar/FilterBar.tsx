@@ -4,6 +4,7 @@ import Keybind from '@/Components/Atoms/Keybind/Keybind';
 import { SavedFilter } from '@/hooks/useSavedFilters';
 import { FilterDropdownType } from '@/types/Components';
 import { Project } from '@/types/Projects';
+import { AssignableUser } from '@/types/Users';
 import { router } from '@inertiajs/react';
 import React, { useEffect, useRef, useState } from 'react';
 import FilterDropdown from '../../Molecules/FilterDropdown/FilterDropdown';
@@ -15,12 +16,14 @@ interface FilterBarProps {
     queryParams?: Record<string, any>;
     project?: Project;
     savedFilters: SavedFilter[];
+    users?: AssignableUser[];
 }
 
 const FilterBar: React.FC<FilterBarProps> = ({
     queryParams = {},
     project,
     savedFilters,
+    users = [],
 }) => {
     const [searchQuery, setSearchQuery] = useState(queryParams?.search || '');
     const [openFilter, setOpenFilter] = useState<OpenPanel>(null);
@@ -92,6 +95,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
                         <FilterDropdown
                             type="assignee"
                             queryParams={queryParams}
+                            users={users}
                             isOpen={openFilter === 'assignee'}
                             onOpenChange={(isOpen) =>
                                 setOpenFilter(isOpen ? 'assignee' : null)

@@ -49,10 +49,12 @@ const IssueDetail = ({
     onClose,
     activeIssue,
     initialIsEditing = false,
+    users,
 }: IssueDetailProps) => {
     const [isEditing, setIsEditing] = useState(initialIsEditing);
     const [isStatusOpen, setIsStatusOpen] = useState(false);
     const [isPriorityOpen, setIsPriorityOpen] = useState(false);
+    const [isAssigneeOpen, setIsAssigneeOpen] = useState(false);
     const [showStartDate, setShowStartDate] = useState(false);
     const [showEndDate, setShowEndDate] = useState(false);
 
@@ -61,6 +63,7 @@ const IssueDetail = ({
         description: activeIssue.description || '',
         status: activeIssue.status,
         priority: activeIssue.priority,
+        assignee_id: (activeIssue.assignee_id ?? null) as number | null,
         labels: activeIssue.labels || [],
         start_date: activeIssue.start_date || '',
         end_date: activeIssue.end_date || '',
@@ -86,6 +89,7 @@ const IssueDetail = ({
             description: activeIssue.description || '',
             status: activeIssue.status,
             priority: activeIssue.priority,
+            assignee_id: (activeIssue.assignee_id ?? null) as number | null,
             labels: activeIssue.labels || [],
             start_date: activeIssue.start_date || '',
             end_date: activeIssue.end_date || '',
@@ -99,6 +103,7 @@ const IssueDetail = ({
             description: activeIssue.description || '',
             status: activeIssue.status,
             priority: activeIssue.priority,
+            assignee_id: (activeIssue.assignee_id ?? null) as number | null,
             labels: activeIssue.labels || [],
         });
     }, [activeIssue, initialIsEditing]);
@@ -336,15 +341,108 @@ const IssueDetail = ({
                         </SidebarField>
 
                         <SidebarField label="Assignee">
-                            <UserBadge
-                                avatarSrc={activeIssue.assignee?.avatar}
-                                name={
-                                    activeIssue.assignee
-                                        ? activeIssue.assignee.name
-                                        : 'Unassigned'
-                                }
-                                size="sm"
-                            />
+                            {isEditing ? (
+                                <div className="relative w-full">
+                                    <DropdownTrigger
+                                        className="w-full"
+                                        label={
+                                            data.assignee_id ? (
+                                                <UserBadge
+                                                    avatarSrc={
+                                                        users.find(
+                                                            (u) =>
+                                                                u.id ===
+                                                                data.assignee_id,
+                                                        )?.avatar ?? undefined
+                                                    }
+                                                    name={
+                                                        users.find(
+                                                            (u) =>
+                                                                u.id ===
+                                                                data.assignee_id,
+                                                        )?.name ?? 'Unknown'
+                                                    }
+                                                    size="sm"
+                                                    showTooltip={false}
+                                                />
+                                            ) : (
+                                                <span className="flex items-center gap-2 text-[var(--text-gray-color)]">
+                                                    <Icon
+                                                        name="UserX"
+                                                        size={14}
+                                                    />
+                                                    Unassigned
+                                                </span>
+                                            )
+                                        }
+                                        onClick={() =>
+                                            setIsAssigneeOpen(!isAssigneeOpen)
+                                        }
+                                    />
+                                    {isAssigneeOpen && (
+                                        <DropdownMenu>
+                                            <DropdownItem
+                                                label={
+                                                    <div className="flex items-center gap-2">
+                                                        <Icon
+                                                            name="UserX"
+                                                            size={14}
+                                                        />
+                                                        Unassigned
+                                                    </div>
+                                                }
+                                                isActive={!data.assignee_id}
+                                                onClick={() => {
+                                                    setData(
+                                                        'assignee_id',
+                                                        null,
+                                                    );
+                                                    setIsAssigneeOpen(false);
+                                                }}
+                                            />
+                                            {users.map((user) => (
+                                                <DropdownItem
+                                                    key={user.id}
+                                                    label={
+                                                        <UserBadge
+                                                            avatarSrc={
+                                                                user.avatar ??
+                                                                undefined
+                                                            }
+                                                            name={user.name}
+                                                            size="sm"
+                                                            showTooltip={false}
+                                                        />
+                                                    }
+                                                    isActive={
+                                                        data.assignee_id ===
+                                                        user.id
+                                                    }
+                                                    onClick={() => {
+                                                        setData(
+                                                            'assignee_id',
+                                                            user.id,
+                                                        );
+                                                        setIsAssigneeOpen(
+                                                            false,
+                                                        );
+                                                    }}
+                                                />
+                                            ))}
+                                        </DropdownMenu>
+                                    )}
+                                </div>
+                            ) : (
+                                <UserBadge
+                                    avatarSrc={activeIssue.assignee?.avatar}
+                                    name={
+                                        activeIssue.assignee
+                                            ? activeIssue.assignee.name
+                                            : 'Unassigned'
+                                    }
+                                    size="sm"
+                                />
+                            )}
                         </SidebarField>
 
                         <SidebarField label="Labels">

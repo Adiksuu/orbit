@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Collection;
 
 class NotificationRepository
 {
-    public function getAll(): Collection
+    public function getAllForUser(int $userId): Collection
     {
-        return Notification::query()->latest()->get();
+        return Notification::query()->where('user_id', $userId)->latest()->get();
     }
     public function store(array $data): Notification
     {
@@ -22,8 +22,11 @@ class NotificationRepository
         return $notification;
     }
 
-    public function markAllAsRead(): int
+    public function markAllAsReadForUser(int $userId): int
     {
-        return Notification::query()->where('read', false)->update(['read' => true]);
+        return Notification::query()
+            ->where('user_id', $userId)
+            ->where('read', false)
+            ->update(['read' => true]);
     }
 }

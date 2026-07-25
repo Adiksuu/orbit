@@ -1,5 +1,8 @@
 import Badge from '@/Components/Atoms/Badge/Badge';
 import Button from '@/Components/Atoms/Button/Button';
+import DropdownItem from '@/Components/Atoms/DropdownItem/DropdownItem';
+import DropdownMenu from '@/Components/Atoms/DropdownMenu/DropdownMenu';
+import DropdownTrigger from '@/Components/Atoms/DropdownTrigger/DropdownTrigger';
 import Icon from '@/Components/Atoms/Icon/Icon';
 import IconButton from '@/Components/Atoms/IconButton/IconButton';
 import Input from '@/Components/Atoms/Input/Input';
@@ -8,6 +11,7 @@ import StatusDot from '@/Components/Atoms/StatusDot/StatusDot';
 import TextArea from '@/Components/Atoms/TextArea/TextArea';
 import DatePickerOverlay from '@/Components/Molecules/DatePickerOverlay/DatePickerOverlay';
 import SidebarField from '@/Components/Molecules/SidebarField/SidebarField';
+import UserBadge from '@/Components/Molecules/UserBadge/UserBadge';
 import { NewIssueModalProps } from '@/types/Components';
 import { IssueLabel, IssuePriority } from '@/types/Issues';
 import { useForm } from '@inertiajs/react';
@@ -27,9 +31,11 @@ const NewIssueModal: React.FC<NewIssueModalProps> = ({
     isOpen,
     onClose,
     project,
+    users,
 }) => {
     const [showStartDate, setShowStartDate] = useState(false);
     const [showEndDate, setShowEndDate] = useState(false);
+    const [isAssigneeOpen, setIsAssigneeOpen] = useState(false);
 
     const { data, setData, post, processing, reset, errors } = useForm({
         title: '',
@@ -37,7 +43,7 @@ const NewIssueModal: React.FC<NewIssueModalProps> = ({
         project_id: project.id,
         status: 'open',
         priority: 'medium',
-        assignee_id: '',
+        assignee_id: null as number | null,
         labels: [] as IssueLabel[],
         start_date: new Date().toISOString().split('T')[0],
         end_date: new Date(new Date().setDate(new Date().getDate() + 7))
@@ -49,6 +55,7 @@ const NewIssueModal: React.FC<NewIssueModalProps> = ({
         if (isOpen) {
             reset();
             setData('project_id', project.id);
+            setIsAssigneeOpen(false);
         }
     }, [isOpen, project, reset, setData]);
 
@@ -159,6 +166,98 @@ const NewIssueModal: React.FC<NewIssueModalProps> = ({
                                             {p}
                                         </button>
                                     ))}
+                                </div>
+                            </SidebarField>
+                            <SidebarField label="Assignee">
+                                <div className="relative w-full">
+                                    <DropdownTrigger
+                                        className="w-full"
+                                        label={
+                                            data.assignee_id ? (
+                                                <UserBadge
+                                                    avatarSrc={
+                                                        users.find(
+                                                            (u) =>
+                                                                u.id ===
+                                                                data.assignee_id,
+                                                        )?.avatar ?? undefined
+                                                    }
+                                                    name={
+                                                        users.find(
+                                                            (u) =>
+                                                                u.id ===
+                                                                data.assignee_id,
+                                                        )?.name ?? 'Unknown'
+                                                    }
+                                                    size="sm"
+                                                    showTooltip={false}
+                                                />
+                                            ) : (
+                                                <span className="flex items-center gap-2 text-[var(--text-gray-color)]">
+                                                    <Icon
+                                                        name="UserX"
+                                                        size={14}
+                                                    />
+                                                    Unassigned
+                                                </span>
+                                            )
+                                        }
+                                        onClick={() =>
+                                            setIsAssigneeOpen(!isAssigneeOpen)
+                                        }
+                                    />
+                                    {isAssigneeOpen && (
+                                        <DropdownMenu>
+                                            <DropdownItem
+                                                label={
+                                                    <div className="flex items-center gap-2">
+                                                        <Icon
+                                                            name="UserX"
+                                                            size={14}
+                                                        />
+                                                        Unassigned
+                                                    </div>
+                                                }
+                                                isActive={!data.assignee_id}
+                                                onClick={() => {
+                                                    setData(
+                                                        'assignee_id',
+                                                        null,
+                                                    );
+                                                    setIsAssigneeOpen(false);
+                                                }}
+                                            />
+                                            {users.map((user) => (
+                                                <DropdownItem
+                                                    key={user.id}
+                                                    label={
+                                                        <UserBadge
+                                                            avatarSrc={
+                                                                user.avatar ??
+                                                                undefined
+                                                            }
+                                                            name={user.name}
+                                                            size="sm"
+                                                            showTooltip={false}
+                                                        />
+                                                    }
+                                                    isActive={
+                                                        data.assignee_id ===
+                                                        user.id
+                                                    }
+                                                    onClick={() => {
+                                                        setData(
+                                                            'assignee_id',
+                                                            user.id,
+                                                        );
+                                                        setIsAssigneeOpen(
+                                                            false,
+                                                        );
+                                                    }}
+                                                />
+                                            ))}
+                                        </DropdownMenu>
+                                    )}
                                 </div>
                             </SidebarField>
                             <SidebarField label="Labels">
