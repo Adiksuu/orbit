@@ -46,7 +46,15 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npx vitest run
+      # Enforces the coverage thresholds configured in vite.config.js
+      # (statements/functions/lines 80%, branches 75%) as a merge gate.
+      - run: npm run test:coverage
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: frontend-coverage-report
+          path: coverage/
+          retention-days: 14
 
   build:
     name: Build verification
@@ -68,7 +76,7 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
-          coverage: none
+          coverage: pcov
       - uses: actions/cache@v6
         with:
           path: vendor
@@ -82,7 +90,17 @@ jobs:
       - run: npm run build
       - run: cp .env.example .env
       - run: php artisan key:generate
-      - run: composer test
+      # `test-coverage` runs the full Pest suite and fails the build if line
+      # coverage of `app/` drops below the threshold in composer.json (see
+      # the "test-coverage" script, currently a 90% floor with real coverage
+      # at 100% as of this writing — a comfortable regression buffer).
+      - run: composer test-coverage
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: backend-coverage-report
+          path: coverage-html/
+          retention-days: 14
 
   ci-status:
     name: CI status

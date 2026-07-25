@@ -19,13 +19,14 @@ Orbit is an issue/project tracker built as a Laravel + Inertia.js + React (TypeS
 - `composer dev` — runs `php artisan serve`, the queue listener, log tail (`pail`), and `npm run dev` concurrently. Preferred way to run the app locally.
 - `composer setup` — one-time bootstrap: install deps, copy `.env`, generate key, migrate, build.
 - `composer test` — clears config then runs the PHP test suite.
+- `composer test-coverage` — runs the PHP test suite with code coverage (requires Xdebug or PCOV) and fails if `app/` line coverage drops below the threshold set in that script; this is what CI runs as the coverage gate.
 - Run a single PHP test: `php artisan test --filter=IssueServiceTest` (tests use Pest).
 - `php artisan migrate` / `php artisan migrate:fresh --seed`.
 
 ### Docker (Makefile wraps docker compose)
 The full stack also runs in Docker — two services, `app` (Laravel on :8000) and `vite` (assets on :5173). The `Makefile` is the entry point; targets run inside the containers:
 - `make setup` — build images (no cache) and start detached. `make up`/`make dev` — foreground; `make down` — detached; `make clean` — stop and drop volumes.
-- `make test` (PHP/Pest), `make test-js` (Vitest once), `make lint`, `make type-check` — run the suites inside the containers.
+- `make test` (PHP/Pest), `make test-js` (Vitest once), `make test-coverage` (PHP with the coverage gate), `make test-js-coverage` (Vitest with the coverage gate), `make lint`, `make type-check` — run the suites inside the containers. The `app` image includes PCOV so PHP coverage works out of the box.
 - `make shell` (app shell), `make tinker`, `make migrate`, `make fresh` (migrate:fresh --seed), `make logs`.
 - Uses `.env.docker` for container config.
 
@@ -54,8 +55,15 @@ When adding a feature, keep this separation: query code goes in the Repository, 
 ## Testing
 
 Two independent suites:
-- **PHP (Pest)** in `tests/` — `Feature/` tests extend `TestCase` with `RefreshDatabase` (see `tests/Pest.php`) and run against an in-memory SQLite DB (`phpunit.xml`). Coverage is per-domain at the Service and Repository layers.
+- **PHP (Pest)** in `tests/` — `Feature/` tests extend `TestCase` with `RefreshDatabase` (see `tests/Pest.php`) and run against an in-memory SQLite DB (`phpunit.xml`). Coverage spans Models (`tests/Feature/Models/`), Repositories, Services and Controllers.
 - **React (Vitest + Testing Library)** — jsdom environment, globals enabled, setup in `resources/js/tests/setup.ts` (config in `vite.config.js`). Test files are colocated with components as `*.test.tsx`.
+
+### CI coverage gate
+Both suites run with coverage in CI (`.github/workflows/ci.yml`) and fail the build below a threshold:
+- Frontend: thresholds are configured directly in `vite.config.js` (`test.coverage.thresholds`) — currently 80% statements/functions/lines, 75% branches.
+- Backend: the threshold is the `--min` flag on the `test-coverage` composer script — currently 90%. PHP coverage requires a driver (PCOV in CI and in the Docker `app` image; install PCOV or Xdebug locally to run `composer test-coverage` outside Docker).
+
+When adding a feature, add tests alongside it rather than relying on the gate to catch gaps after the fact — the gate is a regression floor, not a substitute for reviewing your own coverage.
 
 ## Conventions
 - `Issue.labels` is cast to an enum array (`App\Enums\IssueLabel` via `AsEnumArrayObject`) and stored as JSON.

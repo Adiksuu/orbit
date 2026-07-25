@@ -1,4 +1,4 @@
-.PHONY: setup up dev down build test lint type-check logs shell tinker migrate fresh clean
+.PHONY: setup up dev down build test test-coverage lint type-check logs shell tinker migrate fresh clean
 
 # Build images and start the full stack (app + vite) in the background.
 setup:
@@ -43,9 +43,19 @@ build:
 test:
 	docker compose run --rm app php artisan test
 
+# Run the PHP test suite with the code coverage gate (see composer.json's
+# "test-coverage" script for the enforced minimum threshold).
+test-coverage:
+	docker compose run --rm app composer test-coverage
+
 # Run the frontend (Vitest) test suite once.
 test-js:
 	docker compose run --rm vite npm run test -- --run
+
+# Run the frontend test suite with the code coverage gate (see vite.config.js
+# for the enforced thresholds).
+test-js-coverage:
+	docker compose run --rm vite npm run test:coverage
 
 # Lint the frontend.
 lint:

@@ -1,0 +1,16 @@
+.git
+node_modules
+vendor
+coverage
+coverage-html
+public/build
+public/hot
+storage/framework/cache
+storage/framework/sessions
+storage/framework/testing
+storage/framework/views
+storage/logs
+storage/debugbar
+.env
+.env.backup
+*.log

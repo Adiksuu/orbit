@@ -14,6 +14,8 @@
 FROM php:8.5-cli AS php
 
 # System libraries + PHP extensions required by Laravel and SQLite.
+# pcov powers `make test-coverage` / `composer test-coverage` (code coverage
+# gate) — it's cheap enough to keep enabled in every environment, unlike Xdebug.
 RUN apt-get update && apt-get install -y --no-install-recommends \
         git \
         unzip \
@@ -21,7 +23,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libsqlite3-dev \
         libicu-dev \
         libonig-dev \
+        $PHPIZE_DEPS \
     && docker-php-ext-install pdo pdo_sqlite bcmath zip intl mbstring \
+    && pecl install pcov \
+    && docker-php-ext-enable pcov \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
