@@ -1,4 +1,4 @@
-import { ProjectColors } from '@/types/Projects';
+import { AVAILABLE_COLORS, ProjectColors } from '@/types/Projects';
 import { describe, expect, test } from 'vitest';
 import { getColorTheme } from './colors';
 
@@ -14,4 +14,25 @@ describe('getColorTheme', () => {
             getColorTheme('purple'),
         );
     });
+
+    test('falls back to the purple theme for an empty/undefined color', () => {
+        expect(getColorTheme(undefined as unknown as ProjectColors)).toEqual(
+            getColorTheme('purple'),
+        );
+    });
+
+    test.each(AVAILABLE_COLORS)(
+        'returns a complete, color-matched theme for "%s"',
+        (color) => {
+            const theme = getColorTheme(color);
+
+            expect(theme).toEqual({
+                badgeBg: `bg-${color}-500/10 text-${color}-400`,
+                border: `hover:border-${color}-500/30 shadow-${color}-500/5`,
+                gradient: `from-${color}-500/5 to-transparent`,
+                accent: `bg-${color}-500`,
+                textGroupHover: `group-hover:text-${color}-500`,
+            });
+        },
+    );
 });

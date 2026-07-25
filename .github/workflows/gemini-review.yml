@@ -1,0 +1,103 @@
+name: Gemini PR Code Review
+
+on:
+  pull_request:
+    types: [opened]
+  issue_comment:
+    types: [created]
+
+jobs:
+  welcome:
+    if: github.event_name == 'pull_request' && github.event.action == 'opened'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Add welcome comment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          gh pr comment $PR_NUMBER --body "🤖 **Code Reviewer is ready!**  \`/review\` in a comment to start the code analysis."
+
+  review:
+    if: |
+      github.event_name == 'issue_comment' &&
+      github.event.issue.pull_request &&
+      contains(github.event.comment.body, '/review')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+
+    steps:
+      - name: Add emoji reaction to comment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMENT_ID: ${{ github.event.comment.id }}
+        run: |
+          gh api repos/${{ github.repository }}/issues/comments/$COMMENT_ID/reactions -f content='eyes'
+
+      - name: Checkout PR code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          ref: refs/pull/${{ github.event.issue.number }}/head
+
+      - name: Gemini AI Review
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          # Pobierz nazwę docelowej gałęzi (base ref, np. main)
+          BASE_REF=$(gh pr view $PR_NUMBER --json baseRefName -q .baseRefName)
+          git fetch origin $BASE_REF --depth=1 || true
+          git diff origin/$BASE_REF...HEAD > diff.txt
+
+          if [ ! -s diff.txt ]; then
+            echo "No code changes to analyze."
+            gh pr comment $PR_NUMBER --body "Brak zmian w kodzie do przeanalizowania."
+            exit 0
+          fi
+
+          python3 -c '
+          import os, json, urllib.request
+
+          api_key = os.environ.get("GEMINI_API_KEY")
+          pr_num = os.environ.get("PR_NUMBER")
+
+          if not api_key:
+              print("Error: GEMINI_API_KEY is missing in secrets.")
+              exit(1)
+
+          with open("diff.txt", "r", encoding="utf-8", errors="ignore") as f:
+              diff_text = f.read(40000)
+
+          prompt = (
+              "You are an experienced Senior Developer. Conduct a concise code review of the following Pull Request diff.\n"
+              "1. Identify potential logical errors, security vulnerabilities, and performance issues.\n"
+              "2. Respond concisely in English, formatting suggested fixes in code blocks.\n\n"
+              f"```diff\n{diff_text}\n```"
+          )
+
+          url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key={api_key}"
+          payload = json.dumps({"contents": [{"parts": [{"text": prompt}]}]}).encode("utf-8")
+
+          req = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"})
+          try:
+              with urllib.request.urlopen(req) as resp:
+                  res = json.loads(resp.read().decode())
+                  review = res["candidates"][0]["content"]["parts"][0]["text"]
+                  with open("review.md", "w", encoding="utf-8") as rf:
+                      rf.write(f"## Code Review\n\n{review}")
+          except Exception as e:
+              print(f"Error while querying Gemini API: {e}")
+              exit(1)
+          '
+
+          if [ -f review.md ]; then
+            gh pr comment $PR_NUMBER --body-file review.md
+          fi
