@@ -36,6 +36,16 @@ describe('formatTimeAgo', () => {
     test('falls back to "now" when no timestamp is given', () => {
         expect(formatTimeAgo(undefined)).toBe('0s');
     });
+
+    test('returns "0s" for the exact current instant', () => {
+        expect(formatTimeAgo(NOW)).toBe('0s');
+    });
+
+    test('rounds down to whole units instead of the next one up', () => {
+        expect(formatTimeAgo(NOW - (DAY - SECOND))).toBe('23h');
+        expect(formatTimeAgo(NOW - (HOUR - SECOND))).toBe('59m');
+        expect(formatTimeAgo(NOW - (MINUTE - SECOND))).toBe('59s');
+    });
 });
 
 describe('formatDate', () => {
@@ -46,6 +56,13 @@ describe('formatDate', () => {
     test('falls back to the current time when no timestamp is given', () => {
         expect(formatDate(undefined)).toMatch(/^\d{2}\.\d{2} \d{2}:\d{2}$/);
     });
+
+    test('zero-pads single-digit day, month, hour and minute', () => {
+        // Built from local date parts (not a UTC ISO string) so the
+        // expectation matches regardless of the test runner's timezone.
+        const earlyMorning = new Date(2026, 0, 5, 3, 7).getTime();
+        expect(formatDate(earlyMorning)).toBe('05.01 03:07');
+    });
 });
 
 describe('formattedDate', () => {
@@ -53,5 +70,12 @@ describe('formattedDate', () => {
         const result = formattedDate();
         expect(result).toContain('2026');
         expect(result).toContain('July');
+    });
+
+    test('reflects the current system date when it changes', () => {
+        vi.setSystemTime(new Date('2027-03-15T00:00:00.000Z').getTime());
+        const result = formattedDate();
+        expect(result).toContain('2027');
+        expect(result).toContain('March');
     });
 });
