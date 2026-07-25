@@ -55,7 +55,7 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           BASE_REF=$(gh pr view $PR_NUMBER --repo $REPO --json baseRefName -q .baseRefName)
-          git fetch origin $BASE_REF --depth=1 || true
+          git fetch origin $BASE_REF
           git diff origin/$BASE_REF...HEAD > diff.txt
 
           if [ ! -s diff.txt ]; then
