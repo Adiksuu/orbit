@@ -201,6 +201,7 @@ export interface NavItemProps {
     onClick?: () => void;
     iconClassName?: string;
     link?: string;
+    preserveScroll?: boolean;
 }
 export interface PaginationProps {
     links: Array<{ url: string | null; label: string; active: boolean }>;

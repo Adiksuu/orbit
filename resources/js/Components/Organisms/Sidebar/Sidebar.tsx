@@ -143,10 +143,18 @@ const Sidebar: FC<{ projects: Project[] }> = ({ projects }) => {
                             </Badge>
                         </Link>
                         <nav
+                            /* eslint-disable-next-line react/no-unknown-property */
+                            scroll-region={''}
                             className={'flex min-h-0 flex-col overflow-y-auto'}
                         >
                             {projects.map((projectElement: Project) => {
                                 const projectLink = `/projects/${projectElement.id}`;
+
+                                const isActive =
+                                    url === projectLink ||
+                                    url.startsWith(`${projectLink}/`) ||
+                                    url.startsWith(`${projectLink}?`);
+
                                 return (
                                     <NavItem
                                         key={projectElement.id}
@@ -156,13 +164,16 @@ const Sidebar: FC<{ projects: Project[] }> = ({ projects }) => {
                                                 .accent
                                         } h-5 w-5 rounded-md p-1`}
                                         label={
-                                            projectElement.name.substring(
-                                                0,
-                                                16,
-                                            ) + '...'
+                                            projectElement.name.length > 16
+                                                ? projectElement.name.substring(
+                                                      0,
+                                                      16,
+                                                  ) + '...'
+                                                : projectElement.name
                                         }
-                                        link={`/projects/${projectElement.id}`}
-                                        isActive={url.startsWith(projectLink)}
+                                        link={projectLink}
+                                        isActive={isActive}
+                                        preserveScroll
                                     />
                                 );
                             })}
