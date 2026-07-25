@@ -135,7 +135,10 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
     onOpenChange,
 }) => {
     const config = useMemo(
-        () => (type === 'assignee' ? buildAssigneeConfig(users) : FILTER_CONFIG[type]),
+        () =>
+            type === 'assignee'
+                ? buildAssigneeConfig(users)
+                : FILTER_CONFIG[type],
         [type, users],
     );
     const triggerRef = useRef<HTMLDivElement>(null);

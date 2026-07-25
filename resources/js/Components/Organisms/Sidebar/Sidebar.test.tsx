@@ -120,7 +120,7 @@ describe('Sidebar Component', () => {
             />,
         );
 
-        expect(screen.getByText('Orbit...')).toBeInTheDocument();
+        expect(screen.getByText('Orbit')).toBeInTheDocument();
         expect(screen.getByText('A Very Long Proj...')).toBeInTheDocument();
     });
 
@@ -227,9 +227,9 @@ describe('Sidebar Component', () => {
         ];
         render(<Sidebar projects={projects} />);
 
-        expect(screen.getByText('Project A...')).toBeInTheDocument();
-        expect(screen.getByText('Project B...')).toBeInTheDocument();
-        expect(screen.getByText('Project C...')).toBeInTheDocument();
+        expect(screen.getByText('Project A')).toBeInTheDocument();
+        expect(screen.getByText('Project B')).toBeInTheDocument();
+        expect(screen.getByText('Project C')).toBeInTheDocument();
     });
 
     test('opens NewProjectModal when clicking PROJECTS', async () => {
@@ -266,7 +266,7 @@ describe('Sidebar Component', () => {
     test('renders project links with correct href', () => {
         render(<Sidebar projects={[makeProject({ id: 5, name: 'Orbit' })]} />);
 
-        const projectLink = screen.getByText('Orbit...').closest('a');
+        const projectLink = screen.getByText('Orbit').closest('a');
         expect(projectLink).toHaveAttribute('href', '/projects/5');
     });
 
@@ -286,7 +286,7 @@ describe('Sidebar Component', () => {
             />,
         );
 
-        const projectLink = screen.getByText('Test Project...').closest('a');
+        const projectLink = screen.getByText('Test Project').closest('a');
         expect(projectLink).toHaveClass('text-white');
     });
 });
