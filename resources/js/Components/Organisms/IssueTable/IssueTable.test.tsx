@@ -1,5 +1,6 @@
 import { Issue } from '@/types/Issues';
-import { render, screen } from '@testing-library/react';
+import { Project } from '@/types/Projects';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import IssueTable from './IssueTable';
@@ -26,6 +27,10 @@ vi.mock('@/context/ShortcutContext', () => ({
 
 vi.mock('@inertiajs/react', () => {
     const mockRouterGet = vi.fn();
+    const mockRouterPatch = vi.fn(
+        (_url: string, _data?: unknown, opts?: { onSuccess?: () => void }) =>
+            opts?.onSuccess?.(),
+    );
     return {
         Link: ({
             children,
@@ -42,6 +47,7 @@ vi.mock('@inertiajs/react', () => {
         ),
         router: {
             get: mockRouterGet,
+            patch: mockRouterPatch,
         },
     };
 });
@@ -54,6 +60,17 @@ const makeIssue = (overrides: Partial<Issue> = {}): Issue => ({
     priority: 'high',
     project_id: 1,
     user_id: 1,
+    ...overrides,
+});
+
+const makeProject = (overrides: Partial<Project> = {}): Project => ({
+    id: 1,
+    name: 'Orbit',
+    slug: 'orbit',
+    description: '',
+    color: 'purple',
+    created_at: 0,
+    updated_at: 0,
     ...overrides,
 });
 
@@ -448,5 +465,414 @@ describe('IssueTable Component', () => {
         await user.click(rowCheckboxes[0]);
         expect(rowCheckboxes[0]).not.toBeChecked();
         expect(rowCheckboxes[1]).toBeChecked();
+    });
+
+    test('expands a row when its chevron is clicked and collapses it on a second click', async () => {
+        const user = userEvent.setup();
+        const issues = [makeIssue({ title: 'Issue 1', id: 'ISSUE-1' })];
+
+        const { container } = render(
+            <IssueTable
+                issues={issues}
+                activeIssue={null}
+                setActiveIssue={() => {}}
+            />,
+        );
+
+        const chevron = container.querySelector(
+            '[aria-expanded]',
+        ) as HTMLElement;
+        expect(chevron).toHaveAttribute('aria-expanded', 'false');
+
+        await user.click(chevron);
+        expect(chevron).toHaveAttribute('aria-expanded', 'true');
+
+        await user.click(chevron);
+        expect(chevron).toHaveAttribute('aria-expanded', 'false');
+    });
+
+    test('expanding a different row collapses the previously expanded one', async () => {
+        const user = userEvent.setup();
+        const issues = [
+            makeIssue({ title: 'Issue 1', id: 'ISSUE-1' }),
+            makeIssue({ title: 'Issue 2', id: 'ISSUE-2' }),
+        ];
+
+        const { container } = render(
+            <IssueTable
+                issues={issues}
+                activeIssue={null}
+                setActiveIssue={() => {}}
+            />,
+        );
+
+        const chevrons = container.querySelectorAll('[aria-expanded]');
+        await user.click(chevrons[0]);
+        expect(chevrons[0]).toHaveAttribute('aria-expanded', 'true');
+        expect(chevrons[1]).toHaveAttribute('aria-expanded', 'false');
+
+        await user.click(chevrons[1]);
+        expect(chevrons[0]).toHaveAttribute('aria-expanded', 'false');
+        expect(chevrons[1]).toHaveAttribute('aria-expanded', 'true');
+    });
+
+    test('resizes a column when its resize handle is dragged', () => {
+        const { container } = render(
+            <IssueTable
+                issues={[]}
+                activeIssue={null}
+                setActiveIssue={() => {}}
+            />,
+        );
+
+        const titleHeader = container.querySelector(
+            'th[data-column="title"]',
+        ) as HTMLElement;
+        const handle = titleHeader.querySelector(
+            '[class*="cursor-col-resize"]',
+        ) as HTMLElement;
+
+        fireEvent.mouseDown(handle, { clientX: 100 });
+        fireEvent.mouseMove(window, { clientX: 300 });
+        fireEvent.mouseUp(window);
+
+        expect(titleHeader).toHaveStyle({ width: '300px' });
+    });
+
+    test('stops a click on the resize handle from also triggering a column sort', async () => {
+        const user = userEvent.setup();
+        const { router } = await import('@inertiajs/react');
+        const { container } = render(
+            <IssueTable
+                issues={[]}
+                activeIssue={null}
+                setActiveIssue={() => {}}
+                queryParams={{}}
+            />,
+        );
+
+        const titleHeader = container.querySelector(
+            'th[data-column="title"]',
+        ) as HTMLElement;
+        const handle = titleHeader.querySelector(
+            '[class*="cursor-col-resize"]',
+        ) as HTMLElement;
+
+        await user.click(handle);
+
+        expect(router.get).not.toHaveBeenCalled();
+    });
+
+    test('clamps a column resize to the minimum width', () => {
+        const { container } = render(
+            <IssueTable
+                issues={[]}
+                activeIssue={null}
+                setActiveIssue={() => {}}
+            />,
+        );
+
+        const titleHeader = container.querySelector(
+            'th[data-column="title"]',
+        ) as HTMLElement;
+        const handle = titleHeader.querySelector(
+            '[class*="cursor-col-resize"]',
+        ) as HTMLElement;
+
+        fireEvent.mouseDown(handle, { clientX: 100 });
+        fireEvent.mouseMove(window, { clientX: 10 });
+        fireEvent.mouseUp(window);
+
+        expect(titleHeader).toHaveStyle({ width: '80px' });
+    });
+
+    test('resizes the row height when the row-height handle is dragged', () => {
+        const issues = [makeIssue({ title: 'Issue 1', id: 'ISSUE-1' })];
+        const { container } = render(
+            <IssueTable
+                issues={issues}
+                activeIssue={null}
+                setActiveIssue={() => {}}
+            />,
+        );
+
+        const handle = container.querySelector(
+            '[class*="cursor-row-resize"]',
+        ) as HTMLElement;
+
+        fireEvent.mouseDown(handle, { clientY: 0 });
+        fireEvent.mouseMove(window, { clientY: 90 });
+        fireEvent.mouseUp(window);
+
+        const row = container.querySelector('tbody tr') as HTMLElement;
+        expect(row).toHaveStyle({ height: '90px' });
+    });
+
+    test('auto-fits a column width on double-clicking its resize handle', () => {
+        // jsdom does not implement canvas 2D contexts, so `getContext`
+        // normally returns null; stub it so the measureText branch runs too.
+        const measureTextSpy = vi
+            .spyOn(HTMLCanvasElement.prototype, 'getContext')
+            .mockReturnValue({
+                font: '',
+                measureText: () => ({ width: 500 }),
+            } as unknown as CanvasRenderingContext2D);
+
+        const issues = [makeIssue({ title: 'A very long issue title' })];
+        const { container } = render(
+            <IssueTable
+                issues={issues}
+                activeIssue={null}
+                setActiveIssue={() => {}}
+            />,
+        );
+
+        const titleHeader = container.querySelector(
+            'th[data-column="title"]',
+        ) as HTMLElement;
+        const handle = titleHeader.querySelector(
+            '[class*="cursor-col-resize"]',
+        ) as HTMLElement;
+
+        fireEvent.doubleClick(handle);
+
+        // measured width (500) + 48 padding, clamped to the 800 maximum.
+        expect(titleHeader).toHaveStyle({ width: '548px' });
+
+        measureTextSpy.mockRestore();
+    });
+
+    test('auto-fits to the default width when canvas measurement is unavailable', () => {
+        const issues = [makeIssue({ title: 'Issue 1' })];
+        const { container } = render(
+            <IssueTable
+                issues={issues}
+                activeIssue={null}
+                setActiveIssue={() => {}}
+            />,
+        );
+
+        const titleHeader = container.querySelector(
+            'th[data-column="title"]',
+        ) as HTMLElement;
+        const handle = titleHeader.querySelector(
+            '[class*="cursor-col-resize"]',
+        ) as HTMLElement;
+
+        fireEvent.doubleClick(handle);
+
+        // No real canvas implementation in jsdom, so it falls back to the
+        // default 80px measurement.
+        expect(titleHeader).toHaveStyle({ width: '80px' });
+    });
+
+    test('opens the column settings dropdown and resets column sizes', async () => {
+        const user = userEvent.setup();
+        const { container } = render(
+            <IssueTable
+                issues={[]}
+                activeIssue={null}
+                setActiveIssue={() => {}}
+            />,
+        );
+
+        const settingsTrigger = document
+            .querySelector('.lucide-settings')
+            ?.closest('div') as HTMLElement;
+        await user.click(settingsTrigger);
+
+        await user.click(screen.getByText('Reset Column Sizes'));
+
+        expect(mockAddAlert).toHaveBeenCalledWith(
+            'Column sizes reset',
+            'information',
+        );
+    });
+
+    test('changes the row height from the settings dropdown', async () => {
+        const user = userEvent.setup();
+        const issues = [makeIssue({ title: 'Issue 1' })];
+        const { container } = render(
+            <IssueTable
+                issues={issues}
+                activeIssue={null}
+                setActiveIssue={() => {}}
+            />,
+        );
+
+        const settingsTrigger = document
+            .querySelector('.lucide-settings')
+            ?.closest('div') as HTMLElement;
+        // The dropdown stays open after picking an option, so it only needs
+        // to be opened once before selecting each row-height option in turn.
+        await user.click(settingsTrigger);
+
+        await user.click(screen.getByText('Row: Compact'));
+        expect(mockAddAlert).toHaveBeenCalledWith(
+            'Row height: Compact',
+            'information',
+        );
+        expect(container.querySelector('tbody tr')).toHaveStyle({
+            height: '32px',
+        });
+
+        await user.click(screen.getByText('Row: Spacious'));
+        expect(mockAddAlert).toHaveBeenCalledWith(
+            'Row height: Spacious',
+            'information',
+        );
+        expect(container.querySelector('tbody tr')).toHaveStyle({
+            height: '64px',
+        });
+
+        await user.click(screen.getByText('Row: Comfortable'));
+        expect(mockAddAlert).toHaveBeenCalledWith(
+            'Row height: Comfortable',
+            'information',
+        );
+        expect(container.querySelector('tbody tr')).toHaveStyle({
+            height: '44px',
+        });
+    });
+
+    test('toggles a column off from the settings dropdown without a project', async () => {
+        const user = userEvent.setup();
+        const { router } = await import('@inertiajs/react');
+        render(
+            <IssueTable
+                issues={[]}
+                activeIssue={null}
+                setActiveIssue={() => {}}
+            />,
+        );
+
+        expect(
+            screen.getByRole('columnheader', { name: 'Assignee' }),
+        ).toBeInTheDocument();
+
+        const settingsTrigger = document
+            .querySelector('.lucide-settings')
+            ?.closest('div') as HTMLElement;
+        await user.click(settingsTrigger);
+
+        // "Assignee" appears both as a column header and a dropdown option;
+        // the dropdown option is the one inside the portal-rendered menu.
+        await user.click(screen.getAllByText('Assignee')[1]);
+
+        expect(
+            screen.queryByRole('columnheader', { name: 'Assignee' }),
+        ).not.toBeInTheDocument();
+        // No project was supplied, so no persistence request is made.
+        expect(router.patch).not.toHaveBeenCalled();
+    });
+
+    test('toggles a column and persists it to the server when a project is provided', async () => {
+        const user = userEvent.setup();
+        const { router } = await import('@inertiajs/react');
+        const project = makeProject();
+        render(
+            <IssueTable
+                issues={[]}
+                activeIssue={null}
+                setActiveIssue={() => {}}
+                project={project}
+            />,
+        );
+
+        const settingsTrigger = document
+            .querySelector('.lucide-settings')
+            ?.closest('div') as HTMLElement;
+        await user.click(settingsTrigger);
+
+        await user.click(screen.getAllByText('Assignee')[1]);
+
+        expect(router.patch).toHaveBeenCalledWith(
+            '/projects/1/columns',
+            {
+                columns: expect.objectContaining({ assignee: false }),
+            },
+            expect.objectContaining({ preserveScroll: true }),
+        );
+        expect(mockAddAlert).toHaveBeenCalledWith(
+            'Table columns updated',
+            'information',
+        );
+    });
+
+    test('initializes enabled columns from project.columns when provided', () => {
+        const project = makeProject({
+            columns: {
+                id: true,
+                title: true,
+                status: false,
+                assignee: false,
+                priority: false,
+                labels: false,
+                updated: false,
+                start_date: true,
+                end_date: true,
+            },
+        });
+
+        render(
+            <IssueTable
+                issues={[]}
+                activeIssue={null}
+                setActiveIssue={() => {}}
+                project={project}
+            />,
+        );
+
+        expect(
+            screen.getByRole('columnheader', { name: 'Start' }),
+        ).toBeInTheDocument();
+        expect(
+            screen.queryByRole('columnheader', { name: 'Status' }),
+        ).not.toBeInTheDocument();
+    });
+
+    test('updates enabled columns when the project.columns prop changes', () => {
+        const project = makeProject({
+            columns: {
+                id: true,
+                title: true,
+                status: true,
+                assignee: true,
+                priority: true,
+                labels: true,
+                updated: true,
+                start_date: false,
+                end_date: false,
+            },
+        });
+
+        const { rerender } = render(
+            <IssueTable
+                issues={[]}
+                activeIssue={null}
+                setActiveIssue={() => {}}
+                project={project}
+            />,
+        );
+
+        expect(
+            screen.queryByRole('columnheader', { name: 'Start' }),
+        ).not.toBeInTheDocument();
+
+        rerender(
+            <IssueTable
+                issues={[]}
+                activeIssue={null}
+                setActiveIssue={() => {}}
+                project={{
+                    ...project,
+                    columns: { ...project.columns, start_date: true },
+                }}
+            />,
+        );
+
+        expect(
+            screen.getByRole('columnheader', { name: 'Start' }),
+        ).toBeInTheDocument();
     });
 });

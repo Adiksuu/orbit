@@ -82,4 +82,23 @@ describe('FormField Component', () => {
 
         expect(container.querySelectorAll('span').length).toBe(0);
     });
+
+    test('renders a leading icon and combines it with the error styling', () => {
+        const { container } = render(
+            <FormField
+                id="email"
+                label="Email"
+                value=""
+                onChange={noop}
+                icon="Mail"
+                error="This field is required."
+            />,
+        );
+
+        expect(container.querySelector('svg')).toBeInTheDocument();
+        expect(screen.getByRole('textbox')).toHaveClass(
+            'pl-9',
+            'border-[var(--error-color)]',
+        );
+    });
 });

@@ -12,18 +12,31 @@ vi.mock('@inertiajs/react', async () => {
     return {
         Link: ({ children, href, ...props }: Record<string, unknown>) =>
             React.createElement('a', { href, ...props }, children as never),
-        usePage: () => ({ props: { auth: { user: { id: 1 } } } }),
+        usePage: () => ({
+            props: { auth: { user: { id: 1 } }, notifications: [] },
+        }),
         useForm: (initial: Record<string, unknown>) => {
             const initialRef = React.useRef(initial);
             const [data, setDataState] =
                 React.useState<Record<string, unknown>>(initial);
             const setData = React.useCallback(
-                (key: string | Record<string, unknown>, value?: unknown) => {
-                    setDataState((prev) =>
-                        typeof key === 'object'
+                (
+                    key:
+                        | string
+                        | Record<string, unknown>
+                        | ((
+                              prev: Record<string, unknown>,
+                          ) => Record<string, unknown>),
+                    value?: unknown,
+                ) => {
+                    setDataState((prev) => {
+                        if (typeof key === 'function') {
+                            return key(prev);
+                        }
+                        return typeof key === 'object'
                             ? key
-                            : { ...prev, [key]: value },
-                    );
+                            : { ...prev, [key]: value };
+                    });
                 },
                 [],
             );
@@ -119,6 +132,23 @@ describe('TopNav Component', () => {
         );
     });
 
+    test('highlights the Calendar view icon when it is selected', () => {
+        renderTopNav({
+            selectedLook: 'Calendar',
+            setSelectedLook: () => {},
+            project: project,
+            users: [],
+        });
+
+        const calendarButton = screen.getByRole('button', {
+            name: /calendar/i,
+        });
+        expect(calendarButton).toHaveClass('text-white');
+        expect(
+            calendarButton.querySelector('.lucide-calendar-days'),
+        ).toHaveClass('text-white');
+    });
+
     test('switches the view when a toggle is clicked', async () => {
         const setSelectedLook = vi.fn();
         renderTopNav({
@@ -212,5 +242,116 @@ describe('TopNav Component', () => {
                 document.querySelector('.backdrop-blur-sm'),
             ).toBeInTheDocument();
         });
+    });
+
+    test('opens the new issue modal with the "c" shortcut', async () => {
+        renderTopNav({
+            selectedLook: 'List',
+            setSelectedLook: () => {},
+            project: project,
+            users: [],
+        });
+
+        expect(
+            document.querySelector('.backdrop-blur-sm'),
+        ).not.toBeInTheDocument();
+
+        fireEvent.keyDown(window, { key: 'c' });
+
+        await waitFor(() => {
+            expect(
+                document.querySelector('.backdrop-blur-sm'),
+            ).toBeInTheDocument();
+        });
+    });
+
+    test('switches to the Calendar view when its toggle is clicked', () => {
+        const setSelectedLook = vi.fn();
+        renderTopNav({
+            selectedLook: 'List',
+            setSelectedLook: setSelectedLook,
+            project: project,
+            users: [],
+        });
+
+        fireEvent.click(screen.getByRole('button', { name: /calendar/i }));
+
+        expect(setSelectedLook).toHaveBeenCalledWith('Calendar');
+    });
+
+    test('switches to the List view with the "1" keyboard shortcut', async () => {
+        const setSelectedLook = vi.fn();
+        renderTopNav({
+            selectedLook: 'Board',
+            setSelectedLook: setSelectedLook,
+            project: project,
+            users: [],
+        });
+
+        fireEvent.keyDown(window, { key: '1' });
+
+        await waitFor(() =>
+            expect(setSelectedLook).toHaveBeenCalledWith('List'),
+        );
+    });
+
+    test('switches to the Board view with the "2" keyboard shortcut', async () => {
+        const setSelectedLook = vi.fn();
+        renderTopNav({
+            selectedLook: 'List',
+            setSelectedLook: setSelectedLook,
+            project: project,
+            users: [],
+        });
+
+        fireEvent.keyDown(window, { key: '2' });
+
+        await waitFor(() =>
+            expect(setSelectedLook).toHaveBeenCalledWith('Board'),
+        );
+    });
+
+    test('switches to the Calendar view with the "3" keyboard shortcut', async () => {
+        const setSelectedLook = vi.fn();
+        renderTopNav({
+            selectedLook: 'List',
+            setSelectedLook: setSelectedLook,
+            project: project,
+            users: [],
+        });
+
+        fireEvent.keyDown(window, { key: '3' });
+
+        await waitFor(() =>
+            expect(setSelectedLook).toHaveBeenCalledWith('Calendar'),
+        );
+    });
+
+    test('opens the notifications popup when the bell button is clicked, and closes it on a second click', () => {
+        const { container } = renderTopNav({
+            selectedLook: 'List',
+            setSelectedLook: () => {},
+            project: project,
+            users: [],
+        });
+
+        expect(
+            screen.queryByRole('heading', { name: 'Notifications' }),
+        ).not.toBeInTheDocument();
+
+        const bellButton = container
+            .querySelector('.lucide-bell')
+            ?.closest('button') as HTMLElement;
+        fireEvent.click(bellButton);
+
+        expect(
+            screen.getByRole('heading', { name: 'Notifications' }),
+        ).toBeInTheDocument();
+
+        fireEvent.click(bellButton);
+
+        expect(
+            screen.queryByRole('heading', { name: 'Notifications' }),
+        ).not.toBeInTheDocument();
     });
 });

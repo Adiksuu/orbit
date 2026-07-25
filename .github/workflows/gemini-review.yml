@@ -52,14 +52,13 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
         run: |
-          # Pobierz nazwę docelowej gałęzi (base ref, np. main)
           BASE_REF=$(gh pr view $PR_NUMBER --json baseRefName -q .baseRefName)
           git fetch origin $BASE_REF --depth=1 || true
           git diff origin/$BASE_REF...HEAD > diff.txt
 
           if [ ! -s diff.txt ]; then
             echo "No code changes to analyze."
-            gh pr comment $PR_NUMBER --body "Brak zmian w kodzie do przeanalizowania."
+            gh pr comment $PR_NUMBER --body "No code changes to analyze."
             exit 0
           fi
 

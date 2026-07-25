@@ -175,5 +175,24 @@ describe('IssueElement Component', () => {
 
             expect(setActiveIssue).toHaveBeenCalledWith(issue, false);
         });
+
+        test('calls setActiveIssue with modify=true when "Modify" is chosen from the row actions menu', async () => {
+            const issue = makeIssue();
+            const setActiveIssue = vi.fn();
+            const { container } = renderInTable(
+                <IssueElement
+                    issue={issue}
+                    activeIssue={null}
+                    setActiveIssue={setActiveIssue}
+                />,
+            );
+
+            // The row itself is also role="button", so target the actual
+            // <button> element (the row's ellipsis actions trigger).
+            await userEvent.click(container.querySelector('button')!);
+            await userEvent.click(screen.getByText('Modify'));
+
+            expect(setActiveIssue).toHaveBeenCalledWith(issue, true);
+        });
     });
 });

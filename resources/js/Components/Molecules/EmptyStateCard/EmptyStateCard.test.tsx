@@ -1,10 +1,15 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 import EmptyStateCard from './EmptyStateCard';
 
+const { triggerShortcut } = vi.hoisted(() => ({
+    triggerShortcut: vi.fn(),
+}));
+
 vi.mock('@/context/ShortcutContext', () => ({
     useShortcuts: () => ({
-        triggerShortcut: vi.fn(),
+        triggerShortcut,
     }),
 }));
 
@@ -13,12 +18,14 @@ vi.mock('@inertiajs/react', () => ({
         children,
         href,
         className,
+        onClick,
     }: {
         children: React.ReactNode;
         href?: string;
         className?: string;
+        onClick?: () => void;
     }) => (
-        <a href={href} className={className}>
+        <a href={href} className={className} onClick={onClick}>
             {children}
         </a>
     ),
@@ -78,5 +85,20 @@ describe('EmptyStateCard Component', () => {
 
         // No action label text, but the card is still a link.
         expect(screen.getByRole('link')).toBeInTheDocument();
+    });
+
+    test('triggers the "p" shortcut when the card is clicked', async () => {
+        render(
+            <EmptyStateCard
+                iconName="FolderPlus"
+                title="Empty"
+                description="Nothing here"
+                actionHref="/issues/new"
+            />,
+        );
+
+        await userEvent.click(screen.getByRole('link'));
+
+        expect(triggerShortcut).toHaveBeenCalledWith('p');
     });
 });
