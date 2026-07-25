@@ -155,6 +155,7 @@ export type FilterDropdownType = 'labels' | 'status' | 'assignee' | 'priority';
 export interface FilterDropdownProps {
     type: FilterDropdownType;
     queryParams?: Record<string, any>;
+    users?: AssignableUser[];
     isOpen: boolean;
     onOpenChange: (isOpen: boolean) => void;
 }

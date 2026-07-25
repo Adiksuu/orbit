@@ -117,8 +117,20 @@ class IssueRepository
                     ? implode(',', $filters['assignee'])
                     : $filters['assignee'];
 
-                if (in_array(strtolower($assigneeParam), ['unassigned', 'null', 'none'])) {
-                    $query->whereNull('assignee_id');
+                $values = array_filter(array_map('trim', explode(',', $assigneeParam)), fn ($value) => $value !== '');
+
+                $includeUnassigned = collect($values)->contains(fn ($value) => in_array(strtolower($value), ['unassigned', 'null', 'none']));
+                $assigneeIds = array_values(array_filter($values, 'is_numeric'));
+
+                if ($includeUnassigned || !empty($assigneeIds)) {
+                    $query->where(function ($q) use ($assigneeIds, $includeUnassigned) {
+                        if (!empty($assigneeIds)) {
+                            $q->orWhereIn('assignee_id', $assigneeIds);
+                        }
+                        if ($includeUnassigned) {
+                            $q->orWhereNull('assignee_id');
+                        }
+                    });
                 }
             }
         }

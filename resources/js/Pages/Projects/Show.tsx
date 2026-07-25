@@ -96,6 +96,7 @@ export default function Show({
                     queryParams={queryParams}
                     project={project}
                     savedFilters={savedFilters}
+                    users={users}
                 />
                 <div
                     className={
