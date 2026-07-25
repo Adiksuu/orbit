@@ -1,9 +1,19 @@
 import { Project } from '@/types/Projects';
 import { AssignableUser } from '@/types/Users';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import NewIssueModal from './NewIssueModal';
+
+// The DatePickerOverlay renders the real Calendar, which relies on useAlert.
+const mockAddAlert = vi.hoisted(() => vi.fn());
+vi.mock('@/context/AlertContext', () => ({
+    useAlert: () => ({
+        addAlert: mockAddAlert,
+        removeAlert: vi.fn(),
+        alerts: [],
+    }),
+}));
 
 // Shared, hoisted mock state so tests can drive `processing` / `errors` and
 // assert on the form's `post` / `reset` calls.
@@ -29,12 +39,23 @@ vi.mock('@inertiajs/react', async () => {
             const [data, setDataState] =
                 React.useState<Record<string, unknown>>(initial);
             const setData = React.useCallback(
-                (key: string | Record<string, unknown>, value?: unknown) => {
-                    setDataState((prev) =>
-                        typeof key === 'object'
+                (
+                    key:
+                        | string
+                        | Record<string, unknown>
+                        | ((
+                              prev: Record<string, unknown>,
+                          ) => Record<string, unknown>),
+                    value?: unknown,
+                ) => {
+                    setDataState((prev) => {
+                        if (typeof key === 'function') {
+                            return key(prev);
+                        }
+                        return typeof key === 'object'
                             ? key
-                            : { ...prev, [key]: value },
-                    );
+                            : { ...prev, [key]: value };
+                    });
                 },
                 [],
             );
@@ -360,5 +381,174 @@ describe('NewIssueModal Component', () => {
         await userEvent.click(unassignedOptions[unassignedOptions.length - 1]);
 
         expect(screen.queryByText('Ada Lovelace')).not.toBeInTheDocument();
+    });
+});
+
+describe('NewIssueModal date pickers', () => {
+    // The DatePickerOverlay's Calendar is a framer-motion component that
+    // runs a real (non-faked) exit animation, so assertions depending on it
+    // being fully closed go through `waitFor`.
+    beforeEach(() => {
+        vi.useFakeTimers({ toFake: ['Date'] });
+        vi.setSystemTime(new Date('2026-07-25T12:00:00.000Z'));
+    });
+
+    afterEach(() => {
+        vi.useRealTimers();
+    });
+
+    const calendarButtons = (container: HTMLElement) =>
+        Array.from(container.querySelectorAll('.lucide-calendar')).map(
+            (el) => el.closest('button') as HTMLElement,
+        );
+
+    test('defaults the start date to today and the end date to a week later', () => {
+        render(
+            <NewIssueModal
+                isOpen
+                onClose={() => {}}
+                project={project}
+                users={users}
+            />,
+        );
+
+        expect(screen.getByText('2026-07-25')).toBeInTheDocument();
+        expect(screen.getByText('2026-08-01')).toBeInTheDocument();
+    });
+
+    test('opens the start date calendar when its date button is clicked', async () => {
+        const { container } = render(
+            <NewIssueModal
+                isOpen
+                onClose={() => {}}
+                project={project}
+                users={users}
+            />,
+        );
+
+        const [startDateButton] = calendarButtons(container);
+        await userEvent.click(startDateButton);
+
+        expect(screen.getByText('Today')).toBeInTheDocument();
+        expect(screen.getByText('Close')).toBeInTheDocument();
+    });
+
+    test('opening the end date calendar closes the start date calendar', async () => {
+        const { container } = render(
+            <NewIssueModal
+                isOpen
+                onClose={() => {}}
+                project={project}
+                users={users}
+            />,
+        );
+
+        const [startDateButton, endDateButton] = calendarButtons(container);
+        await userEvent.click(startDateButton);
+        await waitFor(() =>
+            expect(screen.getAllByText('Today')).toHaveLength(1),
+        );
+
+        await userEvent.click(endDateButton);
+        await waitFor(() =>
+            expect(screen.getAllByText('Today')).toHaveLength(1),
+        );
+    });
+
+    test('pushes the end date forward when a later start date is selected', async () => {
+        const { container } = render(
+            <NewIssueModal
+                isOpen
+                onClose={() => {}}
+                project={project}
+                users={users}
+            />,
+        );
+
+        const [startDateButton] = calendarButtons(container);
+        await userEvent.click(startDateButton);
+        // Move to August, which is after the default end date (Aug 1).
+        const nextMonthButton = document
+            .querySelector('.lucide-chevron-right')
+            ?.closest('button') as HTMLElement;
+        await userEvent.click(nextMonthButton);
+        await userEvent.click(screen.getByText('15'));
+        await userEvent.click(screen.getByText('Close'));
+        await waitFor(() =>
+            expect(screen.queryByText('Today')).not.toBeInTheDocument(),
+        );
+
+        // Both fields now show the newly picked (later) start date.
+        expect(screen.getAllByText('2026-08-15')).toHaveLength(2);
+    });
+
+    test('keeps the end date unchanged when the new start date is still before it', async () => {
+        const { container } = render(
+            <NewIssueModal
+                isOpen
+                onClose={() => {}}
+                project={project}
+                users={users}
+            />,
+        );
+
+        const [startDateButton] = calendarButtons(container);
+        await userEvent.click(startDateButton);
+        await userEvent.click(screen.getByText('20'));
+        await userEvent.click(screen.getByText('Close'));
+        await waitFor(() =>
+            expect(screen.queryByText('Today')).not.toBeInTheDocument(),
+        );
+
+        expect(screen.getByText('2026-07-20')).toBeInTheDocument();
+        expect(screen.getByText('2026-08-01')).toBeInTheDocument();
+    });
+
+    test('selects an end date directly without touching the start date', async () => {
+        const { container } = render(
+            <NewIssueModal
+                isOpen
+                onClose={() => {}}
+                project={project}
+                users={users}
+            />,
+        );
+
+        const [, endDateButton] = calendarButtons(container);
+        await userEvent.click(endDateButton);
+        // The end calendar opens on its own selectedDate's month (August,
+        // the default end date), so no month navigation is needed here.
+        await userEvent.click(screen.getByText('10'));
+        await userEvent.click(screen.getByText('Close'));
+        await waitFor(() =>
+            expect(screen.queryByText('Today')).not.toBeInTheDocument(),
+        );
+
+        expect(screen.getByText('2026-07-25')).toBeInTheDocument();
+        expect(screen.getByText('2026-08-10')).toBeInTheDocument();
+    });
+
+    test('closes the date picker overlay when the backdrop is clicked', async () => {
+        const { container } = render(
+            <NewIssueModal
+                isOpen
+                onClose={() => {}}
+                project={project}
+                users={users}
+            />,
+        );
+
+        const [startDateButton] = calendarButtons(container);
+        await userEvent.click(startDateButton);
+        expect(screen.getByText('Today')).toBeInTheDocument();
+
+        const backdrop = container.querySelector(
+            '[class*="backdrop-blur-[2px]"]',
+        ) as HTMLElement;
+        await userEvent.click(backdrop);
+
+        await waitFor(() =>
+            expect(screen.queryByText('Today')).not.toBeInTheDocument(),
+        );
     });
 });

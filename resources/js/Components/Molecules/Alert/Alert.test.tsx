@@ -63,4 +63,23 @@ describe('Alert Component', () => {
 
         expect(container.querySelector('svg')).toHaveClass('text-blue-600');
     });
+
+    test('renders a "View details" link when actionUrl is provided', () => {
+        render(
+            <Alert
+                alert={buildAlert({ actionUrl: '/issues/1' })}
+                onClose={() => {}}
+            />,
+        );
+
+        expect(
+            screen.getByRole('link', { name: 'View details' }),
+        ).toHaveAttribute('href', '/issues/1');
+    });
+
+    test('does not render a "View details" link when actionUrl is missing', () => {
+        render(<Alert alert={buildAlert()} onClose={() => {}} />);
+
+        expect(screen.queryByRole('link')).not.toBeInTheDocument();
+    });
 });

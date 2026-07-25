@@ -14,12 +14,13 @@ jobs:
       pull-requests: write
 
     steps:
-      - name: Add welcome comment
+      - name: Add welcome comment to PR
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
         run: |
-          gh pr comment $PR_NUMBER --body "🤖 **Code Reviewer is ready!**  \`/review\` in a comment to start the code analysis."
+          gh pr comment $PR_NUMBER --repo $REPO --body "**Code Reviewer is ready!** Type \`/review\` in a comment to start the code analysis."
 
   review:
     if: |
@@ -51,15 +52,15 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
         run: |
-          # Pobierz nazwę docelowej gałęzi (base ref, np. main)
-          BASE_REF=$(gh pr view $PR_NUMBER --json baseRefName -q .baseRefName)
+          BASE_REF=$(gh pr view $PR_NUMBER --repo $REPO --json baseRefName -q .baseRefName)
           git fetch origin $BASE_REF --depth=1 || true
           git diff origin/$BASE_REF...HEAD > diff.txt
 
           if [ ! -s diff.txt ]; then
             echo "No code changes to analyze."
-            gh pr comment $PR_NUMBER --body "Brak zmian w kodzie do przeanalizowania."
+            gh pr comment $PR_NUMBER --repo $REPO --body "No code changes to analyze."
             exit 0
           fi
 
@@ -99,5 +100,5 @@ jobs:
           '
 
           if [ -f review.md ]; then
-            gh pr comment $PR_NUMBER --body-file review.md
+            gh pr comment $PR_NUMBER --repo $REPO --body-file review.md
           fi

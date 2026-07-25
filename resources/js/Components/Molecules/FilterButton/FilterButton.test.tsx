@@ -58,4 +58,27 @@ describe('FilterButton Component', () => {
 
         expect(handleClick).toHaveBeenCalledTimes(1);
     });
+
+    test('applies active styling and colors when isActive is true', () => {
+        const { container } = render(
+            <FilterButton
+                label="Status"
+                value="Open"
+                icon="ListFilter"
+                isActive
+                onClick={() => {}}
+            />,
+        );
+
+        expect(screen.getByRole('button')).toHaveClass(
+            'border-solid',
+            'border-purple-500/30',
+        );
+        expect(screen.getByText('Open')).toHaveClass(
+            'text-[var(--accent-color)]',
+        );
+        container.querySelectorAll('svg').forEach((svg) => {
+            expect(svg).toHaveAttribute('stroke', 'var(--accent-color)');
+        });
+    });
 });

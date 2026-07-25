@@ -1,12 +1,17 @@
 import { Issue } from '@/types/Issues';
 import { Project } from '@/types/Projects';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 import ProjectCard, { ProjectNewCard } from './ProjectCard';
 
+const { triggerShortcut } = vi.hoisted(() => ({
+    triggerShortcut: vi.fn(),
+}));
+
 vi.mock('@/context/ShortcutContext', () => ({
     useShortcuts: () => ({
-        triggerShortcut: vi.fn(),
+        triggerShortcut,
     }),
 }));
 
@@ -15,12 +20,14 @@ vi.mock('@inertiajs/react', () => ({
         children,
         href,
         className,
+        onClick,
     }: {
         children: React.ReactNode;
         href?: string;
         className?: string;
+        onClick?: () => void;
     }) => (
-        <a href={href} className={className}>
+        <a href={href} className={className} onClick={onClick}>
             {children}
         </a>
     ),
@@ -134,5 +141,13 @@ describe('ProjectNewCard Component', () => {
             'href',
             '/projects/new',
         );
+    });
+
+    test('triggers the "p" shortcut when clicked', async () => {
+        render(<ProjectNewCard />);
+
+        await userEvent.click(screen.getByRole('link'));
+
+        expect(triggerShortcut).toHaveBeenCalledWith('p');
     });
 });

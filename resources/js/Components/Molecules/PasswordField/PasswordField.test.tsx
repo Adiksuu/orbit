@@ -76,4 +76,18 @@ describe('PasswordField Component', () => {
 
         expect(screen.getByText('Password is required.')).toBeInTheDocument();
     });
+
+    test('renders a required indicator', () => {
+        render(
+            <PasswordField
+                id="password"
+                label="Password"
+                value=""
+                onChange={noop}
+                required
+            />,
+        );
+
+        expect(screen.getByText('*')).toBeInTheDocument();
+    });
 });
