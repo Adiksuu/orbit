@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\IssueLabel;
 use App\Models\Issue;
 use App\Models\Project;
 use App\Models\User;
@@ -9,7 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->repository = new IssueRepository();
+    $this->repository = new IssueRepository;
 });
 
 test('it can get issues for a project', function () {
@@ -148,11 +149,11 @@ test('it can search issues by labels', function () {
     $project = Project::factory()->create();
     Issue::factory()->create([
         'project_id' => $project->id,
-        'labels' => [\App\Enums\IssueLabel::BUG],
+        'labels' => [IssueLabel::BUG],
     ]);
     Issue::factory()->create([
         'project_id' => $project->id,
-        'labels' => [\App\Enums\IssueLabel::FEATURE],
+        'labels' => [IssueLabel::FEATURE],
     ]);
 
     $results = $this->repository->getAllPaginated($project->id, 10, [], ['search' => 'bug']);
@@ -160,3 +161,86 @@ test('it can search issues by labels', function () {
     expect($results->items())->toHaveCount(1);
 });
 
+test('it can search issues by a specific field key instead of the generic search term', function () {
+    $project = Project::factory()->create();
+    Issue::factory()->create(['project_id' => $project->id, 'status' => 'closed']);
+    Issue::factory()->create(['project_id' => $project->id, 'status' => 'open']);
+
+    $results = $this->repository->getAllPaginated($project->id, 10, [], ['status' => 'closed']);
+
+    expect($results->items())->toHaveCount(1);
+    expect($results->items()[0]->status)->toBe('closed');
+});
+
+test('it can sort issues by title ascending', function () {
+    $project = Project::factory()->create();
+    Issue::factory()->create(['project_id' => $project->id, 'title' => 'Banana']);
+    Issue::factory()->create(['project_id' => $project->id, 'title' => 'Apple']);
+
+    $results = $this->repository->getAllPaginated($project->id, 10, ['sort' => 'title', 'direction' => 'AZ']);
+
+    expect($results->items()[0]->title)->toBe('Apple');
+    expect($results->items()[1]->title)->toBe('Banana');
+});
+
+test('it can sort issues by priority ascending', function () {
+    $project = Project::factory()->create();
+    Issue::factory()->create(['project_id' => $project->id, 'priority' => 'low', 'title' => 'Low']);
+    Issue::factory()->create(['project_id' => $project->id, 'priority' => 'high', 'title' => 'High']);
+
+    $results = $this->repository->getAllPaginated($project->id, 10, ['sort' => 'priority', 'direction' => 'AZ']);
+
+    expect($results->items()[0]->title)->toBe('High');
+    expect($results->items()[1]->title)->toBe('Low');
+});
+
+test('it can sort issues by priority descending', function () {
+    $project = Project::factory()->create();
+    Issue::factory()->create(['project_id' => $project->id, 'priority' => 'low', 'title' => 'Low']);
+    Issue::factory()->create(['project_id' => $project->id, 'priority' => 'high', 'title' => 'High']);
+
+    $results = $this->repository->getAllPaginated($project->id, 10, ['sort' => 'priority', 'direction' => 'ZA']);
+
+    expect($results->items()[0]->title)->toBe('Low');
+    expect($results->items()[1]->title)->toBe('High');
+});
+
+test('it can sort issues by assignee name', function () {
+    $project = Project::factory()->create();
+    $alice = User::factory()->create(['name' => 'Alice']);
+    $bob = User::factory()->create(['name' => 'Bob']);
+    Issue::factory()->create(['project_id' => $project->id, 'assignee_id' => $bob->id, 'title' => 'Bob issue']);
+    Issue::factory()->create(['project_id' => $project->id, 'assignee_id' => $alice->id, 'title' => 'Alice issue']);
+
+    $results = $this->repository->getAllPaginated($project->id, 10, ['sort' => 'assignee', 'direction' => 'AZ']);
+
+    expect($results->items()[0]->title)->toBe('Alice issue');
+    expect($results->items()[1]->title)->toBe('Bob issue');
+});
+
+test('it can sort issues by start_date, end_date and updated', function () {
+    $project = Project::factory()->create();
+    Issue::factory()->create(['project_id' => $project->id, 'start_date' => now()->addDays(2), 'end_date' => now()->addDays(3)]);
+    Issue::factory()->create(['project_id' => $project->id, 'start_date' => now()->addDay(), 'end_date' => now()->addDays(2)]);
+
+    $byStart = $this->repository->getAllPaginated($project->id, 10, ['sort' => 'start_date', 'direction' => 'AZ']);
+    $byEnd = $this->repository->getAllPaginated($project->id, 10, ['sort' => 'end_date', 'direction' => 'AZ']);
+    $byUpdated = $this->repository->getAllPaginated($project->id, 10, ['sort' => 'updated', 'direction' => 'AZ']);
+
+    expect($byStart->items())->toHaveCount(2);
+    expect($byEnd->items())->toHaveCount(2);
+    expect($byUpdated->items())->toHaveCount(2);
+});
+
+test('it can filter issues by assignee given as an array instead of a comma string', function () {
+    $project = Project::factory()->create();
+    $first = User::factory()->create();
+    $second = User::factory()->create();
+    Issue::factory()->create(['project_id' => $project->id, 'assignee_id' => $first->id]);
+    Issue::factory()->create(['project_id' => $project->id, 'assignee_id' => $second->id]);
+    Issue::factory()->create(['project_id' => $project->id, 'assignee_id' => User::factory()->create()->id]);
+
+    $results = $this->repository->getAllPaginated($project->id, 10, [], [], ['assignee' => [(string) $first->id, (string) $second->id]]);
+
+    expect($results->items())->toHaveCount(2);
+});

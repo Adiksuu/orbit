@@ -1,6 +1,8 @@
 <?php
 
+use App\Enums\IssueLabel;
 use App\Models\Issue;
+use App\Models\Project;
 use App\Models\User;
 use App\Repositories\IssueRepository;
 use App\Services\ActivityLogService;
@@ -84,7 +86,7 @@ test('updateIssue logs activity and notifies only the actor when there is no ass
     $actor = User::factory()->create();
     $this->actingAs($actor);
 
-    $project = App\Models\Project::factory()->create();
+    $project = Project::factory()->create();
     $issue = Issue::factory()->create([
         'project_id' => $project->id,
         'assignee_id' => null,
@@ -97,6 +99,7 @@ test('updateIssue logs activity and notifies only the actor when there is no ass
         ->andReturnUsing(function ($issue, $data) {
             $issue->fill($data);
             $issue->syncOriginal();
+
             return $issue;
         });
 
@@ -122,7 +125,7 @@ test('updateIssue also notifies the current assignee when they are not the actor
     $assignee = User::factory()->create(['name' => 'Alice']);
     $this->actingAs($actor);
 
-    $project = App\Models\Project::factory()->create();
+    $project = Project::factory()->create();
     $issue = Issue::factory()->create([
         'project_id' => $project->id,
         'assignee_id' => $assignee->id,
@@ -134,6 +137,7 @@ test('updateIssue also notifies the current assignee when they are not the actor
         ->andReturnUsing(function ($issue, $data) {
             $issue->fill($data);
             $issue->syncOriginal();
+
             return $issue;
         });
 
@@ -162,7 +166,7 @@ test('updateIssue notifies the newly assigned user and the previously assigned u
     $newAssignee = User::factory()->create(['name' => 'Carol']);
     $this->actingAs($actor);
 
-    $project = App\Models\Project::factory()->create();
+    $project = Project::factory()->create();
     $issue = Issue::factory()->create([
         'project_id' => $project->id,
         'assignee_id' => $oldAssignee->id,
@@ -173,6 +177,7 @@ test('updateIssue notifies the newly assigned user and the previously assigned u
         ->andReturnUsing(function ($issue, $data) {
             $issue->fill($data);
             $issue->syncOriginal();
+
             return $issue;
         });
 
@@ -205,11 +210,163 @@ test('updateIssue notifies the newly assigned user and the previously assigned u
     $this->service->updateIssue($issue, ['assignee_id' => $newAssignee->id]);
 });
 
+test('updateIssue describes a description-only change', function () {
+    $actor = User::factory()->create();
+    $this->actingAs($actor);
+
+    $project = Project::factory()->create();
+    $issue = Issue::factory()->create(['project_id' => $project->id, 'assignee_id' => null]);
+
+    $this->issueRepository->shouldReceive('update')
+        ->once()
+        ->andReturnUsing(function ($issue, $data) {
+            $issue->fill($data);
+            $issue->syncOriginal();
+
+            return $issue;
+        });
+
+    $this->activityLogService->shouldReceive('log')
+        ->once()
+        ->with($project->id, Mockery::on(fn ($body) => str_contains($body, 'description was updated')));
+
+    $this->notificationService->shouldReceive('notify')->once();
+
+    $this->service->updateIssue($issue, ['description' => 'A brand new description']);
+});
+
+test('updateIssue describes labels changing to a non-empty set', function () {
+    $actor = User::factory()->create();
+    $this->actingAs($actor);
+
+    $project = Project::factory()->create();
+    $issue = Issue::factory()->create(['project_id' => $project->id, 'assignee_id' => null, 'labels' => []]);
+
+    $this->issueRepository->shouldReceive('update')
+        ->once()
+        ->andReturnUsing(function ($issue, $data) {
+            $issue->fill($data);
+            $issue->syncOriginal();
+
+            return $issue;
+        });
+
+    $this->activityLogService->shouldReceive('log')
+        ->once()
+        ->with($project->id, Mockery::on(fn ($body) => str_contains($body, 'labels changed to [bug]')));
+
+    $this->notificationService->shouldReceive('notify')->once();
+
+    $this->service->updateIssue($issue, ['labels' => [IssueLabel::BUG]]);
+});
+
+test('updateIssue describes labels being cleared as "none"', function () {
+    $actor = User::factory()->create();
+    $this->actingAs($actor);
+
+    $project = Project::factory()->create();
+    $issue = Issue::factory()->create([
+        'project_id' => $project->id,
+        'assignee_id' => null,
+        'labels' => [IssueLabel::BUG],
+    ]);
+
+    $this->issueRepository->shouldReceive('update')
+        ->once()
+        ->andReturnUsing(function ($issue, $data) {
+            $issue->fill($data);
+            $issue->syncOriginal();
+
+            return $issue;
+        });
+
+    $this->activityLogService->shouldReceive('log')
+        ->once()
+        ->with($project->id, Mockery::on(fn ($body) => str_contains($body, 'labels changed to [none]')));
+
+    $this->notificationService->shouldReceive('notify')->once();
+
+    $this->service->updateIssue($issue, ['labels' => null]);
+});
+
+test('updateIssue describes start_date and end_date changes, including clearing them', function () {
+    $actor = User::factory()->create();
+    $this->actingAs($actor);
+
+    $project = Project::factory()->create();
+    $issue = Issue::factory()->create([
+        'project_id' => $project->id,
+        'assignee_id' => null,
+        'start_date' => now(),
+        'end_date' => now()->addDay(),
+    ]);
+
+    $this->issueRepository->shouldReceive('update')
+        ->once()
+        ->andReturnUsing(function ($issue, $data) {
+            $issue->fill($data);
+            $issue->syncOriginal();
+
+            return $issue;
+        });
+
+    $this->activityLogService->shouldReceive('log')
+        ->once()
+        ->with($project->id, Mockery::on(fn ($body) => str_contains($body, 'start date changed to none')
+            && str_contains($body, 'end date changed to none')));
+
+    $this->notificationService->shouldReceive('notify')->once();
+
+    $this->service->updateIssue($issue, ['start_date' => null, 'end_date' => null]);
+});
+
+test('updateIssue appends other changes to the new assignee\'s notification message', function () {
+    $actor = User::factory()->create(['name' => 'Bob']);
+    $newAssignee = User::factory()->create(['name' => 'Carol']);
+    $this->actingAs($actor);
+
+    $project = Project::factory()->create();
+    $issue = Issue::factory()->create([
+        'project_id' => $project->id,
+        'assignee_id' => null,
+        'title' => 'Old title',
+    ]);
+
+    $this->issueRepository->shouldReceive('update')
+        ->once()
+        ->andReturnUsing(function ($issue, $data) {
+            $issue->fill($data);
+            $issue->syncOriginal();
+
+            return $issue;
+        });
+
+    $this->activityLogService->shouldReceive('log')->once();
+
+    $this->notificationService->shouldReceive('notify')
+        ->once()
+        ->with($actor->id, 'info', Mockery::any(), Mockery::any(), Mockery::any());
+
+    $this->notificationService->shouldReceive('notify')
+        ->once()
+        ->with(
+            $newAssignee->id,
+            'info',
+            'You were assigned to an issue',
+            Mockery::on(fn ($message) => str_contains($message, 'assigned you to')
+                && str_contains($message, 'Also:')
+                && str_contains($message, 'title changed to "New title"')),
+            Mockery::any()
+        );
+
+    $this->service->updateIssue($issue, ['assignee_id' => $newAssignee->id, 'title' => 'New title']);
+});
+
 test('updateIssue does not log or notify anything when nothing actually changed', function () {
     $actor = User::factory()->create();
     $this->actingAs($actor);
 
-    $project = App\Models\Project::factory()->create();
+    $project = Project::factory()->create();
     $issue = Issue::factory()->create([
         'project_id' => $project->id,
         'assignee_id' => null,
@@ -220,6 +377,7 @@ test('updateIssue does not log or notify anything when nothing actually changed'
         ->once()
         ->andReturnUsing(function ($issue, $data) {
             $issue->fill($data);
+
             return $issue;
         });
 
