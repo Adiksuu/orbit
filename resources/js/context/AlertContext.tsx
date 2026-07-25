@@ -5,8 +5,7 @@ import {
     AlertType,
     InertiaPageProps,
 } from '@/types/Alert';
-import { NotificationTypes } from '@/types/Notification';
-import { useForm, usePage } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 import {
     createContext,
     ReactNode,
@@ -18,13 +17,8 @@ import {
 
 const AlertContext = createContext<AlertContextType | undefined>(undefined);
 
-const toNotificationType = (type: AlertType): NotificationTypes =>
-    type === 'information' ? 'info' : type;
-
 export const AlertProvider = ({ children }: { children: ReactNode }) => {
     const [alerts, setAlerts] = useState<AlertItem[]>([]);
-
-    const { post, transform } = useForm();
 
     const addAlert = useCallback(
         (
@@ -37,28 +31,13 @@ export const AlertProvider = ({ children }: { children: ReactNode }) => {
 
             setAlerts((prev) => [...prev, { id, message, type, actionUrl }]);
 
-            const notificationType = toNotificationType(type);
-            transform(() => ({
-                type: notificationType,
-                title:
-                    notificationType.charAt(0).toUpperCase() +
-                    notificationType.slice(1),
-                message,
-                read: false,
-                action_url: actionUrl ?? null,
-            }));
-            post('/notifications', {
-                preserveScroll: true,
-                preserveState: true,
-            });
-
             if (duration) {
                 setTimeout(() => {
                     removeAlert(id);
                 }, duration);
             }
         },
-        [post, transform],
+        [],
     );
 
     const removeAlert = useCallback((id: string) => {

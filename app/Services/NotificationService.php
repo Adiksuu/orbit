@@ -12,8 +12,8 @@ class NotificationService
         protected NotificationRepository $notificationRepository
     ) {}
 
-    public function getAll(): Collection {
-        return $this->notificationRepository->getAll();
+    public function getAllForUser(int $userId): Collection {
+        return $this->notificationRepository->getAllForUser($userId);
     }
     public function store(array $data): Notification {
         return $this->notificationRepository->store($data);
@@ -21,7 +21,21 @@ class NotificationService
     public function update(Notification $notification, array $data): Notification {
         return $this->notificationRepository->update($notification, $data);
     }
-    public function markAllAsRead(): int {
-        return $this->notificationRepository->markAllAsRead();
+    public function markAllAsReadForUser(int $userId): int {
+        return $this->notificationRepository->markAllAsReadForUser($userId);
+    }
+
+    /**
+     * Create a notification targeted at a single recipient.
+     */
+    public function notify(int $userId, string $type, string $title, string $message, ?string $actionUrl = null): Notification {
+        return $this->notificationRepository->store([
+            'user_id' => $userId,
+            'type' => $type,
+            'title' => $title,
+            'message' => $message,
+            'read' => false,
+            'action_url' => $actionUrl,
+        ]);
     }
 }

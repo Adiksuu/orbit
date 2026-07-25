@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Notification;
+use App\Models\User;
 use App\Repositories\NotificationRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -10,16 +11,23 @@ beforeEach(function () {
     $this->repository = new NotificationRepository();
 });
 
-test('it can get all notifications', function () {
-    Notification::factory()->count(3)->create();
+test('it only returns notifications for the given user', function () {
+    $user = User::factory()->create();
+    $otherUser = User::factory()->create();
 
-    $notifications = $this->repository->getAll();
+    Notification::factory()->count(3)->create(['user_id' => $user->id]);
+    Notification::factory()->count(2)->create(['user_id' => $otherUser->id]);
+
+    $notifications = $this->repository->getAllForUser($user->id);
 
     expect($notifications)->toHaveCount(3);
+    expect($notifications->pluck('user_id')->unique()->all())->toBe([$user->id]);
 });
 
 test('it can store a new notification', function () {
+    $user = User::factory()->create();
     $data = [
+        'user_id' => $user->id,
         'type' => 'info',
         'title' => 'New Notification',
         'message' => 'Something happened',
@@ -29,7 +37,7 @@ test('it can store a new notification', function () {
     $notification = $this->repository->store($data);
 
     expect($notification)->toBeInstanceOf(Notification::class);
-    $this->assertDatabaseHas('notifications', ['title' => 'New Notification']);
+    $this->assertDatabaseHas('notifications', ['title' => 'New Notification', 'user_id' => $user->id]);
 });
 
 test('it can update a notification', function () {
@@ -41,12 +49,17 @@ test('it can update a notification', function () {
     $this->assertDatabaseHas('notifications', ['id' => $notification->id, 'title' => 'New Title']);
 });
 
-test('it can mark all unread notifications as read', function () {
-    Notification::factory()->count(2)->create(['read' => false]);
-    Notification::factory()->create(['read' => true]);
+test('it only marks the given user unread notifications as read', function () {
+    $user = User::factory()->create();
+    $otherUser = User::factory()->create();
 
-    $count = $this->repository->markAllAsRead();
+    Notification::factory()->count(2)->create(['user_id' => $user->id, 'read' => false]);
+    Notification::factory()->create(['user_id' => $user->id, 'read' => true]);
+    Notification::factory()->create(['user_id' => $otherUser->id, 'read' => false]);
+
+    $count = $this->repository->markAllAsReadForUser($user->id);
 
     expect($count)->toBe(2);
-    expect(Notification::where('read', false)->count())->toBe(0);
+    expect(Notification::where('user_id', $user->id)->where('read', false)->count())->toBe(0);
+    expect(Notification::where('user_id', $otherUser->id)->where('read', false)->count())->toBe(1);
 });

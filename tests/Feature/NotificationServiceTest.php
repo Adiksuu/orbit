@@ -13,20 +13,21 @@ beforeEach(function () {
     $this->service = new NotificationService($this->notificationRepository);
 });
 
-test('it can get all notifications', function () {
-    $notifications = new Collection([new Notification(['id' => 1])]);
+test('it can get all notifications for a user', function () {
+    $notifications = new Collection([new Notification(['id' => 1, 'user_id' => 5])]);
 
-    $this->notificationRepository->shouldReceive('getAll')
+    $this->notificationRepository->shouldReceive('getAllForUser')
         ->once()
+        ->with(5)
         ->andReturn($notifications);
 
-    $result = $this->service->getAll();
+    $result = $this->service->getAllForUser(5);
 
     expect($result)->toBe($notifications);
 });
 
 test('it can store a new notification', function () {
-    $data = ['type' => 'info', 'title' => 'Test', 'message' => 'Test message', 'read' => false];
+    $data = ['user_id' => 5, 'type' => 'info', 'title' => 'Test', 'message' => 'Test message', 'read' => false];
     $notification = new Notification($data);
 
     $this->notificationRepository->shouldReceive('store')
@@ -53,12 +54,39 @@ test('it can update a notification', function () {
     expect($result)->toBe($notification);
 });
 
-test('it can mark all notifications as read', function () {
-    $this->notificationRepository->shouldReceive('markAllAsRead')
+test('it can mark all of a user notifications as read', function () {
+    $this->notificationRepository->shouldReceive('markAllAsReadForUser')
         ->once()
+        ->with(5)
         ->andReturn(2);
 
-    $result = $this->service->markAllAsRead();
+    $result = $this->service->markAllAsReadForUser(5);
 
     expect($result)->toBe(2);
+});
+
+test('it can notify a specific user', function () {
+    $notification = new Notification(['id' => 1, 'user_id' => 5]);
+
+    $this->notificationRepository->shouldReceive('store')
+        ->once()
+        ->with([
+            'user_id' => 5,
+            'type' => 'info',
+            'title' => 'Issue #1 updated',
+            'message' => 'You updated "Test": status changed from "open" to "closed".',
+            'read' => false,
+            'action_url' => '/projects/1?issue=1',
+        ])
+        ->andReturn($notification);
+
+    $result = $this->service->notify(
+        5,
+        'info',
+        'Issue #1 updated',
+        'You updated "Test": status changed from "open" to "closed".',
+        '/projects/1?issue=1'
+    );
+
+    expect($result)->toBe($notification);
 });

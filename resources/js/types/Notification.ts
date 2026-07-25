@@ -2,6 +2,7 @@ export type NotificationTypes = 'success' | 'info' | 'warning' | 'error';
 
 export interface Notification {
     id: number;
+    user_id: number;
     type: NotificationTypes;
     title: string;
     message: string;

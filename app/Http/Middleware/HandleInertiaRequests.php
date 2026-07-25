@@ -50,7 +50,9 @@ class HandleInertiaRequests extends Middleware
                 'information' => fn () => $request->session()->get('information'),
                 'action_url' => fn () => $request->session()->get('action_url'),
             ],
-            'notifications' => fn () => $this->notificationService->getAll(),
+            'notifications' => fn () => $request->user()
+                ? $this->notificationService->getAllForUser($request->user()->id)
+                : [],
         ];
     }
 }
