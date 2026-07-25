@@ -28,7 +28,7 @@
         "@vitejs/plugin-react": "^6.0.0",
         "@vitest/coverage-v8": "^4.1.10",
         "autoprefixer": "^10.5.4",
-        "concurrently": "^10.0.3",
+        "concurrently": "^10.0.4",
         "eslint": "^8.57.1",
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-prettier": "^5.5.6",
