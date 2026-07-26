@@ -52,6 +52,7 @@ const IssueTable = ({
 
     const [isResizing, setIsResizing] = useState<string | null>(null);
     const [isResizingHeight, setIsResizingHeight] = useState(false);
+    const [expandedIssueId, setExpandedIssueId] = useState<string | null>(null);
 
     const handleMouseDown = (column: string, e: React.MouseEvent) => {
         e.preventDefault();
@@ -456,6 +457,14 @@ const IssueTable = ({
                                         }
                                         enabledColumns={enabledColumns}
                                         rowHeight={rowHeight}
+                                        isExpanded={expandedIssueId === issue.id}
+                                        onToggleExpand={() =>
+                                            setExpandedIssueId(
+                                                expandedIssueId === issue.id
+                                                    ? null
+                                                    : issue.id,
+                                            )
+                                        }
                                     />
                                 ))
                             ) : (

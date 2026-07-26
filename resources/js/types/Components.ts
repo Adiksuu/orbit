@@ -297,24 +297,6 @@ export interface SelectionDropdownProps {
     onChange: (value: string) => void;
     trigger: ReactNode;
 }
-export interface DetailAttributesProps {
-    issue: Issue;
-}
-export interface DetailSystemInfoProps {
-    issue: Issue;
-}
-export interface DetailDescriptionProps {
-    issue: Issue;
-    onOpenDetails: () => void;
-}
-export interface InfoItemProps {
-    label: string;
-    children: ReactNode;
-}
-export interface IssueRowDetailProps {
-    issue: Issue;
-    onOpenDetails: () => void;
-}
 export interface FormFieldProps {
     id: string;
     label: string;
@@ -357,10 +339,6 @@ export interface OrbitRingProps {
     duration: number;
     reverse?: boolean;
     items: OrbitItem[];
-}
-export interface ShowcaseSlide {
-    text: string;
-    highlightText: string;
 }
 // ORGANISMS COMPONENTS
 export interface CalendarViewProps {
