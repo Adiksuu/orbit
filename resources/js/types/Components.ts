@@ -187,8 +187,6 @@ export interface IssueElementProps {
     handleSelectIssueCheckbox?: (issue: Issue | string) => void;
     enabledColumns?: Record<string, boolean>;
     rowHeight?: number;
-    isExpanded?: boolean;
-    onToggleExpand?: () => void;
 }
 export interface IssuePropertyProps {
     label: string;
@@ -409,8 +407,6 @@ export interface ListRowProps {
     handleSelectIssueCheckbox?: (issue: Issue | string) => void;
     enabledColumns?: Record<string, boolean>;
     rowHeight?: number;
-    isExpanded?: boolean;
-    onToggleExpand?: () => void;
 }
 
 export interface AuthShowcaseProps {

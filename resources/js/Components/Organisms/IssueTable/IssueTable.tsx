@@ -7,7 +7,7 @@ import { useTableResizing } from '@/hooks/useTableResizing';
 import { IssueTableProps } from '@/types/Components';
 import { Issue, Sorting, SortingColumn } from '@/types/Issues';
 import { router } from '@inertiajs/react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 const IssueTable = ({
     issues,
@@ -52,7 +52,6 @@ const IssueTable = ({
 
     const [isResizing, setIsResizing] = useState<string | null>(null);
     const [isResizingHeight, setIsResizingHeight] = useState(false);
-    const [expandedIssueId, setExpandedIssueId] = useState<string | null>(null);
 
     const handleMouseDown = (column: string, e: React.MouseEvent) => {
         e.preventDefault();
@@ -457,14 +456,6 @@ const IssueTable = ({
                                         }
                                         enabledColumns={enabledColumns}
                                         rowHeight={rowHeight}
-                                        isExpanded={expandedIssueId === issue.id}
-                                        onToggleExpand={() =>
-                                            setExpandedIssueId(
-                                                expandedIssueId === issue.id
-                                                    ? null
-                                                    : issue.id,
-                                            )
-                                        }
                                     />
                                 ))
                             ) : (

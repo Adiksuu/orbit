@@ -467,55 +467,6 @@ describe('IssueTable Component', () => {
         expect(rowCheckboxes[1]).toBeChecked();
     });
 
-    test('expands a row when its chevron is clicked and collapses it on a second click', async () => {
-        const user = userEvent.setup();
-        const issues = [makeIssue({ title: 'Issue 1', id: 'ISSUE-1' })];
-
-        const { container } = render(
-            <IssueTable
-                issues={issues}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
-
-        const chevron = container.querySelector(
-            '[aria-expanded]',
-        ) as HTMLElement;
-        expect(chevron).toHaveAttribute('aria-expanded', 'false');
-
-        await user.click(chevron);
-        expect(chevron).toHaveAttribute('aria-expanded', 'true');
-
-        await user.click(chevron);
-        expect(chevron).toHaveAttribute('aria-expanded', 'false');
-    });
-
-    test('expanding a different row collapses the previously expanded one', async () => {
-        const user = userEvent.setup();
-        const issues = [
-            makeIssue({ title: 'Issue 1', id: 'ISSUE-1' }),
-            makeIssue({ title: 'Issue 2', id: 'ISSUE-2' }),
-        ];
-
-        const { container } = render(
-            <IssueTable
-                issues={issues}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
-
-        const chevrons = container.querySelectorAll('[aria-expanded]');
-        await user.click(chevrons[0]);
-        expect(chevrons[0]).toHaveAttribute('aria-expanded', 'true');
-        expect(chevrons[1]).toHaveAttribute('aria-expanded', 'false');
-
-        await user.click(chevrons[1]);
-        expect(chevrons[0]).toHaveAttribute('aria-expanded', 'false');
-        expect(chevrons[1]).toHaveAttribute('aria-expanded', 'true');
-    });
-
     test('resizes a column when its resize handle is dragged', () => {
         const { container } = render(
             <IssueTable

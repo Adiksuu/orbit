@@ -21,8 +21,6 @@ export const ListRow = ({
     onModify,
     isClosed,
     handleSelectIssueCheckbox,
-    isExpanded,
-    onToggleExpand,
     enabledColumns = {
         id: true,
         title: true,
@@ -91,7 +89,6 @@ export const ListRow = ({
                     if (e.key === 'Enter') onClick();
                     if (e.key === ' ') {
                         e.preventDefault();
-                        onToggleExpand?.();
                     }
                 }}
                 className={cn(
@@ -105,23 +102,6 @@ export const ListRow = ({
                     data-column="expand-and-checkbox"
                 >
                     <div className="flex items-center justify-center gap-1">
-                        <div
-                            className="cursor-pointer p-1 text-zinc-600 transition-colors hover:text-zinc-300"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                onToggleExpand?.();
-                            }}
-                            aria-expanded={isExpanded}
-                        >
-                            <Icon
-                                name="ChevronRight"
-                                size={14}
-                                className={cn(
-                                    'transition-transform duration-200',
-                                    isExpanded && 'rotate-90',
-                                )}
-                            />
-                        </div>
                         <input
                             type="checkbox"
                             className={cn(
@@ -270,18 +250,6 @@ export const ListRow = ({
                                 <DropdownItem
                                     label={
                                         <div className="flex items-center gap-2 text-xs">
-                                            <Icon name="ExternalLink" size={13} />
-                                            <span>Open details</span>
-                                        </div>
-                                    }
-                                    onClick={() => {
-                                        window.location.href = `/issues/${issue.id}`;
-                                        setIsMenuOpen(false);
-                                    }}
-                                />
-                                <DropdownItem
-                                    label={
-                                        <div className="flex items-center gap-2 text-xs">
                                             <Icon name="Pencil" size={13} />
                                             <span>Modify</span>
                                         </div>
@@ -308,42 +276,6 @@ export const ListRow = ({
                     )}
                 </td>
             </tr>
-            {isExpanded && (
-                <tr>
-                    <td colSpan={12} className="border-b border-white/[0.04] bg-white/[0.01] p-0">
-                        <div className="flex flex-col gap-6 p-6">
-                            <div className="grid grid-cols-2 gap-8">
-                                <div className="space-y-4">
-                                    <h4 className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
-                                        Issue Details
-                                    </h4>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-1">
-                                            <span className="text-[10px] text-zinc-500">Milestone</span>
-                                            <div className="text-xs text-zinc-300">
-                                                {issue.milestone || 'None'}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="space-y-4">
-                                    <h4 className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
-                                        System Info
-                                    </h4>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-1">
-                                            <span className="text-[10px] text-zinc-500">Created At</span>
-                                            <div className="text-xs text-zinc-300">
-                                                {formatTimeAgo(issue.created_at || Date.now())} ago
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            )}
         </>
     );
 };
