@@ -34,7 +34,7 @@ describe('AuthShowcase Component', () => {
             <AuthShowcase title="Title" description="Description" />,
         );
 
-        expect(container.querySelector('.lucide-orbit')).toBeInTheDocument();
+        expect(screen.getByAltText(/logo/i)).toBeInTheDocument();
     });
 
     test('renders every orbit item icon for both orbit rings', () => {
