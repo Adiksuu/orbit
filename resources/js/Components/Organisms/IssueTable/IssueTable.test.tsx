@@ -390,10 +390,10 @@ describe('IssueTable Component', () => {
         );
 
         // We only check sortable headers (ID, Title, etc.)
-        // Skip the first (checkbox) and last (settings) th
+        // Skip the first (checkbox) and last two (spacer, settings) th
         const headerCells = Array.from(container.querySelectorAll('th')).slice(
             1,
-            -1,
+            -2,
         );
         expect(headerCells.length).toBeGreaterThan(0);
         headerCells.forEach((cell) => {

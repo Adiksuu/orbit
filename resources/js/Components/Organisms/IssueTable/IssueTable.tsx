@@ -40,13 +40,18 @@ const IssueTable = ({
         resetWidths,
     } = useTableResizing(project?.id, defaultWidths);
 
+    const resolvedColumnWidths = Object.keys(defaultWidths).reduce(
+        (acc, key) => {
+            acc[key] =
+                columnWidths[key] ||
+                defaultWidths[key as keyof typeof defaultWidths];
+            return acc;
+        },
+        {} as Record<string, number>,
+    );
+
     const [isResizing, setIsResizing] = useState<string | null>(null);
     const [isResizingHeight, setIsResizingHeight] = useState(false);
-    const [expandedIssueId, setExpandedIssueId] = useState<string | null>(null);
-
-    const handleToggleExpand = (issueId: string) => {
-        setExpandedIssueId(expandedIssueId === issueId ? null : issueId);
-    };
 
     const handleMouseDown = (column: string, e: React.MouseEvent) => {
         e.preventDefault();
@@ -288,7 +293,7 @@ const IssueTable = ({
                 <div className="flex-1 overflow-x-auto">
                     <table
                         ref={tableRef}
-                        className="w-full border-separate border-spacing-0 text-left text-xs"
+                        className="w-full table-fixed border-separate border-spacing-0 text-left text-xs"
                     >
                         <thead>
                             <tr>
@@ -316,11 +321,9 @@ const IssueTable = ({
                                         key={header.value}
                                         data-column={header.value}
                                         style={{
-                                            width:
-                                                columnWidths[header.value] ||
-                                                defaultWidths[
-                                                    header.value as keyof typeof defaultWidths
-                                                ],
+                                            width: resolvedColumnWidths[
+                                                header.value
+                                            ],
                                         }}
                                         className={`sticky top-0 z-30 border-b border-[var(--bg-light-color)] bg-[var(--bg-color)] ${queryParams !== undefined ? 'cursor-pointer' : ''} group relative select-none px-4 py-3 text-left font-medium text-zinc-400 transition-colors hover:text-zinc-200`}
                                         onClick={() =>
@@ -347,6 +350,10 @@ const IssueTable = ({
                                         />
                                     </th>
                                 ))}
+                                <th
+                                    className="sticky top-0 z-30 border-b border-[var(--bg-light-color)] bg-[var(--bg-color)]"
+                                    aria-hidden="true"
+                                />
                                 <th className="sticky top-0 z-30 w-[50px] border-b border-[var(--bg-light-color)] bg-[var(--bg-color)] px-4 py-3 text-right">
                                     <SelectionDropdown
                                         options={[
@@ -449,18 +456,12 @@ const IssueTable = ({
                                         }
                                         enabledColumns={enabledColumns}
                                         rowHeight={rowHeight}
-                                        isExpanded={
-                                            expandedIssueId === issue.id
-                                        }
-                                        onToggleExpand={() =>
-                                            handleToggleExpand(issue.id)
-                                        }
                                     />
                                 ))
                             ) : (
                                 <tr>
                                     <td
-                                        colSpan={headers.length + 2}
+                                        colSpan={headers.length + 3}
                                         className="p-0"
                                     >
                                         <EmptyStateCard

@@ -10,8 +10,6 @@ export const IssueElement = ({
     handleSelectIssueCheckbox,
     enabledColumns,
     rowHeight,
-    isExpanded,
-    onToggleExpand,
 }: IssueElementProps) => {
     const props = {
         issue,
@@ -19,8 +17,6 @@ export const IssueElement = ({
         isClosed: issue.status === 'closed',
         onClick: () => setActiveIssue(issue, false),
         onModify: () => setActiveIssue(issue, true),
-        isExpanded,
-        onToggleExpand,
     };
 
     return type === 'board' ? (

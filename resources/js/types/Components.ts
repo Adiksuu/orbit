@@ -142,6 +142,14 @@ export interface DividerProps {
     label?: ReactNode;
     className?: string;
 }
+export interface PriorityIconProps {
+    priority: string;
+    className?: string;
+}
+export interface StatusIconProps {
+    status: string;
+    className?: string;
+}
 // MOLECULES COMPONENTS
 export interface BoardColumnProps {
     issues: Issue[];
