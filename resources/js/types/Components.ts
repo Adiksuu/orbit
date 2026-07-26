@@ -133,6 +133,11 @@ export interface CheckboxProps {
     isDisabled?: boolean;
     className?: string;
 }
+export interface ShowcaseDotsProps {
+    count: number;
+    activeIndex: number;
+    onSelect: (index: number) => void;
+}
 export interface DividerProps {
     label?: ReactNode;
     className?: string;
@@ -333,6 +338,21 @@ export interface AuthFormHeaderProps {
     icon: keyof typeof icons;
     title: string;
     description: string;
+}
+export interface OrbitItem {
+    name: keyof typeof icons;
+    angle: number;
+}
+
+export interface OrbitRingProps {
+    radius: number;
+    duration: number;
+    reverse?: boolean;
+    items: OrbitItem[];
+}
+export interface ShowcaseSlide {
+    text: string;
+    highlightText: string;
 }
 // ORGANISMS COMPONENTS
 export interface CalendarViewProps {

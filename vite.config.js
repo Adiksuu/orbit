@@ -2,6 +2,7 @@
 
 import react from '@vitejs/plugin-react';
 import laravel from 'laravel-vite-plugin';
+import path from 'node:path';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
@@ -19,6 +20,12 @@ export default defineConfig({
         // HMR websocket connects back through the host-mapped port.
         hmr: {
             host: 'localhost',
+        },
+    },
+    resolve: {
+        alias: {
+            '@': '/resources/js',
+            '@assets': path.resolve(__dirname, 'resources/js/assets'),
         },
     },
     test: {
