@@ -14,7 +14,7 @@ export const OrbitGraphic = () => (
                 <img
                     src={image}
                     alt={'Logo'}
-                    className={'h-16 w-16'}
+                    className={'h-16 w-16 object-contain'}
                     width={64}
                     height={64}
                 />

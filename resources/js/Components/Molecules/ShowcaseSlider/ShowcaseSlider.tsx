@@ -47,6 +47,8 @@ export const ShowcaseSlider = ({
             className="relative z-10 flex min-h-[72px] flex-col items-center gap-4 text-center"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
+            onFocus={() => setIsPaused(true)}
+            onBlur={() => setIsPaused(false)}
         >
             <AnimatePresence mode="wait">
                 <motion.p
