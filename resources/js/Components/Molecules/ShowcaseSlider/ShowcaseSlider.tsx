@@ -1,7 +1,11 @@
 import { ShowcaseDots } from '@/Components/Atoms/ShowcaseDots/ShowcaseDots';
-import { ShowcaseSlide } from '@/types/Components';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
+
+export interface ShowcaseSlide {
+    text: string;
+    highlightText: string;
+}
 
 const SLIDES: ShowcaseSlide[] = [
     {
@@ -26,19 +30,24 @@ export const ShowcaseSlider = ({
     autoPlayInterval = 5000,
 }: ShowcaseSliderProps) => {
     const [activeIndex, setActiveIndex] = useState(0);
+    const [isPaused, setIsPaused] = useState(false);
 
     useEffect(() => {
+        if (isPaused) return;
+
         const interval = setInterval(() => {
             setActiveIndex((prev) => (prev + 1) % SLIDES.length);
         }, autoPlayInterval);
 
         return () => clearInterval(interval);
-    }, [autoPlayInterval]);
-
-    const activeSlide = SLIDES[activeIndex];
+    }, [autoPlayInterval, isPaused]);
 
     return (
-        <div className="relative z-10 flex min-h-[72px] flex-col items-center gap-4 text-center">
+        <div
+            className="relative z-10 flex min-h-[72px] flex-col items-center gap-4 text-center"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+        >
             <AnimatePresence mode="wait">
                 <motion.p
                     key={activeIndex}
@@ -48,9 +57,9 @@ export const ShowcaseSlider = ({
                     transition={{ duration: 0.3 }}
                     className="max-w-xs text-xs leading-relaxed text-[var(--text-gray-color)]"
                 >
-                    {activeSlide.text}{' '}
+                    {SLIDES[activeIndex].text}{' '}
                     <span className="font-semibold text-[var(--text-color)]">
-                        {activeSlide.highlightText}
+                        {SLIDES[activeIndex].highlightText}
                     </span>
                 </motion.p>
             </AnimatePresence>

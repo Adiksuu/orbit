@@ -18,6 +18,8 @@ const GuestLayout = ({
                                 src={image}
                                 alt={'Logo'}
                                 className={'h-8 w-8'}
+                                width={32}
+                                height={32}
                             />
                         </div>
                         <span className="text-lg font-semibold tracking-tight text-[var(--text-color)]">
