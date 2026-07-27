@@ -62,7 +62,10 @@ describe('TableHeaderCell Component', () => {
         ) as HTMLElement;
         fireEvent.mouseDown(handle);
 
-        expect(handleMouseDown).toHaveBeenCalledWith('title', expect.anything());
+        expect(handleMouseDown).toHaveBeenCalledWith(
+            'title',
+            expect.anything(),
+        );
     });
 
     test('calls onDoubleClick on the resize handle', () => {

@@ -48,9 +48,7 @@ describe('IssueTableHead Component', () => {
     test('renders the select-all checkbox reflecting isAllSelected', () => {
         renderComponent({ isAllSelected: true });
 
-        expect(
-            document.querySelector('input[type="checkbox"]'),
-        ).toBeChecked();
+        expect(document.querySelector('input[type="checkbox"]')).toBeChecked();
     });
 
     test('calls onSelectAll when the header checkbox is toggled', () => {

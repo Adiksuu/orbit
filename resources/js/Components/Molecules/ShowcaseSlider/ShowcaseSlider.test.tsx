@@ -56,9 +56,12 @@ describe('ShowcaseSlider Component', () => {
         render(<ShowcaseSlider autoPlayInterval={1000} />);
 
         const container = screen
-            .getByText('Built for teams who plan, ship, and track work together', {
-                exact: false,
-            })
+            .getByText(
+                'Built for teams who plan, ship, and track work together',
+                {
+                    exact: false,
+                },
+            )
             .closest('div') as HTMLElement;
 
         fireEvent.mouseEnter(container);
