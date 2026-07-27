@@ -88,17 +88,16 @@ export const ShortcutProvider: React.FC<{ children: React.ReactNode }> = ({
     }, [register, handleOpenHelp]);
 
     useEffect(() => {
-        const unreg = register({
+        return register({
             key: 'ctrl+k',
             description: 'Open Command Palette',
             category: 'Action',
             action: handleOpenHelp,
         });
-        return unreg;
     }, [register, handleOpenHelp]);
 
     useEffect(() => {
-        const unreg = registerBatch([
+        return registerBatch([
             {
                 key: 'alt+p',
                 description: 'Go to Projects',
@@ -123,7 +122,6 @@ export const ShortcutProvider: React.FC<{ children: React.ReactNode }> = ({
                 },
             },
         ]);
-        return unreg;
     }, [registerBatch]);
 
     const triggerShortcut = useCallback(

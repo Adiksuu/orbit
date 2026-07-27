@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Repositories\UserRepository;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
@@ -11,7 +12,7 @@ class UserService
 {
     public function __construct(protected UserRepository $userRepository) {}
 
-    public function getAssignableUsers() {
+    public function getAssignableUsers(): Collection {
         return $this->userRepository->getAssignableUsers();
     }
 

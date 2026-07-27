@@ -2,9 +2,11 @@
 namespace App\Repositories;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 
 class UserRepository {
-    public function getAssignableUsers() {
+    public function getAssignableUsers(): Collection
+    {
         return User::query()->select('id', 'name', 'avatar')->get();
     }
 

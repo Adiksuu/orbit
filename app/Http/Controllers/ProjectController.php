@@ -6,10 +6,14 @@ use App\Models\Project;
 use App\Services\IssueService;
 use App\Services\ProjectService;
 use App\Services\UserService;
+use Illuminate\Container\EntryNotFoundException;
+use Illuminate\Contracts\Container\CircularDependencyException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class ProjectController extends Controller
 {
@@ -23,6 +27,12 @@ class ProjectController extends Controller
         $this->userService = $userService;
     }
 
+    /**
+     * @throws CircularDependencyException
+     * @throws EntryNotFoundException
+     * @throws NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     */
     public function show(Request $request, Project $project): Response
     {
         $projects = $this->projectService->getAll();
@@ -51,7 +61,7 @@ class ProjectController extends Controller
         ]);
     }
 
-    public function index(Project $project): Response
+    public function index(): Response
     {
         $projects = Project::with('issues')->latest()->get();
 

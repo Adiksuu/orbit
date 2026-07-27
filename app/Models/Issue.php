@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\IssueLabel;
+use Database\Factories\IssueFactory;
 use Illuminate\Database\Eloquent\Casts\AsEnumArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Issue extends Model
 {
-    /** @use HasFactory<\Database\Factories\IssueFactory> */
+    /** @use HasFactory<IssueFactory> */
     use HasFactory;
     protected $fillable = [
         'id',

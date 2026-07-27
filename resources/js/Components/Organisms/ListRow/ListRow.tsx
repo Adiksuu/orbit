@@ -37,7 +37,7 @@ export const ListRow = ({
 }: ListRowProps) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
-    const menuRef = useRef<HTMLTableDataCellElement>(null);
+    const menuRef = useRef<HTMLTableCellElement>(null);
 
     const handleContextMenu = (e: React.MouseEvent) => {
         e.preventDefault();
