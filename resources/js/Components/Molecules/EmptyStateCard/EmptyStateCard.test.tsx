@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 import EmptyStateCard from './EmptyStateCard';
+import React from 'react';
 
 const { triggerShortcut } = vi.hoisted(() => ({
     triggerShortcut: vi.fn(),

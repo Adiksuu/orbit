@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 import IssueElement from './IssueElement';
+import React from 'react';
 
 const makeAssignee = (name = 'Jane Doe') => ({
     avatar: '/jane.png',

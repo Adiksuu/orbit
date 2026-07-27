@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { ReactNode } from 'react';
 import { describe, expect, test, vi } from 'vitest';
 import IconButton from './IconButton';
 
@@ -9,7 +10,7 @@ vi.mock('@inertiajs/react', () => ({
         href,
         ...props
     }: {
-        children: React.ReactNode;
+        children: ReactNode;
         href: string;
     }) => (
         <a href={href} {...props}>

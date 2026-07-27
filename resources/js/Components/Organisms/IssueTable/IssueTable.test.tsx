@@ -4,6 +4,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import IssueTable from './IssueTable';
+import React from 'react';
 
 const mockAddAlert = vi.fn();
 
@@ -232,7 +233,7 @@ describe('IssueTable Component', () => {
     });
 
     test('renders sort indicator when column is sorted AZ', () => {
-        const { container } = render(
+        render(
             <IssueTable
                 issues={[]}
                 activeIssue={null}
@@ -246,7 +247,7 @@ describe('IssueTable Component', () => {
     });
 
     test('renders sort indicator when column is sorted ZA', () => {
-        const { container } = render(
+        render(
             <IssueTable
                 issues={[]}
                 activeIssue={null}
@@ -347,7 +348,7 @@ describe('IssueTable Component', () => {
     });
 
     test('renders unsorted header icons for non-active columns', () => {
-        const { container } = render(
+        render(
             <IssueTable
                 issues={[]}
                 activeIssue={null}
@@ -619,7 +620,7 @@ describe('IssueTable Component', () => {
 
     test('opens the column settings dropdown and resets column sizes', async () => {
         const user = userEvent.setup();
-        const { container } = render(
+        render(
             <IssueTable
                 issues={[]}
                 activeIssue={null}

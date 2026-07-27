@@ -4,6 +4,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import IssueDetail from './IssueDetail';
+import React from 'react';
 
 const mockPatch = vi.hoisted(() =>
     vi.fn((_url: string, opts?: { onSuccess?: () => void }) =>

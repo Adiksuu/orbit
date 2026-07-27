@@ -30,9 +30,7 @@ describe('AuthShowcase Component', () => {
     });
 
     test('renders the central Orbit icon', () => {
-        const { container } = render(
-            <AuthShowcase title="Title" description="Description" />,
-        );
+        render(<AuthShowcase title="Title" description="Description" />);
 
         expect(screen.getByAltText(/logo/i)).toBeInTheDocument();
     });

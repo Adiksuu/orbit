@@ -102,11 +102,6 @@ afterEach(() => {
     formState.errors = {};
 });
 
-const getPanel = () =>
-    screen
-        .getByText('Create New Issue')
-        .closest('div[class*="rounded-2xl"]') as HTMLElement;
-
 describe('NewIssueModal Component', () => {
     test('renders the modal header', () => {
         render(
