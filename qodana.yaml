@@ -27,6 +27,9 @@ include:
   - name: PhpUnhandledExceptionInspection
   - name: CheckDependencyLicenses
 
+bootstrap: |
+  npm install
+
 # Quality Gate
 failureConditions:
   severityThresholds:

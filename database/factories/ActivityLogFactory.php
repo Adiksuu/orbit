@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\ActivityLog;
+use App\Models\Project;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -19,7 +20,7 @@ class ActivityLogFactory extends Factory
     public function definition(): array
     {
         return [
-            'project_id' => \App\Models\Project::factory(),
+            'project_id' => Project::factory(),
             'user_id' => User::factory(),
             'body' => fake()->sentence(),
         ];
