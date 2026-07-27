@@ -17,7 +17,7 @@ class ProjectService
     public function createProject(array $data): Project {
         $data['slug'] = Str::slug($data['name']);
         $project = $this->projectRepository->store($data);
-        $this->activityLogService->log($project->id, "Created project: {$project->name}");
+        $this->activityLogService->log($project->id, "Created project: $project->name");
 
         return $project;
     }
