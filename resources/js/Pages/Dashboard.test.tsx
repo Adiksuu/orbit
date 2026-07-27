@@ -5,6 +5,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 import Dashboard from './Dashboard';
+import React from 'react';
 
 vi.mock('@/context/ShortcutContext', () => ({
     useShortcuts: () => ({

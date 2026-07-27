@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 import Index from './Index';
+import React from 'react';
 
 const mockTriggerShortcut = vi.hoisted(() => vi.fn());
 
