@@ -7,7 +7,7 @@ version: "1.0"
 linter: qodana-php
 
 php:
-  version: "8.3"
+  version: "8.4"
 
 profile:
   name: qodana.recommended
@@ -21,6 +21,7 @@ exclude:
       - var/
       - public/build/
       - tests/_output/
+  - name: DuplicatedCode
 
 include:
   - name: PhpCSFixerValidationInspection
