@@ -232,6 +232,26 @@ test('it can sort issues by start_date, end_date and updated', function () {
     expect($byUpdated->items())->toHaveCount(2);
 });
 
+test('it can delete an issue', function () {
+    $issue = Issue::factory()->create();
+
+    $this->repository->delete($issue);
+
+    $this->assertDatabaseMissing('issues', ['id' => $issue->id]);
+});
+
+test('it can bulk delete issues, only affecting the given ids', function () {
+    $toDelete = Issue::factory()->count(2)->create();
+    $toKeep = Issue::factory()->create();
+
+    $this->repository->bulkDelete($toDelete->pluck('id')->toArray());
+
+    foreach ($toDelete as $issue) {
+        $this->assertDatabaseMissing('issues', ['id' => $issue->id]);
+    }
+    $this->assertDatabaseHas('issues', ['id' => $toKeep->id]);
+});
+
 test('it can filter issues by assignee given as an array instead of a comma string', function () {
     $project = Project::factory()->create();
     $first = User::factory()->create();

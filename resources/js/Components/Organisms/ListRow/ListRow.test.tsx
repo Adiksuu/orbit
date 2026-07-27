@@ -141,20 +141,6 @@ describe('ListRow Component', () => {
         expect(handleSelect).toHaveBeenCalledWith(issue);
     });
 
-    test('calls onToggleExpand and does not trigger row onClick when the expand chevron is clicked', async () => {
-        const handleClick = vi.fn();
-        const handleToggle = vi.fn();
-        renderRow({ onClick: handleClick, onToggleExpand: handleToggle });
-
-        const expandToggle = document.querySelector(
-            '[data-column="expand-and-checkbox"] > div > div',
-        ) as HTMLElement;
-        await userEvent.click(expandToggle);
-
-        expect(handleToggle).toHaveBeenCalledTimes(1);
-        expect(handleClick).not.toHaveBeenCalled();
-    });
-
     test('pressing Enter on the row calls onClick', () => {
         const handleClick = vi.fn();
         renderRow({ onClick: handleClick });
@@ -167,18 +153,6 @@ describe('ListRow Component', () => {
         expect(handleClick).toHaveBeenCalledTimes(1);
     });
 
-    test('pressing Space on the row calls onToggleExpand', () => {
-        const handleToggle = vi.fn();
-        renderRow({ onToggleExpand: handleToggle });
-
-        const row = screen
-            .getByText('Fix the login page')
-            .closest('tr') as HTMLElement;
-        fireEvent.keyDown(row, { key: ' ' });
-
-        expect(handleToggle).toHaveBeenCalledTimes(1);
-    });
-
     test('applies a line-through title and dimmed checkbox when the issue is closed', () => {
         renderRow({ isClosed: true });
 
@@ -187,23 +161,6 @@ describe('ListRow Component', () => {
 
         const checkbox = screen.getByRole('checkbox');
         expect(checkbox).toHaveClass('opacity-20');
-    });
-
-    test('shows the row detail panel when isExpanded is true', () => {
-        renderRow({
-            isExpanded: true,
-            issue: makeIssue({ milestone: 'v1.0' }),
-        });
-
-        expect(screen.getByText('Issue Details')).toBeInTheDocument();
-        expect(screen.getByText('System Info')).toBeInTheDocument();
-        expect(screen.getByText('v1.0')).toBeInTheDocument();
-    });
-
-    test('does not show the row detail panel when isExpanded is false/undefined', () => {
-        renderRow({ isExpanded: false });
-
-        expect(screen.queryByText('Issue Details')).not.toBeInTheDocument();
     });
 
     describe('context menu', () => {
@@ -216,7 +173,6 @@ describe('ListRow Component', () => {
             fireEvent.contextMenu(row);
 
             expect(screen.getByText('Open in modal')).toBeInTheDocument();
-            expect(screen.getByText('Open details')).toBeInTheDocument();
             expect(screen.getByText('Modify')).toBeInTheDocument();
             expect(screen.getByText('Remove')).toBeInTheDocument();
         });

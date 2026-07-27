@@ -32,8 +32,8 @@ class IssueController extends Controller
 
         $changesSummary = $this->issueService->summarizeChanges($issue, $before);
         $message = $changesSummary
-            ? "Issue #{$issue->id} \"{$issue->title}\" updated: {$changesSummary}."
-            : "Issue #{$issue->id} \"{$issue->title}\" saved — no changes detected.";
+            ? "Issue #$issue->id \"$issue->title\" updated: $changesSummary."
+            : "Issue #$issue->id \"$issue->title\" saved — no changes detected.";
 
         return redirect()->back()
             ->with('success', $message)
@@ -56,7 +56,26 @@ class IssueController extends Controller
         $issue = $this->issueService->createIssue($data);
 
         return redirect()->back()
-            ->with('success', "Issue #{$issue->id} \"{$issue->title}\" has been created successfully.")
+            ->with('success', "Issue #$issue->id \"$issue->title\" has been created successfully.")
             ->with('action_url', route('projects.show', $issue->project_id) . '?issue=' . $issue->id);
+    }
+    public function destroy(Issue $issue): RedirectResponse
+    {
+        $this->issueService->deleteIssue($issue);
+
+        return redirect()->back()
+            ->with('success', "Issue #$issue->id \"$issue->title\" has been deleted successfully.");
+    }
+    public function bulkDestroy(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['required', 'integer', 'exists:issues,id'],
+        ]);
+
+        $this->issueService->bulkDeleteIssues($validated['ids']);
+
+        return redirect()->back()
+            ->with('success', "Selected issues have been deleted successfully.");
     }
 }

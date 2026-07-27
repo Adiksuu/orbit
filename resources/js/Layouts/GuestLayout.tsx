@@ -1,6 +1,6 @@
-import Icon from '@/Components/Atoms/Icon/Icon';
 import AuthShowcase from '@/Components/Organisms/AuthShowcase/AuthShowcase';
 import { GuestLayoutProps } from '@/types/Components';
+import image from '@assets/logo.png';
 import { Link } from '@inertiajs/react';
 
 const GuestLayout = ({
@@ -13,11 +13,13 @@ const GuestLayout = ({
             <div className="grid w-full grid-cols-1 overflow-hidden bg-[var(--bg-color)] lg:grid-cols-2">
                 <div className="flex min-h-screen flex-col justify-between gap-10 px-6 py-8 sm:px-10 lg:min-h-0 lg:px-14 lg:py-12">
                     <Link href="/" className="flex w-fit items-center gap-2">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--accent-color)]">
-                            <Icon
-                                name="Orbit"
-                                size={18}
-                                className="text-white"
+                        <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg bg-transparent">
+                            <img
+                                src={image}
+                                alt={'Logo'}
+                                className={'h-8 w-8 object-contain'}
+                                width={32}
+                                height={32}
                             />
                         </div>
                         <span className="text-lg font-semibold tracking-tight text-[var(--text-color)]">

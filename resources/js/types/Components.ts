@@ -12,6 +12,8 @@ import {
     IssuePageLooks,
     IssuePriority,
     ProductivityTrendProps,
+    Sorting,
+    SortingColumn,
 } from '@/types/Issues';
 import { Project } from '@/types/Projects';
 import { AssignableUser } from '@/types/Users';
@@ -133,8 +135,21 @@ export interface CheckboxProps {
     isDisabled?: boolean;
     className?: string;
 }
+export interface ShowcaseDotsProps {
+    count: number;
+    activeIndex: number;
+    onSelect: (index: number) => void;
+}
 export interface DividerProps {
     label?: ReactNode;
+    className?: string;
+}
+export interface PriorityIconProps {
+    priority: string;
+    className?: string;
+}
+export interface StatusIconProps {
+    status: string;
     className?: string;
 }
 // MOLECULES COMPONENTS
@@ -174,8 +189,6 @@ export interface IssueElementProps {
     handleSelectIssueCheckbox?: (issue: Issue | string) => void;
     enabledColumns?: Record<string, boolean>;
     rowHeight?: number;
-    isExpanded?: boolean;
-    onToggleExpand?: () => void;
 }
 export interface IssuePropertyProps {
     label: string;
@@ -284,24 +297,6 @@ export interface SelectionDropdownProps {
     onChange: (value: string) => void;
     trigger: ReactNode;
 }
-export interface DetailAttributesProps {
-    issue: Issue;
-}
-export interface DetailSystemInfoProps {
-    issue: Issue;
-}
-export interface DetailDescriptionProps {
-    issue: Issue;
-    onOpenDetails: () => void;
-}
-export interface InfoItemProps {
-    label: string;
-    children: ReactNode;
-}
-export interface IssueRowDetailProps {
-    issue: Issue;
-    onOpenDetails: () => void;
-}
 export interface FormFieldProps {
     id: string;
     label: string;
@@ -333,6 +328,34 @@ export interface AuthFormHeaderProps {
     icon: keyof typeof icons;
     title: string;
     description: string;
+}
+export interface OrbitItem {
+    name: keyof typeof icons;
+    angle: number;
+}
+
+export interface OrbitRingProps {
+    radius: number;
+    duration: number;
+    reverse?: boolean;
+    items: OrbitItem[];
+}
+export interface BulkActionBarProps {
+    selectedCount: number;
+    onBulkDelete: () => void;
+    isDeleting: boolean;
+}
+export interface TableHeaderCellProps {
+    column: SortingColumn;
+    label: string;
+    width: number;
+    isResizing: boolean;
+    currentSort?: SortingColumn;
+    currentDirection?: Sorting;
+    canSort: boolean;
+    onSort: (column: SortingColumn) => void;
+    onMouseDown: (column: string, e: React.MouseEvent<HTMLDivElement>) => void;
+    onDoubleClick: (column: string) => void;
 }
 // ORGANISMS COMPONENTS
 export interface CalendarViewProps {
@@ -399,17 +422,39 @@ export interface ListRowProps {
     isActive: boolean;
     onClick: () => void;
     onModify?: () => void;
+    onRemove?: () => void;
     isClosed: boolean;
     handleSelectIssueCheckbox?: (issue: Issue | string) => void;
     enabledColumns?: Record<string, boolean>;
     rowHeight?: number;
-    isExpanded?: boolean;
-    onToggleExpand?: () => void;
 }
 
 export interface AuthShowcaseProps {
     title: ReactNode;
     description: ReactNode;
+}
+export interface HeaderConfig {
+    label: string;
+    value: SortingColumn;
+}
+
+export interface IssueTableHeadProps {
+    headers: HeaderConfig[];
+    resolvedColumnWidths: Record<string, number>;
+    isAllSelected: boolean;
+    onSelectAll: () => void;
+    isResizing: string | null;
+    isResizingHeight: boolean;
+    currentSort?: SortingColumn;
+    currentDirection?: Sorting;
+    hasQueryParams: boolean;
+    enabledColumns: Record<string, boolean>;
+    rowHeight: number;
+    onSort: (column: SortingColumn) => void;
+    onMouseDown: (column: string, e: React.MouseEvent) => void;
+    onDoubleClick: (column: string) => void;
+    onHeightMouseDown: (e: React.MouseEvent) => void;
+    onColumnToggle: (columnValue: string) => void;
 }
 
 // OTHER COMPONENTS

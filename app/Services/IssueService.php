@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Issue;
 use App\Models\User;
 use App\Repositories\IssueRepository;
+use BackedEnum;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
@@ -13,7 +14,7 @@ class IssueService
     /**
      * Issue fields that are tracked for change detection, keyed by their human-readable label.
      */
-    private const TRACKED_FIELDS = [
+    private const array TRACKED_FIELDS = [
         'title' => 'title',
         'description' => 'description',
         'status' => 'status',
@@ -41,7 +42,7 @@ class IssueService
                 $issue->assignee_id,
                 'info',
                 'You were assigned to an issue',
-                auth()->user()?->name . " assigned you to \"{$issue->title}\" (#{$issue->id}).",
+                auth()->user()?->name . " assigned you to \"$issue->title\" (#$issue->id).",
                 $this->buildActionUrl($issue)
             );
         }
@@ -68,7 +69,7 @@ class IssueService
 
         $this->activityLogService->log(
             $issue->project_id,
-            "Issue #{$issue->id} \"{$issue->title}\" updated by " . ($actor?->name ?? 'someone') . ': ' . $this->summarize($changes)
+            "Issue #$issue->id \"$issue->title\" updated by " . ($actor?->name ?? 'someone') . ': ' . $this->summarize($changes)
         );
 
         $this->notifyIssueUpdate($issue, $actor, $changes);
@@ -134,15 +135,15 @@ class IssueService
     private function describeChange(string $field, mixed $old, mixed $new): string
     {
         return match ($field) {
-            'title' => "title changed to \"{$new}\"",
+            'title' => "title changed to \"$new\"",
             'description' => 'description was updated',
-            'status' => "status changed from \"{$old}\" to \"{$new}\"",
-            'priority' => "priority changed from \"{$old}\" to \"{$new}\"",
+            'status' => "status changed from \"$old\" to \"$new\"",
+            'priority' => "priority changed from \"$old\" to \"$new\"",
             'assignee_id' => $this->describeAssigneeChange($old, $new),
             'labels' => 'labels changed to [' . $this->formatLabels($new) . ']',
             'start_date' => 'start date changed to ' . ($new ?: 'none'),
             'end_date' => 'end date changed to ' . ($new ?: 'none'),
-            default => "{$field} updated",
+            default => "$field updated",
         };
     }
 
@@ -151,7 +152,7 @@ class IssueService
         $oldName = $oldId ? (User::find($oldId)?->name ?? 'someone') : 'Unassigned';
         $newName = $newId ? (User::find($newId)?->name ?? 'someone') : 'Unassigned';
 
-        return "assignee changed from {$oldName} to {$newName}";
+        return "assignee changed from $oldName to $newName";
     }
 
     private function formatLabels(mixed $labels, string $glue = ', '): string
@@ -161,7 +162,7 @@ class IssueService
         }
 
         return collect($labels)
-            ->map(fn ($label) => $label instanceof \BackedEnum ? $label->value : (string) $label)
+            ->map(fn ($label) => $label instanceof BackedEnum ? $label->value : (string) $label)
             ->sort()
             ->values()
             ->implode($glue);
@@ -194,8 +195,8 @@ class IssueService
             $this->notificationService->notify(
                 $actorId,
                 'info',
-                "Issue #{$issue->id} updated",
-                "You updated \"{$issue->title}\": {$fullSummary}.",
+                "Issue #$issue->id updated",
+                "You updated \"$issue->title\": $fullSummary.",
                 $actionUrl
             );
         }
@@ -214,15 +215,15 @@ class IssueService
                     $oldAssigneeId,
                     'info',
                     'You were unassigned from an issue',
-                    "{$actorName} unassigned you from \"{$issue->title}\" (#{$issue->id}).",
+                    "$actorName unassigned you from \"$issue->title\" (#$issue->id).",
                     $actionUrl
                 );
             }
 
             if ($newAssigneeId && $newAssigneeId !== $actorId) {
-                $message = "{$actorName} assigned you to \"{$issue->title}\" (#{$issue->id}).";
+                $message = "$actorName assigned you to \"$issue->title\" (#$issue->id).";
                 if ($otherSummary) {
-                    $message .= " Also: {$otherSummary}.";
+                    $message .= " Also: $otherSummary.";
                 }
 
                 $this->notificationService->notify(
@@ -241,10 +242,17 @@ class IssueService
             $this->notificationService->notify(
                 $issue->assignee_id,
                 'info',
-                "Issue #{$issue->id} updated",
-                "{$actorName} updated \"{$issue->title}\", which is assigned to you: {$otherSummary}.",
+                "Issue #$issue->id updated",
+                "$actorName updated \"$issue->title\", which is assigned to you: $otherSummary.",
                 $actionUrl
             );
         }
+    }
+    public function deleteIssue(Issue $issue): void {
+        $this->issueRepository->delete($issue);
+        $this->activityLogService->log($issue->project_id, "Deleted issue #$issue->id \"$issue->title\"");
+    }
+    public function bulkDeleteIssues(array $issues): void {
+        $this->issueRepository->bulkDelete($issues);
     }
 }

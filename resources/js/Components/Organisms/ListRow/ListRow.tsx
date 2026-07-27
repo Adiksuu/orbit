@@ -1,31 +1,25 @@
-import Badge from '@/Components/Atoms/Badge/Badge';
 import DropdownItem from '@/Components/Atoms/DropdownItem/DropdownItem';
 import DropdownMenu from '@/Components/Atoms/DropdownMenu/DropdownMenu';
 import Icon from '@/Components/Atoms/Icon/Icon';
 import IconButton from '@/Components/Atoms/IconButton/IconButton';
-import StatusDot from '@/Components/Atoms/StatusDot/StatusDot';
-import { IssueRowDetail } from '@/Components/Molecules/IssueRowDetail/IssueRowDetail';
+import { PriorityIcon } from '@/Components/Atoms/PriorityIcon/PriorityIcon';
+import { StatusIcon } from '@/Components/Atoms/StatusIcon/StatusIcon';
 import LabelList from '@/Components/Molecules/LabelList/LabelList';
 import UserBadge from '@/Components/Molecules/UserBadge/UserBadge';
 import { ListRowProps } from '@/types/Components';
 import { cn } from '@/utils/cn';
 import { formatTimeAgo } from '@/utils/time';
-import { listRowVariants, priorityTextColor } from '@/utils/variants';
-import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronRight } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-const tdClass =
-    'px-4 border-b border-zinc-800/40 group-last/row:border-b-0 align-middle';
-
-const expandedTdClass =
-    'px-4 border-b border-zinc-700/20 align-middle bg-zinc-800/20';
+const cellBase =
+    'px-3 py-2 border-b border-white/[0.04] align-middle text-[12px] font-normal';
 
 export const ListRow = ({
     issue,
     isActive,
     onClick,
     onModify,
+    onRemove,
     isClosed,
     handleSelectIssueCheckbox,
     enabledColumns = {
@@ -39,13 +33,17 @@ export const ListRow = ({
         start_date: false,
         end_date: false,
     },
-    rowHeight = 44,
-    isExpanded,
-    onToggleExpand,
+    rowHeight = 36,
 }: ListRowProps) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
     const menuRef = useRef<HTMLTableDataCellElement>(null);
+
+    const handleContextMenu = (e: React.MouseEvent) => {
+        e.preventDefault();
+        setMenuPosition({ x: e.clientX, y: e.clientY });
+        setIsMenuOpen(true);
+    };
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -60,10 +58,8 @@ export const ListRow = ({
         if (isMenuOpen) {
             document.addEventListener('mousedown', handleClickOutside);
         }
-
-        return () => {
+        return () =>
             document.removeEventListener('mousedown', handleClickOutside);
-        };
     }, [isMenuOpen]);
 
     const handleRowClick = (e: React.MouseEvent) => {
@@ -74,30 +70,7 @@ export const ListRow = ({
         ) {
             return;
         }
-
         onClick();
-    };
-
-    const handleExpandClick = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        onToggleExpand?.();
-    };
-
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            onClick();
-        }
-        if (e.key === ' ') {
-            e.preventDefault();
-            onToggleExpand?.();
-        }
-    };
-
-    const handleContextMenu = (e: React.MouseEvent) => {
-        e.preventDefault();
-        setMenuPosition({ x: e.clientX, y: e.clientY });
-        setIsMenuOpen(true);
     };
 
     const handleEllipsisClick = (e: React.MouseEvent) => {
@@ -107,76 +80,48 @@ export const ListRow = ({
         setIsMenuOpen(!isMenuOpen);
     };
 
-    const handleAction = (action: () => void) => {
-        action();
-        setIsMenuOpen(false);
-    };
-
     return (
         <>
             <tr
                 onClick={handleRowClick}
                 onContextMenu={handleContextMenu}
-                onKeyDown={handleKeyDown}
                 tabIndex={0}
-                role="button"
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter') onClick();
+                    if (e.key === ' ') {
+                        e.preventDefault();
+                    }
+                }}
                 className={cn(
-                    listRowVariants({ isActive }),
-                    'group/row cursor-pointer outline-none focus-visible:bg-zinc-800/50',
-                    isExpanded && 'active-row-expanded bg-zinc-800/20',
+                    'group/row cursor-pointer select-none transition-colors hover:bg-white/[0.03]',
+                    isActive && 'bg-white/[0.06]',
                 )}
                 style={{ height: rowHeight }}
             >
                 <td
-                    className={cn(
-                        isExpanded ? expandedTdClass : tdClass,
-                        'w-[48px] text-center',
-                    )}
+                    className={cn(cellBase, 'w-[48px] px-2 text-center')}
                     data-column="expand-and-checkbox"
                 >
-                    <div className="flex items-center justify-center gap-2">
-                        <motion.div
-                            animate={{ rotate: isExpanded ? 90 : 0 }}
-                            transition={{ duration: 0.2 }}
+                    <div className="flex items-center justify-center gap-1">
+                        <input
+                            type="checkbox"
                             className={cn(
-                                'rounded-md p-1 transition-colors',
-                                isExpanded
-                                    ? 'bg-[var(--accent-color)]/10 text-[var(--accent-color)]'
-                                    : 'text-zinc-500 hover:bg-zinc-800 hover:text-zinc-200',
+                                'h-3.5 w-3.5 cursor-pointer rounded border-zinc-700/60 bg-zinc-900/50 text-indigo-500 transition-opacity focus:ring-0',
+                                !issue?.isChecked &&
+                                    'opacity-0 group-hover/row:opacity-100',
+                                isClosed && 'opacity-20',
                             )}
-                            onClick={handleExpandClick}
-                            aria-expanded={isExpanded}
-                        >
-                            <ChevronRight size={14} />
-                        </motion.div>
-                        <div
+                            checked={issue?.isChecked || false}
+                            onChange={() => handleSelectIssueCheckbox?.(issue)}
                             onClick={(e) => e.stopPropagation()}
-                            data-column="checkbox"
-                        >
-                            <input
-                                type="checkbox"
-                                className={cn(
-                                    'h-3.5 w-3.5 cursor-pointer rounded border-zinc-700 bg-zinc-800/50 text-[var(--accent-color)] focus:ring-1 focus:ring-[var(--accent-color)] focus:ring-offset-zinc-950',
-                                    isClosed
-                                        ? 'opacity-20'
-                                        : isExpanded
-                                          ? 'opacity-100'
-                                          : 'opacity-60 group-hover/row:opacity-100',
-                                )}
-                                checked={issue?.isChecked}
-                                onChange={() =>
-                                    handleSelectIssueCheckbox &&
-                                    handleSelectIssueCheckbox(issue)
-                                }
-                            />
-                        </div>
+                        />
                     </div>
                 </td>
                 {enabledColumns.id && (
                     <td
                         className={cn(
-                            isExpanded ? expandedTdClass : tdClass,
-                            'w-[70px] font-semibold text-[var(--pending-color)]',
+                            cellBase,
+                            'w-[75px] font-mono text-[11px] text-zinc-500',
                         )}
                         data-column="id"
                     >
@@ -185,36 +130,30 @@ export const ListRow = ({
                 )}
                 {enabledColumns.title && (
                     <td
-                        className={cn(
-                            isExpanded ? expandedTdClass : tdClass,
-                            'truncate pr-4 font-medium',
-                            isClosed
-                                ? 'text-zinc-500 line-through'
-                                : 'text-zinc-200',
-                        )}
+                        className={cn(cellBase, 'truncate text-zinc-200')}
                         data-column="title"
                     >
-                        {issue.title}
+                        <span
+                            className={cn(
+                                'truncate font-medium',
+                                isClosed && 'text-zinc-500 line-through',
+                            )}
+                        >
+                            {issue.title}
+                        </span>
                     </td>
                 )}
                 {enabledColumns.status && (
                     <td
-                        className={isExpanded ? expandedTdClass : tdClass}
+                        className={cn(cellBase, 'w-[36px]')}
                         data-column="status"
                     >
-                        <Badge
-                            color={issue.status}
-                            variant="default"
-                            className="inline-flex h-6 items-center gap-1.5 rounded-md border border-zinc-700/20 bg-zinc-800/30 px-2 py-0.5 text-[11px] text-zinc-300"
-                        >
-                            <StatusDot status={issue.status} />
-                            {issue.status}
-                        </Badge>
+                        <StatusIcon status={issue.status} />
                     </td>
                 )}
                 {enabledColumns.assignee && (
                     <td
-                        className={isExpanded ? expandedTdClass : tdClass}
+                        className={cn(cellBase, 'text-zinc-400')}
                         data-column="assignee"
                     >
                         <UserBadge
@@ -226,33 +165,17 @@ export const ListRow = ({
                 )}
                 {enabledColumns.priority && (
                     <td
-                        className={isExpanded ? expandedTdClass : tdClass}
+                        className={cn(cellBase, 'w-[36px]')}
                         data-column="priority"
                     >
-                        <Badge
-                            color={issue.priority}
-                            variant="default"
-                            className="inline-flex h-6 items-center gap-1.5 rounded-md border border-zinc-700/20 bg-zinc-800/30 px-2 py-0.5"
-                        >
-                            <StatusDot status={issue.priority} />
-                            <span
-                                className={priorityTextColor({
-                                    priority: issue.priority as any,
-                                })}
-                            >
-                                {issue.priority}
-                            </span>
-                        </Badge>
+                        <PriorityIcon priority={issue.priority} />
                     </td>
                 )}
                 {enabledColumns.labels && (
-                    <td
-                        className={isExpanded ? expandedTdClass : tdClass}
-                        data-column="labels"
-                    >
+                    <td className={cellBase} data-column="labels">
                         <LabelList
                             labels={issue.labels || []}
-                            badgeClassName="text-[10px] px-1.5 py-0.5"
+                            badgeClassName="text-[10px] px-1.5 py-0.2"
                             isClosed={isClosed}
                         />
                     </td>
@@ -260,8 +183,8 @@ export const ListRow = ({
                 {enabledColumns.updated && (
                     <td
                         className={cn(
-                            isExpanded ? expandedTdClass : tdClass,
-                            'whitespace-nowrap font-medium text-zinc-400',
+                            cellBase,
+                            'whitespace-nowrap text-[11px] text-zinc-500',
                         )}
                         data-column="updated"
                     >
@@ -271,8 +194,8 @@ export const ListRow = ({
                 {enabledColumns.start_date && (
                     <td
                         className={cn(
-                            isExpanded ? expandedTdClass : tdClass,
-                            'whitespace-nowrap font-medium text-zinc-400',
+                            cellBase,
+                            'whitespace-nowrap text-[11px] text-zinc-500',
                         )}
                         data-column="start_date"
                     >
@@ -282,38 +205,31 @@ export const ListRow = ({
                 {enabledColumns.end_date && (
                     <td
                         className={cn(
-                            isExpanded ? expandedTdClass : tdClass,
-                            'whitespace-nowrap font-medium text-zinc-400',
+                            cellBase,
+                            'whitespace-nowrap text-[11px] text-zinc-500',
                         )}
                         data-column="end_date"
                     >
                         {issue.end_date}
                     </td>
                 )}
+                <td className={cellBase} aria-hidden="true" />
                 <td
-                    className={cn(
-                        isExpanded ? expandedTdClass : tdClass,
-                        'text-right',
-                    )}
-                    onClick={(e) => e.stopPropagation()}
+                    className={cn(cellBase, 'w-[50px] text-right')}
                     data-column="actions"
                     ref={menuRef}
                 >
                     <IconButton
-                        iconName={'Ellipsis'}
+                        iconName="Ellipsis"
                         onClick={handleEllipsisClick}
                         className={cn(
-                            'rounded-md p-1 text-zinc-500 hover:bg-zinc-800/60',
-                            isClosed
-                                ? 'opacity-20'
-                                : isMenuOpen || isExpanded
-                                  ? 'opacity-100'
-                                  : 'opacity-0 group-hover/row:opacity-100',
+                            'rounded p-1 text-zinc-500 opacity-0 hover:bg-white/10 hover:text-zinc-200 group-hover/row:opacity-100',
+                            isMenuOpen && 'opacity-100',
                         )}
-                    ></IconButton>
+                    />
                     {isMenuOpen && (
                         <div
-                            className="fixed z-[9999] w-48 shadow-2xl"
+                            className="fixed z-[9999] w-48 bg-transparent p-1"
                             style={{
                                 top: `${menuPosition.y}px`,
                                 left: `${menuPosition.x > window.innerWidth - 200 ? menuPosition.x - 192 : menuPosition.x}px`,
@@ -322,83 +238,50 @@ export const ListRow = ({
                             <DropdownMenu>
                                 <DropdownItem
                                     label={
-                                        <div className="flex items-center gap-2">
-                                            <Icon name="Maximize2" size={14} />
+                                        <div className="flex items-center gap-2 text-xs">
+                                            <Icon name="Maximize2" size={13} />
                                             <span>Open in modal</span>
                                         </div>
                                     }
-                                    onClick={() => handleAction(onClick)}
-                                    variant="info"
+                                    onClick={() => {
+                                        onClick();
+                                        setIsMenuOpen(false);
+                                    }}
                                 />
                                 <DropdownItem
                                     label={
-                                        <div className="flex items-center gap-2">
-                                            <Icon
-                                                name="ExternalLink"
-                                                size={14}
-                                            />
-                                            <span>Open details</span>
-                                        </div>
-                                    }
-                                    onClick={() => handleAction(onClick)}
-                                    variant="success"
-                                />
-                                <DropdownItem
-                                    label={
-                                        <div className="flex items-center gap-2">
-                                            <Icon name="Pencil" size={14} />
+                                        <div className="flex items-center gap-2 text-xs">
+                                            <Icon name="Pencil" size={13} />
                                             <span>Modify</span>
                                         </div>
                                     }
-                                    onClick={() =>
-                                        onModify && handleAction(onModify)
-                                    }
-                                    variant="warning"
+                                    onClick={() => {
+                                        if (onModify) {
+                                            onModify();
+                                            setIsMenuOpen(false);
+                                        }
+                                    }}
                                 />
-                                <div className="my-1 border-t border-zinc-800/50" />
                                 <DropdownItem
                                     label={
-                                        <div className="flex items-center gap-2">
-                                            <Icon name="Trash2" size={14} />
+                                        <div className="flex items-center gap-2 text-xs">
+                                            <Icon name="Trash2" size={13} />
                                             <span>Remove</span>
                                         </div>
                                     }
-                                    disabled
-                                    variant="danger"
+                                    disabled={!onRemove}
+                                    onClick={() => {
+                                        if (onRemove) {
+                                            onRemove();
+                                            setIsMenuOpen(false);
+                                        }
+                                    }}
                                 />
                             </DropdownMenu>
                         </div>
                     )}
                 </td>
             </tr>
-            <AnimatePresence initial={false}>
-                {isExpanded && (
-                    <tr className="bg-zinc-800/10">
-                        <td
-                            colSpan={100}
-                            className="border-b border-zinc-700/30 p-0"
-                        >
-                            <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: 'auto', opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                transition={{
-                                    duration: 0.25,
-                                    ease: [0.23, 1, 0.32, 1],
-                                }}
-                                className="w-full overflow-hidden"
-                            >
-                                <div className="inline-block min-w-full">
-                                    <IssueRowDetail
-                                        issue={issue}
-                                        onOpenDetails={() => onClick()}
-                                    />
-                                </div>
-                            </motion.div>
-                        </td>
-                    </tr>
-                )}
-            </AnimatePresence>
         </>
     );
 };

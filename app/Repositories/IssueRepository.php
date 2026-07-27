@@ -166,4 +166,10 @@ class IssueRepository
 
         return $formattedData;
     }
+    public function delete(Issue $issue): void {
+        $issue->delete();
+    }
+    public function bulkDelete(array $ids): void {
+        Issue::whereIn('id', $ids)->delete();
+    }
 }
