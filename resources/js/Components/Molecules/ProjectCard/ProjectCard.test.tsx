@@ -2,9 +2,9 @@ import { Issue } from '@/types/Issues';
 import { Project } from '@/types/Projects';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import React from 'react';
 import { describe, expect, test, vi } from 'vitest';
 import ProjectCard, { ProjectNewCard } from './ProjectCard';
-import React from 'react';
 
 const { triggerShortcut } = vi.hoisted(() => ({
     triggerShortcut: vi.fn(),
