@@ -4,7 +4,7 @@
 #-------------------------------------------------------------------------------#
 version: "1.0"
 
-linter: jetbrains/qodana-php:2026.2
+linter: qodana-php
 
 php:
   version: "8.3"
@@ -25,6 +25,7 @@ exclude:
 include:
   - name: PhpCSFixerValidationInspection
   - name: PhpUnhandledExceptionInspection
+  - name: CheckDependencyLicenses
 
 # Quality Gate
 failureConditions:
