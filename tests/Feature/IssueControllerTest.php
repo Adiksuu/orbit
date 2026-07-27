@@ -205,3 +205,66 @@ test('guests cannot update an issue', function () {
 
     $response->assertRedirect(route('login'));
 });
+
+test('a project member can delete an issue', function () {
+    $issue = Issue::factory()->create(['title' => 'Delete me']);
+
+    $response = $this->actingAs(User::factory()->create())->delete("/issues/{$issue->id}");
+
+    $response->assertRedirect();
+    $response->assertSessionHas('success', "Issue #{$issue->id} \"Delete me\" has been deleted successfully.");
+    $this->assertDatabaseMissing('issues', ['id' => $issue->id]);
+});
+
+test('deleting a non-existent issue returns a 404', function () {
+    $response = $this->actingAs(User::factory()->create())->delete('/issues/999999');
+
+    $response->assertStatus(404);
+});
+
+test('guests cannot delete an issue', function () {
+    $issue = Issue::factory()->create();
+
+    $response = $this->delete("/issues/{$issue->id}");
+
+    $response->assertRedirect(route('login'));
+});
+
+test('bulk deleting issues requires ids', function () {
+    $response = $this->actingAs(User::factory()->create())->delete('/issues/bulk-destroy', []);
+
+    $response->assertSessionHasErrors('ids');
+});
+
+test('bulk deleting issues requires each id to reference a real issue', function () {
+    $issue = Issue::factory()->create();
+
+    $response = $this->actingAs(User::factory()->create())->delete('/issues/bulk-destroy', [
+        'ids' => [$issue->id, 999999],
+    ]);
+
+    $response->assertSessionHasErrors('ids.1');
+});
+
+test('a project member can bulk delete issues', function () {
+    $issues = Issue::factory()->count(3)->create();
+
+    $response = $this->actingAs(User::factory()->create())->delete('/issues/bulk-destroy', [
+        'ids' => $issues->pluck('id')->toArray(),
+    ]);
+
+    $response->assertRedirect();
+    $response->assertSessionHas('success', 'Selected issues have been deleted successfully.');
+
+    foreach ($issues as $issue) {
+        $this->assertDatabaseMissing('issues', ['id' => $issue->id]);
+    }
+});
+
+test('guests cannot bulk delete issues', function () {
+    $issue = Issue::factory()->create();
+
+    $response = $this->delete('/issues/bulk-destroy', ['ids' => [$issue->id]]);
+
+    $response->assertRedirect(route('login'));
+});

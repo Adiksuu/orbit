@@ -269,6 +269,7 @@ export const ListRow = ({
                                             <span>Remove</span>
                                         </div>
                                     }
+                                    disabled={!onRemove}
                                     onClick={() => {
                                         if (onRemove) {
                                             onRemove();

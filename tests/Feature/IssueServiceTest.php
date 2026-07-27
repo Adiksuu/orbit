@@ -362,6 +362,33 @@ test('updateIssue appends other changes to the new assignee\'s notification mess
     $this->service->updateIssue($issue, ['assignee_id' => $newAssignee->id, 'title' => 'New title']);
 });
 
+test('deleteIssue calls the repository delete and logs activity', function () {
+    $project = Project::factory()->create();
+    $issue = Issue::factory()->create(['project_id' => $project->id, 'title' => 'Old bug']);
+
+    $this->issueRepository->shouldReceive('delete')
+        ->once()
+        ->with($issue);
+
+    $this->activityLogService->shouldReceive('log')
+        ->once()
+        ->with($project->id, "Deleted issue #$issue->id \"Old bug\"");
+
+    $this->service->deleteIssue($issue);
+});
+
+test('bulkDeleteIssues calls the repository bulkDelete with the given ids and does not log activity', function () {
+    $ids = [1, 2, 3];
+
+    $this->issueRepository->shouldReceive('bulkDelete')
+        ->once()
+        ->with($ids);
+
+    $this->activityLogService->shouldNotReceive('log');
+
+    $this->service->bulkDeleteIssues($ids);
+});
+
 test('updateIssue does not log or notify anything when nothing actually changed', function () {
     $actor = User::factory()->create();
     $this->actingAs($actor);

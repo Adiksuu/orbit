@@ -1,0 +1,56 @@
+import { fireEvent, render, screen } from '@testing-library/react';
+import { describe, expect, test, vi } from 'vitest';
+import { BulkActionBar } from './BulkActionBar';
+
+describe('BulkActionBar Component', () => {
+    test('renders nothing when selectedCount is 0', () => {
+        const { container } = render(
+            <BulkActionBar
+                selectedCount={0}
+                onBulkDelete={vi.fn()}
+                isDeleting={false}
+            />,
+        );
+
+        expect(container).toBeEmptyDOMElement();
+    });
+
+    test('shows the selected count', () => {
+        render(
+            <BulkActionBar
+                selectedCount={3}
+                onBulkDelete={vi.fn()}
+                isDeleting={false}
+            />,
+        );
+
+        expect(screen.getByText('3')).toBeInTheDocument();
+    });
+
+    test('calls onBulkDelete when the delete button is clicked', () => {
+        const handleBulkDelete = vi.fn();
+        render(
+            <BulkActionBar
+                selectedCount={2}
+                onBulkDelete={handleBulkDelete}
+                isDeleting={false}
+            />,
+        );
+
+        fireEvent.click(screen.getByText('Delete Selected'));
+
+        expect(handleBulkDelete).toHaveBeenCalledTimes(1);
+    });
+
+    test('shows a loading label and disables the button while deleting', () => {
+        render(
+            <BulkActionBar
+                selectedCount={2}
+                onBulkDelete={vi.fn()}
+                isDeleting={true}
+            />,
+        );
+
+        expect(screen.getByText('Removing...')).toBeDisabled();
+    });
+});
