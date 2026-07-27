@@ -4,9 +4,9 @@ import { Project } from '@/types/Projects';
 import { AssignableUser } from '@/types/Users';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import React from 'react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import Show from './Show';
-import React from 'react';
 
 vi.mock('@/Layouts/MainLayout', () => ({
     default: ({

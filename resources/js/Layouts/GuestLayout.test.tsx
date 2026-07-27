@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
+import React from 'react';
 import { describe, expect, test, vi } from 'vitest';
 import GuestLayout from './GuestLayout';
-import React from 'react';
 
 vi.mock('@inertiajs/react', () => ({
     Link: ({
