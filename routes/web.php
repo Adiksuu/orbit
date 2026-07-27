@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::delete('/issues/bulk-destroy', [IssueController::class, 'bulkDestroy'])->name('issues.bulk-destroy');
     Route::patch('/issues/{issue}', [IssueController::class, 'update'])->name('issues.update');
+    Route::delete('/issues/{issue}', [IssueController::class, 'destroy'])->name('issues.destroy');
     Route::post('/issues', [IssueController::class, 'store'])->name('issues.store');
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
     Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');

@@ -12,6 +12,8 @@ import {
     IssuePageLooks,
     IssuePriority,
     ProductivityTrendProps,
+    Sorting,
+    SortingColumn,
 } from '@/types/Issues';
 import { Project } from '@/types/Projects';
 import { AssignableUser } from '@/types/Users';
@@ -338,6 +340,23 @@ export interface OrbitRingProps {
     reverse?: boolean;
     items: OrbitItem[];
 }
+export interface BulkActionBarProps {
+    selectedCount: number;
+    onBulkDelete: () => void;
+    isDeleting: boolean;
+}
+export interface TableHeaderCellProps {
+    column: SortingColumn;
+    label: string;
+    width: number;
+    isResizing: boolean;
+    currentSort?: SortingColumn;
+    currentDirection?: Sorting;
+    canSort: boolean;
+    onSort: (column: SortingColumn) => void;
+    onMouseDown: (column: string, e: React.MouseEvent<HTMLDivElement>) => void;
+    onDoubleClick: (column: string) => void;
+}
 // ORGANISMS COMPONENTS
 export interface CalendarViewProps {
     issues: Issue[];
@@ -403,6 +422,7 @@ export interface ListRowProps {
     isActive: boolean;
     onClick: () => void;
     onModify?: () => void;
+    onRemove?: () => void;
     isClosed: boolean;
     handleSelectIssueCheckbox?: (issue: Issue | string) => void;
     enabledColumns?: Record<string, boolean>;
@@ -412,6 +432,29 @@ export interface ListRowProps {
 export interface AuthShowcaseProps {
     title: ReactNode;
     description: ReactNode;
+}
+export interface HeaderConfig {
+    label: string;
+    value: SortingColumn;
+}
+
+export interface IssueTableHeadProps {
+    headers: HeaderConfig[];
+    resolvedColumnWidths: Record<string, number>;
+    isAllSelected: boolean;
+    onSelectAll: () => void;
+    isResizing: string | null;
+    isResizingHeight: boolean;
+    currentSort?: SortingColumn;
+    currentDirection?: Sorting;
+    hasQueryParams: boolean;
+    enabledColumns: Record<string, boolean>;
+    rowHeight: number;
+    onSort: (column: SortingColumn) => void;
+    onMouseDown: (column: string, e: React.MouseEvent) => void;
+    onDoubleClick: (column: string) => void;
+    onHeightMouseDown: (e: React.MouseEvent) => void;
+    onColumnToggle: (columnValue: string) => void;
 }
 
 // OTHER COMPONENTS

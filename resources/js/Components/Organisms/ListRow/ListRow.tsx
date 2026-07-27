@@ -19,6 +19,7 @@ export const ListRow = ({
     isActive,
     onClick,
     onModify,
+    onRemove,
     isClosed,
     handleSelectIssueCheckbox,
     enabledColumns = {
@@ -268,8 +269,12 @@ export const ListRow = ({
                                             <span>Remove</span>
                                         </div>
                                     }
-                                    disabled
-                                    onClick={() => setIsMenuOpen(false)}
+                                    onClick={() => {
+                                        if (onRemove) {
+                                            onRemove();
+                                            setIsMenuOpen(false);
+                                        }
+                                    }}
                                 />
                             </DropdownMenu>
                         </div>
