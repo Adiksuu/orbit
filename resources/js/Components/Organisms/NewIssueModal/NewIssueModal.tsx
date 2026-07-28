@@ -15,7 +15,7 @@ import UserBadge from '@/Components/Molecules/UserBadge/UserBadge';
 import { NewIssueModalProps } from '@/types/Components';
 import { IssueLabel, IssuePriority } from '@/types/Issues';
 import { useForm } from '@inertiajs/react';
-import React, { useEffect, useState } from 'react';
+import React, { SyntheticEvent, useEffect, useState } from 'react';
 
 const PRIORITIES: IssuePriority[] = ['low', 'medium', 'high'];
 const LABELS: IssueLabel[] = [
@@ -59,7 +59,7 @@ const NewIssueModal: React.FC<NewIssueModalProps> = ({
         }
     }, [isOpen, project, reset, setData]);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: SyntheticEvent) => {
         e.preventDefault();
         post(route('issues.store'), {
             onSuccess: () => {

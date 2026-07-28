@@ -7,7 +7,7 @@ import PasswordField from '@/Components/Molecules/PasswordField/PasswordField';
 import SocialLoginButtons from '@/Components/Molecules/SocialLoginButtons/SocialLoginButtons';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
+import { SyntheticEvent } from 'react';
 
 export default function Login() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -16,7 +16,7 @@ export default function Login() {
         remember: false as boolean,
     });
 
-    const submit: FormEventHandler = (e) => {
+    const submit = (e: SyntheticEvent) => {
         e.preventDefault();
 
         post(route('login'), {

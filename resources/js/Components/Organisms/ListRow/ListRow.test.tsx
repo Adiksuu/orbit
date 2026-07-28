@@ -239,6 +239,25 @@ describe('ListRow Component', () => {
             expect(screen.getByText('Modify')).toBeInTheDocument();
         });
 
+        test('clicking "Remove" calls onRemove and closes the menu', async () => {
+            const handleRemove = vi.fn();
+            renderRow({ onRemove: handleRemove });
+
+            const row = screen
+                .getByText('Fix the login page')
+                .closest('tr') as HTMLElement;
+            fireEvent.contextMenu(row);
+
+            expect(
+                screen.getByText('Remove').closest('button'),
+            ).not.toBeDisabled();
+
+            await userEvent.click(screen.getByText('Remove'));
+
+            expect(handleRemove).toHaveBeenCalledTimes(1);
+            expect(screen.queryByText('Remove')).not.toBeInTheDocument();
+        });
+
         test('the "Remove" action is disabled', () => {
             renderRow({});
 
