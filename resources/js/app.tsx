@@ -6,6 +6,7 @@ import { ModalContainer } from '@/Components/Organisms/Modal';
 import { AlertProvider } from '@/context/AlertContext';
 import { ModalProvider } from '@/context/ModalContext';
 import { ShortcutProvider } from '@/context/ShortcutContext';
+import type { ResolvedComponent } from '@inertiajs/react';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
@@ -15,10 +16,12 @@ const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: (name) =>
-        resolvePageComponent(
+        resolvePageComponent<{ default: ResolvedComponent }>(
             `./Pages/${name}.tsx`,
-            import.meta.glob('./Pages/**/*.tsx'),
-        ),
+            import.meta.glob<{ default: ResolvedComponent }>(
+                './Pages/**/*.tsx',
+            ),
+        ).then((module) => module.default),
     setup({ el, App, props }) {
         const root = createRoot(el);
 
