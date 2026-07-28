@@ -129,7 +129,7 @@ chore: update dependencies
 
 Every Pull Request should:
 
-* target the `main` branch
+* target the `master` branch
 * pass all CI checks
 * include a clear description
 * solve one specific problem
