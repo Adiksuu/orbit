@@ -77,4 +77,62 @@ describe('ShowcaseSlider Component', () => {
             ),
         ).toBeInTheDocument();
     });
+
+    test('resumes autoplay after the mouse leaves the slider', () => {
+        render(<ShowcaseSlider autoPlayInterval={1000} />);
+
+        const container = screen
+            .getByText(
+                'Built for teams who plan, ship, and track work together',
+                { exact: false },
+            )
+            .closest('div') as HTMLElement;
+
+        fireEvent.mouseEnter(container);
+        act(() => {
+            vi.advanceTimersByTime(2000);
+        });
+        fireEvent.mouseLeave(container);
+        act(() => {
+            vi.advanceTimersByTime(1000);
+        });
+
+        expect(screen.getByLabelText('Go to slide 2')).toHaveAttribute(
+            'aria-current',
+            'true',
+        );
+    });
+
+    test('pauses autoplay on focus and resumes on blur', () => {
+        render(<ShowcaseSlider autoPlayInterval={1000} />);
+
+        const container = screen
+            .getByText(
+                'Built for teams who plan, ship, and track work together',
+                { exact: false },
+            )
+            .closest('div') as HTMLElement;
+
+        fireEvent.focus(container);
+        act(() => {
+            vi.advanceTimersByTime(2000);
+        });
+
+        expect(
+            screen.getByText(
+                'Built for teams who plan, ship, and track work together',
+                { exact: false },
+            ),
+        ).toBeInTheDocument();
+
+        fireEvent.blur(container);
+        act(() => {
+            vi.advanceTimersByTime(1000);
+        });
+
+        expect(screen.getByLabelText('Go to slide 2')).toHaveAttribute(
+            'aria-current',
+            'true',
+        );
+    });
 });

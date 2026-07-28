@@ -1,15 +1,18 @@
 import { SelectionDropdownProps } from '@/types/Components';
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import SelectionDropdown from './SelectionDropdown';
 
+const mockGetIfAnyModalIsOpened = vi.hoisted(() => vi.fn(() => false));
+const mockUseShortcuts = vi.hoisted(() => vi.fn());
+
 vi.mock('@/context/ModalContext', () => ({
-    useModal: () => ({ getIfAnyModalIsOpened: () => false }),
+    useModal: () => ({ getIfAnyModalIsOpened: mockGetIfAnyModalIsOpened }),
 }));
 
 vi.mock('@/context/ShortcutContext', () => ({
-    useShortcuts: vi.fn(),
+    useShortcuts: mockUseShortcuts,
 }));
 
 const baseOptions: SelectionDropdownProps['options'] = [
@@ -21,6 +24,8 @@ const baseOptions: SelectionDropdownProps['options'] = [
 describe('SelectionDropdown Component', () => {
     beforeEach(() => {
         vi.spyOn(console, 'log').mockImplementation(() => {});
+        mockGetIfAnyModalIsOpened.mockReturnValue(false);
+        mockUseShortcuts.mockClear();
     });
 
     test('renders the trigger and keeps the dropdown closed by default', () => {
@@ -218,6 +223,52 @@ describe('SelectionDropdown Component', () => {
         await screen.findByText('Display Columns');
 
         await user.click(document.body);
+
+        expect(screen.queryByText('Display Columns')).not.toBeInTheDocument();
+    });
+
+    test('the alt+s shortcut opens the dropdown when no modal is open', () => {
+        mockGetIfAnyModalIsOpened.mockReturnValue(false);
+        render(
+            <SelectionDropdown
+                options={baseOptions}
+                selectedValues={[]}
+                onChange={vi.fn()}
+                trigger={<span>Columns</span>}
+            />,
+        );
+
+        const shortcuts = mockUseShortcuts.mock.calls.at(-1)?.[0];
+        const shortcut = shortcuts.find(
+            (s: { key: string }) => s.key === 'alt+s',
+        );
+
+        act(() => {
+            shortcut.action();
+        });
+
+        expect(screen.getByText('Display Columns')).toBeInTheDocument();
+    });
+
+    test('the alt+s shortcut does nothing when a modal is already open', () => {
+        mockGetIfAnyModalIsOpened.mockReturnValue(true);
+        render(
+            <SelectionDropdown
+                options={baseOptions}
+                selectedValues={[]}
+                onChange={vi.fn()}
+                trigger={<span>Columns</span>}
+            />,
+        );
+
+        const shortcuts = mockUseShortcuts.mock.calls.at(-1)?.[0];
+        const shortcut = shortcuts.find(
+            (s: { key: string }) => s.key === 'alt+s',
+        );
+
+        act(() => {
+            shortcut.action();
+        });
 
         expect(screen.queryByText('Display Columns')).not.toBeInTheDocument();
     });

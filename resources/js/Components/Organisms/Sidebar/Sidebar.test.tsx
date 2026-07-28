@@ -1,11 +1,12 @@
 import { Project } from '@/types/Projects';
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import Sidebar from './Sidebar';
 
 const pageState = vi.hoisted(() => ({ url: '/' }));
 const mockRouterPost = vi.hoisted(() => vi.fn());
+const mockUseShortcuts = vi.hoisted(() => vi.fn());
 
 vi.stubGlobal(
     'route',
@@ -60,9 +61,7 @@ vi.mock('@/Components/Organisms/NewProjectModal/NewProjectModal', () => ({
 }));
 
 vi.mock('@/context/ShortcutContext', () => ({
-    useShortcuts: () => ({
-        triggerShortcut: vi.fn(),
-    }),
+    useShortcuts: mockUseShortcuts,
 }));
 
 const makeProject = (overrides: Partial<Project> = {}): Project => ({
@@ -80,6 +79,7 @@ describe('Sidebar Component', () => {
     beforeEach(() => {
         pageState.url = '/';
         mockRouterPost.mockClear();
+        mockUseShortcuts.mockClear();
     });
 
     test('renders the primary navigation items', () => {
@@ -288,5 +288,25 @@ describe('Sidebar Component', () => {
 
         const projectLink = screen.getByText('Test Project').closest('a');
         expect(projectLink).toHaveClass('text-white');
+    });
+
+    test('registers a "p" shortcut that opens the new project modal', () => {
+        render(<Sidebar projects={[]} />);
+
+        expect(
+            screen.queryByTestId('new-project-modal'),
+        ).not.toBeInTheDocument();
+
+        const shortcuts = mockUseShortcuts.mock.calls[0][0];
+        const createProjectShortcut = shortcuts.find(
+            (s: { key: string }) => s.key === 'p',
+        );
+        expect(createProjectShortcut).toBeDefined();
+
+        act(() => {
+            createProjectShortcut.action();
+        });
+
+        expect(screen.getByTestId('new-project-modal')).toBeInTheDocument();
     });
 });

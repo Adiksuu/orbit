@@ -1,9 +1,19 @@
 import { Issue } from '@/types/Issues';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { describe, expect, test, vi } from 'vitest';
 import IssueElement from './IssueElement';
+
+const mockRouterDelete = vi.fn();
+vi.mock('@inertiajs/react', () => ({
+    router: { delete: (...args: unknown[]) => mockRouterDelete(...args) },
+}));
+
+vi.stubGlobal(
+    'route',
+    vi.fn((name: string, id: string) => `/${name}/${id}`),
+);
 
 const makeAssignee = (name = 'Jane Doe') => ({
     avatar: '/jane.png',
@@ -175,6 +185,28 @@ describe('IssueElement Component', () => {
             await userEvent.click(screen.getByText('Fix the bug'));
 
             expect(setActiveIssue).toHaveBeenCalledWith(issue, false);
+        });
+
+        test('deletes the issue via the destroy route when Remove is clicked', async () => {
+            const issue = makeIssue();
+            renderInTable(
+                <IssueElement
+                    issue={issue}
+                    activeIssue={null}
+                    setActiveIssue={() => {}}
+                />,
+            );
+
+            const row = screen
+                .getByText('Fix the bug')
+                .closest('tr') as HTMLElement;
+            fireEvent.contextMenu(row);
+
+            await userEvent.click(screen.getByText('Remove'));
+
+            expect(mockRouterDelete).toHaveBeenCalledWith(
+                '/issues.destroy/ISSUE-1',
+            );
         });
     });
 });

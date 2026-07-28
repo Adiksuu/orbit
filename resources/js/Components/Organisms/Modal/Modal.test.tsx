@@ -1,5 +1,5 @@
 import { ModalContent } from '@/types/Modal';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 import { ModalOrg } from './Modal';
@@ -49,6 +49,27 @@ describe('ModalOrg Component', () => {
         await userEvent.click(screen.getByRole('button'));
 
         expect(handleClose).toHaveBeenCalledTimes(1);
+        expect(handleClose).toHaveBeenCalledWith('modal-1');
+    });
+
+    test('calls onClose with the modal id when Escape is pressed', () => {
+        const handleClose = vi.fn();
+        render(<ModalOrg modal={buildModal()} onClose={handleClose} />);
+
+        fireEvent.keyDown(window, { key: 'Escape' });
+
+        expect(handleClose).toHaveBeenCalledWith('modal-1');
+    });
+
+    test('calls onClose with the modal id when the backdrop is clicked', () => {
+        const handleClose = vi.fn();
+        render(<ModalOrg modal={buildModal()} onClose={handleClose} />);
+
+        const backdrop = screen
+            .getByText('Modal body content')
+            .closest('.fixed') as HTMLElement;
+        fireEvent.click(backdrop);
+
         expect(handleClose).toHaveBeenCalledWith('modal-1');
     });
 

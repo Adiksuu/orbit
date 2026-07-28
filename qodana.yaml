@@ -22,6 +22,7 @@ exclude:
       - public/build/
       - tests/_output/
   - name: DuplicatedCode
+  - name: PhpDynamicAsStaticMethodCallInspection
 
 include:
   - name: PhpCSFixerValidationInspection

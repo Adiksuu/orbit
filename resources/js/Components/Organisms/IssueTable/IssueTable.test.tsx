@@ -32,6 +32,16 @@ vi.mock('@inertiajs/react', () => {
         (_url: string, _data?: unknown, opts?: { onSuccess?: () => void }) =>
             opts?.onSuccess?.(),
     );
+    const mockRouterDelete = vi.fn(
+        (
+            _url: string,
+            opts?: {
+                onSuccess?: () => void;
+                onError?: () => void;
+                onFinish?: () => void;
+            },
+        ) => opts?.onSuccess?.(),
+    );
     return {
         Link: ({
             children,
@@ -49,6 +59,7 @@ vi.mock('@inertiajs/react', () => {
         router: {
             get: mockRouterGet,
             patch: mockRouterPatch,
+            delete: mockRouterDelete,
         },
     };
 });
@@ -466,6 +477,79 @@ describe('IssueTable Component', () => {
         await user.click(rowCheckboxes[0]);
         expect(rowCheckboxes[0]).not.toBeChecked();
         expect(rowCheckboxes[1]).toBeChecked();
+    });
+
+    test('bulk-deletes selected issues and shows a success alert', async () => {
+        const user = userEvent.setup();
+        const { router } = await import('@inertiajs/react');
+        const issues = [
+            makeIssue({ title: 'Issue 1', id: 'ISSUE-1' }),
+            makeIssue({ title: 'Issue 2', id: 'ISSUE-2' }),
+        ];
+
+        render(
+            <IssueTable
+                issues={issues}
+                activeIssue={null}
+                setActiveIssue={() => {}}
+            />,
+        );
+
+        const rowCheckboxes = screen.getAllByRole('checkbox').slice(1);
+        await user.click(rowCheckboxes[0]);
+
+        await user.click(screen.getByText('Delete Selected'));
+
+        expect(router.delete).toHaveBeenCalledWith(
+            '/issues/bulk-destroy',
+            expect.objectContaining({
+                data: { ids: ['ISSUE-1'] },
+                preserveScroll: true,
+            }),
+        );
+        expect(mockAddAlert).toHaveBeenCalledWith(
+            'Successfully removed 1 items',
+            'success',
+        );
+        expect(screen.queryByText('Delete Selected')).not.toBeInTheDocument();
+    });
+
+    test('shows an error alert when the bulk delete request fails', async () => {
+        const user = userEvent.setup();
+        const { router } = await import('@inertiajs/react');
+        (
+            router.delete as unknown as ReturnType<typeof vi.fn>
+        ).mockImplementationOnce(
+            (
+                _url: string,
+                opts?: { onError?: () => void; onFinish?: () => void },
+            ) => {
+                opts?.onError?.();
+                opts?.onFinish?.();
+            },
+        );
+
+        const issues = [makeIssue({ title: 'Issue 1', id: 'ISSUE-1' })];
+
+        render(
+            <IssueTable
+                issues={issues}
+                activeIssue={null}
+                setActiveIssue={() => {}}
+            />,
+        );
+
+        const rowCheckboxes = screen.getAllByRole('checkbox').slice(1);
+        await user.click(rowCheckboxes[0]);
+
+        await user.click(screen.getByText('Delete Selected'));
+
+        expect(mockAddAlert).toHaveBeenCalledWith(
+            'An error occurred while deleting',
+            'error',
+        );
+        // Selection is preserved on error (only cleared in onSuccess).
+        expect(screen.getByText('Delete Selected')).toBeInTheDocument();
     });
 
     test('resizes a column when its resize handle is dragged', () => {

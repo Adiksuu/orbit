@@ -8,7 +8,7 @@ import { NewProjectModalProps } from '@/types/Components';
 import { AVAILABLE_COLORS } from '@/types/Projects';
 import { getColorTheme } from '@/utils/colors';
 import { useForm } from '@inertiajs/react';
-import React, { useEffect } from 'react';
+import React, { SyntheticEvent, useEffect } from 'react';
 
 const NewProjectModal: React.FC<NewProjectModalProps> = ({
     isOpen,
@@ -27,7 +27,7 @@ const NewProjectModal: React.FC<NewProjectModalProps> = ({
         }
     }, [isOpen, reset]);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: SyntheticEvent) => {
         e.preventDefault();
         post(route('projects.store'), {
             onSuccess: () => {

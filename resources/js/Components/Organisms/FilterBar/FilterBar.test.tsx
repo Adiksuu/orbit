@@ -185,6 +185,24 @@ describe('FilterBar Component', () => {
         expect(statusButton).toHaveAttribute('data-open', 'true');
     });
 
+    test('opens the assignee and priority filter panels, closing the others', async () => {
+        const user = userEvent.setup();
+        render(<FilterBar savedFilters={[]} />);
+
+        const assigneeButton = screen.getByTestId('filter-dropdown-assignee');
+        const priorityButton = screen.getByTestId('filter-dropdown-priority');
+        const labelsButton = screen.getByTestId('filter-dropdown-labels');
+
+        await user.click(assigneeButton);
+        expect(assigneeButton).toHaveAttribute('data-open', 'true');
+        expect(priorityButton).toHaveAttribute('data-open', 'false');
+
+        await user.click(priorityButton);
+        expect(assigneeButton).toHaveAttribute('data-open', 'false');
+        expect(priorityButton).toHaveAttribute('data-open', 'true');
+        expect(labelsButton).toHaveAttribute('data-open', 'false');
+    });
+
     test('opens the saved filters panel independently of the other filter dropdowns', async () => {
         const user = userEvent.setup();
         render(<FilterBar savedFilters={[]} />);
