@@ -80,7 +80,6 @@ export default function Show({
         if (target) {
             setActiveIssue(target);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

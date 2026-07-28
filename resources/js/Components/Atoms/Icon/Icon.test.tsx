@@ -35,10 +35,7 @@ describe('Icon Component', () => {
 
     test('renders a fallback icon and warns when the icon name is unknown', () => {
         const warnSpy = vi.spyOn(console, 'warn');
-        const { container } = render(
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            <Icon name={'NotARealIcon' as any} />,
-        );
+        const { container } = render(<Icon name={'NotARealIcon' as any} />);
 
         expect(container.querySelector('svg')).toBeInTheDocument();
         expect(warnSpy).toHaveBeenCalledWith(
