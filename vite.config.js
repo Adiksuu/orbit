@@ -1,3 +1,4 @@
+
 /// <reference types="vitest" />
 
 import react from '@vitejs/plugin-react';
@@ -20,6 +21,12 @@ export default defineConfig({
         // HMR websocket connects back through the host-mapped port.
         hmr: {
             host: 'localhost',
+            port: 5173,
+        },
+        // Use polling instead of fs.watch to avoid stale watchers in Docker volumes.
+        watch: {
+            usePolling: true,
+            interval: 100,
         },
     },
     resolve: {

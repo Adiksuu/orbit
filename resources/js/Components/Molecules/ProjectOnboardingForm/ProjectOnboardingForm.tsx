@@ -64,9 +64,7 @@ export default function ProjectOnboardingForm({
             </div>
 
             <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium text-white">
-                    Color
-                </label>
+                <label className="text-sm font-medium text-white">Color</label>
                 <div className="flex flex-wrap gap-3">
                     {AVAILABLE_COLORS.map((color) => (
                         <button

@@ -29,6 +29,10 @@ services:
             - .:/app
             # Keep the image-installed node_modules instead of the host's.
             - /app/node_modules
+        # Increase inotify limits to prevent file watcher exhaustion.
+        # Without this, Vite's file watching can fail after watching too many files.
+        sysctls:
+            - fs.inotify.max_user_watches=524288
         restart: unless-stopped
         tty: true
         stdin_open: true
