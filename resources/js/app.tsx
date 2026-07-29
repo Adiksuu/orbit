@@ -4,6 +4,7 @@ import './bootstrap';
 
 import { ModalContainer } from '@/Components/Organisms/Modal';
 import OnboardingModal from '@/Components/Organisms/OnboardingModal/OnboardingModal';
+import ProjectOnboardingModal from '@/Components/Organisms/ProjectOnboardingModal/ProjectOnboardingModal';
 import { AlertProvider } from '@/context/AlertContext';
 import { ModalProvider } from '@/context/ModalContext';
 import { ShortcutProvider } from '@/context/ShortcutContext';
@@ -21,19 +22,41 @@ function OnboardingGate() {
     const { component, props } = usePage<PageProps>();
     const user = props.auth.user;
 
-    if (
-        !user ||
-        AUTH_PAGES.includes(component) ||
-        user.has_completed_onboarding
-    ) {
+    if (!user || AUTH_PAGES.includes(component)) {
         return null;
     }
 
-    const handleClose = () => {
-        router.post(route('onboarding.complete'), {}, { preserveScroll: true });
-    };
+    if (!user.has_completed_onboarding) {
+        const handleClose = () => {
+            router.post(
+                route('onboarding.complete'),
+                {},
+                { preserveScroll: true },
+            );
+        };
 
-    return <OnboardingModal onClose={handleClose} />;
+        return <OnboardingModal onClose={handleClose} />;
+    }
+
+    if (
+        user.role === 'admin' &&
+        !user.has_completed_project_onboarding &&
+        !props.hasProjects
+    ) {
+        const handleSkip = () => {
+            router.post(
+                route('onboarding.project.complete'),
+                {},
+                { preserveScroll: true },
+            );
+        };
+
+        return (
+            <ProjectOnboardingModal userName={user.name} onSkip={handleSkip} />
+        );
+    }
+
+    return null;
 }
 
 createInertiaApp({

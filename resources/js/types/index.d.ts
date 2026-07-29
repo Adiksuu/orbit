@@ -5,7 +5,9 @@ export interface User {
     name: string;
     email: string;
     email_verified_at?: string;
+    role: 'admin' | 'member';
     has_completed_onboarding: boolean;
+    has_completed_project_onboarding: boolean;
 }
 
 export type PageProps<
@@ -15,4 +17,5 @@ export type PageProps<
         user: User;
     };
     notifications: Notification[];
+    hasProjects: boolean;
 };

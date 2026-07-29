@@ -17,4 +17,11 @@ class UserController extends Controller
 
         return redirect()->back();
     }
+
+    public function completeProjectOnboarding(): RedirectResponse
+    {
+        $this->userService->completeProjectOnboarding(auth()->user());
+
+        return redirect()->back();
+    }
 }

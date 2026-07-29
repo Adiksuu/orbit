@@ -32,4 +32,8 @@ class UserService
     public function completeOnboarding(User $user): User {
         return $this->userRepository->completeOnboarding($user);
     }
+
+    public function completeProjectOnboarding(User $user): User {
+        return $this->userRepository->completeProjectOnboarding($user);
+    }
 }

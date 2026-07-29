@@ -20,6 +20,7 @@ class User extends Authenticatable
         'password',
         'role',
         'has_completed_onboarding',
+        'has_completed_project_onboarding',
 //        'avatar',
 //        'type'
     ];
@@ -36,6 +37,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'role' => UserRole::class,
             'has_completed_onboarding' => 'boolean',
+            'has_completed_project_onboarding' => 'boolean',
         ];
     }
 }

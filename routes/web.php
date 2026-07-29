@@ -25,6 +25,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/notifications/{notification}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
     Route::post('/notifications/{notification}', [NotificationController::class, 'update'])->name('notifications.update');
     Route::post('/onboarding/complete', [UserController::class, 'completeOnboarding'])->name('onboarding.complete');
+    Route::post('/onboarding/project/complete', [UserController::class, 'completeProjectOnboarding'])->name('onboarding.project.complete');
 });
 
 require __DIR__.'/auth.php';

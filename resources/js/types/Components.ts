@@ -15,7 +15,7 @@ import {
     Sorting,
     SortingColumn,
 } from '@/types/Issues';
-import { Project } from '@/types/Projects';
+import { Project, ProjectColors } from '@/types/Projects';
 import { AssignableUser } from '@/types/Users';
 import type { VariantProps } from 'class-variance-authority';
 import { icons } from 'lucide-react';
@@ -24,6 +24,7 @@ import React, {
     ChangeEvent,
     HTMLAttributes,
     ReactNode,
+    SyntheticEvent,
 } from 'react';
 
 export interface AvatarProps {
@@ -379,6 +380,29 @@ export interface OnboardingModalFooterProps {
     onPrev: () => void;
     onNext: () => void;
 }
+export interface ProjectOnboardingFormData {
+    name: string;
+    slug: string;
+    description: string;
+    color: ProjectColors;
+}
+export interface ProjectOnboardingHeaderProps {
+    userName: string;
+}
+export interface ProjectOnboardingFormProps {
+    data: ProjectOnboardingFormData;
+    setData: <K extends keyof ProjectOnboardingFormData>(
+        key: K,
+        value: ProjectOnboardingFormData[K],
+    ) => void;
+    errors: Partial<Record<keyof ProjectOnboardingFormData, string>>;
+    processing: boolean;
+    onSubmit: (e: SyntheticEvent) => void;
+    onSkip: () => void;
+}
+export interface ProjectOnboardingPreviewProps {
+    data: ProjectOnboardingFormData;
+}
 // ORGANISMS COMPONENTS
 export interface CalendarViewProps {
     issues: Issue[];
@@ -418,6 +442,10 @@ export interface NewIssueModalProps {
 export interface NewProjectModalProps {
     isOpen: boolean;
     onClose: () => void;
+}
+export interface ProjectOnboardingModalProps {
+    userName: string;
+    onSkip: () => void;
 }
 export interface TopNavProps {
     selectedLook: IssuePageLooks;

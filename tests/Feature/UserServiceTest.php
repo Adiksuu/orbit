@@ -90,3 +90,16 @@ test('it delegates completing onboarding to the repository', function () {
 
     expect($result)->toBe($user);
 });
+
+test('it delegates completing project onboarding to the repository', function () {
+    $user = User::factory()->create(['has_completed_project_onboarding' => false]);
+
+    $this->userRepository->shouldReceive('completeProjectOnboarding')
+        ->once()
+        ->with($user)
+        ->andReturn($user);
+
+    $result = $this->service->completeProjectOnboarding($user);
+
+    expect($result)->toBe($user);
+});

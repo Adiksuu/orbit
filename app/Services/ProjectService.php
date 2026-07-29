@@ -24,6 +24,9 @@ class ProjectService
     public function getAll(): Collection {
         return $this->projectRepository->getAll();
     }
+    public function hasAnyProjects(): bool {
+        return $this->projectRepository->hasAnyProjects();
+    }
     public function updateColumns(Project $project, array $newColumns): Project {
         $currentColumns = $project->columns ?? [];
         $updatedColumns = array_merge($currentColumns, $newColumns);

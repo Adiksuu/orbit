@@ -37,3 +37,11 @@ test('it can create a project and log activity', function () {
 
     expect($result)->toBe($project);
 });
+
+test('it delegates checking for existing projects to the repository', function () {
+    $this->projectRepository->shouldReceive('hasAnyProjects')
+        ->once()
+        ->andReturn(true);
+
+    expect($this->service->hasAnyProjects())->toBeTrue();
+});
