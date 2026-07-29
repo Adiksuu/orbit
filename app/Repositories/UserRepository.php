@@ -27,4 +27,9 @@ class UserRepository {
         $user->update(['has_completed_onboarding' => true]);
         return $user;
     }
+
+    public function completeProjectOnboarding(User $user): User {
+        $user->update(['has_completed_project_onboarding' => true]);
+        return $user;
+    }
 }

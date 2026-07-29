@@ -3,13 +3,15 @@
 namespace App\Http\Middleware;
 
 use App\Services\NotificationService;
+use App\Services\ProjectService;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
 {
     public function __construct(
-        protected NotificationService $notificationService
+        protected NotificationService $notificationService,
+        protected ProjectService $projectService
     ) {}
 
     /**
@@ -41,9 +43,14 @@ class HandleInertiaRequests extends Middleware
                     'id' => $request->user()->id,
                     'name' => $request->user()->name,
                     'email' => $request->user()->email,
+                    'role' => $request->user()->role->value,
                     'has_completed_onboarding' => $request->user()->has_completed_onboarding,
+                    'has_completed_project_onboarding' => $request->user()->has_completed_project_onboarding,
                 ] : null,
             ],
+            'hasProjects' => fn () => $request->user()
+                ? $this->projectService->hasAnyProjects()
+                : true,
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
                 'error' => fn () => $request->session()->get('error'),

@@ -20,4 +20,7 @@ class ProjectRepository
         $project->update($data);
         return $project;
     }
+    public function hasAnyProjects(): bool {
+        return Project::query()->exists();
+    }
 }

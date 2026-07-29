@@ -43,3 +43,13 @@ test('it can store a new project', function () {
 test('it throws exception when project slug is not found', function () {
     $this->repository->findBySlug('non-existent');
 })->throws(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
+
+test('it reports no projects exist when the table is empty', function () {
+    expect($this->repository->hasAnyProjects())->toBeFalse();
+});
+
+test('it reports projects exist once at least one has been created', function () {
+    Project::factory()->create();
+
+    expect($this->repository->hasAnyProjects())->toBeTrue();
+});

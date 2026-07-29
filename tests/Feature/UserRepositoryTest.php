@@ -15,8 +15,8 @@ test('it can get assignable users', function () {
 
     $users = $this->repository->getAssignableUsers();
 
-    expect($users)->toHaveCount(5);
-    expect($users->first())->toHaveKeys(['id', 'name', 'avatar']);
+    expect($users)->toHaveCount(5)
+        ->and($users->first())->toHaveKeys(['id', 'name', 'avatar']);
 });
 
 test('it can update a user', function () {
@@ -56,4 +56,13 @@ test('it can mark onboarding as completed for a user', function () {
 
     expect($updatedUser->has_completed_onboarding)->toBeTrue();
     $this->assertDatabaseHas('users', ['id' => $user->id, 'has_completed_onboarding' => true]);
+});
+
+test('it can mark project onboarding as completed for a user', function () {
+    $user = User::factory()->create(['has_completed_project_onboarding' => false]);
+
+    $updatedUser = $this->repository->completeProjectOnboarding($user);
+
+    expect($updatedUser->has_completed_project_onboarding)->toBeTrue();
+    $this->assertDatabaseHas('users', ['id' => $user->id, 'has_completed_project_onboarding' => true]);
 });
