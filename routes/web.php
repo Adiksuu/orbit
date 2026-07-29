@@ -5,6 +5,7 @@ use App\Http\Controllers\IssueController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SavedFilterController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
@@ -23,6 +24,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
     Route::delete('/notifications/{notification}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
     Route::post('/notifications/{notification}', [NotificationController::class, 'update'])->name('notifications.update');
+    Route::post('/onboarding/complete', [UserController::class, 'completeOnboarding'])->name('onboarding.complete');
 });
 
 require __DIR__.'/auth.php';

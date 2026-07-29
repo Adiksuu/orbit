@@ -22,4 +22,9 @@ class UserRepository {
     public function hasAnyUsers(): bool {
         return User::query()->exists();
     }
+
+    public function completeOnboarding(User $user): User {
+        $user->update(['has_completed_onboarding' => true]);
+        return $user;
+    }
 }

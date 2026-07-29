@@ -19,6 +19,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'has_completed_onboarding',
 //        'avatar',
 //        'type'
     ];
@@ -34,6 +35,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'role' => UserRole::class,
+            'has_completed_onboarding' => 'boolean',
         ];
     }
 }

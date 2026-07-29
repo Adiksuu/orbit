@@ -4,7 +4,6 @@ import StatCard from '@/Components/Molecules/StatCard/StatCard';
 import DashboardVisuals from '@/Components/Organisms/DashboardVisuals/DashboardVisuals';
 import IssueDetail from '@/Components/Organisms/IssueDetail/IssueDetail';
 import IssueTable from '@/Components/Organisms/IssueTable/IssueTable';
-import OnboardingModal from '@/Components/Organisms/OnboardingModal/OnboardingModal';
 import PageHeader from '@/Components/Organisms/PageHeader/PageHeader';
 import Sidebar from '@/Components/Organisms/Sidebar/Sidebar';
 import { Issue, ProductivityTrendProps } from '@/types/Issues';
@@ -181,7 +180,6 @@ export default function Dashboard({
                     )}
                 </div>
             </div>
-            <OnboardingModal />
         </div>
     );
 }

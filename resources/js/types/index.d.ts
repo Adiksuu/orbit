@@ -5,6 +5,7 @@ export interface User {
     name: string;
     email: string;
     email_verified_at?: string;
+    has_completed_onboarding: boolean;
 }
 
 export type PageProps<

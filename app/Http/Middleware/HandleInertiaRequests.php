@@ -41,6 +41,7 @@ class HandleInertiaRequests extends Middleware
                     'id' => $request->user()->id,
                     'name' => $request->user()->name,
                     'email' => $request->user()->email,
+                    'has_completed_onboarding' => $request->user()->has_completed_onboarding,
                 ] : null,
             ],
             'flash' => [
