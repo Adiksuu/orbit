@@ -18,17 +18,26 @@ client/server version drift to manage.
   last choice is remembered per browser.
 - **Configurable table columns** — toggle which issue fields show up in the
   list view, saved per project.
+- **Saved filters** — store a named combination of search/label/status/
+  priority/assignee filters per project and reapply it later.
 - **A dashboard** with productivity trends, priority breakdowns, and
   completion ratios across every project.
 - **An activity log** recording who did what, so project history isn't lost.
+- **In-app notifications**, scoped per user and markable as read individually
+  or all at once.
+- **Accounts with roles** — anyone can register; the very first account
+  becomes an admin, everyone after that registers as a member.
+- **Guided onboarding**, shown once per account and tracked server-side: a
+  welcome tour for every new user, followed by a dedicated "create your first
+  project" flow for the first (admin) account when the workspace is empty.
 
 ## Tech stack
 
 | Layer      | Technology                                                |
 | ---------- | ---------------------------------------------------------- |
-| Backend    | PHP 8.3+, Laravel 13                                       |
-| Bridge     | Inertia.js 2 (no REST/JSON API — Laravel renders React pages directly) |
-| Frontend   | React 18, TypeScript, Vite                                 |
+| Backend    | PHP 8.4+, Laravel 13                                       |
+| Bridge     | Inertia.js 3 (no REST/JSON API — Laravel renders React pages directly) |
+| Frontend   | React 19, TypeScript, Vite                                 |
 | Styling    | Tailwind CSS (dark theme only), `class-variance-authority` |
 | Database   | SQLite by default (swappable via Laravel's standard `DB_*` env vars) |
 | Testing    | Pest (PHP), Vitest + Testing Library (React)                |
@@ -210,16 +219,18 @@ app/
   Http/Controllers/   Thin HTTP layer — validate, delegate, redirect
   Services/           Business logic and side effects (activity logging, etc.)
   Repositories/       All Eloquent query logic
-  Models/             Issue, Project, User, ActivityLog
-  Enums/              IssueLabel and friends
+  Models/             Issue, Project, User, Notification, SavedFilter, ActivityLog
+  Enums/              IssueLabel, UserRole
 
 resources/js/
-  Pages/              Inertia pages, resolved by name (Dashboard, Projects/Show, ...)
+  Pages/              Inertia pages, resolved by name (Dashboard, Projects/Show, Auth/Login, ...)
   Components/
     Atoms/            Smallest building blocks (Button, Badge, Input, ...)
     Molecules/         Composed from atoms (BoardColumn, IssueRowDetail, ...)
     Organisms/         Composed from molecules (IssueBoard, IssueTable, CalendarView, ...)
   Layouts/            Page shells (sidebar, top nav, ...)
+  context/            React context providers (alerts, global modal, keyboard shortcuts)
+  hooks/              Reusable hooks (saved filters, resizable table columns, ...)
   types/              Shared TypeScript types (Issues, Projects, Users, ...)
   utils/              cn() (Tailwind class merging), colors, time helpers
 
@@ -228,7 +239,9 @@ database/
   factories/          Model factories used by the seeder and tests
   seeders/            Demo data generator
 
-routes/web.php        All application routes
+routes/
+  web.php             Authenticated application routes
+  auth.php            Guest-only login/register + logout routes
 ```
 
 ## Conventions worth knowing
@@ -243,6 +256,11 @@ routes/web.php        All application routes
   like `bg-[var(--bg-color)]`. Prefer these variables over hardcoded colors.
 - Prettier (single quotes, auto-organized imports, Tailwind class sorting)
   and ESLint should both pass clean before a commit.
+- Roles are a plain `App\Enums\UserRole` (`admin` / `member`), assigned at
+  registration — there's no separate roles table or permissions matrix.
+- Per-user flags like onboarding completion are columns on `users`, shared
+  to every Inertia page via `HandleInertiaRequests` — the frontend reads
+  them from `usePage().props.auth.user` rather than local/localStorage state.
 
 ## License
 
