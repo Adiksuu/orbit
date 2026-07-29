@@ -45,9 +45,7 @@ describe('ProjectOnboardingModal Component', () => {
     });
 
     test('composes the header, form and preview sections', () => {
-        render(
-            <ProjectOnboardingModal userName="Dave" onSkip={mockOnSkip} />,
-        );
+        render(<ProjectOnboardingModal userName="Dave" onSkip={mockOnSkip} />);
 
         expect(
             screen.getByText('Create your first project'),
@@ -59,9 +57,7 @@ describe('ProjectOnboardingModal Component', () => {
 
     test('submits the project form to the projects.store route', async () => {
         const user = userEvent.setup();
-        render(
-            <ProjectOnboardingModal userName="Dave" onSkip={mockOnSkip} />,
-        );
+        render(<ProjectOnboardingModal userName="Dave" onSkip={mockOnSkip} />);
 
         await user.click(
             screen.getByRole('button', { name: /Create project/i }),
@@ -72,9 +68,7 @@ describe('ProjectOnboardingModal Component', () => {
 
     test('calls onSkip when "I\'ll do this later" is clicked', async () => {
         const user = userEvent.setup();
-        render(
-            <ProjectOnboardingModal userName="Dave" onSkip={mockOnSkip} />,
-        );
+        render(<ProjectOnboardingModal userName="Dave" onSkip={mockOnSkip} />);
 
         await user.click(
             screen.getByRole('button', { name: /I'll do this later/i }),

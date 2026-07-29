@@ -68,3 +68,25 @@ When adding a feature, add tests alongside it rather than relying on the gate to
 ## Conventions
 - `Issue.labels` is cast to an enum array (`App\Enums\IssueLabel` via `AsEnumArrayObject`) and stored as JSON.
 - Prettier is configured with single quotes and auto-organizes imports + Tailwind class ordering; run lint/format before committing.
+
+## Troubleshooting
+
+### Vite HMR not working in Docker
+
+If the Vite dev server stops hot-reloading and you see WebSocket errors in the browser console, the file watcher has likely become stale or exhausted.
+
+**Fix**: The `docker-compose.yml` already sets `fs.inotify.max_user_watches=524288` to prevent watcher exhaustion, and `vite.config.js` uses polling instead of native file watching for better reliability in Docker volumes. If restarting the container is the only option:
+
+```bash
+make down
+make up
+```
+
+If the problem persists after rebuild:
+
+```bash
+make clean
+make setup
+```
+
+This rebuilds the images fresh and clears any stale module cache.
