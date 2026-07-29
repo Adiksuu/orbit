@@ -28,4 +28,8 @@ class UserService
 
         return $this->userRepository->update($user, $data);
     }
+
+    public function completeOnboarding(User $user): User {
+        return $this->userRepository->completeOnboarding($user);
+    }
 }

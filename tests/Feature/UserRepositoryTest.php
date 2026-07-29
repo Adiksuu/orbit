@@ -48,3 +48,12 @@ test('it reports users exist once at least one has been created', function () {
 
     expect($this->repository->hasAnyUsers())->toBeTrue();
 });
+
+test('it can mark onboarding as completed for a user', function () {
+    $user = User::factory()->create(['has_completed_onboarding' => false]);
+
+    $updatedUser = $this->repository->completeOnboarding($user);
+
+    expect($updatedUser->has_completed_onboarding)->toBeTrue();
+    $this->assertDatabaseHas('users', ['id' => $user->id, 'has_completed_onboarding' => true]);
+});

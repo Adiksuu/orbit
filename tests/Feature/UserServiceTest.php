@@ -77,3 +77,16 @@ test('it deletes old avatar when uploading new one', function () {
     Storage::disk('public')->assertMissing($oldAvatarPath);
     Storage::disk('public')->assertExists('avatars/' . $file->hashName());
 });
+
+test('it delegates completing onboarding to the repository', function () {
+    $user = User::factory()->create(['has_completed_onboarding' => false]);
+
+    $this->userRepository->shouldReceive('completeOnboarding')
+        ->once()
+        ->with($user)
+        ->andReturn($user);
+
+    $result = $this->service->completeOnboarding($user);
+
+    expect($result)->toBe($user);
+});
