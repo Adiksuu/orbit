@@ -69,16 +69,24 @@ export default function OnboardingModal({
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
             <BackdropBlur intensity="sm" />
 
             <div className="relative z-50 w-full max-w-5xl">
                 <BorderOverlay />
 
-                <div className="relative z-50 overflow-hidden rounded-3xl bg-zinc-950/90 text-zinc-100 shadow-2xl backdrop-blur-2xl">
-                    <div className="grid min-h-[500px] grid-cols-1 md:grid-cols-2">
-                        <div className="z-50 flex flex-col justify-between p-8 md:p-12">
-                            <div className="space-y-8">
+                <div className="relative z-50 max-h-[calc(100vh-2rem)] overflow-y-auto rounded-2xl bg-zinc-950/90 text-zinc-100 shadow-2xl backdrop-blur-2xl sm:max-h-[calc(100vh-3rem)] sm:rounded-3xl">
+                    <div className="grid grid-cols-1 md:min-h-[500px] md:grid-cols-2">
+                        <div className="relative order-1 h-48 w-full overflow-hidden sm:h-64 md:order-2 md:h-full">
+                            <img
+                                src={currentSlide.image}
+                                alt={currentSlide.title}
+                                className="absolute inset-0 h-full w-full object-cover object-center transition-all duration-300 ease-in-out md:object-left"
+                            />
+                        </div>
+
+                        <div className="z-50 order-2 flex flex-col justify-between gap-8 p-6 sm:p-8 md:order-1 md:gap-0 md:p-12">
+                            <div className="space-y-6 md:space-y-8">
                                 <div className="flex items-center gap-4">
                                     <Avatar src={logo} size={'lg'} />
                                     <span className="text-xl font-bold tracking-tight text-white">
@@ -98,14 +106,6 @@ export default function OnboardingModal({
                                 isLastStep={isLastStep}
                                 onPrev={handlePrev}
                                 onNext={handleNext}
-                            />
-                        </div>
-
-                        <div className="relative hidden h-full w-full overflow-hidden md:block">
-                            <img
-                                src={currentSlide.image}
-                                alt={currentSlide.title}
-                                className="absolute inset-0 h-full w-full object-cover object-left transition-all duration-300 ease-in-out"
                             />
                         </div>
                     </div>
