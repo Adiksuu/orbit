@@ -1,11 +1,28 @@
 import { IconButtonProps } from '@/types/Components';
 import { Link } from '@inertiajs/react';
-import { cva } from 'class-variance-authority';
+import { cva, type VariantProps } from 'class-variance-authority';
 import Icon from '../Icon/Icon';
 
 export const iconButtonVariants = cva(
-    'bg-transparent border-none cursor-pointer p-2 rounded-md flex items-center justify-center hover:bg-[var(--bg-light-color)]/30 transition-colors duration-100',
+    'cursor-pointer flex items-center justify-center transition-all duration-200 active:scale-95 disabled:cursor-not-allowed disabled:opacity-30',
+    {
+        variants: {
+            variant: {
+                default:
+                    'bg-transparent border-none p-2 rounded-md hover:bg-[var(--bg-light-color)]/30 transition-colors duration-100',
+                onboardingSecondary:
+                    'h-10 w-10 rounded-full border border-zinc-800 bg-zinc-900 text-zinc-300 hover:border-zinc-700 hover:bg-zinc-800 hover:text-white disabled:hover:border-zinc-800 disabled:hover:bg-zinc-900',
+                onboardingPrimary:
+                    'h-10 w-10 rounded-full bg-violet-600 text-white shadow-lg shadow-violet-600/30 hover:bg-violet-500 hover:scale-105',
+            },
+        },
+        defaultVariants: {
+            variant: 'default',
+        },
+    },
 );
+
+type Props = IconButtonProps & VariantProps<typeof iconButtonVariants>;
 
 const IconButton = ({
     iconName,
@@ -14,17 +31,30 @@ const IconButton = ({
     className,
     isLink = false,
     link = '',
+    variant,
     children,
+    ariaLabel,
     ...props
-}: IconButtonProps) => {
+}: Props) => {
     return !isLink ? (
-        <button className={iconButtonVariants({ className })} {...props}>
-            <Icon name={iconName} size={iconSize} color={iconColor} />
+        <button
+            className={iconButtonVariants({ variant, className })}
+            aria-label={ariaLabel}
+            {...props}
+        >
+            {iconName && (
+                <Icon name={iconName} size={iconSize} color={iconColor} />
+            )}
             {children}
         </button>
     ) : (
-        <Link className={iconButtonVariants({ className })} href={link}>
-            <Icon name={iconName} size={iconSize} color={iconColor} />
+        <Link
+            className={iconButtonVariants({ variant, className })}
+            href={link}
+        >
+            {iconName && (
+                <Icon name={iconName} size={iconSize} color={iconColor} />
+            )}
             {children}
         </Link>
     );

@@ -81,6 +81,7 @@ export interface IconButtonProps
     isLink?: boolean;
     link?: string;
     children?: ReactNode;
+    ariaLabel?: string;
 }
 export interface InputProps extends VariantProps<typeof inputVariants> {
     value: string;
@@ -151,6 +152,14 @@ export interface PriorityIconProps {
 export interface StatusIconProps {
     status: string;
     className?: string;
+}
+export interface BackdropBlurProps {
+    intensity?: 'sm' | 'md' | 'lg';
+    className?: string;
+}
+export interface ProgressBarProps {
+    currentStep: number;
+    totalSteps: number;
 }
 // MOLECULES COMPONENTS
 export interface BoardColumnProps {
@@ -356,6 +365,19 @@ export interface TableHeaderCellProps {
     onSort: (column: SortingColumn) => void;
     onMouseDown: (column: string, e: React.MouseEvent<HTMLDivElement>) => void;
     onDoubleClick: (column: string) => void;
+}
+export interface SlideContentProps {
+    title: string;
+    subtitle: string;
+    description: string;
+}
+export interface OnboardingModalFooterProps {
+    currentStep: number;
+    totalSteps: number;
+    isFirstStep: boolean;
+    isLastStep: boolean;
+    onPrev: () => void;
+    onNext: () => void;
 }
 // ORGANISMS COMPONENTS
 export interface CalendarViewProps {
