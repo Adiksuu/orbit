@@ -14,6 +14,7 @@ import {
     ProductivityTrendProps,
     Sorting,
     SortingColumn,
+    Status,
 } from '@/types/Issues';
 import { Project, ProjectColors } from '@/types/Projects';
 import { AssignableUser } from '@/types/Users';
@@ -163,9 +164,18 @@ export interface ProgressBarProps {
     totalSteps: number;
 }
 // MOLECULES COMPONENTS
+export type BoardGroupBy = 'priority' | 'status';
+export interface BoardColumnMeta {
+    id: IssuePriority | Status;
+    label: string;
+    hint: string;
+    accent: string;
+    icon: keyof typeof icons;
+}
 export interface BoardColumnProps {
     issues: Issue[];
-    priority: IssuePriority;
+    meta: BoardColumnMeta;
+    count: number;
     activeIssue: Issue | null;
     setActiveIssue: (issue: Issue | null, isEditing?: boolean) => void;
 }

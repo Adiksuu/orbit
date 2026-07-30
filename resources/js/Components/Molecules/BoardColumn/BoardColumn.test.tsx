@@ -1,3 +1,4 @@
+import { BoardColumnMeta } from '@/types/Components';
 import { Issue } from '@/types/Issues';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, test } from 'vitest';
@@ -14,25 +15,36 @@ const makeIssue = (overrides: Partial<Issue> = {}): Issue => ({
     ...overrides,
 });
 
+const highMeta: BoardColumnMeta = {
+    id: 'high',
+    label: 'High Priority',
+    hint: 'Fix immediately',
+    accent: 'var(--error-color)',
+    icon: 'Flame',
+};
+
 describe('BoardColumn Component', () => {
-    test('renders the priority heading', () => {
+    test('renders the column heading from meta', () => {
         render(
             <BoardColumn
                 issues={[]}
-                priority="high"
+                meta={highMeta}
+                count={0}
                 activeIssue={null}
                 setActiveIssue={() => {}}
             />,
         );
 
-        expect(screen.getByText(/high Priority/i)).toBeInTheDocument();
+        expect(screen.getByText('High Priority')).toBeInTheDocument();
+        expect(screen.getByText('Fix immediately')).toBeInTheDocument();
     });
 
     test('shows the empty state when there are no issues', () => {
         render(
             <BoardColumn
                 issues={[]}
-                priority="high"
+                meta={highMeta}
+                count={0}
                 activeIssue={null}
                 setActiveIssue={() => {}}
             />,
@@ -49,7 +61,8 @@ describe('BoardColumn Component', () => {
         render(
             <BoardColumn
                 issues={issues}
-                priority="high"
+                meta={highMeta}
+                count={2}
                 activeIssue={null}
                 setActiveIssue={() => {}}
             />,
@@ -60,22 +73,17 @@ describe('BoardColumn Component', () => {
         expect(screen.queryByText('No issues')).not.toBeInTheDocument();
     });
 
-    test('the count badge reflects only non-closed issues', () => {
-        const issues = [
-            makeIssue({ status: 'open' }),
-            makeIssue({ status: 'open' }),
-            makeIssue({ status: 'closed' }),
-        ];
+    test('renders the count prop verbatim in the badge', () => {
         render(
             <BoardColumn
-                issues={issues}
-                priority="high"
+                issues={[]}
+                meta={highMeta}
+                count={7}
                 activeIssue={null}
                 setActiveIssue={() => {}}
             />,
         );
 
-        // 2 open of 3 total => badge shows "2".
-        expect(screen.getByText('2')).toBeInTheDocument();
+        expect(screen.getByText('7')).toBeInTheDocument();
     });
 });
