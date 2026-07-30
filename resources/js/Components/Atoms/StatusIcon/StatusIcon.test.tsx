@@ -17,11 +17,18 @@ describe('StatusIcon Component', () => {
         expect(icons[0]).toHaveClass('text-indigo-500');
     });
 
+    test('renders an in-progress icon for "in_progress" status', () => {
+        render(<StatusIcon status="in_progress" />);
+
+        const icons = screen.getAllByTitle('in_progress');
+        expect(icons[0]).toHaveClass('text-amber-500');
+    });
+
     test('renders the default icon for other statuses', () => {
         render(<StatusIcon status="Open" />);
 
         const icons = screen.getAllByTitle('Open');
-        expect(icons[0]).toHaveClass('text-amber-500');
+        expect(icons[0]).toHaveClass('text-zinc-500');
     });
 
     test('applies an additional className to the icon span', () => {

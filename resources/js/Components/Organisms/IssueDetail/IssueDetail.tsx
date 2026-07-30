@@ -41,7 +41,8 @@ const AVAILABLE_LABELS: IssueLabel[] = [
     'ux',
     'chore',
 ];
-const STATUSES: Status[] = ['open', 'closed'];
+const STATUSES: Status[] = ['open', 'in_progress', 'closed'];
+const formatStatusLabel = (status: Status) => status.replace(/_/g, ' ');
 const PRIORITIES: IssuePriority[] = ['high', 'medium', 'low'];
 
 const IssueDetail = ({
@@ -220,7 +221,9 @@ const IssueDetail = ({
                                                     status={data.status}
                                                 />
                                                 <span className="capitalize">
-                                                    {data.status}
+                                                    {formatStatusLabel(
+                                                        data.status,
+                                                    )}
                                                 </span>
                                             </div>
                                         }
@@ -239,7 +242,9 @@ const IssueDetail = ({
                                                                 status={option}
                                                             />
                                                             <span className="capitalize">
-                                                                {option}
+                                                                {formatStatusLabel(
+                                                                    option,
+                                                                )}
                                                             </span>
                                                         </div>
                                                     }
@@ -262,7 +267,7 @@ const IssueDetail = ({
                                 <div className="flex items-center gap-2">
                                     <StatusDot status={activeIssue.status} />
                                     <span className="text-sm capitalize text-[var(--text-color)]">
-                                        {activeIssue.status}
+                                        {formatStatusLabel(activeIssue.status)}
                                     </span>
                                 </div>
                             )}

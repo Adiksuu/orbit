@@ -23,6 +23,7 @@ describe('StatusDot Component', () => {
 
     test.each([
         ['open', 'bg-[var(--info-color)]'],
+        ['in_progress', 'bg-[var(--accent-color)]'],
         ['closed', 'bg-[var(--pending-color)]'],
         ['low', 'bg-[var(--success-color)]'],
         ['medium', 'bg-[var(--warning-color)]'],
