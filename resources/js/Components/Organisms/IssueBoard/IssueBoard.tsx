@@ -1,8 +1,13 @@
 import BoardColumn from '@/Components/Molecules/BoardColumn/BoardColumn';
 import { BoardCardOverlay } from '@/Components/Organisms/BoardCard/BoardCard';
 import { useAlert } from '@/context/AlertContext';
-import { BoardColumnMeta, IssueBoardProps } from '@/types/Components';
-import { Issue, IssuePriority } from '@/types/Issues';
+import {
+    BoardColumnMeta,
+    BoardGroupBy,
+    IssueBoardProps,
+} from '@/types/Components';
+import { Issue } from '@/types/Issues';
+import { cn } from '@/utils/cn';
 import {
     DndContext,
     DragEndEvent,
@@ -46,40 +51,88 @@ const PRIORITY_COLUMNS: BoardColumnMeta[] = [
     },
 ];
 
+const STATUS_COLUMNS: BoardColumnMeta[] = [
+    {
+        id: 'open',
+        label: 'Open',
+        hint: 'Not started yet',
+        accent: 'var(--info-color)',
+        icon: 'CircleDashed',
+    },
+    {
+        id: 'in_progress',
+        label: 'In Progress',
+        hint: 'Being worked on',
+        accent: 'var(--accent-color)',
+        icon: 'Loader',
+    },
+    {
+        id: 'closed',
+        label: 'Done',
+        hint: 'Completed',
+        accent: 'var(--pending-color)',
+        icon: 'CircleCheck',
+    },
+];
+
+const GROUP_BY_OPTIONS: { value: BoardGroupBy; label: string }[] = [
+    { value: 'priority', label: 'Priority' },
+    { value: 'status', label: 'Status' },
+];
+
 function IssueBoard({ issues, activeIssue, setActiveIssue }: IssueBoardProps) {
     const { addAlert } = useAlert();
     const [boardIssues, setBoardIssues] = useState<Issue[]>(issues);
     const [draggingIssue, setDraggingIssue] = useState<Issue | null>(null);
+    const [groupBy, setGroupBy] = useState<BoardGroupBy>(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('boardGroupBy');
+            if (saved === 'priority' || saved === 'status') {
+                return saved;
+            }
+        }
+        return 'priority';
+    });
 
     useEffect(() => {
         setBoardIssues(issues);
     }, [issues]);
 
+    useEffect(() => {
+        localStorage.setItem('boardGroupBy', groupBy);
+    }, [groupBy]);
+
     const sensors = useSensors(
         useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
     );
 
-    const preparePriorityBoard = (issues: Issue[]) => {
-        const board: Record<IssuePriority, Issue[]> = {
-            high: [],
-            medium: [],
-            low: [],
-        };
+    const columns = groupBy === 'priority' ? PRIORITY_COLUMNS : STATUS_COLUMNS;
 
-        issues.forEach((issue: Issue) => {
-            if (board[issue.priority]) {
-                board[issue.priority].push(issue);
+    const groupIssues = (issues: Issue[]) => {
+        const board: Record<string, Issue[]> = {};
+        columns.forEach((column) => {
+            board[column.id] = [];
+        });
+
+        issues.forEach((issue) => {
+            const key = issue[groupBy];
+            if (board[key]) {
+                board[key].push(issue);
             }
         });
 
         return board;
     };
 
-    const grouped = preparePriorityBoard(boardIssues);
-    // The count badge only reflects still-active work for a priority bucket —
-    // closed issues no longer need attention at that priority.
+    const grouped = groupIssues(boardIssues);
+
+    // In priority mode, the count only reflects still-active work — closed
+    // issues no longer need attention at that priority. In status mode every
+    // issue in a column already IS that status, so the total is the count.
     const countFor = (columnIssues: Issue[]) =>
-        columnIssues.filter((issue) => issue.status !== 'closed').length;
+        groupBy === 'priority'
+            ? columnIssues.filter((issue) => issue.status !== 'closed').length
+            : columnIssues.length;
 
     const handleDragStart = (event: DragStartEvent) => {
         const issue = boardIssues.find((i) => i.id === event.active.id);
@@ -92,21 +145,21 @@ function IssueBoard({ issues, activeIssue, setActiveIssue }: IssueBoardProps) {
 
         if (!over) return;
 
-        const targetPriority = over.id as IssuePriority;
+        const targetValue = over.id as Issue['priority'] | Issue['status'];
         const issue = boardIssues.find((i) => i.id === active.id);
-        if (!issue || issue.priority === targetPriority) return;
+        if (!issue || issue[groupBy] === targetValue) return;
 
-        const previousPriority = issue.priority;
+        const previousValue = issue[groupBy];
 
         setBoardIssues((prev) =>
             prev.map((i) =>
-                i.id === issue.id ? { ...i, priority: targetPriority } : i,
+                i.id === issue.id ? { ...i, [groupBy]: targetValue } : i,
             ),
         );
 
         router.patch(
             route('issues.update', issue.id),
-            { priority: targetPriority },
+            { [groupBy]: targetValue },
             {
                 preserveScroll: true,
                 preserveState: true,
@@ -114,11 +167,11 @@ function IssueBoard({ issues, activeIssue, setActiveIssue }: IssueBoardProps) {
                     setBoardIssues((prev) =>
                         prev.map((i) =>
                             i.id === issue.id
-                                ? { ...i, priority: previousPriority }
+                                ? { ...i, [groupBy]: previousValue }
                                 : i,
                         ),
                     );
-                    addAlert('Failed to update issue priority', 'error');
+                    addAlert(`Failed to update issue ${groupBy}`, 'error');
                 },
             },
         );
@@ -131,20 +184,41 @@ function IssueBoard({ issues, activeIssue, setActiveIssue }: IssueBoardProps) {
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
         >
-            <div className="no-scrollbar flex h-full w-full snap-x snap-mandatory gap-4 overflow-x-auto bg-[var(--bg-color)] p-4 md:gap-5 md:p-6">
-                {PRIORITY_COLUMNS.map((column) => {
-                    const columnIssues = grouped[column.id as IssuePriority];
-                    return (
-                        <BoardColumn
-                            key={column.id}
-                            issues={columnIssues}
-                            meta={column}
-                            count={countFor(columnIssues)}
-                            activeIssue={activeIssue}
-                            setActiveIssue={setActiveIssue}
-                        />
-                    );
-                })}
+            <div className="flex h-full w-full flex-col bg-[var(--bg-color)]">
+                <div className="flex items-center px-4 pt-4 md:px-6 md:pt-6">
+                    <div className="inline-flex items-center gap-1 rounded-lg border border-white/[0.06] bg-[#141414] p-1">
+                        {GROUP_BY_OPTIONS.map((option) => (
+                            <button
+                                key={option.value}
+                                type="button"
+                                onClick={() => setGroupBy(option.value)}
+                                className={cn(
+                                    'rounded-md px-3 py-1 text-xs font-medium transition-colors',
+                                    groupBy === option.value
+                                        ? 'bg-white/10 text-zinc-100'
+                                        : 'text-zinc-500 hover:text-zinc-300',
+                                )}
+                            >
+                                {option.label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+                <div className="no-scrollbar flex flex-1 snap-x snap-mandatory gap-4 overflow-x-auto p-4 md:gap-5 md:p-6">
+                    {columns.map((column) => {
+                        const columnIssues = grouped[column.id];
+                        return (
+                            <BoardColumn
+                                key={column.id}
+                                issues={columnIssues}
+                                meta={column}
+                                count={countFor(columnIssues)}
+                                activeIssue={activeIssue}
+                                setActiveIssue={setActiveIssue}
+                            />
+                        );
+                    })}
+                </div>
             </div>
             <DragOverlay dropAnimation={dropAnimationConfig}>
                 {draggingIssue ? (
