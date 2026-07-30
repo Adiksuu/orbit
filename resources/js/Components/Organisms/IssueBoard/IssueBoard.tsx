@@ -20,7 +20,7 @@ function IssueBoard({ issues, activeIssue, setActiveIssue }: IssueBoardProps) {
     };
 
     return (
-        <div className="flex h-full w-full snap-x snap-mandatory gap-4 overflow-x-auto bg-[var(--bg-color)] p-4 md:p-6">
+        <div className="no-scrollbar flex h-full w-full snap-x snap-mandatory gap-4 overflow-x-auto bg-[var(--bg-color)] p-4 md:gap-5 md:p-6">
             <BoardColumn
                 issues={preparePriorityBoard(issues).high}
                 priority="high"

@@ -57,7 +57,7 @@ const LabelList: React.FC<LabelListProps> = ({
                 </Badge>
             ))}
             {remainingLabels.length > 0 && (
-                <div className="relative">
+                <div className="relative inline-flex">
                     <Badge
                         variant={variant}
                         className={cn(
