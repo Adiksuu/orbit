@@ -4,40 +4,15 @@ import IssueElement from '@/Components/Molecules/IssueElement/IssueElement';
 import { BoardColumnProps } from '@/types/Components';
 import { useDroppable } from '@dnd-kit/core';
 import { AnimatePresence } from 'framer-motion';
-import { icons } from 'lucide-react';
-
-const columnMeta: Record<
-    BoardColumnProps['priority'],
-    { accent: string; icon: keyof typeof icons; hint: string }
-> = {
-    high: {
-        accent: 'var(--error-color)',
-        icon: 'Flame',
-        hint: 'Fix immediately',
-    },
-    medium: {
-        accent: 'var(--warning-color)',
-        icon: 'Gauge',
-        hint: 'Handle soon',
-    },
-    low: {
-        accent: 'var(--success-color)',
-        icon: 'Leaf',
-        hint: 'When time allows',
-    },
-};
 
 function BoardColumn({
     issues,
-    priority,
+    meta,
+    count,
     activeIssue,
     setActiveIssue,
 }: BoardColumnProps) {
-    const meta = columnMeta[priority];
-    const openCount = issues.filter(
-        (issue) => issue.status !== 'closed',
-    ).length;
-    const { setNodeRef, isOver } = useDroppable({ id: priority });
+    const { setNodeRef, isOver } = useDroppable({ id: meta.id });
 
     return (
         <div
@@ -71,8 +46,8 @@ function BoardColumn({
                             <Icon name={meta.icon} size={17} />
                         </div>
                         <div className="min-w-0">
-                            <h3 className="truncate text-[13px] font-semibold capitalize leading-tight text-zinc-100">
-                                {priority} Priority
+                            <h3 className="truncate text-[13px] font-semibold leading-tight text-zinc-100">
+                                {meta.label}
                             </h3>
                             <p className="truncate text-[11px] leading-tight text-zinc-500">
                                 {meta.hint}
@@ -80,11 +55,11 @@ function BoardColumn({
                         </div>
                     </div>
                     <Badge
-                        color={priority}
+                        color={meta.id}
                         variant="default"
                         className="ml-auto shrink-0 rounded-full font-semibold tabular-nums"
                     >
-                        {openCount}
+                        {count}
                     </Badge>
                 </div>
             </div>

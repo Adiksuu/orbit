@@ -127,4 +127,22 @@ describe('IssueBoard Component', () => {
             ?.parentElement?.parentElement as HTMLElement;
         expect(within(column).getByText('A low one')).toBeInTheDocument();
     });
+
+    test('the count badge reflects only non-closed issues in that priority', () => {
+        const issues = [
+            makeIssue({ priority: 'high', status: 'open' }),
+            makeIssue({ priority: 'high', status: 'open' }),
+            makeIssue({ priority: 'high', status: 'closed' }),
+        ];
+        render(
+            <IssueBoard
+                issues={issues}
+                activeIssue={null}
+                setActiveIssue={() => {}}
+            />,
+        );
+
+        // 2 open of 3 total in the High column => badge shows "2".
+        expect(screen.getByText('2')).toBeInTheDocument();
+    });
 });

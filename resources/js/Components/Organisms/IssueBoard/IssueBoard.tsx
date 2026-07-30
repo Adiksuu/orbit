@@ -1,7 +1,7 @@
 import BoardColumn from '@/Components/Molecules/BoardColumn/BoardColumn';
 import { BoardCardOverlay } from '@/Components/Organisms/BoardCard/BoardCard';
 import { useAlert } from '@/context/AlertContext';
-import { IssueBoardProps } from '@/types/Components';
+import { BoardColumnMeta, IssueBoardProps } from '@/types/Components';
 import { Issue, IssuePriority } from '@/types/Issues';
 import {
     DndContext,
@@ -21,6 +21,30 @@ const dropAnimationConfig: DropAnimation = {
     duration: 220,
     easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
 };
+
+const PRIORITY_COLUMNS: BoardColumnMeta[] = [
+    {
+        id: 'high',
+        label: 'High Priority',
+        hint: 'Fix immediately',
+        accent: 'var(--error-color)',
+        icon: 'Flame',
+    },
+    {
+        id: 'medium',
+        label: 'Medium Priority',
+        hint: 'Handle soon',
+        accent: 'var(--warning-color)',
+        icon: 'Gauge',
+    },
+    {
+        id: 'low',
+        label: 'Low Priority',
+        hint: 'When time allows',
+        accent: 'var(--success-color)',
+        icon: 'Leaf',
+    },
+];
 
 function IssueBoard({ issues, activeIssue, setActiveIssue }: IssueBoardProps) {
     const { addAlert } = useAlert();
@@ -50,6 +74,12 @@ function IssueBoard({ issues, activeIssue, setActiveIssue }: IssueBoardProps) {
 
         return board;
     };
+
+    const grouped = preparePriorityBoard(boardIssues);
+    // The count badge only reflects still-active work for a priority bucket —
+    // closed issues no longer need attention at that priority.
+    const countFor = (columnIssues: Issue[]) =>
+        columnIssues.filter((issue) => issue.status !== 'closed').length;
 
     const handleDragStart = (event: DragStartEvent) => {
         const issue = boardIssues.find((i) => i.id === event.active.id);
@@ -102,24 +132,19 @@ function IssueBoard({ issues, activeIssue, setActiveIssue }: IssueBoardProps) {
             onDragEnd={handleDragEnd}
         >
             <div className="no-scrollbar flex h-full w-full snap-x snap-mandatory gap-4 overflow-x-auto bg-[var(--bg-color)] p-4 md:gap-5 md:p-6">
-                <BoardColumn
-                    issues={preparePriorityBoard(boardIssues).high}
-                    priority="high"
-                    activeIssue={activeIssue}
-                    setActiveIssue={setActiveIssue}
-                />
-                <BoardColumn
-                    issues={preparePriorityBoard(boardIssues).medium}
-                    priority="medium"
-                    activeIssue={activeIssue}
-                    setActiveIssue={setActiveIssue}
-                />
-                <BoardColumn
-                    issues={preparePriorityBoard(boardIssues).low}
-                    priority="low"
-                    activeIssue={activeIssue}
-                    setActiveIssue={setActiveIssue}
-                />
+                {PRIORITY_COLUMNS.map((column) => {
+                    const columnIssues = grouped[column.id as IssuePriority];
+                    return (
+                        <BoardColumn
+                            key={column.id}
+                            issues={columnIssues}
+                            meta={column}
+                            count={countFor(columnIssues)}
+                            activeIssue={activeIssue}
+                            setActiveIssue={setActiveIssue}
+                        />
+                    );
+                })}
             </div>
             <DragOverlay dropAnimation={dropAnimationConfig}>
                 {draggingIssue ? (
