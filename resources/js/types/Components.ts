@@ -111,7 +111,7 @@ export interface ProgressRingProps {
     bgColorClass?: string;
 }
 export interface StatusDotProps extends VariantProps<typeof statusDotVariants> {
-    status: 'open' | 'closed' | 'low' | 'medium' | 'high';
+    status: 'open' | 'in_progress' | 'closed' | 'low' | 'medium' | 'high';
     className?: string;
 }
 export interface TextAreaProps extends VariantProps<typeof textareaVariants> {

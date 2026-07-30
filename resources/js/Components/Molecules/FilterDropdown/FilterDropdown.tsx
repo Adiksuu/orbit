@@ -54,6 +54,7 @@ const FILTER_CONFIG: Record<FilterDropdownType, FilterConfig> = {
         multiSelect: false,
         options: [
             { value: 'open', label: 'Open' },
+            { value: 'in_progress', label: 'In Progress' },
             { value: 'closed', label: 'Closed' },
         ].map(({ value, label }) => ({
             value,

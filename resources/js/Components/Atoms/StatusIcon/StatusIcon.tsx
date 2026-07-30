@@ -30,11 +30,37 @@ export const StatusIcon = ({ status, className }: StatusIconProps) => {
         );
     }
 
+    if (s === 'in_progress' || s === 'in progress') {
+        return (
+            <Badge variant={'ghost'} tooltip={true} tooltipText={status}>
+                <span
+                    className={cn(
+                        'inline-flex items-center text-amber-500',
+                        className,
+                    )}
+                    title={status}
+                >
+                    <svg className="h-4 w-4 fill-current" viewBox="0 0 16 16">
+                        <circle
+                            cx="8"
+                            cy="8"
+                            r="5"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            fill="none"
+                        />
+                        <path d="M8 3a5 5 0 0 1 5 5H8V3z" />
+                    </svg>
+                </span>
+            </Badge>
+        );
+    }
+
     return (
         <Badge variant={'ghost'} tooltip={true} tooltipText={status}>
             <span
                 className={cn(
-                    'inline-flex items-center text-amber-500',
+                    'inline-flex items-center text-zinc-500',
                     className,
                 )}
                 title={status}
@@ -48,7 +74,6 @@ export const StatusIcon = ({ status, className }: StatusIconProps) => {
                         strokeWidth="1.5"
                         fill="none"
                     />
-                    <path d="M8 3a5 5 0 0 1 5 5H8V3z" />
                 </svg>
             </span>
         </Badge>
