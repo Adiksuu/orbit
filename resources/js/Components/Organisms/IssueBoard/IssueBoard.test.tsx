@@ -96,8 +96,8 @@ describe('IssueBoard Component', () => {
 
         // Find the "low Priority" column and confirm the issue lives within it.
         const lowHeading = screen.getByText(/low Priority/i);
-        const column = lowHeading.closest('div')?.parentElement
-            ?.parentElement as HTMLElement;
+        const column = lowHeading.closest('div')?.parentElement?.parentElement
+            ?.parentElement?.parentElement as HTMLElement;
         expect(within(column).getByText('A low one')).toBeInTheDocument();
     });
 });

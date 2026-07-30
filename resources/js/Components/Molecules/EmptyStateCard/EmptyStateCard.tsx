@@ -8,6 +8,7 @@ function DashboardEmptyState({
     iconName,
     title,
     description,
+    actionLabel,
     actionHref,
     actionShortcut,
 }: DashboardEmptyStateProps) {
@@ -19,6 +20,8 @@ function DashboardEmptyState({
             triggerShortcut(actionShortcut);
         }
     };
+
+    const showAction = actionLabel && (actionHref || actionShortcut);
 
     return (
         <Link
@@ -38,6 +41,12 @@ function DashboardEmptyState({
                     {description}
                 </p>
             </div>
+
+            {showAction && (
+                <span className="mt-3 text-xs font-medium text-[var(--accent-color)] opacity-0 transition-opacity group-hover:opacity-100">
+                    {actionLabel}
+                </span>
+            )}
         </Link>
     );
 }
