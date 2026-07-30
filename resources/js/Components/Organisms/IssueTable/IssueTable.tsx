@@ -344,6 +344,8 @@ export const IssueTable: React.FC<IssueTableProps> = ({
                                             title="All done!"
                                             description="No issues found in this view. Everything is completed or no tasks have been assigned yet."
                                             iconName="FolderPlus"
+                                            actionLabel="Create Issue"
+                                            actionShortcut="c"
                                         />
                                     </td>
                                 </tr>

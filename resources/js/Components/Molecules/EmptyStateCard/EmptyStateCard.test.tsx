@@ -24,7 +24,7 @@ vi.mock('@inertiajs/react', () => ({
         children: React.ReactNode;
         href?: string;
         className?: string;
-        onClick?: () => void;
+        onClick?: (e: React.MouseEvent) => void;
     }) => (
         <a href={href} className={className} onClick={onClick}>
             {children}
@@ -61,7 +61,7 @@ describe('EmptyStateCard Component', () => {
         expect(screen.getByRole('link')).toHaveAttribute('href', '/issues/new');
     });
 
-    test('does not render the action label when actionHref is missing', () => {
+    test('does not render the action label when neither actionHref nor actionShortcut is set', () => {
         render(
             <EmptyStateCard
                 iconName="FolderPlus"
@@ -72,6 +72,20 @@ describe('EmptyStateCard Component', () => {
         );
 
         expect(screen.queryByText('Create one')).not.toBeInTheDocument();
+    });
+
+    test('renders the action label when only actionShortcut is set', () => {
+        render(
+            <EmptyStateCard
+                iconName="FolderPlus"
+                title="Empty"
+                description="Nothing here"
+                actionLabel="Create one"
+                actionShortcut="c"
+            />,
+        );
+
+        expect(screen.getByText('Create one')).toBeInTheDocument();
     });
 
     test('does not render the action label when actionLabel is missing', () => {
@@ -88,7 +102,31 @@ describe('EmptyStateCard Component', () => {
         expect(screen.getByRole('link')).toBeInTheDocument();
     });
 
-    test('triggers the "p" shortcut when the card is clicked', async () => {
+    test('triggers the configured shortcut and prevents navigation when actionShortcut is set', async () => {
+        render(
+            <EmptyStateCard
+                iconName="FolderPlus"
+                title="Empty"
+                description="Nothing here"
+                actionLabel="Create one"
+                actionShortcut="c"
+            />,
+        );
+
+        const link = screen.getByText('Create one').closest('a')!;
+        const clickEvent = new MouseEvent('click', {
+            bubbles: true,
+            cancelable: true,
+        });
+        const preventDefaultSpy = vi.spyOn(clickEvent, 'preventDefault');
+
+        link.dispatchEvent(clickEvent);
+
+        expect(triggerShortcut).toHaveBeenCalledWith('c');
+        expect(preventDefaultSpy).toHaveBeenCalled();
+    });
+
+    test('does not trigger any shortcut when actionShortcut is not set', async () => {
         render(
             <EmptyStateCard
                 iconName="FolderPlus"
@@ -100,6 +138,6 @@ describe('EmptyStateCard Component', () => {
 
         await userEvent.click(screen.getByRole('link'));
 
-        expect(triggerShortcut).toHaveBeenCalledWith('p');
+        expect(triggerShortcut).not.toHaveBeenCalled();
     });
 });
