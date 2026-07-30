@@ -2,6 +2,8 @@ import Badge from '@/Components/Atoms/Badge/Badge';
 import Icon from '@/Components/Atoms/Icon/Icon';
 import IssueElement from '@/Components/Molecules/IssueElement/IssueElement';
 import { BoardColumnProps } from '@/types/Components';
+import { useDroppable } from '@dnd-kit/core';
+import { AnimatePresence } from 'framer-motion';
 import { icons } from 'lucide-react';
 
 const columnMeta: Record<
@@ -35,9 +37,22 @@ function BoardColumn({
     const openCount = issues.filter(
         (issue) => issue.status !== 'closed',
     ).length;
+    const { setNodeRef, isOver } = useDroppable({ id: priority });
 
     return (
-        <div className="flex h-full w-[calc(100vw-3.5rem)] flex-shrink-0 snap-center flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-[#141414] shadow-[0_4px_10px_-6px_rgba(0,0,0,0.5)] sm:w-[336px]">
+        <div
+            ref={setNodeRef}
+            className="flex h-full w-[calc(100vw-3.5rem)] flex-shrink-0 snap-center flex-col overflow-hidden rounded-2xl border transition-colors duration-150 sm:w-[336px]"
+            style={{
+                borderColor: isOver
+                    ? `${meta.accent}66`
+                    : 'rgb(255 255 255 / 0.06)',
+                backgroundColor: '#141414',
+                boxShadow: isOver
+                    ? `0 0 0 1px ${meta.accent}33, 0 12px 24px -10px ${meta.accent}4d`
+                    : '0 4px 10px -6px rgba(0,0,0,0.5)',
+            }}
+        >
             <div
                 className="flex items-center gap-3 border-b border-white/[0.06] px-4 py-3.5"
                 style={{
@@ -84,15 +99,17 @@ function BoardColumn({
                 </div>
             ) : (
                 <div className="no-scrollbar flex flex-1 select-none flex-col gap-2.5 overflow-y-auto p-3">
-                    {issues.map((issue) => (
-                        <IssueElement
-                            key={issue.id}
-                            issue={issue}
-                            activeIssue={activeIssue}
-                            setActiveIssue={setActiveIssue}
-                            type="board"
-                        />
-                    ))}
+                    <AnimatePresence initial={false}>
+                        {issues.map((issue) => (
+                            <IssueElement
+                                key={issue.id}
+                                issue={issue}
+                                activeIssue={activeIssue}
+                                setActiveIssue={setActiveIssue}
+                                type="board"
+                            />
+                        ))}
+                    </AnimatePresence>
                 </div>
             )}
         </div>

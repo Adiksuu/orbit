@@ -1,7 +1,34 @@
 import { Issue } from '@/types/Issues';
 import { render, screen, within } from '@testing-library/react';
-import { describe, expect, test } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import IssueBoard from './IssueBoard';
+
+const mockAddAlert = vi.hoisted(() => vi.fn());
+vi.mock('@/context/AlertContext', () => ({
+    useAlert: () => ({
+        addAlert: mockAddAlert,
+        removeAlert: vi.fn(),
+        alerts: [],
+    }),
+}));
+
+const mockRouterPatch = vi.hoisted(() => vi.fn());
+vi.mock('@inertiajs/react', () => ({
+    router: { patch: mockRouterPatch },
+}));
+
+const mockRoute = vi.hoisted(() =>
+    vi.fn((name: string, id?: string | number) => `/${name}/${id ?? ''}`),
+);
+
+beforeEach(() => {
+    vi.stubGlobal('route', mockRoute);
+});
+
+afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.clearAllMocks();
+});
 
 let counter = 0;
 const makeIssue = (overrides: Partial<Issue> = {}): Issue => ({
