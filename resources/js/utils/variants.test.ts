@@ -29,18 +29,18 @@ describe('boardCardVariants', () => {
     test('applies the base layout classes', () => {
         expect(
             boardCardVariants({ isActive: false, isClosed: false }),
-        ).toContain('flex flex-col gap-2.5 rounded-lg border p-3');
+        ).toContain('flex flex-col gap-2 rounded-xl border p-3');
     });
 
     test('applies active border/background classes when active', () => {
         const result = boardCardVariants({ isActive: true, isClosed: false });
         expect(result).toContain('border-zinc-600');
-        expect(result).toContain('bg-[var(--bg-light-color-hover)]');
+        expect(result).toContain('bg-[#242424]');
     });
 
     test('applies inactive border/background classes when not active', () => {
         const result = boardCardVariants({ isActive: false, isClosed: false });
-        expect(result).toContain('border-zinc-800');
+        expect(result).toContain('border-white/[0.08]');
         expect(result).toContain('bg-[#1c1c1c]');
     });
 

@@ -11,12 +11,12 @@ export const priorityTextColor = cva('text-[11px] font-medium capitalize', {
 });
 
 export const boardCardVariants = cva(
-    'flex flex-col gap-2.5 rounded-lg border p-3 text-left transition-all duration-200 cursor-pointer',
+    'flex flex-col gap-2 rounded-xl border p-3 text-left shadow-[0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200 cursor-pointer hover:-translate-y-0.5 hover:shadow-[0_4px_10px_-4px_rgba(0,0,0,0.45)]',
     {
         variants: {
             isActive: {
-                true: 'border-zinc-600 bg-[var(--bg-light-color-hover)]',
-                false: 'border-zinc-800 bg-[#1c1c1c] hover:border-zinc-700 hover:bg-[#222222]',
+                true: 'border-zinc-600 bg-[#242424] ring-1 ring-[var(--accent-color)]/40',
+                false: 'border-white/[0.08] bg-[#1c1c1c] hover:border-white/[0.16] hover:bg-[#212121]',
             },
             isClosed: { true: 'opacity-50 hover:opacity-90', false: '' },
         },
