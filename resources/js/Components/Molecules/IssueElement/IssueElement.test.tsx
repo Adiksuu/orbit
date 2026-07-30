@@ -115,7 +115,10 @@ describe('IssueElement Component', () => {
                 />,
             );
 
-            expect(container.firstChild).toHaveClass('border-zinc-600');
+            // firstChild is the drag-transform wrapper; the styled card is its child.
+            expect(container.firstChild?.firstChild).toHaveClass(
+                'border-zinc-600',
+            );
         });
 
         test('applies closed (line-through) styling for closed issues', () => {

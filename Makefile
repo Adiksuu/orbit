@@ -1,4 +1,4 @@
-.PHONY: setup up dev down build test test-coverage lint type-check logs shell tinker migrate fresh clean
+.PHONY: setup up dev down build test test-coverage lint type-check logs shell tinker migrate fresh clean npm-install
 
 # Build images and start the full stack (app + vite) in the background.
 setup:
@@ -38,6 +38,14 @@ down:
 # (Re)build the images.
 build:
 	docker compose build
+
+# Run this after adding/updating/removing an npm package (package.json or
+# package-lock.json changed). docker-compose mounts an anonymous volume over
+# node_modules in the vite service, so a plain rebuild/restart keeps the stale
+# one — --renew-anon-volumes forces it to pick up the freshly installed deps.
+npm-install:
+	docker compose build vite
+	docker compose up -d --renew-anon-volumes vite
 
 # Run the PHP (Pest) test suite.
 test:

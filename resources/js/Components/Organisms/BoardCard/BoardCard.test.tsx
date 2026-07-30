@@ -149,7 +149,8 @@ describe('BoardCard Component', () => {
             />,
         );
 
-        expect(container.firstChild).toHaveClass('border-zinc-600');
+        // firstChild is the drag-transform wrapper; the styled card is its child.
+        expect(container.firstChild?.firstChild).toHaveClass('border-zinc-600');
     });
 
     test('applies muted/opacity styling and a line-through title when closed', () => {

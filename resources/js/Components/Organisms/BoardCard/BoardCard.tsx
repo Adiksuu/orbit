@@ -3,19 +3,21 @@ import Badge from '@/Components/Atoms/Badge/Badge';
 import StatusDot from '@/Components/Atoms/StatusDot/StatusDot';
 import LabelList from '@/Components/Molecules/LabelList/LabelList';
 import { BoardCardProps } from '@/types/Components';
+import { Issue } from '@/types/Issues';
 import { cn } from '@/utils/cn';
 import { boardCardVariants } from '@/utils/variants';
+import { useDraggable } from '@dnd-kit/core';
+import { CSS } from '@dnd-kit/utilities';
+import { motion } from 'framer-motion';
 
-export const BoardCard = ({
+const BoardCardContent = ({
     issue,
-    isActive,
-    onClick,
     isClosed,
-}: BoardCardProps) => (
-    <div
-        onClick={onClick}
-        className={boardCardVariants({ isActive, isClosed })}
-    >
+}: {
+    issue: Issue;
+    isClosed: boolean;
+}) => (
+    <>
         <div className="flex items-center justify-between gap-2">
             <div className="flex min-w-0 items-center gap-1.5">
                 <StatusDot status={isClosed ? issue.status : issue.priority} />
@@ -64,5 +66,69 @@ export const BoardCard = ({
                 </div>
             )}
         </div>
+    </>
+);
+
+export const BoardCard = ({
+    issue,
+    isActive,
+    onClick,
+    isClosed,
+}: BoardCardProps) => {
+    const { attributes, listeners, setNodeRef, transform, isDragging } =
+        useDraggable({ id: issue.id });
+
+    return (
+        <div
+            ref={setNodeRef}
+            style={{ transform: CSS.Translate.toString(transform) }}
+            className={isDragging ? 'relative z-10' : undefined}
+        >
+            {/*
+                The drag offset above must track the pointer 1:1 with no easing —
+                only the *layout reflow* (siblings shifting on insert/remove) gets
+                a spring. Mixing both on one node makes the card visibly lag
+                behind the cursor and leaves a smeared "ghost" trail, so `layout`
+                is disabled for the duration of an active drag.
+            */}
+            <motion.div
+                layout={!isDragging}
+                initial={{ opacity: 0, y: 6, scale: 0.97 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.96 }}
+                transition={{
+                    type: 'spring',
+                    stiffness: 500,
+                    damping: 40,
+                    mass: 0.5,
+                }}
+                onClick={onClick}
+                className={cn(
+                    boardCardVariants({ isActive, isClosed }),
+                    isDragging && 'opacity-30',
+                )}
+                {...attributes}
+                {...listeners}
+            >
+                <BoardCardContent issue={issue} isClosed={isClosed} />
+            </motion.div>
+        </div>
+    );
+};
+
+export const BoardCardOverlay = ({
+    issue,
+    isClosed,
+}: {
+    issue: Issue;
+    isClosed: boolean;
+}) => (
+    <div
+        className={cn(
+            boardCardVariants({ isActive: false, isClosed }),
+            'ring-[var(--accent-color)]/40 w-[300px] rotate-2 cursor-grabbing shadow-[0_24px_48px_-12px_rgba(0,0,0,0.7)] ring-1',
+        )}
+    >
+        <BoardCardContent issue={issue} isClosed={isClosed} />
     </div>
 );

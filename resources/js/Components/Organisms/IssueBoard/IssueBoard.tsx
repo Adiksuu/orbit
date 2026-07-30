@@ -1,8 +1,40 @@
 import BoardColumn from '@/Components/Molecules/BoardColumn/BoardColumn';
+import { BoardCardOverlay } from '@/Components/Organisms/BoardCard/BoardCard';
+import { useAlert } from '@/context/AlertContext';
 import { IssueBoardProps } from '@/types/Components';
 import { Issue, IssuePriority } from '@/types/Issues';
+import {
+    DndContext,
+    DragEndEvent,
+    DragOverlay,
+    DragStartEvent,
+    DropAnimation,
+    PointerSensor,
+    closestCenter,
+    useSensor,
+    useSensors,
+} from '@dnd-kit/core';
+import { router } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
+
+const dropAnimationConfig: DropAnimation = {
+    duration: 220,
+    easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+};
 
 function IssueBoard({ issues, activeIssue, setActiveIssue }: IssueBoardProps) {
+    const { addAlert } = useAlert();
+    const [boardIssues, setBoardIssues] = useState<Issue[]>(issues);
+    const [draggingIssue, setDraggingIssue] = useState<Issue | null>(null);
+
+    useEffect(() => {
+        setBoardIssues(issues);
+    }, [issues]);
+
+    const sensors = useSensors(
+        useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    );
+
     const preparePriorityBoard = (issues: Issue[]) => {
         const board: Record<IssuePriority, Issue[]> = {
             high: [],
@@ -19,27 +51,85 @@ function IssueBoard({ issues, activeIssue, setActiveIssue }: IssueBoardProps) {
         return board;
     };
 
+    const handleDragStart = (event: DragStartEvent) => {
+        const issue = boardIssues.find((i) => i.id === event.active.id);
+        setDraggingIssue(issue ?? null);
+    };
+
+    const handleDragEnd = (event: DragEndEvent) => {
+        const { active, over } = event;
+        setDraggingIssue(null);
+
+        if (!over) return;
+
+        const targetPriority = over.id as IssuePriority;
+        const issue = boardIssues.find((i) => i.id === active.id);
+        if (!issue || issue.priority === targetPriority) return;
+
+        const previousPriority = issue.priority;
+
+        setBoardIssues((prev) =>
+            prev.map((i) =>
+                i.id === issue.id ? { ...i, priority: targetPriority } : i,
+            ),
+        );
+
+        router.patch(
+            route('issues.update', issue.id),
+            { priority: targetPriority },
+            {
+                preserveScroll: true,
+                preserveState: true,
+                onError: () => {
+                    setBoardIssues((prev) =>
+                        prev.map((i) =>
+                            i.id === issue.id
+                                ? { ...i, priority: previousPriority }
+                                : i,
+                        ),
+                    );
+                    addAlert('Failed to update issue priority', 'error');
+                },
+            },
+        );
+    };
+
     return (
-        <div className="no-scrollbar flex h-full w-full snap-x snap-mandatory gap-4 overflow-x-auto bg-[var(--bg-color)] p-4 md:gap-5 md:p-6">
-            <BoardColumn
-                issues={preparePriorityBoard(issues).high}
-                priority="high"
-                activeIssue={activeIssue}
-                setActiveIssue={setActiveIssue}
-            />
-            <BoardColumn
-                issues={preparePriorityBoard(issues).medium}
-                priority="medium"
-                activeIssue={activeIssue}
-                setActiveIssue={setActiveIssue}
-            />
-            <BoardColumn
-                issues={preparePriorityBoard(issues).low}
-                priority="low"
-                activeIssue={activeIssue}
-                setActiveIssue={setActiveIssue}
-            />
-        </div>
+        <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+        >
+            <div className="no-scrollbar flex h-full w-full snap-x snap-mandatory gap-4 overflow-x-auto bg-[var(--bg-color)] p-4 md:gap-5 md:p-6">
+                <BoardColumn
+                    issues={preparePriorityBoard(boardIssues).high}
+                    priority="high"
+                    activeIssue={activeIssue}
+                    setActiveIssue={setActiveIssue}
+                />
+                <BoardColumn
+                    issues={preparePriorityBoard(boardIssues).medium}
+                    priority="medium"
+                    activeIssue={activeIssue}
+                    setActiveIssue={setActiveIssue}
+                />
+                <BoardColumn
+                    issues={preparePriorityBoard(boardIssues).low}
+                    priority="low"
+                    activeIssue={activeIssue}
+                    setActiveIssue={setActiveIssue}
+                />
+            </div>
+            <DragOverlay dropAnimation={dropAnimationConfig}>
+                {draggingIssue ? (
+                    <BoardCardOverlay
+                        issue={draggingIssue}
+                        isClosed={draggingIssue.status === 'closed'}
+                    />
+                ) : null}
+            </DragOverlay>
+        </DndContext>
     );
 }
 
