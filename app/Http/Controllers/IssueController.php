@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\IssueStatus;
 use App\Models\Issue;
 use App\Services\IssueService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class IssueController extends Controller
 {
@@ -18,7 +20,7 @@ class IssueController extends Controller
         $data = $request->validate([
             'title' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|nullable|string',
-            'status' => 'sometimes|required|string',
+            'status' => ['sometimes', 'required', Rule::enum(IssueStatus::class)],
             'priority' => 'sometimes|required|string',
             'assignee_id' => 'sometimes|nullable|exists:users,id',
             'labels' => 'sometimes|nullable|array',
@@ -46,7 +48,7 @@ class IssueController extends Controller
             'description' => 'nullable|string',
             'project_id' => 'required|exists:projects,id',
             'priority' => 'required|string',
-            'status' => 'required|string',
+            'status' => ['required', Rule::enum(IssueStatus::class)],
             'assignee_id' => 'nullable|exists:users,id',
             'labels' => 'nullable|array',
             'start_date' => 'nullable|date',

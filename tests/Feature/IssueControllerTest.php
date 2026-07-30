@@ -198,6 +198,27 @@ test('updating an issue rejects an invalid status or priority value type', funct
     $response->assertSessionHasErrors('status');
 });
 
+test('updating an issue accepts in_progress as a valid status', function () {
+    $issue = Issue::factory()->create(['status' => 'open']);
+
+    $response = $this->actingAs(User::factory()->create())->patch("/issues/{$issue->id}", [
+        'status' => 'in_progress',
+    ]);
+
+    $response->assertRedirect();
+    $this->assertDatabaseHas('issues', ['id' => $issue->id, 'status' => 'in_progress']);
+});
+
+test('updating an issue rejects a status value outside the enum', function () {
+    $issue = Issue::factory()->create();
+
+    $response = $this->actingAs(User::factory()->create())->patch("/issues/{$issue->id}", [
+        'status' => 'archived',
+    ]);
+
+    $response->assertSessionHasErrors('status');
+});
+
 test('guests cannot update an issue', function () {
     $issue = Issue::factory()->create();
 
