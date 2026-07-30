@@ -300,6 +300,7 @@ export interface DashboardEmptyStateProps {
     description: string;
     actionLabel?: string;
     actionHref?: string;
+    actionShortcut?: string;
 }
 export interface SelectionDropdownProps {
     options: { label: string; value: string; disabled?: boolean }[];

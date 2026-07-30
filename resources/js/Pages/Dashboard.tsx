@@ -160,8 +160,8 @@ export default function Dashboard({
                                                 'Get started by setting up a workspace for your tasks and team activity.'
                                             }
                                             iconName={'FolderPlus'}
-                                            actionHref={'/projects/new'}
                                             actionLabel={'Create Project'}
+                                            actionShortcut={'p'}
                                         />
                                     )}
                                 </div>

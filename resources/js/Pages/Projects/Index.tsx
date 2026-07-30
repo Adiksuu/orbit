@@ -46,6 +46,7 @@ function Index({ projects }: { projects: Project[] }) {
                             }
                             iconName={'FolderPlus'}
                             actionLabel={'Create Project'}
+                            actionShortcut={'p'}
                         />
                     )}
                 </main>
