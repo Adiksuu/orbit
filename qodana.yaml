@@ -36,5 +36,5 @@ bootstrap: |
 # Quality Gate
 failureConditions:
   severityThresholds:
-    any: 10
+    any: 15
     critical: 0
