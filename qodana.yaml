@@ -30,7 +30,7 @@ include:
   - name: CheckDependencyLicenses
 
 bootstrap: |
-  npm install
+  npm install --legacy-peer-deps
   npx vitest run --coverage
 
 # Quality Gate
