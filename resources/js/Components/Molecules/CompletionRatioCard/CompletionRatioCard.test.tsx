@@ -7,6 +7,7 @@ describe('CompletionRatioCard Component', () => {
         render(
             <CompletionRatioCard
                 open={4}
+                inProgress={0}
                 closed={6}
                 total={10}
                 closedPct={60}
@@ -23,6 +24,7 @@ describe('CompletionRatioCard Component', () => {
         render(
             <CompletionRatioCard
                 open={4}
+                inProgress={0}
                 closed={6}
                 total={10}
                 closedPct={60}
@@ -37,6 +39,7 @@ describe('CompletionRatioCard Component', () => {
         render(
             <CompletionRatioCard
                 open={4}
+                inProgress={0}
                 closed={6}
                 total={10}
                 closedPct={60}
@@ -51,9 +54,30 @@ describe('CompletionRatioCard Component', () => {
         expect(screen.getByText('10')).toBeInTheDocument();
     });
 
+    test('renders the in progress count', () => {
+        render(
+            <CompletionRatioCard
+                open={2}
+                inProgress={3}
+                closed={5}
+                total={10}
+                closedPct={50}
+            />,
+        );
+
+        expect(screen.getByText('In Progress')).toBeInTheDocument();
+        expect(screen.getByText('3')).toBeInTheDocument();
+    });
+
     test('renders a progress ring (svg)', () => {
         const { container } = render(
-            <CompletionRatioCard open={0} closed={0} total={0} closedPct={0} />,
+            <CompletionRatioCard
+                open={0}
+                inProgress={0}
+                closed={0}
+                total={0}
+                closedPct={0}
+            />,
         );
 
         expect(container.querySelector('svg')).toBeInTheDocument();

@@ -281,6 +281,7 @@ export interface VisualCardHeaderProps {
 }
 export interface CompletionRatioCardProps {
     open: number;
+    inProgress: number;
     closed: number;
     total: number;
     closedPct: number;

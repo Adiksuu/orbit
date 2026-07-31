@@ -42,6 +42,19 @@ describe('DashboardVisuals Component', () => {
         expect(screen.getByText('75%')).toBeInTheDocument();
     });
 
+    test('computes the in-progress count from the issues', () => {
+        const issues = [
+            makeIssue({ status: 'in_progress' }),
+            makeIssue({ status: 'in_progress' }),
+            makeIssue({ status: 'open' }),
+            makeIssue({ status: 'closed' }),
+        ];
+        render(<DashboardVisuals issues={issues} productivity_trend={[]} />);
+
+        expect(screen.getByText('In Progress')).toBeInTheDocument();
+        expect(screen.getByText('2')).toBeInTheDocument();
+    });
+
     test('computes the priority breakdown counts', () => {
         const issues = [
             makeIssue({ priority: 'high' }),
