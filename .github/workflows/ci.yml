@@ -19,7 +19,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
+      - run: npm ci --legacy-peer-deps
       - run: npx tsc --noEmit
 
   lint:
@@ -31,7 +31,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
+      - run: npm ci --legacy-peer-deps
       - run: npx eslint resources/js --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore
 
   test-js:
@@ -45,7 +45,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
+      - run: npm ci --legacy-peer-deps
       # Enforces the coverage thresholds configured in vite.config.js
       # (statements/functions/lines 80%, branches 75%) as a merge gate.
       - run: npm run test:coverage
@@ -65,7 +65,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
+      - run: npm ci --legacy-peer-deps
       - run: npm run build
 
   test-php:
@@ -86,7 +86,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
+      - run: npm ci --legacy-peer-deps
       - run: npm run build
       - run: cp .env.example .env
       - run: php artisan key:generate
