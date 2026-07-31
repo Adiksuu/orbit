@@ -5,6 +5,7 @@ import LabelList from '@/Components/Molecules/LabelList/LabelList';
 import { BoardCardProps } from '@/types/Components';
 import { Issue } from '@/types/Issues';
 import { cn } from '@/utils/cn';
+import { formatStatusLabel } from '@/utils/text';
 import { boardCardVariants } from '@/utils/variants';
 import { useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
@@ -51,7 +52,7 @@ const BoardCardContent = ({
                 className="flex items-center gap-1.5"
             >
                 <StatusDot status={issue.status} />
-                <span>{issue.status}</span>
+                <span>{formatStatusLabel(issue.status)}</span>
             </Badge>
             {issue.assignee ? (
                 <Avatar

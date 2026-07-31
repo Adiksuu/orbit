@@ -1,6 +1,7 @@
 import { IssueDetailProps } from '@/types/Components';
 import { IssueLabel, IssuePriority, Status } from '@/types/Issues';
 import { cn } from '@/utils/cn';
+import { formatStatusLabel } from '@/utils/text';
 import { formatDate, formatTimeAgo } from '@/utils/time';
 import { useForm } from '@inertiajs/react';
 import { cva } from 'class-variance-authority';
@@ -42,7 +43,6 @@ const AVAILABLE_LABELS: IssueLabel[] = [
     'chore',
 ];
 const STATUSES: Status[] = ['open', 'in_progress', 'closed'];
-const formatStatusLabel = (status: Status) => status.replace(/_/g, ' ');
 const PRIORITIES: IssuePriority[] = ['high', 'medium', 'low'];
 
 const IssueDetail = ({
