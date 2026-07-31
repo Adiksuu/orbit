@@ -96,6 +96,20 @@ describe('BoardCard Component', () => {
         expect(screen.getAllByText('open').length).toBeGreaterThanOrEqual(1);
     });
 
+    test('renders the in_progress status badge without an underscore', () => {
+        render(
+            <BoardCard
+                issue={makeIssue({ status: 'in_progress' })}
+                isActive={false}
+                isClosed={false}
+                onClick={() => {}}
+            />,
+        );
+
+        expect(screen.getByText('in progress')).toBeInTheDocument();
+        expect(screen.queryByText('in_progress')).not.toBeInTheDocument();
+    });
+
     test('renders labels via LabelList when present', () => {
         render(
             <BoardCard
