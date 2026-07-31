@@ -6,6 +6,7 @@ import { VisualCardHeader } from '../VisualCardHeader/VisualCardHeader';
 
 export const CompletionRatioCard: FC<CompletionRatioCardProps> = ({
     open,
+    inProgress,
     closed,
     total,
     closedPct,
@@ -40,6 +41,15 @@ export const CompletionRatioCard: FC<CompletionRatioCardProps> = ({
                     <span className="font-medium text-zinc-500">Open</span>
                     <span className="mt-0.5 font-semibold text-white">
                         {open}
+                    </span>
+                </div>
+                <div className="h-6 w-px bg-zinc-800" />
+                <div className="flex flex-col items-center">
+                    <span className="font-medium text-zinc-500">
+                        In Progress
+                    </span>
+                    <span className="mt-0.5 font-semibold text-[var(--accent-color)]">
+                        {inProgress}
                     </span>
                 </div>
                 <div className="h-6 w-px bg-zinc-800" />

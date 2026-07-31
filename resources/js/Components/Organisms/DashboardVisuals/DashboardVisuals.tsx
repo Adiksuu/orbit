@@ -19,8 +19,10 @@ const DashboardVisuals: React.FC<DashboardVisualsProps> = ({
                 mediumPct: 0,
                 lowPct: 0,
                 open: 0,
+                inProgress: 0,
                 closed: 0,
                 openPct: 0,
+                inProgressPct: 0,
                 closedPct: 0,
             };
         }
@@ -30,6 +32,9 @@ const DashboardVisuals: React.FC<DashboardVisualsProps> = ({
         const low = issues.filter((i) => i.priority === 'low').length;
 
         const open = issues.filter((i) => i.status === 'open').length;
+        const inProgress = issues.filter(
+            (i) => i.status === 'in_progress',
+        ).length;
         const closed = issues.filter((i) => i.status === 'closed').length;
 
         return {
@@ -40,8 +45,10 @@ const DashboardVisuals: React.FC<DashboardVisualsProps> = ({
             mediumPct: Math.round((medium / total) * 100),
             lowPct: Math.round((low / total) * 100),
             open,
+            inProgress,
             closed,
             openPct: Math.round((open / total) * 100),
+            inProgressPct: Math.round((inProgress / total) * 100),
             closedPct: Math.round((closed / total) * 100),
         };
     }, [issues]);
@@ -50,6 +57,7 @@ const DashboardVisuals: React.FC<DashboardVisualsProps> = ({
         <div className="grid grid-cols-1 items-stretch gap-5 md:grid-cols-2 lg:grid-cols-3">
             <CompletionRatioCard
                 open={stats.open}
+                inProgress={stats.inProgress}
                 closed={stats.closed}
                 total={issues.length}
                 closedPct={stats.closedPct}
