@@ -57,14 +57,14 @@ const STATUS_COLUMNS: BoardColumnMeta[] = [
         label: 'Open',
         hint: 'Not started yet',
         accent: 'var(--info-color)',
-        icon: 'CircleDashed',
+        icon: 'GitPullRequest',
     },
     {
         id: 'in_progress',
         label: 'In Progress',
         hint: 'Being worked on',
         accent: 'var(--accent-color)',
-        icon: 'Loader',
+        icon: 'CircleDashed',
     },
     {
         id: 'closed',
