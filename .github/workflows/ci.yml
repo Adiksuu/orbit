@@ -32,7 +32,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci --legacy-peer-deps
-      - run: npx eslint resources/js --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore
+      - run: npx eslint resources/js
 
   test-js:
     name: Component tests (Vitest)
