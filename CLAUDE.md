@@ -73,9 +73,11 @@ When adding a feature, add tests alongside it rather than relying on the gate to
 
 ### Vite HMR not working in Docker
 
-If the Vite dev server stops hot-reloading and you see WebSocket errors in the browser console, the file watcher has likely become stale or exhausted.
+If the Vite dev server stops hot-reloading and you see WebSocket errors in the browser console, the file watcher has likely become stale or desynced from the filesystem.
 
-**Fix**: The `docker-compose.yml` already sets `fs.inotify.max_user_watches=524288` to prevent watcher exhaustion, and `vite.config.js` uses polling instead of native file watching for better reliability in Docker volumes. If restarting the container is the only option:
+Note this is *not* fixed via an inotify limit bump: `fs.inotify.max_user_watches` is a global (non-namespaced) kernel sysctl, so Docker refuses to start a container with it set per-service (see the commented-out `sysctls` block in `docker-compose.yml` — leave it disabled). The only mechanism actually in effect is `vite.config.js`'s `server.watch.usePolling` (polling instead of native `fs.watch`/inotify), which is more reliable across Docker bind mounts but can still drift out of sync after enough file churn, especially if the repo lives on non-native storage (e.g. an external/removable drive). A container restart forces a fresh full re-scan.
+
+**Fix**: if restarting the container is the only option:
 
 ```bash
 make down
