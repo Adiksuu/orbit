@@ -202,10 +202,12 @@ export interface DividerProps {
 export interface PriorityIconProps {
     priority: string;
     className?: string;
+    tooltip?: boolean;
 }
 export interface StatusIconProps {
     status: string;
     className?: string;
+    tooltip?: boolean;
 }
 export interface BackdropBlurProps {
     intensity?: 'sm' | 'md' | 'lg';

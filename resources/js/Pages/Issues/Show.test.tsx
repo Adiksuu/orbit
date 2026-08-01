@@ -242,8 +242,12 @@ describe('Issues/Show Page', () => {
 
         expect(screen.getByText('Fix login crash')).toBeInTheDocument();
         expect(screen.getByText('Steps to reproduce')).toBeInTheDocument();
-        expect(screen.getByText('open')).toBeInTheDocument();
-        expect(screen.getByText('high')).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: 'open' }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: 'high' }),
+        ).toBeInTheDocument();
     });
 
     test('editing the title commits via a PATCH to issues.update', async () => {
@@ -302,8 +306,8 @@ describe('Issues/Show Page', () => {
             />,
         );
 
-        await userEvent.click(screen.getByText('open'));
-        await userEvent.click(screen.getByText('closed'));
+        await userEvent.click(screen.getByRole('button', { name: 'open' }));
+        await userEvent.click(screen.getByRole('button', { name: 'closed' }));
 
         expect(mockPatch).toHaveBeenCalledWith(
             expect.any(String),
@@ -322,8 +326,8 @@ describe('Issues/Show Page', () => {
             />,
         );
 
-        await userEvent.click(screen.getByText('high'));
-        await userEvent.click(screen.getByText('low'));
+        await userEvent.click(screen.getByRole('button', { name: 'high' }));
+        await userEvent.click(screen.getByRole('button', { name: 'low' }));
 
         expect(mockPatch).toHaveBeenCalledWith(
             expect.any(String),

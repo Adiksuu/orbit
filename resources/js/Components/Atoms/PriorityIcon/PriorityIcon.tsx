@@ -2,12 +2,16 @@ import Badge from '@/Components/Atoms/Badge/Badge';
 import { PriorityIconProps } from '@/types/Components';
 import { cn } from '@/utils/cn';
 
-export const PriorityIcon = ({ priority, className }: PriorityIconProps) => {
+export const PriorityIcon = ({
+    priority,
+    className,
+    tooltip = true,
+}: PriorityIconProps) => {
     const p = priority?.toLowerCase();
 
     if (p === 'high') {
         return (
-            <Badge variant={'ghost'} tooltip={true} tooltipText={p}>
+            <Badge variant={'ghost'} tooltip={tooltip} tooltipText={p}>
                 <span
                     className={cn(
                         'inline-flex items-center text-zinc-300',
@@ -26,7 +30,7 @@ export const PriorityIcon = ({ priority, className }: PriorityIconProps) => {
 
     if (p === 'medium') {
         return (
-            <Badge variant={'ghost'} tooltip={true} tooltipText={p}>
+            <Badge variant={'ghost'} tooltip={tooltip} tooltipText={p}>
                 <span
                     className={cn(
                         'inline-flex items-center text-zinc-400',
@@ -52,7 +56,7 @@ export const PriorityIcon = ({ priority, className }: PriorityIconProps) => {
 
     if (p === 'low') {
         return (
-            <Badge variant={'ghost'} tooltip={true} tooltipText={p}>
+            <Badge variant={'ghost'} tooltip={tooltip} tooltipText={p}>
                 <span
                     className={cn(
                         'inline-flex items-center text-zinc-500',
@@ -84,7 +88,7 @@ export const PriorityIcon = ({ priority, className }: PriorityIconProps) => {
     }
 
     return (
-        <Badge variant={'ghost'} tooltip={true} tooltipText={'No priority'}>
+        <Badge variant={'ghost'} tooltip={tooltip} tooltipText={'No priority'}>
             <span
                 className={cn(
                     'inline-flex items-center text-zinc-600',
