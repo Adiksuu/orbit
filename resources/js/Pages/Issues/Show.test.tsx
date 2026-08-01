@@ -1,4 +1,4 @@
-import { Issue } from '@/types/Issues';
+import { Comment, Issue } from '@/types/Issues';
 import { Project } from '@/types/Projects';
 import { AssignableUser } from '@/types/Users';
 import { render, screen } from '@testing-library/react';
@@ -8,6 +8,8 @@ import { describe, expect, test, vi } from 'vitest';
 import Show from './Show';
 
 const mockPatch = vi.hoisted(() => vi.fn());
+const mockPost = vi.hoisted(() => vi.fn());
+const mockDelete = vi.hoisted(() => vi.fn());
 const mockRoute = vi.hoisted(() =>
     vi.fn(
         (name: string, id?: string | number) =>
@@ -24,7 +26,14 @@ vi.mock('@inertiajs/react', async () => {
             React.createElement('a', { href, ...props }, children as never),
         router: {
             patch: mockPatch,
+            post: mockPost,
+            delete: mockDelete,
         },
+        usePage: () => ({
+            props: {
+                auth: { user: { id: 1, name: 'Jane Cooper' } },
+            },
+        }),
     };
 });
 
@@ -97,7 +106,7 @@ describe('Issues/Show Page', () => {
         );
 
         await userEvent.click(screen.getByText('Fix login crash'));
-        const input = screen.getByRole('textbox');
+        const input = screen.getByDisplayValue('Fix login crash');
         await userEvent.clear(input);
         await userEvent.type(input, 'Fix login crash on iOS{Enter}');
 
@@ -217,5 +226,83 @@ describe('Issues/Show Page', () => {
             { labels: ['bug', 'design'] },
             { preserveScroll: true },
         );
+    });
+
+    test('submitting the comment form posts to comments.store', async () => {
+        const issue = buildIssue();
+        render(
+            <Show
+                project={project}
+                projects={[project]}
+                issue={issue}
+                users={users}
+            />,
+        );
+
+        await userEvent.type(
+            screen.getByPlaceholderText('Leave a comment...'),
+            'Nice work',
+        );
+        await userEvent.click(screen.getByRole('button', { name: 'Comment' }));
+
+        expect(mockRoute).toHaveBeenCalledWith('comments.store', issue.id);
+        expect(mockPost).toHaveBeenCalledWith(
+            '/comments.store/42',
+            { body: 'Nice work' },
+            { preserveScroll: true },
+        );
+    });
+
+    test('deleting a comment owned by the current user calls comments.destroy', async () => {
+        const comment: Comment = {
+            id: 7,
+            issue_id: 42,
+            user_id: 1,
+            body: 'My own comment',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            user: { id: 1, name: 'Jane Cooper' },
+        };
+        render(
+            <Show
+                project={project}
+                projects={[project]}
+                issue={buildIssue({ comments: [comment] })}
+                users={users}
+            />,
+        );
+
+        await userEvent.click(
+            screen.getByRole('button', { name: 'Delete comment' }),
+        );
+
+        expect(mockRoute).toHaveBeenCalledWith('comments.destroy', comment.id);
+        expect(mockDelete).toHaveBeenCalledWith('/comments.destroy/7', {
+            preserveScroll: true,
+        });
+    });
+
+    test('does not show a delete button for a comment owned by someone else', () => {
+        const comment: Comment = {
+            id: 8,
+            issue_id: 42,
+            user_id: 2,
+            body: "Someone else's comment",
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            user: { id: 2, name: 'Marcus Lee' },
+        };
+        render(
+            <Show
+                project={project}
+                projects={[project]}
+                issue={buildIssue({ comments: [comment] })}
+                users={users}
+            />,
+        );
+
+        expect(
+            screen.queryByRole('button', { name: 'Delete comment' }),
+        ).not.toBeInTheDocument();
     });
 });

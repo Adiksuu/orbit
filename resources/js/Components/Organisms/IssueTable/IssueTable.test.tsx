@@ -6,6 +6,11 @@ import React from 'react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import IssueTable from './IssueTable';
 
+vi.stubGlobal(
+    'route',
+    vi.fn((name: string, params?: unknown) => `/${name}/${params ?? ''}`),
+);
+
 const mockAddAlert = vi.fn();
 
 vi.mock('@/context/AlertContext', () => ({
@@ -42,6 +47,7 @@ vi.mock('@inertiajs/react', () => {
             },
         ) => opts?.onSuccess?.(),
     );
+    const mockRouterVisit = vi.fn();
     return {
         Link: ({
             children,
@@ -60,6 +66,7 @@ vi.mock('@inertiajs/react', () => {
             get: mockRouterGet,
             patch: mockRouterPatch,
             delete: mockRouterDelete,
+            visit: mockRouterVisit,
         },
     };
 });
@@ -93,13 +100,7 @@ describe('IssueTable Component', () => {
     });
 
     test('renders the column headers', () => {
-        render(
-            <IssueTable
-                issues={[]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<IssueTable issues={[]} />);
 
         expect(
             screen.getByRole('columnheader', { name: 'ID' }),
@@ -126,38 +127,20 @@ describe('IssueTable Component', () => {
             makeIssue({ title: 'First issue' }),
             makeIssue({ title: 'Second issue' }),
         ];
-        render(
-            <IssueTable
-                issues={issues}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<IssueTable issues={issues} />);
 
         expect(screen.getByText('First issue')).toBeInTheDocument();
         expect(screen.getByText('Second issue')).toBeInTheDocument();
     });
 
     test('shows the empty state when there are no issues', () => {
-        render(
-            <IssueTable
-                issues={[]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<IssueTable issues={[]} />);
 
         expect(screen.getByText('All done!')).toBeInTheDocument();
     });
 
     test('does not show the empty state when there are issues', () => {
-        render(
-            <IssueTable
-                issues={[makeIssue({ title: 'An issue' })]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<IssueTable issues={[makeIssue({ title: 'An issue' })]} />);
 
         expect(screen.queryByText('All done!')).not.toBeInTheDocument();
     });
@@ -165,14 +148,7 @@ describe('IssueTable Component', () => {
     test('sorts by column on header click', async () => {
         const user = userEvent.setup();
         const { router } = await import('@inertiajs/react');
-        render(
-            <IssueTable
-                issues={[]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-                queryParams={{}}
-            />,
-        );
+        render(<IssueTable issues={[]} queryParams={{}} />);
 
         const titleHeader = screen.getByRole('columnheader', { name: 'Title' });
         await user.click(titleHeader);
@@ -198,8 +174,6 @@ describe('IssueTable Component', () => {
         render(
             <IssueTable
                 issues={[]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
                 queryParams={{ sort: 'title', direction: 'AZ' }}
             />,
         );
@@ -224,8 +198,6 @@ describe('IssueTable Component', () => {
         render(
             <IssueTable
                 issues={[]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
                 queryParams={{ sort: 'title', direction: 'ZA' }}
             />,
         );
@@ -247,8 +219,6 @@ describe('IssueTable Component', () => {
         render(
             <IssueTable
                 issues={[]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
                 queryParams={{ sort: 'title', direction: 'AZ' }}
             />,
         );
@@ -261,8 +231,6 @@ describe('IssueTable Component', () => {
         render(
             <IssueTable
                 issues={[]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
                 queryParams={{ sort: 'title', direction: 'ZA' }}
             />,
         );
@@ -272,14 +240,7 @@ describe('IssueTable Component', () => {
     });
 
     test('handles undefined query params gracefully', () => {
-        render(
-            <IssueTable
-                issues={[]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-                queryParams={undefined}
-            />,
-        );
+        render(<IssueTable issues={[]} queryParams={undefined} />);
 
         expect(
             screen.getByRole('columnheader', { name: 'ID' }),
@@ -289,14 +250,7 @@ describe('IssueTable Component', () => {
     test('handles sort correctly when queryParams is undefined', async () => {
         const user = userEvent.setup();
         const { router } = await import('@inertiajs/react');
-        render(
-            <IssueTable
-                issues={[]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-                queryParams={undefined}
-            />,
-        );
+        render(<IssueTable issues={[]} queryParams={undefined} />);
 
         const titleHeader = screen.getByRole('columnheader', { name: 'Title' });
         await user.click(titleHeader);
@@ -307,13 +261,7 @@ describe('IssueTable Component', () => {
     });
 
     test('renders table with proper structure', () => {
-        const { container } = render(
-            <IssueTable
-                issues={[]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        const { container } = render(<IssueTable issues={[]} />);
 
         const table = container.querySelector('table');
         expect(table).toBeInTheDocument();
@@ -326,13 +274,7 @@ describe('IssueTable Component', () => {
     });
 
     test('renders empty state with correct description', () => {
-        render(
-            <IssueTable
-                issues={[]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<IssueTable issues={[]} />);
 
         expect(screen.getByText('All done!')).toBeInTheDocument();
         expect(
@@ -342,28 +284,20 @@ describe('IssueTable Component', () => {
         ).toBeInTheDocument();
     });
 
-    test('maintains active issue state', () => {
-        const activeIssue = makeIssue({
-            title: 'Active Issue',
+    test('renders a single issue row', () => {
+        const issue = makeIssue({
+            title: 'Some Issue',
             id: 'ISSUE-999',
         });
-        render(
-            <IssueTable
-                issues={[activeIssue]}
-                activeIssue={activeIssue}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<IssueTable issues={[issue]} />);
 
-        expect(screen.getByText('Active Issue')).toBeInTheDocument();
+        expect(screen.getByText('Some Issue')).toBeInTheDocument();
     });
 
     test('renders unsorted header icons for non-active columns', () => {
         render(
             <IssueTable
                 issues={[]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
                 queryParams={{ sort: 'title', direction: 'AZ' }}
             />,
         );
@@ -378,13 +312,7 @@ describe('IssueTable Component', () => {
             issues.push(makeIssue({ title: `Issue ${i}` }));
         }
 
-        render(
-            <IssueTable
-                issues={issues}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<IssueTable issues={issues} />);
 
         for (let i = 0; i < 10; i++) {
             expect(screen.getByText(`Issue ${i}`)).toBeInTheDocument();
@@ -393,12 +321,7 @@ describe('IssueTable Component', () => {
 
     test('header has correct styling classes', () => {
         const { container } = render(
-            <IssueTable
-                issues={[]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-                queryParams={{}}
-            />,
+            <IssueTable issues={[]} queryParams={{}} />,
         );
 
         // We only check sortable headers (ID, Title, etc.)
@@ -420,13 +343,7 @@ describe('IssueTable Component', () => {
             makeIssue({ title: 'Issue 2', id: 'ISSUE-2' }),
         ];
 
-        render(
-            <IssueTable
-                issues={issues}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<IssueTable issues={issues} />);
 
         const headerCheckbox = screen.getAllByRole('checkbox')[0];
         const rowCheckboxes = screen.getAllByRole('checkbox').slice(1);
@@ -453,13 +370,7 @@ describe('IssueTable Component', () => {
             makeIssue({ title: 'Issue 2', id: 'ISSUE-2' }),
         ];
 
-        render(
-            <IssueTable
-                issues={issues}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<IssueTable issues={issues} />);
 
         const rowCheckboxes = screen.getAllByRole('checkbox').slice(1);
 
@@ -487,13 +398,7 @@ describe('IssueTable Component', () => {
             makeIssue({ title: 'Issue 2', id: 'ISSUE-2' }),
         ];
 
-        render(
-            <IssueTable
-                issues={issues}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<IssueTable issues={issues} />);
 
         const rowCheckboxes = screen.getAllByRole('checkbox').slice(1);
         await user.click(rowCheckboxes[0]);
@@ -531,13 +436,7 @@ describe('IssueTable Component', () => {
 
         const issues = [makeIssue({ title: 'Issue 1', id: 'ISSUE-1' })];
 
-        render(
-            <IssueTable
-                issues={issues}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<IssueTable issues={issues} />);
 
         const rowCheckboxes = screen.getAllByRole('checkbox').slice(1);
         await user.click(rowCheckboxes[0]);
@@ -553,13 +452,7 @@ describe('IssueTable Component', () => {
     });
 
     test('resizes a column when its resize handle is dragged', () => {
-        const { container } = render(
-            <IssueTable
-                issues={[]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        const { container } = render(<IssueTable issues={[]} />);
 
         const titleHeader = container.querySelector(
             'th[data-column="title"]',
@@ -579,12 +472,7 @@ describe('IssueTable Component', () => {
         const user = userEvent.setup();
         const { router } = await import('@inertiajs/react');
         const { container } = render(
-            <IssueTable
-                issues={[]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-                queryParams={{}}
-            />,
+            <IssueTable issues={[]} queryParams={{}} />,
         );
 
         const titleHeader = container.querySelector(
@@ -600,13 +488,7 @@ describe('IssueTable Component', () => {
     });
 
     test('clamps a column resize to the minimum width', () => {
-        const { container } = render(
-            <IssueTable
-                issues={[]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        const { container } = render(<IssueTable issues={[]} />);
 
         const titleHeader = container.querySelector(
             'th[data-column="title"]',
@@ -624,13 +506,7 @@ describe('IssueTable Component', () => {
 
     test('resizes the row height when the row-height handle is dragged', () => {
         const issues = [makeIssue({ title: 'Issue 1', id: 'ISSUE-1' })];
-        const { container } = render(
-            <IssueTable
-                issues={issues}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        const { container } = render(<IssueTable issues={issues} />);
 
         const handle = container.querySelector(
             '[class*="cursor-row-resize"]',
@@ -655,13 +531,7 @@ describe('IssueTable Component', () => {
             } as unknown as CanvasRenderingContext2D);
 
         const issues = [makeIssue({ title: 'A very long issue title' })];
-        const { container } = render(
-            <IssueTable
-                issues={issues}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        const { container } = render(<IssueTable issues={issues} />);
 
         const titleHeader = container.querySelector(
             'th[data-column="title"]',
@@ -680,13 +550,7 @@ describe('IssueTable Component', () => {
 
     test('auto-fits to the default width when canvas measurement is unavailable', () => {
         const issues = [makeIssue({ title: 'Issue 1' })];
-        const { container } = render(
-            <IssueTable
-                issues={issues}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        const { container } = render(<IssueTable issues={issues} />);
 
         const titleHeader = container.querySelector(
             'th[data-column="title"]',
@@ -704,13 +568,7 @@ describe('IssueTable Component', () => {
 
     test('opens the column settings dropdown and resets column sizes', async () => {
         const user = userEvent.setup();
-        render(
-            <IssueTable
-                issues={[]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<IssueTable issues={[]} />);
 
         const settingsTrigger = document
             .querySelector('.lucide-settings')
@@ -728,13 +586,7 @@ describe('IssueTable Component', () => {
     test('changes the row height from the settings dropdown', async () => {
         const user = userEvent.setup();
         const issues = [makeIssue({ title: 'Issue 1' })];
-        const { container } = render(
-            <IssueTable
-                issues={issues}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        const { container } = render(<IssueTable issues={issues} />);
 
         const settingsTrigger = document
             .querySelector('.lucide-settings')
@@ -774,13 +626,7 @@ describe('IssueTable Component', () => {
     test('toggles a column off from the settings dropdown without a project', async () => {
         const user = userEvent.setup();
         const { router } = await import('@inertiajs/react');
-        render(
-            <IssueTable
-                issues={[]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<IssueTable issues={[]} />);
 
         expect(
             screen.getByRole('columnheader', { name: 'Assignee' }),
@@ -806,14 +652,7 @@ describe('IssueTable Component', () => {
         const user = userEvent.setup();
         const { router } = await import('@inertiajs/react');
         const project = makeProject();
-        render(
-            <IssueTable
-                issues={[]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-                project={project}
-            />,
-        );
+        render(<IssueTable issues={[]} project={project} />);
 
         const settingsTrigger = document
             .querySelector('.lucide-settings')
@@ -850,14 +689,7 @@ describe('IssueTable Component', () => {
             },
         });
 
-        render(
-            <IssueTable
-                issues={[]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-                project={project}
-            />,
-        );
+        render(<IssueTable issues={[]} project={project} />);
 
         expect(
             screen.getByRole('columnheader', { name: 'Start' }),
@@ -883,12 +715,7 @@ describe('IssueTable Component', () => {
         });
 
         const { rerender } = render(
-            <IssueTable
-                issues={[]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-                project={project}
-            />,
+            <IssueTable issues={[]} project={project} />,
         );
 
         expect(
@@ -898,8 +725,6 @@ describe('IssueTable Component', () => {
         rerender(
             <IssueTable
                 issues={[]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
                 project={{
                     ...project,
                     columns: { ...project.columns, start_date: true },

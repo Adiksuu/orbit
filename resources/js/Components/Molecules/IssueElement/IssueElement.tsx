@@ -6,8 +6,6 @@ import { router } from '@inertiajs/react';
 
 export const IssueElement = ({
     issue,
-    activeIssue,
-    setActiveIssue,
     type = 'list',
     handleSelectIssueCheckbox,
     enabledColumns,
@@ -19,9 +17,9 @@ export const IssueElement = ({
 
     const props = {
         issue,
-        isActive: activeIssue?.id === issue.id,
         isClosed: issue.status === 'closed',
-        onClick: () => setActiveIssue(issue, false),
+        onClick: () =>
+            router.visit(route('issues.show', [issue.project_id, issue.id])),
         onRemove: () => removeIssue(issue),
     };
 

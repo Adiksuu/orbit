@@ -25,30 +25,14 @@ const highMeta: BoardColumnMeta = {
 
 describe('BoardColumn Component', () => {
     test('renders the column heading from meta', () => {
-        render(
-            <BoardColumn
-                issues={[]}
-                meta={highMeta}
-                count={0}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<BoardColumn issues={[]} meta={highMeta} count={0} />);
 
         expect(screen.getByText('High Priority')).toBeInTheDocument();
         expect(screen.getByText('Fix immediately')).toBeInTheDocument();
     });
 
     test('shows the empty state when there are no issues', () => {
-        render(
-            <BoardColumn
-                issues={[]}
-                meta={highMeta}
-                count={0}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<BoardColumn issues={[]} meta={highMeta} count={0} />);
 
         expect(screen.getByText('No issues')).toBeInTheDocument();
     });
@@ -58,15 +42,7 @@ describe('BoardColumn Component', () => {
             makeIssue({ title: 'First issue' }),
             makeIssue({ title: 'Second issue' }),
         ];
-        render(
-            <BoardColumn
-                issues={issues}
-                meta={highMeta}
-                count={2}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<BoardColumn issues={issues} meta={highMeta} count={2} />);
 
         expect(screen.getByText('First issue')).toBeInTheDocument();
         expect(screen.getByText('Second issue')).toBeInTheDocument();
@@ -74,15 +50,7 @@ describe('BoardColumn Component', () => {
     });
 
     test('renders the count prop verbatim in the badge', () => {
-        render(
-            <BoardColumn
-                issues={[]}
-                meta={highMeta}
-                count={7}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<BoardColumn issues={[]} meta={highMeta} count={7} />);
 
         expect(screen.getByText('7')).toBeInTheDocument();
     });

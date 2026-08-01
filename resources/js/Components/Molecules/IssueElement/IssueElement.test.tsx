@@ -6,13 +6,21 @@ import { describe, expect, test, vi } from 'vitest';
 import IssueElement from './IssueElement';
 
 const mockRouterDelete = vi.fn();
+const mockRouterVisit = vi.fn();
 vi.mock('@inertiajs/react', () => ({
-    router: { delete: (...args: unknown[]) => mockRouterDelete(...args) },
+    router: {
+        delete: (...args: unknown[]) => mockRouterDelete(...args),
+        visit: (...args: unknown[]) => mockRouterVisit(...args),
+    },
 }));
 
 vi.stubGlobal(
     'route',
-    vi.fn((name: string, id: string) => `/${name}/${id}`),
+    vi.fn((name: string, params: unknown) =>
+        Array.isArray(params)
+            ? `/${name}/${params.join('/')}`
+            : `/${name}/${params}`,
+    ),
 );
 
 const makeAssignee = (name = 'Jane Doe') => ({
@@ -47,14 +55,7 @@ const renderInTable = (ui: React.ReactElement) =>
 describe('IssueElement Component', () => {
     describe('board layout', () => {
         test('renders the title and assignee name', () => {
-            render(
-                <IssueElement
-                    issue={makeIssue()}
-                    activeIssue={null}
-                    setActiveIssue={() => {}}
-                    type="board"
-                />,
-            );
+            render(<IssueElement issue={makeIssue()} type="board" />);
 
             expect(screen.getByText('Fix the bug')).toBeInTheDocument();
             expect(screen.getByText('Jane Doe')).toBeInTheDocument();
@@ -64,8 +65,6 @@ describe('IssueElement Component', () => {
             render(
                 <IssueElement
                     issue={makeIssue({ assignee: undefined })}
-                    activeIssue={null}
-                    setActiveIssue={() => {}}
                     type="board"
                 />,
             );
@@ -78,8 +77,6 @@ describe('IssueElement Component', () => {
             render(
                 <IssueElement
                     issue={makeIssue({ labels: ['bug', 'feature'] })}
-                    activeIssue={null}
-                    setActiveIssue={() => {}}
                     type="board"
                 />,
             );
@@ -87,37 +84,14 @@ describe('IssueElement Component', () => {
             expect(screen.getAllByText('feature')[0]).toBeInTheDocument();
         });
 
-        test('calls setActiveIssue with the issue when clicked', async () => {
+        test('navigates to the issue page when clicked', async () => {
             const issue = makeIssue();
-            const setActiveIssue = vi.fn();
-            render(
-                <IssueElement
-                    issue={issue}
-                    activeIssue={null}
-                    setActiveIssue={setActiveIssue}
-                    type="board"
-                />,
-            );
+            render(<IssueElement issue={issue} type="board" />);
 
             await userEvent.click(screen.getByText('Fix the bug'));
 
-            expect(setActiveIssue).toHaveBeenCalledWith(issue, false);
-        });
-
-        test('applies active styling when this issue is the active one', () => {
-            const issue = makeIssue();
-            const { container } = render(
-                <IssueElement
-                    issue={issue}
-                    activeIssue={issue}
-                    setActiveIssue={() => {}}
-                    type="board"
-                />,
-            );
-
-            // firstChild is the drag-transform wrapper; the styled card is its child.
-            expect(container.firstChild?.firstChild).toHaveClass(
-                'border-zinc-600',
+            expect(mockRouterVisit).toHaveBeenCalledWith(
+                '/issues.show/1/ISSUE-1',
             );
         });
 
@@ -125,8 +99,6 @@ describe('IssueElement Component', () => {
             render(
                 <IssueElement
                     issue={makeIssue({ status: 'closed' })}
-                    activeIssue={null}
-                    setActiveIssue={() => {}}
                     type="board"
                 />,
             );
@@ -137,13 +109,7 @@ describe('IssueElement Component', () => {
 
     describe('list layout (default)', () => {
         test('renders the id, title and priority in a table row', () => {
-            renderInTable(
-                <IssueElement
-                    issue={makeIssue()}
-                    activeIssue={null}
-                    setActiveIssue={() => {}}
-                />,
-            );
+            renderInTable(<IssueElement issue={makeIssue()} />);
 
             expect(screen.getByText(/ISSUE-1/)).toBeInTheDocument();
             expect(screen.getByText('Fix the bug')).toBeInTheDocument();
@@ -151,54 +117,33 @@ describe('IssueElement Component', () => {
         });
 
         test('renders the assignee name via the user badge', () => {
-            renderInTable(
-                <IssueElement
-                    issue={makeIssue()}
-                    activeIssue={null}
-                    setActiveIssue={() => {}}
-                />,
-            );
+            renderInTable(<IssueElement issue={makeIssue()} />);
 
             expect(screen.getAllByText('Jane Doe')).toHaveLength(2);
         });
 
         test('renders "Unassigned" when there is no assignee', () => {
             renderInTable(
-                <IssueElement
-                    issue={makeIssue({ assignee: undefined })}
-                    activeIssue={null}
-                    setActiveIssue={() => {}}
-                />,
+                <IssueElement issue={makeIssue({ assignee: undefined })} />,
             );
 
             expect(screen.getAllByText('Unassigned')).toHaveLength(2);
         });
 
-        test('calls setActiveIssue with the issue when the row is clicked', async () => {
+        test('navigates to the issue page when the row is clicked', async () => {
             const issue = makeIssue();
-            const setActiveIssue = vi.fn();
-            renderInTable(
-                <IssueElement
-                    issue={issue}
-                    activeIssue={null}
-                    setActiveIssue={setActiveIssue}
-                />,
-            );
+            renderInTable(<IssueElement issue={issue} />);
 
             await userEvent.click(screen.getByText('Fix the bug'));
 
-            expect(setActiveIssue).toHaveBeenCalledWith(issue, false);
+            expect(mockRouterVisit).toHaveBeenCalledWith(
+                '/issues.show/1/ISSUE-1',
+            );
         });
 
         test('deletes the issue via the destroy route when Remove is clicked', async () => {
             const issue = makeIssue();
-            renderInTable(
-                <IssueElement
-                    issue={issue}
-                    activeIssue={null}
-                    setActiveIssue={() => {}}
-                />,
-            );
+            renderInTable(<IssueElement issue={issue} />);
 
             const row = screen
                 .getByText('Fix the bug')

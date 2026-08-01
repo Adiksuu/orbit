@@ -19,7 +19,6 @@ const makeIssue = (overrides: Partial<Issue> = {}): Issue => ({
 const renderRow = (props: Partial<React.ComponentProps<typeof ListRow>>) => {
     const defaultProps: React.ComponentProps<typeof ListRow> = {
         issue: makeIssue(),
-        isActive: false,
         isClosed: false,
         onClick: () => {},
         ...props,
@@ -173,7 +172,7 @@ describe('ListRow Component', () => {
                 .closest('tr') as HTMLElement;
             fireEvent.contextMenu(row);
 
-            expect(screen.getByText('Open in modal')).toBeInTheDocument();
+            expect(screen.getByText('Open issue')).toBeInTheDocument();
             expect(screen.getByText('Modify')).toBeInTheDocument();
             expect(screen.getByText('Remove')).toBeInTheDocument();
         });
@@ -195,7 +194,7 @@ describe('ListRow Component', () => {
             expect(screen.queryByText('Modify')).not.toBeInTheDocument();
         });
 
-        test('clicking "Open in modal" calls onClick and closes the menu', async () => {
+        test('clicking "Open issue" calls onClick and closes the menu', async () => {
             const handleClick = vi.fn();
             renderRow({ onClick: handleClick });
 
@@ -204,10 +203,10 @@ describe('ListRow Component', () => {
                 .closest('tr') as HTMLElement;
             fireEvent.contextMenu(row);
 
-            await userEvent.click(screen.getByText('Open in modal'));
+            await userEvent.click(screen.getByText('Open issue'));
 
             expect(handleClick).toHaveBeenCalledTimes(1);
-            expect(screen.queryByText('Open in modal')).not.toBeInTheDocument();
+            expect(screen.queryByText('Open issue')).not.toBeInTheDocument();
         });
 
         test('clicking "Modify" calls onModify and closes the menu', async () => {

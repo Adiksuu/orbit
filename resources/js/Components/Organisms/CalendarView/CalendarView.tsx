@@ -3,14 +3,11 @@ import StatusDot from '@/Components/Atoms/StatusDot/StatusDot';
 import { CalendarViewProps } from '@/types/Components';
 import { Issue } from '@/types/Issues';
 import { cn } from '@/utils/cn';
+import { router } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import React, { useMemo, useState } from 'react';
 
-const CalendarView: React.FC<CalendarViewProps> = ({
-    issues,
-    activeIssue,
-    setActiveIssue,
-}) => {
+const CalendarView: React.FC<CalendarViewProps> = ({ issues }) => {
     const [currentDate, setCurrentDate] = useState(new Date());
 
     const monthNames = [
@@ -199,13 +196,16 @@ const CalendarView: React.FC<CalendarViewProps> = ({
                                             initial={{ opacity: 0, y: 5 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             onClick={() =>
-                                                setActiveIssue(issue)
+                                                router.visit(
+                                                    route('issues.show', [
+                                                        issue.project_id,
+                                                        issue.id,
+                                                    ]),
+                                                )
                                             }
                                             className={cn(
                                                 'hover:border-[var(--accent-color)]/50 group flex items-center gap-2 rounded-lg border border-white/[0.05] bg-white/[0.03] p-1.5 text-left transition-all hover:bg-white/[0.08] sm:p-1.5',
                                                 'px-3 py-2.5 sm:px-1.5 sm:py-1.5', // Larger on mobile
-                                                activeIssue?.id === issue.id &&
-                                                    'bg-[var(--accent-color)]/10 border-[var(--accent-color)]',
                                             )}
                                         >
                                             <StatusDot

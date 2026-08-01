@@ -2,44 +2,23 @@ import EmptyStateCard from '@/Components/Molecules/EmptyStateCard/EmptyStateCard
 import ProjectCard from '@/Components/Molecules/ProjectCard/ProjectCard';
 import StatCard from '@/Components/Molecules/StatCard/StatCard';
 import DashboardVisuals from '@/Components/Organisms/DashboardVisuals/DashboardVisuals';
-import IssueDetail from '@/Components/Organisms/IssueDetail/IssueDetail';
 import IssueTable from '@/Components/Organisms/IssueTable/IssueTable';
 import PageHeader from '@/Components/Organisms/PageHeader/PageHeader';
 import Sidebar from '@/Components/Organisms/Sidebar/Sidebar';
 import { Issue, ProductivityTrendProps } from '@/types/Issues';
 import { Project } from '@/types/Projects';
-import { AssignableUser } from '@/types/Users';
 import { Link } from '@inertiajs/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 export default function Dashboard({
     issues,
     projects,
     productivity_trend,
-    users,
 }: {
     issues: Issue[];
     projects: Project[];
     productivity_trend: ProductivityTrendProps[];
-    users: AssignableUser[];
 }) {
-    const [activeIssue, _setActiveIssue] = useState<Issue | null>(null);
-    const [isEditing, setIsEditing] = useState(false);
-
-    const setActiveIssue = (issue: Issue | null, edit: boolean = false) => {
-        _setActiveIssue(issue);
-        setIsEditing(edit);
-    };
-
-    useEffect(() => {
-        if (activeIssue) {
-            const updated = issues.find((i) => i.id === activeIssue.id);
-            if (updated) {
-                setActiveIssue(updated);
-            }
-        }
-    }, [issues]);
-
     const stats = useMemo(() => {
         const total = issues.length;
         const closed = issues.filter((i) => i.status === 'closed').length;
@@ -113,11 +92,7 @@ export default function Dashboard({
                                     </span>
                                 </div>
                                 <div className="flex-1 overflow-y-auto">
-                                    <IssueTable
-                                        issues={issues.slice(0, 20)}
-                                        activeIssue={activeIssue}
-                                        setActiveIssue={setActiveIssue}
-                                    />
+                                    <IssueTable issues={issues.slice(0, 20)} />
                                 </div>
                             </div>
 
@@ -168,16 +143,6 @@ export default function Dashboard({
                             </div>
                         </section>
                     </main>
-
-                    {activeIssue && (
-                        <IssueDetail
-                            isOpen={!!activeIssue}
-                            onClose={() => setActiveIssue(null)}
-                            activeIssue={activeIssue}
-                            initialIsEditing={isEditing}
-                            users={users}
-                        />
-                    )}
                 </div>
             </div>
         </div>

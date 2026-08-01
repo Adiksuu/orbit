@@ -5,13 +5,7 @@ import { BoardColumnProps } from '@/types/Components';
 import { useDroppable } from '@dnd-kit/core';
 import { AnimatePresence } from 'framer-motion';
 
-function BoardColumn({
-    issues,
-    meta,
-    count,
-    activeIssue,
-    setActiveIssue,
-}: BoardColumnProps) {
+function BoardColumn({ issues, meta, count }: BoardColumnProps) {
     const { setNodeRef, isOver } = useDroppable({ id: meta.id });
 
     return (
@@ -79,8 +73,6 @@ function BoardColumn({
                             <IssueElement
                                 key={issue.id}
                                 issue={issue}
-                                activeIssue={activeIssue}
-                                setActiveIssue={setActiveIssue}
                                 type="board"
                             />
                         ))}

@@ -15,8 +15,9 @@ vi.mock('@/context/AlertContext', () => ({
 }));
 
 const mockRouterPatch = vi.hoisted(() => vi.fn());
+const mockRouterVisit = vi.hoisted(() => vi.fn());
 vi.mock('@inertiajs/react', () => ({
-    router: { patch: mockRouterPatch },
+    router: { patch: mockRouterPatch, visit: mockRouterVisit },
 }));
 
 const mockRoute = vi.hoisted(() =>
@@ -73,13 +74,7 @@ const makeIssue = (overrides: Partial<Issue> = {}): Issue => ({
 
 describe('IssueBoard Component', () => {
     test('renders a column for each of the three priorities', () => {
-        render(
-            <IssueBoard
-                issues={[]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<IssueBoard issues={[]} />);
 
         expect(screen.getByText(/high Priority/i)).toBeInTheDocument();
         expect(screen.getByText(/medium Priority/i)).toBeInTheDocument();
@@ -92,13 +87,7 @@ describe('IssueBoard Component', () => {
             makeIssue({ title: 'A medium one', priority: 'medium' }),
             makeIssue({ title: 'A low one', priority: 'low' }),
         ];
-        render(
-            <IssueBoard
-                issues={issues}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<IssueBoard issues={issues} />);
 
         // Every priority's issue is rendered somewhere on the board.
         expect(screen.getByText('A high one')).toBeInTheDocument();
@@ -108,13 +97,7 @@ describe('IssueBoard Component', () => {
 
     test('shows an empty state in columns that have no issues', () => {
         const issues = [makeIssue({ title: 'Only high', priority: 'high' })];
-        render(
-            <IssueBoard
-                issues={issues}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<IssueBoard issues={issues} />);
 
         // The high column has an issue; medium and low are empty.
         expect(screen.getAllByText('No issues')).toHaveLength(2);
@@ -129,13 +112,7 @@ describe('IssueBoard Component', () => {
                 priority: 'urgent' as Issue['priority'],
             }),
         ];
-        render(
-            <IssueBoard
-                issues={issues}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<IssueBoard issues={issues} />);
 
         expect(screen.getByText('A high one')).toBeInTheDocument();
         expect(screen.queryByText('An orphan')).not.toBeInTheDocument();
@@ -143,13 +120,7 @@ describe('IssueBoard Component', () => {
 
     test('places an issue under the correct priority column', () => {
         const issues = [makeIssue({ title: 'A low one', priority: 'low' })];
-        render(
-            <IssueBoard
-                issues={issues}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<IssueBoard issues={issues} />);
 
         // Find the "low Priority" column and confirm the issue lives within it.
         const lowHeading = screen.getByText(/low Priority/i);
@@ -164,26 +135,14 @@ describe('IssueBoard Component', () => {
             makeIssue({ priority: 'high', status: 'open' }),
             makeIssue({ priority: 'high', status: 'closed' }),
         ];
-        render(
-            <IssueBoard
-                issues={issues}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<IssueBoard issues={issues} />);
 
         // 2 open of 3 total in the High column => badge shows "2".
         expect(screen.getByText('2')).toBeInTheDocument();
     });
 
     test('defaults to grouping by priority', () => {
-        render(
-            <IssueBoard
-                issues={[]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<IssueBoard issues={[]} />);
 
         expect(screen.getByRole('button', { name: 'Priority' })).toHaveClass(
             'bg-white/10',
@@ -197,13 +156,7 @@ describe('IssueBoard Component', () => {
             makeIssue({ title: 'Underway', status: 'in_progress' }),
             makeIssue({ title: 'Finished', status: 'closed' }),
         ];
-        render(
-            <IssueBoard
-                issues={issues}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<IssueBoard issues={issues} />);
 
         await user.click(screen.getByRole('button', { name: 'Status' }));
 
@@ -219,25 +172,13 @@ describe('IssueBoard Component', () => {
 
     test('persists the chosen grouping mode to localStorage and restores it', async () => {
         const user = userEvent.setup();
-        const { unmount } = render(
-            <IssueBoard
-                issues={[]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        const { unmount } = render(<IssueBoard issues={[]} />);
 
         await user.click(screen.getByRole('button', { name: 'Status' }));
         expect(localStorage.getItem('boardGroupBy')).toBe('status');
         unmount();
 
-        render(
-            <IssueBoard
-                issues={[]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<IssueBoard issues={[]} />);
 
         expect(screen.getByText('Open')).toBeInTheDocument();
         expect(screen.queryByText(/high Priority/i)).not.toBeInTheDocument();
@@ -245,13 +186,7 @@ describe('IssueBoard Component', () => {
 
     test('dragging a card to a new priority column patches priority', () => {
         const issue = makeIssue({ priority: 'low' });
-        render(
-            <IssueBoard
-                issues={[issue]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<IssueBoard issues={[issue]} />);
 
         capturedHandlers.onDragEnd?.({
             active: { id: issue.id },
@@ -269,13 +204,7 @@ describe('IssueBoard Component', () => {
     test('dragging a card to a new status column patches status instead of priority', async () => {
         const user = userEvent.setup();
         const issue = makeIssue({ status: 'open' });
-        render(
-            <IssueBoard
-                issues={[issue]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<IssueBoard issues={[issue]} />);
 
         await user.click(screen.getByRole('button', { name: 'Status' }));
 
@@ -298,13 +227,7 @@ describe('IssueBoard Component', () => {
             },
         );
         const issue = makeIssue({ priority: 'low', title: 'Flaky issue' });
-        render(
-            <IssueBoard
-                issues={[issue]}
-                activeIssue={null}
-                setActiveIssue={() => {}}
-            />,
-        );
+        render(<IssueBoard issues={[issue]} />);
 
         capturedHandlers.onDragEnd?.({
             active: { id: issue.id },

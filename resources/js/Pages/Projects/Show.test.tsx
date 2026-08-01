@@ -89,87 +89,27 @@ vi.mock('@/Components/Molecules/Pagination/Pagination', () => ({
 vi.mock('@/Components/Organisms/IssueTable/IssueTable', () => ({
     default: ({
         issues,
-        setActiveIssue,
         pagination,
     }: {
         issues: Issue[];
-        activeIssue: Issue | null;
-        setActiveIssue: (issue: Issue | null, edit?: boolean) => void;
         pagination?: React.ReactNode;
     }) => (
         <div data-testid="issue-table" data-issues-count={issues.length}>
-            {issues[0] && (
-                <button onClick={() => setActiveIssue(issues[0])}>
-                    Open table {issues[0].id}
-                </button>
-            )}
             {pagination}
         </div>
     ),
 }));
 
 vi.mock('@/Components/Organisms/IssueBoard/IssueBoard', () => ({
-    default: ({
-        issues,
-        setActiveIssue,
-    }: {
-        issues: Issue[];
-        activeIssue: Issue | null;
-        setActiveIssue: (issue: Issue | null, edit?: boolean) => void;
-    }) => (
-        <div data-testid="issue-board" data-issues-count={issues.length}>
-            {issues[0] && (
-                <button onClick={() => setActiveIssue(issues[0])}>
-                    Open board {issues[0].id}
-                </button>
-            )}
-        </div>
+    default: ({ issues }: { issues: Issue[] }) => (
+        <div data-testid="issue-board" data-issues-count={issues.length} />
     ),
 }));
 
 vi.mock('@/Components/Organisms/CalendarView/CalendarView', () => ({
-    default: ({
-        issues,
-        setActiveIssue,
-    }: {
-        issues: Issue[];
-        activeIssue: Issue | null;
-        setActiveIssue: (issue: Issue | null) => void;
-    }) => (
-        <div data-testid="calendar-view" data-issues-count={issues.length}>
-            {issues[0] && (
-                <button onClick={() => setActiveIssue(issues[0])}>
-                    Open calendar {issues[0].id}
-                </button>
-            )}
-        </div>
+    default: ({ issues }: { issues: Issue[] }) => (
+        <div data-testid="calendar-view" data-issues-count={issues.length} />
     ),
-}));
-
-vi.mock('@/Components/Organisms/IssueDetail/IssueDetail', () => ({
-    default: ({
-        isOpen,
-        onClose,
-        activeIssue,
-        initialIsEditing,
-        users,
-    }: {
-        isOpen: boolean;
-        onClose: () => void;
-        activeIssue: Issue;
-        initialIsEditing?: boolean;
-        users: AssignableUser[];
-    }) =>
-        isOpen ? (
-            <div
-                data-testid="issue-detail"
-                data-issue-id={activeIssue.id}
-                data-editing={String(!!initialIsEditing)}
-                data-users-count={users.length}
-            >
-                <button onClick={onClose}>Close</button>
-            </div>
-        ) : null,
 }));
 
 const makeProject = (overrides: Partial<Project> = {}): Project => ({
@@ -373,119 +313,6 @@ describe('Projects Show Page', () => {
         expect(localStorage.setItem).toHaveBeenCalledWith(
             'selectedLook',
             'Calendar',
-        );
-    });
-
-    test('opens IssueDetail when an issue is selected from the List view', async () => {
-        const user = userEvent.setup();
-        const issue = makeIssue({ id: 'ISSUE-select-test' });
-        render(
-            <Show
-                project={makeProject()}
-                issues={makePaginated([issue])}
-                projects={[]}
-                savedFilters={[]}
-                users={[makeUser()]}
-            />,
-        );
-
-        expect(screen.queryByTestId('issue-detail')).not.toBeInTheDocument();
-
-        await user.click(screen.getByText(`Open table ${issue.id}`));
-
-        const detail = screen.getByTestId('issue-detail');
-        expect(detail).toHaveAttribute('data-issue-id', issue.id);
-        expect(detail).toHaveAttribute('data-users-count', '1');
-    });
-
-    test('closes IssueDetail when onClose is triggered', async () => {
-        const user = userEvent.setup();
-        const issue = makeIssue({ id: 'ISSUE-close-test' });
-        render(
-            <Show
-                project={makeProject()}
-                issues={makePaginated([issue])}
-                projects={[]}
-                savedFilters={[]}
-                users={[]}
-            />,
-        );
-
-        await user.click(screen.getByText(`Open table ${issue.id}`));
-        expect(screen.getByTestId('issue-detail')).toBeInTheDocument();
-
-        await user.click(screen.getByText('Close'));
-        expect(screen.queryByTestId('issue-detail')).not.toBeInTheDocument();
-    });
-
-    test('auto-opens IssueDetail for the issue referenced by queryParams.issue', () => {
-        const targetIssue = makeIssue({ id: 'ISSUE-deep-link' });
-        const otherIssue = makeIssue({ id: 'ISSUE-other' });
-        render(
-            <Show
-                project={makeProject()}
-                issues={makePaginated([otherIssue, targetIssue])}
-                projects={[]}
-                savedFilters={[]}
-                users={[]}
-                queryParams={{ issue: targetIssue.id }}
-            />,
-        );
-
-        expect(screen.getByTestId('issue-detail')).toHaveAttribute(
-            'data-issue-id',
-            targetIssue.id,
-        );
-    });
-
-    test('does not open IssueDetail when queryParams.issue does not match any issue', () => {
-        render(
-            <Show
-                project={makeProject()}
-                issues={makePaginated([makeIssue()])}
-                projects={[]}
-                savedFilters={[]}
-                users={[]}
-                queryParams={{ issue: 'does-not-exist' }}
-            />,
-        );
-
-        expect(screen.queryByTestId('issue-detail')).not.toBeInTheDocument();
-    });
-
-    test('keeps the active issue in sync when the issues prop is updated', async () => {
-        const user = userEvent.setup();
-        const original = makeIssue({ id: 'ISSUE-sync-test', title: 'Old' });
-        const { rerender } = render(
-            <Show
-                project={makeProject()}
-                issues={makePaginated([original])}
-                projects={[]}
-                savedFilters={[]}
-                users={[]}
-            />,
-        );
-
-        await user.click(screen.getByText(`Open table ${original.id}`));
-        expect(screen.getByTestId('issue-detail')).toHaveAttribute(
-            'data-issue-id',
-            original.id,
-        );
-
-        const updated = { ...original, title: 'New' };
-        rerender(
-            <Show
-                project={makeProject()}
-                issues={makePaginated([updated])}
-                projects={[]}
-                savedFilters={[]}
-                users={[]}
-            />,
-        );
-
-        expect(screen.getByTestId('issue-detail')).toHaveAttribute(
-            'data-issue-id',
-            original.id,
         );
     });
 
