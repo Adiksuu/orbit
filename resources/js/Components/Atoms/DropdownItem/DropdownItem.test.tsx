@@ -37,15 +37,15 @@ describe('DropdownItem Component', () => {
         render(<DropdownItem label="Active" isActive />);
 
         expect(screen.getByRole('button')).toHaveClass(
-            'text-[var(--text-color)]',
-            'font-semibold',
+            'text-zinc-100',
+            'bg-[var(--accent-color)]/10',
         );
     });
 
     test('does not apply active classes when isActive is false', () => {
         render(<DropdownItem label="Inactive" isActive={false} />);
 
-        expect(screen.getByRole('button')).not.toHaveClass('font-semibold');
+        expect(screen.getByRole('button')).not.toHaveClass('text-zinc-100');
     });
 
     test('renders trailing content when provided', () => {
@@ -58,9 +58,7 @@ describe('DropdownItem Component', () => {
         const { container } = render(<DropdownItem label="High" />);
 
         expect(
-            container.querySelector(
-                'span.text-\\[var\\(--text-gray-color\\)\\]',
-            ),
+            container.querySelector('span.text-zinc-500'),
         ).not.toBeInTheDocument();
     });
 });

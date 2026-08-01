@@ -3,7 +3,6 @@ import LabelBadge from '@/Components/Atoms/LabelBadge/LabelBadge';
 import { EditableLabelListProps } from '@/types/Components';
 import { IssueLabel } from '@/types/Issues';
 import { cn } from '@/utils/cn';
-import { LABEL_COLORS } from '@/utils/labelColors';
 import React, { useEffect, useRef, useState } from 'react';
 
 const AVAILABLE_LABELS: IssueLabel[] = [
@@ -77,22 +76,33 @@ const EditableLabelList: React.FC<EditableLabelListProps> = ({
                 </button>
             </div>
             {isOpen && (
-                <div className="absolute left-0 top-[calc(100%+6px)] z-[100] w-64 overflow-hidden rounded-lg border border-[var(--border-color)] bg-[var(--bg-color)] shadow-[0_10px_25px_-5px_rgba(0,0,0,0.4),_0_8px_10px_-6px_rgba(0,0,0,0.4)]">
-                    <div className="border-b border-[var(--border-color)] p-2">
+                <div className="absolute left-0 top-[calc(100%+6px)] z-[100] w-64 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/95 p-1.5 shadow-2xl backdrop-blur-md">
+                    <div className="flex items-center justify-between px-2 py-1.5">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+                            Labels
+                        </p>
+                        {labels.length > 0 && (
+                            <button
+                                type="button"
+                                onClick={() => onSave([])}
+                                className="cursor-pointer text-[10px] font-medium text-zinc-500 transition-colors hover:text-zinc-200"
+                            >
+                                Clear
+                            </button>
+                        )}
+                    </div>
+                    <div className="px-2 pb-1.5">
                         <input
                             ref={searchRef}
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             placeholder="Change or add labels..."
-                            className="w-full bg-transparent px-1 py-1 text-sm text-[var(--text-color)] outline-none placeholder:text-[var(--text-gray-color)]"
+                            className="w-full rounded-md bg-zinc-800 px-2 py-1 text-xs text-zinc-100 outline-none placeholder:text-zinc-500"
                         />
                     </div>
-                    <div className="max-h-64 overflow-y-auto p-1">
-                        <div className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--text-gray-color)]">
-                            Labels
-                        </div>
+                    <div className="max-h-64 space-y-0.5 overflow-y-auto">
                         {filteredLabels.length === 0 ? (
-                            <p className="px-3 py-2 text-sm text-[var(--text-gray-color)]">
+                            <p className="px-2 py-2 text-xs text-zinc-500">
                                 No labels found.
                             </p>
                         ) : (
@@ -103,33 +113,33 @@ const EditableLabelList: React.FC<EditableLabelListProps> = ({
                                         key={label}
                                         type="button"
                                         onClick={() => toggleLabel(label)}
-                                        className="flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-[var(--text-color)] transition-colors hover:bg-[var(--bg-light-color-hover)]"
+                                        className={cn(
+                                            'group flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-xs transition-all duration-150',
+                                            isSelected
+                                                ? 'bg-[var(--accent-color)]/10 text-zinc-100'
+                                                : 'text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200',
+                                        )}
                                     >
-                                        <span
+                                        <div
                                             className={cn(
-                                                'flex h-4 w-4 shrink-0 items-center justify-center rounded border border-[var(--border-color)]',
-                                                isSelected &&
-                                                    'border-[var(--accent-color)] bg-[var(--accent-color)]',
+                                                'flex h-4 w-4 shrink-0 items-center justify-center rounded border transition-all duration-150',
+                                                isSelected
+                                                    ? 'border-[var(--accent-color)] bg-[var(--accent-color)]'
+                                                    : 'border-zinc-700 bg-zinc-800 group-hover:border-zinc-600',
                                             )}
                                         >
                                             {isSelected && (
                                                 <Icon
                                                     name="Check"
                                                     size={10}
-                                                    color="white"
+                                                    className="text-white"
                                                 />
                                             )}
-                                        </span>
-                                        <span
-                                            className="h-2 w-2 shrink-0 rounded-full"
-                                            style={{
-                                                backgroundColor:
-                                                    LABEL_COLORS[label],
-                                            }}
+                                        </div>
+                                        <LabelBadge
+                                            label={label}
+                                            className="pointer-events-none"
                                         />
-                                        <span className="capitalize">
-                                            {label}
-                                        </span>
                                     </button>
                                 );
                             })

@@ -2,6 +2,7 @@ import EditableSelect from '@/Components/Atoms/EditableSelect/EditableSelect';
 import EditableText from '@/Components/Atoms/EditableText/EditableText';
 import Icon from '@/Components/Atoms/Icon/Icon';
 import StatusDot from '@/Components/Atoms/StatusDot/StatusDot';
+import Calendar from '@/Components/Molecules/Calendar/Calendar';
 import CommentForm from '@/Components/Molecules/CommentForm/CommentForm';
 import CommentList from '@/Components/Molecules/CommentList/CommentList';
 import EditableLabelList from '@/Components/Molecules/EditableLabelList/EditableLabelList';
@@ -16,6 +17,7 @@ import { formatStatusLabel } from '@/utils/text';
 import { formatDate } from '@/utils/time';
 import type { FormDataConvertible } from '@inertiajs/core';
 import { Link, router, usePage } from '@inertiajs/react';
+import { useState } from 'react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -31,12 +33,24 @@ export default function Show({
     const {
         props: { auth },
     } = usePage<PageProps>();
+    const [showStartDate, setShowStartDate] = useState(false);
+    const [showEndDate, setShowEndDate] = useState(false);
 
     const updateIssue = (data: Record<string, FormDataConvertible>) => {
         router.patch(route('issues.update', issue.id), data, {
             preserveScroll: true,
         });
     };
+
+    const toLocalDateString = (date: Date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
+    const parseDate = (value?: string) =>
+        value ? new Date(value.replace(/-/g, '/')) : undefined;
 
     const addComment = (body: string) => {
         router.post(
@@ -101,8 +115,8 @@ export default function Show({
             <div className="m-2 flex min-w-0 flex-1 flex-col overflow-hidden rounded-2xl bg-[var(--bg-color-hover)]">
                 <IssuePageHeader project={project} issue={issue} />
                 <main className="flex flex-1 overflow-y-auto">
-                    <div className="mx-auto grid w-full max-w-6xl flex-1 grid-cols-1 gap-8 px-6 py-8 md:grid-cols-[1fr_280px]">
-                        <div className="flex min-w-0 flex-col gap-6">
+                    <div className="mx-auto grid w-full max-w-6xl flex-1 grid-cols-1 gap-6 px-6 py-6 md:grid-cols-[1fr_260px]">
+                        <div className="flex min-w-0 flex-col gap-4">
                             <EditableText
                                 as="h1"
                                 value={issue.title}
@@ -129,7 +143,7 @@ export default function Show({
                                 )}
                             />
 
-                            <div className="mt-4 flex flex-col gap-4 border-t border-[var(--border-color)] pt-6">
+                            <div className="mt-2 flex flex-col gap-3 border-t border-[var(--border-color)] pt-4">
                                 <span className="text-sm font-medium text-[var(--text-color)]">
                                     Activity
                                 </span>
@@ -142,7 +156,7 @@ export default function Show({
                             </div>
                         </div>
 
-                        <div className="flex flex-col gap-6">
+                        <div className="flex flex-col gap-3">
                             <SidebarField label="Status">
                                 <EditableSelect
                                     value={issue.status}
@@ -234,28 +248,45 @@ export default function Show({
                             <SidebarField label="Project">
                                 <Link
                                     href={route('projects.show', project.id)}
-                                    className="flex items-center gap-2 text-sm text-[var(--text-color)] hover:underline"
+                                    className="flex items-center gap-2 rounded-full px-1.5 py-1 text-sm text-[var(--text-color)] hover:bg-[var(--bg-light-color)]"
                                 >
                                     <Icon name="FolderGit2" size={14} />
                                     {project.name}
                                 </Link>
                             </SidebarField>
 
-                            {(issue.start_date || issue.end_date) && (
-                                <SidebarField label="Dates">
-                                    <div className="flex items-center gap-2">
-                                        <Icon
-                                            name="Calendar"
-                                            size={14}
-                                            className="text-[var(--text-gray-color)]"
-                                        />
-                                        <span className="text-xs text-[var(--text-color)]">
-                                            {issue.start_date || 'Not set'} —{' '}
-                                            {issue.end_date || 'Not set'}
-                                        </span>
-                                    </div>
-                                </SidebarField>
-                            )}
+                            <SidebarField label="Dates">
+                                <div className="flex items-center gap-1">
+                                    <Icon
+                                        name="Calendar"
+                                        size={14}
+                                        className="mr-1 text-[var(--text-gray-color)]"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setShowStartDate(true);
+                                            setShowEndDate(false);
+                                        }}
+                                        className="rounded-full px-1.5 py-1 text-xs text-[var(--text-color)] hover:bg-[var(--bg-light-color)]"
+                                    >
+                                        {issue.start_date || 'Start date'}
+                                    </button>
+                                    <span className="text-xs text-[var(--text-gray-color)]">
+                                        —
+                                    </span>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setShowEndDate(true);
+                                            setShowStartDate(false);
+                                        }}
+                                        className="rounded-full px-1.5 py-1 text-xs text-[var(--text-color)] hover:bg-[var(--bg-light-color)]"
+                                    >
+                                        {issue.end_date || 'End date'}
+                                    </button>
+                                </div>
+                            </SidebarField>
 
                             <div className="mt-auto flex flex-col gap-2 border-t border-[var(--border-color)] pt-4">
                                 <div className="flex flex-col">
@@ -279,6 +310,50 @@ export default function Show({
                     </div>
                 </main>
             </div>
+            {(showStartDate || showEndDate) && (
+                <div
+                    className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-[2px]"
+                    onClick={() => {
+                        setShowStartDate(false);
+                        setShowEndDate(false);
+                    }}
+                >
+                    <div onClick={(e) => e.stopPropagation()}>
+                        {showStartDate && (
+                            <Calendar
+                                selectedDate={parseDate(issue.start_date)}
+                                onSelect={(date) => {
+                                    const newStartDate =
+                                        toLocalDateString(date);
+                                    updateIssue({
+                                        start_date: newStartDate,
+                                        ...(issue.end_date &&
+                                        issue.end_date < newStartDate
+                                            ? { end_date: newStartDate }
+                                            : {}),
+                                    });
+                                    setShowStartDate(false);
+                                }}
+                                onClose={() => setShowStartDate(false)}
+                            />
+                        )}
+                        {showEndDate && (
+                            <Calendar
+                                selectedDate={parseDate(issue.end_date)}
+                                minDate={parseDate(issue.start_date)}
+                                rangeStart={parseDate(issue.start_date)}
+                                onSelect={(date) => {
+                                    updateIssue({
+                                        end_date: toLocalDateString(date),
+                                    });
+                                    setShowEndDate(false);
+                                }}
+                                onClose={() => setShowEndDate(false)}
+                            />
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

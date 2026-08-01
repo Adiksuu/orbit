@@ -99,11 +99,7 @@ const EditableText: React.FC<EditableTextProps> = ({
                     startEditing();
                 }
             }}
-            className={cn(
-                'rounded-md transition-colors',
-                !disabled && 'cursor-text hover:bg-[var(--bg-light-color)]',
-                displayClassName,
-            )}
+            className={cn(!disabled && 'cursor-text', displayClassName)}
         >
             {value ? (
                 renderDisplay ? (

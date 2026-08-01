@@ -48,6 +48,14 @@ vi.mock('@/Components/Organisms/Sidebar/Sidebar', () => ({
     default: () => <div data-testid="sidebar" />,
 }));
 
+vi.mock('@/context/AlertContext', () => ({
+    useAlert: () => ({
+        addAlert: vi.fn(),
+        removeAlert: vi.fn(),
+        alerts: [],
+    }),
+}));
+
 const project: Project = {
     id: 1,
     name: 'Orbit',
@@ -102,7 +110,7 @@ describe('Issues/Show Page', () => {
         expect(screen.getByText(/2026-01-31/)).toBeInTheDocument();
     });
 
-    test('does not render the Dates field when neither date is set', () => {
+    test('renders placeholders in the Dates field when neither date is set', () => {
         render(
             <Show
                 project={project}
@@ -115,7 +123,83 @@ describe('Issues/Show Page', () => {
             />,
         );
 
-        expect(screen.queryByText('Dates')).not.toBeInTheDocument();
+        expect(screen.getByText('Dates')).toBeInTheDocument();
+        expect(screen.getByText('Start date')).toBeInTheDocument();
+        expect(screen.getByText('End date')).toBeInTheDocument();
+    });
+
+    test('clicking the start date opens a calendar and committing a date updates start_date', async () => {
+        render(
+            <Show
+                project={project}
+                projects={[project]}
+                issue={buildIssue({
+                    start_date: undefined,
+                    end_date: undefined,
+                })}
+                users={users}
+            />,
+        );
+
+        await userEvent.click(screen.getByText('Start date'));
+
+        expect(screen.getByText('Today')).toBeInTheDocument();
+
+        await userEvent.click(screen.getByText('Today'));
+
+        expect(mockPatch).toHaveBeenCalledWith(
+            expect.any(String),
+            expect.objectContaining({ start_date: expect.any(String) }),
+            { preserveScroll: true },
+        );
+        expect(screen.queryByText('Today')).not.toBeInTheDocument();
+    });
+
+    test('clicking the end date opens a calendar and committing a date updates end_date', async () => {
+        render(
+            <Show
+                project={project}
+                projects={[project]}
+                issue={buildIssue({
+                    start_date: undefined,
+                    end_date: undefined,
+                })}
+                users={users}
+            />,
+        );
+
+        await userEvent.click(screen.getByText('End date'));
+        await userEvent.click(screen.getByText('Today'));
+
+        expect(mockPatch).toHaveBeenCalledWith(
+            expect.any(String),
+            expect.objectContaining({ end_date: expect.any(String) }),
+            { preserveScroll: true },
+        );
+    });
+
+    test('closes the calendar overlay when clicking outside of it', async () => {
+        render(
+            <Show
+                project={project}
+                projects={[project]}
+                issue={buildIssue({
+                    start_date: undefined,
+                    end_date: undefined,
+                })}
+                users={users}
+            />,
+        );
+
+        await userEvent.click(screen.getByText('Start date'));
+        expect(screen.getByText('Today')).toBeInTheDocument();
+
+        const overlay = screen
+            .getByText('Today')
+            .closest('.fixed') as HTMLElement;
+        await userEvent.click(overlay);
+
+        expect(screen.queryByText('Today')).not.toBeInTheDocument();
     });
 
     test('falls back to an empty description and no labels when the issue has neither', () => {

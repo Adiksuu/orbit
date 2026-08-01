@@ -20,7 +20,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
     return (
         <form
             onSubmit={handleSubmit}
-            className="flex flex-col gap-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-light-color)] p-3"
+            className="flex flex-col gap-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-color)] p-3"
         >
             <TextArea
                 value={body}
