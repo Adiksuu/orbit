@@ -265,8 +265,7 @@ routes/
 - Mutating routes (`issues.store`, `issues.update`, `projects.store`, ...)
   return a redirect rather than JSON; Inertia re-fetches the page props and
   re-renders, so controllers never hand-build response payloads.
-- The theme is dark-only, driven by CSS custom properties in
-  `resources/css/variables.scss` and consumed via Tailwind arbitrary values
+- The theme is dark-only, driven by CSS custom properties consumed via Tailwind arbitrary values
   like `bg-[var(--bg-color)]`. Prefer these variables over hardcoded colors.
 - Prettier (single quotes, auto-organized imports, Tailwind class sorting)
   and ESLint should both pass clean before a commit.
