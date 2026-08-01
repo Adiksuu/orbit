@@ -8,6 +8,7 @@ import LabelList from '@/Components/Molecules/LabelList/LabelList';
 import UserBadge from '@/Components/Molecules/UserBadge/UserBadge';
 import { ListRowProps } from '@/types/Components';
 import { cn } from '@/utils/cn';
+import { formatStatusLabel } from '@/utils/text';
 import { formatTimeAgo } from '@/utils/time';
 import React, { useEffect, useRef, useState } from 'react';
 
@@ -142,11 +143,13 @@ export const ListRow = ({
                     </td>
                 )}
                 {enabledColumns.status && (
-                    <td
-                        className={cn(cellBase, 'w-[36px]')}
-                        data-column="status"
-                    >
-                        <StatusIcon status={issue.status} />
+                    <td className={cellBase} data-column="status">
+                        <div className="flex items-center gap-1.5">
+                            <StatusIcon status={issue.status} />
+                            <span className="truncate capitalize text-zinc-300">
+                                {formatStatusLabel(issue.status)}
+                            </span>
+                        </div>
                     </td>
                 )}
                 {enabledColumns.assignee && (
@@ -162,11 +165,13 @@ export const ListRow = ({
                     </td>
                 )}
                 {enabledColumns.priority && (
-                    <td
-                        className={cn(cellBase, 'w-[36px]')}
-                        data-column="priority"
-                    >
-                        <PriorityIcon priority={issue.priority} />
+                    <td className={cellBase} data-column="priority">
+                        <div className="flex items-center gap-1.5">
+                            <PriorityIcon priority={issue.priority} />
+                            <span className="truncate capitalize text-zinc-300">
+                                {issue.priority}
+                            </span>
+                        </div>
                     </td>
                 )}
                 {enabledColumns.labels && (
