@@ -5,17 +5,14 @@ import { motion } from 'framer-motion';
 import { icons, X } from 'lucide-react';
 
 const alertVariants = cva(
-    'pointer-events-auto flex items-start gap-3 p-4 rounded-xl border shadow-lg backdrop-blur-md max-w-md w-full transition-all duration-300',
+    'pointer-events-auto flex items-start gap-3 p-4 rounded-xl border shadow-lg backdrop-blur-md max-w-md w-full transition-all duration-300 bg-[var(--bg-color)] text-[var(--text-color)]',
     {
         variants: {
             intent: {
-                success:
-                    'bg-emerald-50/90 border-emerald-200 text-emerald-900 dark:bg-emerald-950/40 dark:border-emerald-800/50 dark:text-emerald-200',
-                error: 'bg-rose-50/90 border-rose-200 text-rose-900 dark:bg-rose-950/40 dark:border-rose-800/50 dark:text-rose-200',
-                warning:
-                    'bg-amber-50/90 border-amber-200 text-amber-900 dark:bg-amber-950/40 dark:border-amber-800/50 dark:text-amber-200',
-                information:
-                    'bg-blue-50/90 border-blue-200 text-blue-900 dark:bg-blue-950/40 dark:border-blue-800/50 dark:text-blue-200',
+                success: 'border-[var(--success-color)]/30',
+                error: 'border-[var(--error-color)]/30',
+                warning: 'border-[var(--warning-color)]/30',
+                information: 'border-[var(--info-color)]/30',
             },
         },
         defaultVariants: {
@@ -27,10 +24,10 @@ const alertVariants = cva(
 const iconVariants = cva('w-5 h-5 mt-0.5 flex-shrink-0', {
     variants: {
         intent: {
-            success: 'text-emerald-600 dark:text-emerald-400',
-            error: 'text-rose-600 dark:text-rose-400',
-            warning: 'text-amber-600 dark:text-amber-400',
-            information: 'text-blue-600 dark:text-blue-400',
+            success: 'text-[var(--success-color)]',
+            error: 'text-[var(--error-color)]',
+            warning: 'text-[var(--warning-color)]',
+            information: 'text-[var(--info-color)]',
         },
     },
     defaultVariants: {

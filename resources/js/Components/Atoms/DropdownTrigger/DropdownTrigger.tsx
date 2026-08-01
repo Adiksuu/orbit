@@ -12,7 +12,7 @@ export default function DropdownTrigger({
         <button
             type="button"
             className={cn(
-                'flex cursor-pointer items-center justify-between gap-3 rounded-lg border border-[rgb(60_60_60/0.8)] bg-[var(--bg-color)] px-4 py-2.5 text-left text-sm font-medium text-white outline-none transition-all duration-200 ease-linear',
+                'flex cursor-pointer items-center justify-between gap-3 rounded-lg border border-[var(--border-color)] bg-[var(--bg-color)] px-4 py-2.5 text-left text-sm font-medium text-[var(--text-color)] outline-none transition-all duration-200 ease-linear',
                 'disabled:cursor-not-allowed disabled:opacity-60',
                 className,
             )}

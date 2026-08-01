@@ -21,7 +21,7 @@ export const ModalOrg = ({ modal, onClose }: ModalOrgProps) => {
                                 {modal.title}
                             </h2>
                             {modal.description && (
-                                <p className="mt-1 text-sm text-zinc-400">
+                                <p className="mt-1 text-sm text-[var(--text-gray-color)]">
                                     {modal.description}
                                 </p>
                             )}

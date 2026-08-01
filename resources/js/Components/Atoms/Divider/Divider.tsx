@@ -6,7 +6,7 @@ const Divider = ({ label, className }: DividerProps) => {
         return (
             <hr
                 className={cn(
-                    'border-t border-[var(--bg-light-color)]',
+                    'border-t border-[var(--border-color)]',
                     className,
                 )}
             />

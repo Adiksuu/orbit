@@ -37,7 +37,7 @@ describe('DropdownItem Component', () => {
         render(<DropdownItem label="Active" isActive />);
 
         expect(screen.getByRole('button')).toHaveClass(
-            'text-white',
+            'text-[var(--text-color)]',
             'font-semibold',
         );
     });

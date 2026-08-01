@@ -38,10 +38,10 @@ describe('Alert Component', () => {
     });
 
     test.each([
-        ['success', 'text-emerald-600'],
-        ['error', 'text-rose-600'],
-        ['warning', 'text-amber-600'],
-        ['information', 'text-blue-600'],
+        ['success', 'text-[var(--success-color)]'],
+        ['error', 'text-[var(--error-color)]'],
+        ['warning', 'text-[var(--warning-color)]'],
+        ['information', 'text-[var(--info-color)]'],
     ] as const)(
         'renders an icon styled for the %s intent',
         (type, colorClass) => {
@@ -61,7 +61,9 @@ describe('Alert Component', () => {
             />,
         );
 
-        expect(container.querySelector('svg')).toHaveClass('text-blue-600');
+        expect(container.querySelector('svg')).toHaveClass(
+            'text-[var(--info-color)]',
+        );
     });
 
     test('renders a "View details" link when actionUrl is provided', () => {
