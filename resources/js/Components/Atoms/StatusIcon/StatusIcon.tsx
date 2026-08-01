@@ -2,18 +2,22 @@ import Badge from '@/Components/Atoms/Badge/Badge';
 import { StatusIconProps } from '@/types/Components';
 import { cn } from '@/utils/cn';
 
-export const StatusIcon = ({ status, className }: StatusIconProps) => {
+export const StatusIcon = ({
+    status,
+    className,
+    tooltip = true,
+}: StatusIconProps) => {
     const s = status?.toLowerCase();
 
     if (s === 'done' || s === 'completed' || s === 'closed') {
         return (
-            <Badge variant={'ghost'} tooltip={true} tooltipText={status}>
+            <Badge variant={'ghost'} tooltip={tooltip} tooltipText={status}>
                 <span
                     className={cn(
                         'inline-flex items-center text-indigo-500',
                         className,
                     )}
-                    title={status}
+                    title={tooltip ? status : undefined}
                 >
                     <svg className="h-4 w-4 fill-current" viewBox="0 0 16 16">
                         <circle cx="8" cy="8" r="6" />
@@ -32,13 +36,13 @@ export const StatusIcon = ({ status, className }: StatusIconProps) => {
 
     if (s === 'in_progress' || s === 'in progress') {
         return (
-            <Badge variant={'ghost'} tooltip={true} tooltipText={status}>
+            <Badge variant={'ghost'} tooltip={tooltip} tooltipText={status}>
                 <span
                     className={cn(
                         'inline-flex items-center text-amber-500',
                         className,
                     )}
-                    title={status}
+                    title={tooltip ? status : undefined}
                 >
                     <svg className="h-4 w-4 fill-current" viewBox="0 0 16 16">
                         <circle
@@ -57,13 +61,13 @@ export const StatusIcon = ({ status, className }: StatusIconProps) => {
     }
 
     return (
-        <Badge variant={'ghost'} tooltip={true} tooltipText={status}>
+        <Badge variant={'ghost'} tooltip={tooltip} tooltipText={status}>
             <span
                 className={cn(
                     'inline-flex items-center text-zinc-500',
                     className,
                 )}
-                title={status}
+                title={tooltip ? status : undefined}
             >
                 <svg className="h-4 w-4 fill-current" viewBox="0 0 16 16">
                     <circle

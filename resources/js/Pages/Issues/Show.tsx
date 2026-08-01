@@ -1,7 +1,8 @@
 import EditableSelect from '@/Components/Atoms/EditableSelect/EditableSelect';
 import EditableText from '@/Components/Atoms/EditableText/EditableText';
 import Icon from '@/Components/Atoms/Icon/Icon';
-import StatusDot from '@/Components/Atoms/StatusDot/StatusDot';
+import { PriorityIcon } from '@/Components/Atoms/PriorityIcon/PriorityIcon';
+import { StatusIcon } from '@/Components/Atoms/StatusIcon/StatusIcon';
 import Calendar from '@/Components/Molecules/Calendar/Calendar';
 import CommentForm from '@/Components/Molecules/CommentForm/CommentForm';
 import CommentList from '@/Components/Molecules/CommentList/CommentList';
@@ -69,7 +70,7 @@ export default function Show({
         value: status,
         label: (
             <div className="flex items-center gap-2">
-                <StatusDot status={status} />
+                <StatusIcon status={status} tooltip={false} />
                 <span className="capitalize">{formatStatusLabel(status)}</span>
             </div>
         ),
@@ -79,7 +80,7 @@ export default function Show({
         value: priority,
         label: (
             <div className="flex items-center gap-2">
-                <StatusDot status={priority} size="sm" />
+                <PriorityIcon priority={priority} tooltip={false} />
                 <span className="capitalize">{priority}</span>
             </div>
         ),
@@ -113,7 +114,7 @@ export default function Show({
             <Sidebar projects={projects} />
             <div className="m-2 flex min-w-0 flex-1 flex-col overflow-hidden rounded-2xl bg-[var(--bg-color-hover)]">
                 <IssuePageHeader project={project} issue={issue} />
-                <main className="flex flex-1 overflow-y-auto">
+                <main className="flex flex-1 flex-col overflow-y-auto">
                     <div className="mx-auto grid w-full max-w-6xl flex-1 grid-cols-1 gap-6 px-6 py-6 md:grid-cols-[1fr_260px]">
                         <div className="flex min-w-0 flex-col gap-4">
                             <EditableText
@@ -148,7 +149,7 @@ export default function Show({
                             </div>
                         </div>
 
-                        <div className="flex flex-col gap-3">
+                        <div className="sticky top-6 flex flex-col gap-3 self-start">
                             <SidebarField label="Status">
                                 <EditableSelect
                                     value={issue.status}
@@ -159,8 +160,9 @@ export default function Show({
                                     }
                                     renderValue={(value) => (
                                         <div className="flex items-center gap-2">
-                                            <StatusDot
-                                                status={value as Status}
+                                            <StatusIcon
+                                                status={value}
+                                                tooltip={false}
                                             />
                                             <span className="text-sm capitalize text-[var(--text-color)]">
                                                 {formatStatusLabel(value)}
@@ -180,9 +182,9 @@ export default function Show({
                                     }
                                     renderValue={(value) => (
                                         <div className="flex items-center gap-2">
-                                            <StatusDot
-                                                status={value as IssuePriority}
-                                                size="sm"
+                                            <PriorityIcon
+                                                priority={value}
+                                                tooltip={false}
                                             />
                                             <span className="text-sm capitalize text-[var(--text-color)]">
                                                 {value}
