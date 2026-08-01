@@ -4,7 +4,7 @@ import { cva } from 'class-variance-authority';
 import { forwardRef } from 'react';
 
 export const inputVariants = cva(
-    'w-full rounded-md border border-[var(--bg-light-color)] bg-[var(--bg-color)] px-3 py-1.5 text-sm text-[var(--text-color)] transition-colors duration-150 file:hidden outline-none focus:outline-none disabled:cursor-not-allowed disabled:bg-[var(--pending-color)]',
+    'w-full rounded-md border border-[var(--bg-light-color)] bg-[var(--bg-color)] px-3 py-1.5 text-sm text-[var(--text-color)] transition-colors duration-150 file:hidden outline-none ring-0 shadow-none focus:outline-none focus:ring-0 focus:shadow-none focus-visible:outline-none focus-visible:ring-0 disabled:cursor-not-allowed disabled:bg-[var(--pending-color)]',
     {
         variants: {
             variant: {
@@ -43,6 +43,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 value={value}
                 onChange={onChange}
                 className={cn(inputVariants({ variant }), className)}
+                style={{
+                    outline: 'none',
+                    boxShadow: 'none',
+                    borderColor: 'var(--bg-light-color)',
+                }}
                 placeholder={placeholder}
                 disabled={isDisabled}
                 type={type}
