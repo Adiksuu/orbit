@@ -12,9 +12,8 @@ const LabelBadge: React.FC<LabelBadgeProps> = ({
         <span
             onClick={onClick}
             className={cn(
-                'inline-flex items-center gap-1.5 rounded-full bg-[var(--bg-light-color)] px-2 py-0.5 text-xs font-medium text-[var(--text-color)]',
-                onClick &&
-                    'cursor-pointer hover:bg-[var(--bg-light-color-hover)]',
+                'inline-flex items-center gap-1.5 rounded-full border border-[var(--border-color)] bg-transparent px-2 py-0.5 text-xs font-medium text-[var(--text-color)] transition-colors hover:bg-[var(--bg-light-color)]',
+                onClick && 'cursor-pointer',
                 className,
             )}
         >
