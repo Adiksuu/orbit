@@ -101,6 +101,19 @@ describe('EditableText Component', () => {
         expect(handleSave).not.toHaveBeenCalled();
     });
 
+    test('uses renderDisplay to customize the read-only rendering', () => {
+        render(
+            <EditableText
+                value="**bold**"
+                onSave={() => {}}
+                renderDisplay={(value) => <strong>{value}</strong>}
+            />,
+        );
+
+        const strong = screen.getByText('**bold**');
+        expect(strong.tagName).toBe('STRONG');
+    });
+
     test('does not enter edit mode when disabled', async () => {
         render(
             <EditableText value="Locked value" onSave={() => {}} disabled />,
