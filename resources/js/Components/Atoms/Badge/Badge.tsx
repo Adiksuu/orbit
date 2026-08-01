@@ -4,18 +4,19 @@ import { cva } from 'class-variance-authority';
 import React from 'react';
 
 const tooltipStyles =
-    'absolute top-[calc(100%+6px)] flex gap-1.5 items-center left-1/2 -translate-x-1/2 bg-[var(--bg-color)] text-[var(--text-gray-color)] px-2 py-1 rounded-md text-[10px] font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-200 ease-in-out pointer-events-none z-50 border border-zinc-800 shadow-lg -translate-y-1 group-hover:translate-y-0';
+    'absolute top-[calc(100%+6px)] flex gap-1.5 items-center left-1/2 -translate-x-1/2 bg-[var(--bg-color)] text-[var(--text-gray-color)] px-2 py-1 rounded-md text-[10px] font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-200 ease-in-out pointer-events-none z-50 border border-[var(--border-color)] shadow-lg -translate-y-1 group-hover:translate-y-0';
 
 export const badgeVariants = cva(
     'relative inline-flex items-center justify-center py-[2px] px-2 rounded-lg text-[10px] font-medium whitespace-nowrap transition-colors border border-solid border-transparent',
     {
         variants: {
             variant: {
-                default: 'bg-zinc-800 text-zinc-400 border border-transparent',
+                default:
+                    'bg-[var(--bg-light-color)] text-[var(--text-gray-color)] border border-transparent',
                 outline:
-                    'bg-transparent border-none border-[var(--bg-light-color)] text-zinc-400',
-                ghost: 'bg-transparent text-zinc-400',
-                avatar: 'px-0 text-zinc-400',
+                    'bg-transparent border-none border-[var(--border-color)] text-[var(--text-gray-color)]',
+                ghost: 'bg-transparent text-[var(--text-gray-color)]',
+                avatar: 'px-0 text-[var(--text-gray-color)]',
             },
             color: {
                 bug: 'text-[#f44336] bg-[#f44336]/10 border-[#f44336]/20',
