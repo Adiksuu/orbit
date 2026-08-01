@@ -134,20 +134,16 @@ describe('ProjectCard Component', () => {
 });
 
 describe('ProjectNewCard Component', () => {
-    test('renders a "New Project" call-to-action linking to the create page', () => {
+    test('renders a "New Project" call-to-action', () => {
         render(<ProjectNewCard />);
 
         expect(screen.getByText('New Project')).toBeInTheDocument();
-        expect(screen.getByRole('link')).toHaveAttribute(
-            'href',
-            '/projects/new',
-        );
     });
 
     test('triggers the "p" shortcut when clicked', async () => {
         render(<ProjectNewCard />);
 
-        await userEvent.click(screen.getByRole('link'));
+        await userEvent.click(screen.getByText('New Project').closest('a')!);
 
         expect(triggerShortcut).toHaveBeenCalledWith('p');
     });

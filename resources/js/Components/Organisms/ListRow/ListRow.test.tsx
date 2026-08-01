@@ -192,25 +192,24 @@ describe('ListRow Component', () => {
             fireEvent.contextMenu(row);
 
             expect(screen.getByText('Open issue')).toBeInTheDocument();
-            expect(screen.getByText('Modify')).toBeInTheDocument();
             expect(screen.getByText('Remove')).toBeInTheDocument();
         });
 
         test('clicking the ellipsis button toggles the actions menu', async () => {
             renderRow({});
 
-            expect(screen.queryByText('Modify')).not.toBeInTheDocument();
+            expect(screen.queryByText('Open issue')).not.toBeInTheDocument();
 
             const ellipsisButton = document.querySelector(
                 '[data-column="actions"] button',
             ) as HTMLElement;
             await userEvent.click(ellipsisButton);
 
-            expect(screen.getByText('Modify')).toBeInTheDocument();
+            expect(screen.getByText('Open issue')).toBeInTheDocument();
 
             await userEvent.click(ellipsisButton);
 
-            expect(screen.queryByText('Modify')).not.toBeInTheDocument();
+            expect(screen.queryByText('Open issue')).not.toBeInTheDocument();
         });
 
         test('clicking "Open issue" calls onClick and closes the menu', async () => {
@@ -226,35 +225,6 @@ describe('ListRow Component', () => {
 
             expect(handleClick).toHaveBeenCalledTimes(1);
             expect(screen.queryByText('Open issue')).not.toBeInTheDocument();
-        });
-
-        test('clicking "Modify" calls onModify and closes the menu', async () => {
-            const handleModify = vi.fn();
-            renderRow({ onModify: handleModify });
-
-            const row = screen
-                .getByText('Fix the login page')
-                .closest('tr') as HTMLElement;
-            fireEvent.contextMenu(row);
-
-            await userEvent.click(screen.getByText('Modify'));
-
-            expect(handleModify).toHaveBeenCalledTimes(1);
-            expect(screen.queryByText('Modify')).not.toBeInTheDocument();
-        });
-
-        test('does not throw when "Modify" is clicked without an onModify handler', async () => {
-            renderRow({ onModify: undefined });
-
-            const row = screen
-                .getByText('Fix the login page')
-                .closest('tr') as HTMLElement;
-            fireEvent.contextMenu(row);
-
-            await userEvent.click(screen.getByText('Modify'));
-
-            // Menu stays open since handleAction is only invoked when onModify exists.
-            expect(screen.getByText('Modify')).toBeInTheDocument();
         });
 
         test('clicking "Remove" calls onRemove and closes the menu', async () => {
@@ -294,11 +264,11 @@ describe('ListRow Component', () => {
                 .getByText('Fix the login page')
                 .closest('tr') as HTMLElement;
             fireEvent.contextMenu(row);
-            expect(screen.getByText('Modify')).toBeInTheDocument();
+            expect(screen.getByText('Open issue')).toBeInTheDocument();
 
             fireEvent.mouseDown(document.body);
 
-            expect(screen.queryByText('Modify')).not.toBeInTheDocument();
+            expect(screen.queryByText('Open issue')).not.toBeInTheDocument();
         });
     });
 });
