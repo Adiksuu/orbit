@@ -6,6 +6,7 @@ use App\Enums\IssueStatus;
 use App\Models\Issue;
 use App\Models\Project;
 use App\Services\IssueService;
+use App\Services\ProjectService;
 use App\Services\UserService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,7 +19,8 @@ class IssueController extends Controller
 {
     public function __construct(
         protected IssueService $issueService,
-        protected UserService $userService
+        protected UserService $userService,
+        protected ProjectService $projectService
     ) {}
 
     public function show(Project $project, Issue $issue): Response
@@ -29,6 +31,7 @@ class IssueController extends Controller
 
         return Inertia::render('Issues/Show', [
             'project' => $project,
+            'projects' => $this->projectService->getAll(),
             'issue' => $this->issueService->getIssueWithRelations($issue->id),
             'users' => $this->userService->getAssignableUsers(),
         ]);

@@ -8,6 +8,7 @@ import { statCardVariants } from '@/Components/Molecules/StatCard/StatCard';
 import { SavedFilter } from '@/hooks/useSavedFilters';
 import { AlertItem } from '@/types/Alert';
 import {
+    Comment,
     Issue,
     IssuePageLooks,
     IssuePriority,
@@ -436,6 +437,22 @@ export interface IssueDetailProps {
     activeIssue: Issue;
     initialIsEditing?: boolean;
     users: AssignableUser[];
+}
+export interface IssuePageProps {
+    project: Project;
+    projects: Project[];
+    issue: Issue;
+    users: AssignableUser[];
+}
+export interface IssuePageHeaderProps {
+    project: Project;
+    issue: Issue;
+}
+export interface CommentItemProps {
+    comment: Comment;
+}
+export interface CommentListProps {
+    comments: Comment[];
 }
 export interface IssueTableProps {
     issues: Issue[];

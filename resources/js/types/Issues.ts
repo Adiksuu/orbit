@@ -1,6 +1,20 @@
 export type IssueLabel =
     'bug' | 'feature' | 'performance' | 'design' | 'ux' | 'chore';
 
+export interface Comment {
+    id: number;
+    issue_id: number;
+    user_id: number;
+    body: string;
+    created_at: string;
+    updated_at: string;
+    user?: {
+        id: number;
+        name: string;
+        avatar?: string;
+    };
+}
+
 export interface Issue {
     id: string;
     title: string;
@@ -41,6 +55,7 @@ export interface Issue {
     start_date?: string;
     end_date?: string;
     completed_at?: string | number;
+    comments?: Comment[];
     comments_count?: number;
     attachments_count?: number;
     activity_count?: number;

@@ -1,4 +1,4 @@
-export function formatDate(dateString: number | undefined): string {
+export function formatDate(dateString: string | number | undefined): string {
     const date = new Date(dateString || Date.now());
     const dayOfMonth = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -7,7 +7,7 @@ export function formatDate(dateString: number | undefined): string {
 
     return `${dayOfMonth}.${month} ${hours}:${minutes}`;
 }
-export function formatTimeAgo(dateString: number | undefined): string {
+export function formatTimeAgo(dateString: string | number | undefined): string {
     const date = new Date(dateString || Date.now());
     const now = new Date();
     const diff = now.getTime() - date.getTime();
