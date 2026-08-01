@@ -11,7 +11,8 @@ class CommentService
 {
     public function __construct(
         protected CommentRepository $commentRepository,
-        protected ActivityLogService $activityLogService
+        protected ActivityLogService $activityLogService,
+        protected NotificationService $notificationService
     ) {}
 
     public function getForIssue(int $issueId): Collection {
@@ -24,11 +25,22 @@ class CommentService
 
         $comment = $this->commentRepository->store($data);
 
+        $actorId = auth()->id();
         $actorName = auth()->user()?->name ?? 'Someone';
         $this->activityLogService->log(
             $issue->project_id,
             "$actorName commented on issue #$issue->id \"$issue->title\""
         );
+
+        if ($issue->assignee_id && $issue->assignee_id !== $actorId) {
+            $this->notificationService->notify(
+                $issue->assignee_id,
+                'info',
+                'New comment on your issue',
+                "$actorName commented on \"$issue->title\" (#$issue->id).",
+                route('issues.show', [$issue->project_id, $issue->id])
+            );
+        }
 
         return $comment;
     }
