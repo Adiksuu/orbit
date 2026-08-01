@@ -299,8 +299,10 @@ describe('Issues/Show Page', () => {
             />,
         );
 
-        await userEvent.click(screen.getAllByText('bug')[0]);
-        await userEvent.click(screen.getByText('design'));
+        await userEvent.click(
+            screen.getByRole('button', { name: 'Edit labels' }),
+        );
+        await userEvent.click(screen.getByRole('button', { name: /design/i }));
 
         expect(mockPatch).toHaveBeenCalledWith(
             expect.any(String),

@@ -1,0 +1,30 @@
+import { LabelBadgeProps } from '@/types/Components';
+import { cn } from '@/utils/cn';
+import { LABEL_COLORS } from '@/utils/labelColors';
+import React from 'react';
+
+const LabelBadge: React.FC<LabelBadgeProps> = ({
+    label,
+    className,
+    onClick,
+}) => {
+    return (
+        <span
+            onClick={onClick}
+            className={cn(
+                'inline-flex items-center gap-1.5 rounded-full bg-[var(--bg-light-color)] px-2 py-0.5 text-xs font-medium text-[var(--text-color)]',
+                onClick &&
+                    'cursor-pointer hover:bg-[var(--bg-light-color-hover)]',
+                className,
+            )}
+        >
+            <span
+                className="h-1.5 w-1.5 shrink-0 rounded-full"
+                style={{ backgroundColor: LABEL_COLORS[label] }}
+            />
+            {label}
+        </span>
+    );
+};
+
+export default LabelBadge;
