@@ -49,7 +49,7 @@ When adding a feature, keep this separation: query code goes in the Repository, 
 
 ### Styling
 - Tailwind CSS. Class-variance-authority (`cva`) + `cn()` for component variants.
-- Theme is **dark-only**, driven by CSS custom properties defined in `resources/css/variables.scss` and consumed in Tailwind as arbitrary values, e.g. `bg-[var(--bg-color)]`, `text-[var(--accent-color)]`. Use these variables rather than hardcoding colors.
+- Theme is **dark-only**, driven by CSS custom properties consumed in Tailwind as arbitrary values, e.g. `bg-[var(--bg-color)]`, `text-[var(--accent-color)]`. Use these variables rather than hardcoding colors.
 - Icons come from `lucide-react`, wrapped by `Components/Atoms/Icon`.
 
 ## Testing

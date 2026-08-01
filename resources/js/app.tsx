@@ -1,4 +1,3 @@
-import '../css/app.scss';
 import '../css/global.css';
 import './bootstrap';
 
