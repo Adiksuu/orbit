@@ -8,7 +8,7 @@ const IssuePageHeader: React.FC<IssuePageHeaderProps> = ({
     issue,
 }) => {
     return (
-        <header className="flex items-center justify-between border-b border-solid border-[var(--border-color)] bg-[var(--bg-color)] px-6 py-3">
+        <header className="flex items-center justify-between border-b border-solid border-[var(--border-color)] px-6 py-3">
             <div className="flex min-w-0 items-center gap-2 text-sm">
                 <IconButton
                     isLink

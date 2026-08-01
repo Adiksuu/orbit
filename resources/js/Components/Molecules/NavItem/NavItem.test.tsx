@@ -50,10 +50,7 @@ describe('NavItem Component', () => {
     test('does not render a badge when none is provided', () => {
         const { container } = render(<NavItem icon="Inbox" label="Inbox" />);
 
-        // Badge renders inside a span with rounded-full; none should exist.
-        expect(
-            container.querySelector('.rounded-full'),
-        ).not.toBeInTheDocument();
+        expect(container.querySelector('kbd')).not.toBeInTheDocument();
     });
 
     test('applies active styling when isActive is true', () => {

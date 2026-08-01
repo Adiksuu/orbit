@@ -6,7 +6,7 @@ import React from 'react';
 import Icon from '../../Atoms/Icon/Icon';
 
 const classVariants = cva(
-    'flex items-center justify-between py-2 px-3 rounded-md cursor-pointer transition-all duration-100 ease-in-out mb-[2px] hover:bg-[var(--bg-light-color)] hover:text-white',
+    'flex items-center justify-between py-2 px-3 rounded-full cursor-pointer transition-all duration-100 ease-in-out mb-[2px] hover:bg-[var(--bg-light-color)] hover:text-white',
     {
         variants: {
             isActive: {
