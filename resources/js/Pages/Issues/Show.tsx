@@ -6,6 +6,7 @@ import Calendar from '@/Components/Molecules/Calendar/Calendar';
 import CommentForm from '@/Components/Molecules/CommentForm/CommentForm';
 import CommentList from '@/Components/Molecules/CommentList/CommentList';
 import EditableLabelList from '@/Components/Molecules/EditableLabelList/EditableLabelList';
+import EditableMarkdown from '@/Components/Molecules/EditableMarkdown/EditableMarkdown';
 import SidebarField from '@/Components/Molecules/SidebarField/SidebarField';
 import UserBadge from '@/Components/Molecules/UserBadge/UserBadge';
 import IssuePageHeader from '@/Components/Organisms/IssuePageHeader/IssuePageHeader';
@@ -18,8 +19,6 @@ import { formatDate } from '@/utils/time';
 import type { FormDataConvertible } from '@inertiajs/core';
 import { Link, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
-import Markdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 
 const STATUSES: Status[] = ['open', 'in_progress', 'closed'];
 const PRIORITIES: IssuePriority[] = ['high', 'medium', 'low'];
@@ -128,19 +127,12 @@ export default function Show({
                                 inputClassName="text-2xl font-semibold"
                             />
 
-                            <EditableText
-                                multiline
+                            <EditableMarkdown
                                 value={issue.description || ''}
                                 onSave={(value) =>
                                     updateIssue({ description: value })
                                 }
                                 placeholder="Add a description..."
-                                displayClassName="prose prose-invert max-w-none text-sm"
-                                renderDisplay={(value) => (
-                                    <Markdown remarkPlugins={[remarkGfm]}>
-                                        {value}
-                                    </Markdown>
-                                )}
                             />
 
                             <div className="mt-2 flex flex-col gap-3 border-t border-[var(--border-color)] pt-4">

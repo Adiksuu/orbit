@@ -152,6 +152,13 @@ export interface EditableLabelListProps {
     onSave: (labels: IssueLabel[]) => void;
     disabled?: boolean;
 }
+export interface EditableMarkdownProps {
+    value: string;
+    onSave: (value: string) => void;
+    placeholder?: string;
+    disabled?: boolean;
+    className?: string;
+}
 export interface LabelBadgeProps {
     label: IssueLabel;
     className?: string;

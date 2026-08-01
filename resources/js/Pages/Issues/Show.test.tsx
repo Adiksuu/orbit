@@ -3,7 +3,6 @@ import { Project } from '@/types/Projects';
 import { AssignableUser } from '@/types/Users';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import React from 'react';
 import { describe, expect, test, vi } from 'vitest';
 import Show from './Show';
 
@@ -37,15 +36,27 @@ vi.mock('@inertiajs/react', async () => {
     };
 });
 
-vi.mock('react-markdown', () => ({
-    default: ({ children }: { children: React.ReactNode }) => (
-        <div>{children}</div>
-    ),
-}));
-vi.mock('remark-gfm', () => ({ default: () => {} }));
-
 vi.mock('@/Components/Organisms/Sidebar/Sidebar', () => ({
     default: () => <div data-testid="sidebar" />,
+}));
+
+vi.mock('@/Components/Molecules/EditableMarkdown/EditableMarkdown', () => ({
+    default: ({
+        value,
+        onSave,
+        placeholder,
+    }: {
+        value: string;
+        onSave: (value: string) => void;
+        placeholder?: string;
+    }) => (
+        <div>
+            <div>{value || placeholder}</div>
+            <button onClick={() => onSave('Updated steps')}>
+                Save description
+            </button>
+        </div>
+    ),
 }));
 
 vi.mock('@/context/AlertContext', () => ({
@@ -270,11 +281,9 @@ describe('Issues/Show Page', () => {
             />,
         );
 
-        await userEvent.click(screen.getByText('Steps to reproduce'));
-        const textarea = screen.getByDisplayValue('Steps to reproduce');
-        await userEvent.clear(textarea);
-        await userEvent.type(textarea, 'Updated steps');
-        await userEvent.tab();
+        await userEvent.click(
+            screen.getByRole('button', { name: 'Save description' }),
+        );
 
         expect(mockPatch).toHaveBeenCalledWith(
             '/issues.update/42',

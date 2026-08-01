@@ -14,3 +14,4 @@ storage/debugbar
 .env
 .env.backup
 *.log
+storage/inertia-devtools
