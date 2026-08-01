@@ -101,6 +101,36 @@ describe('EditableText Component', () => {
         expect(handleSave).not.toHaveBeenCalled();
     });
 
+    test('pressing Escape in a multiline field cancels without calling onSave', async () => {
+        const handleSave = vi.fn();
+        render(<EditableText value="Old body" onSave={handleSave} multiline />);
+
+        await userEvent.click(screen.getByText('Old body'));
+        const textarea = screen.getByRole('textbox');
+        await userEvent.type(textarea, '{Enter}Discarded{Escape}');
+
+        expect(handleSave).not.toHaveBeenCalled();
+        expect(screen.getByText('Old body')).toBeInTheDocument();
+    });
+
+    test('pressing Enter on the display starts editing via the keyboard', async () => {
+        render(<EditableText value="Keyboard title" onSave={() => {}} />);
+
+        screen.getByText('Keyboard title').focus();
+        await userEvent.keyboard('{Enter}');
+
+        expect(screen.getByRole('textbox')).toHaveValue('Keyboard title');
+    });
+
+    test('pressing Space on the display starts editing via the keyboard', async () => {
+        render(<EditableText value="Keyboard title" onSave={() => {}} />);
+
+        screen.getByText('Keyboard title').focus();
+        await userEvent.keyboard(' ');
+
+        expect(screen.getByRole('textbox')).toHaveValue('Keyboard title');
+    });
+
     test('uses renderDisplay to customize the read-only rendering', () => {
         render(
             <EditableText

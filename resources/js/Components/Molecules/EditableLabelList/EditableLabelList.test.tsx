@@ -58,6 +58,22 @@ describe('EditableLabelList Component', () => {
         expect(handleSave).toHaveBeenCalledWith(['bug']);
     });
 
+    test('clicking outside the component closes the picker', async () => {
+        render(
+            <div>
+                <EditableLabelList labels={[]} onSave={() => {}} />
+                <button>Outside</button>
+            </div>,
+        );
+
+        await userEvent.click(screen.getByText('None'));
+        expect(screen.getByText('chore')).toBeInTheDocument();
+
+        await userEvent.click(screen.getByRole('button', { name: 'Outside' }));
+
+        expect(screen.queryByText('chore')).not.toBeInTheDocument();
+    });
+
     test('does not open the picker when disabled', async () => {
         render(<EditableLabelList labels={[]} onSave={() => {}} disabled />);
 

@@ -78,6 +78,63 @@ const buildIssue = (overrides: Partial<Issue> = {}): Issue => ({
 });
 
 describe('Issues/Show Page', () => {
+    test('renders a link to the project and the Dates field when start/end dates are set', () => {
+        render(
+            <Show
+                project={project}
+                projects={[project]}
+                issue={buildIssue({
+                    start_date: '2026-01-01',
+                    end_date: '2026-01-31',
+                })}
+                users={users}
+            />,
+        );
+
+        const projectLinks = screen.getAllByText('Orbit');
+        projectLinks.forEach((link) => {
+            expect(link.closest('a')).toHaveAttribute(
+                'href',
+                '/projects.show/1',
+            );
+        });
+        expect(screen.getByText(/2026-01-01/)).toBeInTheDocument();
+        expect(screen.getByText(/2026-01-31/)).toBeInTheDocument();
+    });
+
+    test('does not render the Dates field when neither date is set', () => {
+        render(
+            <Show
+                project={project}
+                projects={[project]}
+                issue={buildIssue({
+                    start_date: undefined,
+                    end_date: undefined,
+                })}
+                users={users}
+            />,
+        );
+
+        expect(screen.queryByText('Dates')).not.toBeInTheDocument();
+    });
+
+    test('falls back to an empty description and no labels when the issue has neither', () => {
+        render(
+            <Show
+                project={project}
+                projects={[project]}
+                issue={buildIssue({
+                    description: undefined,
+                    labels: undefined,
+                })}
+                users={users}
+            />,
+        );
+
+        expect(screen.getByText('Add a description...')).toBeInTheDocument();
+        expect(screen.getByText('None')).toBeInTheDocument();
+    });
+
     test('renders the issue title, description and sidebar fields', () => {
         render(
             <Show
@@ -114,6 +171,30 @@ describe('Issues/Show Page', () => {
         expect(mockPatch).toHaveBeenCalledWith(
             '/issues.update/42',
             { title: 'Fix login crash on iOS' },
+            { preserveScroll: true },
+        );
+    });
+
+    test('editing the description commits via a PATCH to issues.update', async () => {
+        const issue = buildIssue();
+        render(
+            <Show
+                project={project}
+                projects={[project]}
+                issue={issue}
+                users={users}
+            />,
+        );
+
+        await userEvent.click(screen.getByText('Steps to reproduce'));
+        const textarea = screen.getByDisplayValue('Steps to reproduce');
+        await userEvent.clear(textarea);
+        await userEvent.type(textarea, 'Updated steps');
+        await userEvent.tab();
+
+        expect(mockPatch).toHaveBeenCalledWith(
+            '/issues.update/42',
+            { description: 'Updated steps' },
             { preserveScroll: true },
         );
     });

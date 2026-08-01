@@ -2,7 +2,7 @@ import { Issue } from '@/types/Issues';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
-import { BoardCard } from './BoardCard';
+import { BoardCard, BoardCardOverlay } from './BoardCard';
 
 const makeIssue = (overrides: Partial<Issue> = {}): Issue => ({
     id: 'ISSUE-1',
@@ -184,5 +184,18 @@ describe('BoardCard Component', () => {
         expect(
             container.querySelector('.bg-\\[var\\(--info-color\\)\\]'),
         ).toBeInTheDocument();
+    });
+});
+
+describe('BoardCardOverlay Component', () => {
+    test('renders the issue content for the dragged card preview', () => {
+        render(
+            <BoardCardOverlay
+                issue={makeIssue({ title: 'Dragging this card' })}
+                isClosed={false}
+            />,
+        );
+
+        expect(screen.getByText('Dragging this card')).toBeInTheDocument();
     });
 });

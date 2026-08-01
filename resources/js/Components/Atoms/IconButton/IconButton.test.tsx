@@ -51,6 +51,21 @@ describe('IconButton Component', () => {
         expect(screen.queryByRole('button')).not.toBeInTheDocument();
     });
 
+    test('forwards ariaLabel to the link when isLink is true', () => {
+        render(
+            <IconButton
+                iconName="ArrowLeft"
+                isLink
+                link="/projects/1"
+                ariaLabel="Back to project"
+            />,
+        );
+
+        expect(
+            screen.getByRole('link', { name: 'Back to project' }),
+        ).toHaveAttribute('href', '/projects/1');
+    });
+
     test('forwards extra HTML attributes to the button', () => {
         render(<IconButton iconName="Bell" aria-label="Notifications" />);
 
