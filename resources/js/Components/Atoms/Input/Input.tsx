@@ -29,6 +29,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             className = '',
             variant,
             onKeyDown,
+            onBlur,
             id,
             name,
             autoComplete,
@@ -46,6 +47,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 disabled={isDisabled}
                 type={type}
                 onKeyDown={onKeyDown}
+                onBlur={onBlur}
                 autoComplete={autoComplete}
                 ref={ref}
             />
