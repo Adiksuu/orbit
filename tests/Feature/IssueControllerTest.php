@@ -7,6 +7,51 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
+test('an issue detail page can be viewed', function () {
+    $project = Project::factory()->create();
+    $issue = Issue::factory()->create(['project_id' => $project->id]);
+
+    // The "Issues/Show" frontend page doesn't exist yet (added in a later step), so the
+    // Vite manifest has no entry for it. Requesting via the X-Inertia XHR path bypasses
+    // the full-page Blade/Vite render and returns the Inertia JSON payload directly.
+    $manifest = public_path('build/manifest.json');
+    $version = file_exists($manifest) ? hash_file('xxh128', $manifest) : '';
+
+    $response = $this->actingAs(User::factory()->create())
+        ->withHeaders([
+            'X-Inertia' => 'true',
+            'X-Inertia-Version' => $version,
+        ])
+        ->get("/projects/{$project->id}/issues/{$issue->id}");
+
+    $response->assertOk();
+    $page = json_decode($response->getContent(), true);
+
+    expect($page['component'])->toBe('Issues/Show');
+    expect($page['props']['issue']['id'])->toBe($issue->id);
+    expect($page['props'])->toHaveKeys(['project', 'users']);
+});
+
+test('guests cannot view an issue detail page', function () {
+    $project = Project::factory()->create();
+    $issue = Issue::factory()->create(['project_id' => $project->id]);
+
+    $response = $this->get("/projects/{$project->id}/issues/{$issue->id}");
+
+    $response->assertRedirect(route('login'));
+});
+
+test('an issue detail page 404s when the issue does not belong to the project', function () {
+    $project = Project::factory()->create();
+    $otherProject = Project::factory()->create();
+    $issue = Issue::factory()->create(['project_id' => $otherProject->id]);
+
+    $response = $this->actingAs(User::factory()->create())
+        ->get("/projects/{$project->id}/issues/{$issue->id}");
+
+    $response->assertNotFound();
+});
+
 test('a project member can create an issue', function () {
     $user = User::factory()->create();
     $project = Project::factory()->create();

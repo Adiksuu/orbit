@@ -4,16 +4,35 @@ namespace App\Http\Controllers;
 
 use App\Enums\IssueStatus;
 use App\Models\Issue;
+use App\Models\Project;
 use App\Services\IssueService;
+use App\Services\UserService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Inertia\Inertia;
+use Inertia\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class IssueController extends Controller
 {
     public function __construct(
-        protected IssueService $issueService
+        protected IssueService $issueService,
+        protected UserService $userService
     ) {}
+
+    public function show(Project $project, Issue $issue): Response
+    {
+        if ($issue->project_id !== $project->id) {
+            throw new NotFoundHttpException;
+        }
+
+        return Inertia::render('Issues/Show', [
+            'project' => $project,
+            'issue' => $this->issueService->getIssueWithRelations($issue->id),
+            'users' => $this->userService->getAssignableUsers(),
+        ]);
+    }
 
     public function update(Request $request, Issue $issue): RedirectResponse
     {

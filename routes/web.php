@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/projects/{project}/issues/{issue}', [IssueController::class, 'show'])->name('issues.show');
     Route::delete('/issues/bulk-destroy', [IssueController::class, 'bulkDestroy'])->name('issues.bulk-destroy');
     Route::patch('/issues/{issue}', [IssueController::class, 'update'])->name('issues.update');
     Route::delete('/issues/{issue}', [IssueController::class, 'destroy'])->name('issues.destroy');

@@ -54,6 +54,11 @@ class IssueService
         return $this->issueRepository->getAll();
     }
 
+    public function getIssueWithRelations(int $id): Issue
+    {
+        return $this->issueRepository->findWithRelations($id);
+    }
+
     public function updateIssue(Issue $issue, array $data): Issue {
         $before = $this->snapshot($issue);
 

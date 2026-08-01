@@ -23,6 +23,27 @@ test('it can get issues for a project', function () {
     expect($issues)->toHaveCount(3);
 });
 
+test('it can find an issue with its relations', function () {
+    $project = Project::factory()->create();
+    $creator = User::factory()->create();
+    $assignee = User::factory()->create();
+    $issue = Issue::factory()->create([
+        'project_id' => $project->id,
+        'user_id' => $creator->id,
+        'assignee_id' => $assignee->id,
+    ]);
+
+    $found = $this->repository->findWithRelations($issue->id);
+
+    expect($found->id)->toBe($issue->id);
+    expect($found->relationLoaded('creator'))->toBeTrue();
+    expect($found->relationLoaded('assignee'))->toBeTrue();
+    expect($found->relationLoaded('project'))->toBeTrue();
+    expect($found->creator->id)->toBe($creator->id);
+    expect($found->assignee->id)->toBe($assignee->id);
+    expect($found->project->id)->toBe($project->id);
+});
+
 test('it can store a new issue', function () {
     $project = Project::factory()->create();
     $user = User::factory()->create();

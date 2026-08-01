@@ -19,6 +19,19 @@ beforeEach(function () {
     $this->service = new IssueService($this->issueRepository, $this->activityLogService, $this->notificationService);
 });
 
+test('getIssueWithRelations delegates to the repository', function () {
+    $issue = Issue::factory()->make(['id' => 42]);
+
+    $this->issueRepository->shouldReceive('findWithRelations')
+        ->once()
+        ->with(42)
+        ->andReturn($issue);
+
+    $result = $this->service->getIssueWithRelations(42);
+
+    expect($result)->toBe($issue);
+});
+
 test('it can create an issue and log activity', function () {
     $user = User::factory()->create();
     $this->actingAs($user);

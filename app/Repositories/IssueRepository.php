@@ -16,6 +16,11 @@ class IssueRepository
             ->orderByRaw("CASE WHEN priority = 'high' THEN 1 WHEN priority = 'medium' THEN 2 WHEN priority = 'low' THEN 3 ELSE 4 END")
             ->get();
     }
+    public function findWithRelations(int $id): Issue {
+        return Issue::query()
+            ->with(['creator', 'assignee', 'project'])
+            ->findOrFail($id);
+    }
     public function store(array $data): Issue {
         return Issue::query()->create($data);
     }
