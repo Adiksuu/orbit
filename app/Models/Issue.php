@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Casts\AsEnumArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Issue extends Model
 {
@@ -44,5 +45,9 @@ class Issue extends Model
     }
     public function project(): BelongsTo {
         return $this->belongsTo(Project::class);
+    }
+
+    public function comments(): HasMany {
+        return $this->hasMany(Comment::class);
     }
 }

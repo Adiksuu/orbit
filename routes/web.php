@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\IssueController;
 use App\Http\Controllers\NotificationController;
@@ -12,6 +13,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/projects/{project}/issues/{issue}', [IssueController::class, 'show'])->name('issues.show');
     Route::delete('/issues/bulk-destroy', [IssueController::class, 'bulkDestroy'])->name('issues.bulk-destroy');
+    Route::post('/issues/{issue}/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
     Route::patch('/issues/{issue}', [IssueController::class, 'update'])->name('issues.update');
     Route::delete('/issues/{issue}', [IssueController::class, 'destroy'])->name('issues.destroy');
     Route::post('/issues', [IssueController::class, 'store'])->name('issues.store');

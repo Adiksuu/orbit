@@ -39,6 +39,7 @@ test('it can find an issue with its relations', function () {
     expect($found->relationLoaded('creator'))->toBeTrue();
     expect($found->relationLoaded('assignee'))->toBeTrue();
     expect($found->relationLoaded('project'))->toBeTrue();
+    expect($found->relationLoaded('comments'))->toBeTrue();
     expect($found->creator->id)->toBe($creator->id);
     expect($found->assignee->id)->toBe($assignee->id);
     expect($found->project->id)->toBe($project->id);
