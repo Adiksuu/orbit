@@ -98,7 +98,7 @@ export default function Show({
     return (
         <div className="flex h-screen w-screen overflow-hidden bg-[var(--bg-color)]">
             <Sidebar projects={projects} />
-            <div className="flex min-w-0 flex-1 flex-col">
+            <div className="m-2 flex min-w-0 flex-1 flex-col overflow-hidden rounded-2xl bg-[var(--bg-color-hover)]">
                 <IssuePageHeader project={project} issue={issue} />
                 <main className="flex flex-1 overflow-y-auto">
                     <div className="mx-auto grid w-full max-w-6xl flex-1 grid-cols-1 gap-8 px-6 py-8 md:grid-cols-[1fr_280px]">
@@ -142,7 +142,7 @@ export default function Show({
                             </div>
                         </div>
 
-                        <div className="flex flex-col gap-6 border-l border-[var(--border-color)] pl-6">
+                        <div className="flex flex-col gap-6">
                             <SidebarField label="Status">
                                 <EditableSelect
                                     value={issue.status}
