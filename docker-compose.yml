@@ -29,8 +29,12 @@ services:
             - .:/app
             # Keep the image-installed node_modules instead of the host's.
             - /app/node_modules
-        # Increase inotify limits to prevent file watcher exhaustion.
-        # Without this, Vite's file watching can fail after watching too many files.
+        # NOTE: fs.inotify.max_user_watches is a global (non-namespaced) kernel
+        # sysctl, not a per-container one, so Docker refuses to start the
+        # container if it's set here (tried below — do not re-enable). Vite's
+        # `usePolling` watcher config (see vite.config.js) is the actual
+        # workaround in use; see the Vite HMR troubleshooting section in
+        # CLAUDE.md if hot-reload stops picking up changes.
 #        sysctls:
 #            - fs.inotify.max_user_watches=524288
         restart: unless-stopped
