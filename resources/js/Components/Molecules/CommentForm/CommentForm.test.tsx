@@ -11,7 +11,7 @@ describe('CommentForm Component', () => {
             screen.getByPlaceholderText('Leave a comment...'),
         ).toBeInTheDocument();
         expect(
-            screen.getByRole('button', { name: 'Comment' }),
+            screen.getByRole('button', { name: 'Post comment' }),
         ).toBeInTheDocument();
     });
 
@@ -21,7 +21,9 @@ describe('CommentForm Component', () => {
 
         const textarea = screen.getByPlaceholderText('Leave a comment...');
         await userEvent.type(textarea, 'Nice work');
-        await userEvent.click(screen.getByRole('button', { name: 'Comment' }));
+        await userEvent.click(
+            screen.getByRole('button', { name: 'Post comment' }),
+        );
 
         expect(handleSubmit).toHaveBeenCalledWith('Nice work');
         expect(textarea).toHaveValue('');
@@ -35,7 +37,9 @@ describe('CommentForm Component', () => {
             screen.getByPlaceholderText('Leave a comment...'),
             '   ',
         );
-        expect(screen.getByRole('button', { name: 'Comment' })).toBeDisabled();
+        expect(
+            screen.getByRole('button', { name: 'Post comment' }),
+        ).toBeDisabled();
     });
 
     test('guards against a direct form submit with a whitespace-only body', () => {
@@ -49,14 +53,14 @@ describe('CommentForm Component', () => {
         expect(handleSubmit).not.toHaveBeenCalled();
     });
 
-    test('disables the textarea and button, and shows "Posting..." while submitting', () => {
+    test('disables the textarea and submit button while submitting', () => {
         render(<CommentForm onSubmit={() => {}} isSubmitting />);
 
         expect(
             screen.getByPlaceholderText('Leave a comment...'),
         ).toBeDisabled();
         expect(
-            screen.getByRole('button', { name: 'Posting...' }),
+            screen.getByRole('button', { name: 'Post comment' }),
         ).toBeDisabled();
     });
 });

@@ -326,7 +326,9 @@ describe('Issues/Show Page', () => {
             screen.getByPlaceholderText('Leave a comment...'),
             'Nice work',
         );
-        await userEvent.click(screen.getByRole('button', { name: 'Comment' }));
+        await userEvent.click(
+            screen.getByRole('button', { name: 'Post comment' }),
+        );
 
         expect(mockRoute).toHaveBeenCalledWith('comments.store', issue.id);
         expect(mockPost).toHaveBeenCalledWith(
