@@ -4,7 +4,7 @@ import { cva } from 'class-variance-authority';
 import { forwardRef } from 'react';
 
 export const textareaVariants = cva(
-    'w-full resize-y rounded-md border border-[var(--bg-light-color)] bg-[var(--bg-color)] px-3 py-[6px] text-sm text-white transition-none focus:border-[var(--accent-color)] disabled:cursor-not-allowed disabled:bg-[var(--pending-color)] min-h-[200px]',
+    'w-full resize-y rounded-md border border-[var(--bg-light-color)] bg-[var(--bg-color)] px-3 py-[6px] text-sm text-white transition-none outline-none focus:outline-none disabled:cursor-not-allowed disabled:bg-[var(--pending-color)] min-h-[200px]',
     {
         variants: {
             variant: {

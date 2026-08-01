@@ -91,6 +91,8 @@ describe('DropdownMenu Component', () => {
             </DropdownMenu>,
         );
 
-        expect(container.querySelector('.border-b')).not.toBeInTheDocument();
+        expect(
+            container.querySelector('.uppercase.tracking-wider'),
+        ).not.toBeInTheDocument();
     });
 });

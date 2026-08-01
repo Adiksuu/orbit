@@ -9,7 +9,7 @@ export const iconButtonVariants = cva(
         variants: {
             variant: {
                 default:
-                    'bg-transparent border-none p-2 rounded-md hover:bg-[var(--bg-light-color)]/30 transition-colors duration-100',
+                    'bg-transparent border-none p-2 rounded-full hover:bg-[var(--bg-light-color)]/30 transition-colors duration-100',
                 onboardingSecondary:
                     'h-10 w-10 rounded-full border border-zinc-800 bg-zinc-900 text-zinc-300 hover:border-zinc-700 hover:bg-zinc-800 hover:text-white disabled:hover:border-zinc-800 disabled:hover:bg-zinc-900',
                 onboardingPrimary:

@@ -39,7 +39,7 @@ const EditableSelect: React.FC<EditableSelectProps> = ({
                 type="button"
                 disabled={disabled}
                 onClick={() => setIsOpen((prev) => !prev)}
-                className="flex cursor-pointer items-center gap-2 rounded-md px-1.5 py-1 text-left transition-colors hover:bg-[var(--bg-light-color)] disabled:cursor-not-allowed disabled:hover:bg-transparent"
+                className="flex cursor-pointer items-center gap-2 rounded-full px-2 py-1 text-left transition-colors hover:bg-[var(--bg-light-color)] disabled:cursor-not-allowed disabled:hover:bg-transparent"
             >
                 {renderValue ? renderValue(value) : (selected?.label ?? value)}
             </button>

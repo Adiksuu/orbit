@@ -4,7 +4,7 @@ import { cva } from 'class-variance-authority';
 import { forwardRef } from 'react';
 
 export const inputVariants = cva(
-    'w-full rounded-md border border-[var(--bg-light-color)] bg-[var(--bg-color)] px-3 py-1.5 text-sm text-[var(--text-color)] transition-colors duration-150 file:hidden focus:border-[var(--accent-color)] disabled:cursor-not-allowed disabled:bg-[var(--pending-color)]',
+    'w-full rounded-md border border-[var(--bg-light-color)] bg-[var(--bg-color)] px-3 py-1.5 text-sm text-[var(--text-color)] transition-colors duration-150 file:hidden outline-none focus:outline-none disabled:cursor-not-allowed disabled:bg-[var(--pending-color)]',
     {
         variants: {
             variant: {

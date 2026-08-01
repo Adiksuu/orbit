@@ -10,7 +10,7 @@ export default function DropdownMenu({
     return (
         <div
             className={cn(
-                'absolute left-0 z-[100] flex max-h-[320px] flex-col overflow-y-auto overflow-x-hidden rounded-lg border border-[var(--border-color)] bg-[var(--bg-color)] p-1 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.4),_0_8px_10px_-6px_rgba(0,0,0,0.4)]',
+                'absolute left-0 z-[100] flex max-h-[320px] flex-col overflow-y-auto overflow-x-hidden rounded-xl border border-zinc-800 bg-zinc-900/95 p-1.5 shadow-2xl backdrop-blur-md',
                 stretch ? 'right-0' : 'w-max min-w-[180px]',
                 direction === 'bottom'
                     ? 'top-[calc(100%+6px)]'
@@ -18,11 +18,11 @@ export default function DropdownMenu({
             )}
         >
             {header && (
-                <div className="border-b border-[var(--border-color)] px-3 py-2 text-xs font-medium text-[var(--text-gray-color)]">
+                <div className="px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-zinc-500">
                     {header}
                 </div>
             )}
-            <div className="flex flex-col gap-0.5 p-1">{children}</div>
+            <div className="space-y-0.5">{children}</div>
         </div>
     );
 }
