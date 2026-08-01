@@ -29,7 +29,7 @@ test('an issue detail page can be viewed', function () {
 
     expect($page['component'])->toBe('Issues/Show');
     expect($page['props']['issue']['id'])->toBe($issue->id);
-    expect($page['props'])->toHaveKeys(['project', 'users']);
+    expect($page['props'])->toHaveKeys(['project', 'projects', 'users']);
 });
 
 test('guests cannot view an issue detail page', function () {
