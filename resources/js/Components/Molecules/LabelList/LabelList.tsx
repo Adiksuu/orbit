@@ -1,18 +1,16 @@
-import Badge from '@/Components/Atoms/Badge/Badge';
+import LabelBadge from '@/Components/Atoms/LabelBadge/LabelBadge';
 import { IssueLabel } from '@/types/Issues';
 import { cn } from '@/utils/cn';
 import React, { useEffect, useRef, useState } from 'react';
 
 interface LabelListProps {
     labels: IssueLabel[];
-    variant?: 'default' | 'outline' | 'ghost';
     badgeClassName?: string;
     isClosed?: boolean;
 }
 
 const LabelList: React.FC<LabelListProps> = ({
     labels,
-    variant = 'default',
     badgeClassName,
     isClosed = false,
 }) => {
@@ -46,22 +44,17 @@ const LabelList: React.FC<LabelListProps> = ({
     return (
         <div className="relative flex items-center gap-1.5" ref={containerRef}>
             {displayedLabels.map((label, idx) => (
-                <Badge
+                <LabelBadge
                     key={idx}
-                    color={label}
-                    variant={variant}
-                    tooltip={true}
+                    label={label}
                     className={cn(badgeClassName, isClosed && 'opacity-40')}
-                >
-                    {label}
-                </Badge>
+                />
             ))}
             {remainingLabels.length > 0 && (
                 <div className="relative inline-flex">
-                    <Badge
-                        variant={variant}
+                    <span
                         className={cn(
-                            'cursor-pointer transition-colors hover:bg-zinc-700',
+                            'inline-flex cursor-pointer items-center rounded-full bg-[var(--bg-light-color)] px-2 py-0.5 text-xs font-medium text-[var(--text-gray-color)] transition-colors hover:bg-[var(--bg-light-color-hover)]',
                             badgeClassName,
                             isClosed && 'opacity-40',
                         )}
@@ -71,34 +64,26 @@ const LabelList: React.FC<LabelListProps> = ({
                         }}
                     >
                         +{remainingLabels.length}
-                    </Badge>
+                    </span>
                     {isOpen && (
-                        <div className="absolute right-0 top-[calc(100%+6px)] z-[100] flex max-h-48 min-w-[150px] flex-col gap-2 rounded-xl border border-zinc-800 bg-zinc-900/95 p-3 opacity-100 shadow-2xl backdrop-blur-md">
-                            <div className="mb-1 flex items-center justify-between border-b border-zinc-800 pb-2">
-                                <span className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
+                        <div className="absolute right-0 top-[calc(100%+6px)] z-[100] flex max-h-48 min-w-[150px] flex-col gap-2 rounded-xl border border-[var(--border-color)] bg-[var(--bg-color)] p-3 opacity-100 shadow-2xl">
+                            <div className="mb-1 flex items-center justify-between border-b border-[var(--border-color)] pb-2">
+                                <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--text-gray-color)]">
                                     More Labels
                                 </span>
-                                <span className="text-[10px] font-medium text-zinc-400">
+                                <span className="text-[10px] font-medium text-[var(--text-gray-color)]">
                                     {remainingLabels.length}
                                 </span>
                             </div>
-                            <div className="scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-transparent flex max-h-32 flex-wrap gap-1.5 overflow-y-scroll pr-2">
+                            <div className="flex max-h-32 flex-wrap gap-1.5 overflow-y-auto pr-2">
                                 {remainingLabels.map((label, idx) => (
-                                    <Badge
+                                    <LabelBadge
                                         key={idx}
-                                        color={label}
-                                        variant={variant}
-                                        tooltip={false}
-                                        className={cn(
-                                            'hover:brightness-110',
-                                            badgeClassName,
-                                        )}
-                                    >
-                                        {label}
-                                    </Badge>
+                                        label={label}
+                                        className={badgeClassName}
+                                    />
                                 ))}
                             </div>
-                            <div className="absolute -top-1.5 right-3 h-3 w-3 rotate-45 border-l border-t border-zinc-800 bg-zinc-900/95"></div>
                         </div>
                     )}
                 </div>

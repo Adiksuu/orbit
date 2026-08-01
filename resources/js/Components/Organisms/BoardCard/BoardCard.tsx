@@ -41,7 +41,6 @@ const BoardCardContent = ({
         {issue.labels && issue.labels.length > 0 && (
             <LabelList
                 labels={issue.labels}
-                variant="default"
                 badgeClassName="px-1.5 py-0.5 text-[9px]"
             />
         )}

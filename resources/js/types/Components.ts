@@ -152,6 +152,11 @@ export interface EditableLabelListProps {
     onSave: (labels: IssueLabel[]) => void;
     disabled?: boolean;
 }
+export interface LabelBadgeProps {
+    label: IssueLabel;
+    className?: string;
+    onClick?: (e: React.MouseEvent) => void;
+}
 export interface EditableSelectOption {
     value: string;
     label: ReactNode;
