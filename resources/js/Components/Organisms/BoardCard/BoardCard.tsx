@@ -70,12 +70,7 @@ const BoardCardContent = ({
     </>
 );
 
-export const BoardCard = ({
-    issue,
-    isActive,
-    onClick,
-    isClosed,
-}: BoardCardProps) => {
+export const BoardCard = ({ issue, onClick, isClosed }: BoardCardProps) => {
     const { attributes, listeners, setNodeRef, transform, isDragging } =
         useDraggable({ id: issue.id });
 
@@ -105,7 +100,7 @@ export const BoardCard = ({
                 }}
                 onClick={onClick}
                 className={cn(
-                    boardCardVariants({ isActive, isClosed }),
+                    boardCardVariants({ isActive: false, isClosed }),
                     isDragging && 'opacity-30',
                 )}
                 {...attributes}

@@ -1,11 +1,16 @@
 import Avatar from '@/Components/Atoms/Avatar/Avatar';
+import IconButton from '@/Components/Atoms/IconButton/IconButton';
 import { CommentItemProps } from '@/types/Components';
 import { formatTimeAgo } from '@/utils/time';
 import React from 'react';
 
-const CommentItem: React.FC<CommentItemProps> = ({ comment }) => {
+const CommentItem: React.FC<CommentItemProps> = ({
+    comment,
+    canDelete = false,
+    onDelete,
+}) => {
     return (
-        <div className="flex gap-3">
+        <div className="group flex gap-3">
             <Avatar
                 src={comment.user?.avatar}
                 initials={comment.user?.name.charAt(0) ?? '?'}
@@ -24,6 +29,15 @@ const CommentItem: React.FC<CommentItemProps> = ({ comment }) => {
                     {comment.body}
                 </p>
             </div>
+            {canDelete && (
+                <IconButton
+                    iconName="Trash2"
+                    iconSize={14}
+                    ariaLabel="Delete comment"
+                    className="opacity-0 group-hover:opacity-100"
+                    onClick={() => onDelete?.(comment)}
+                />
+            )}
         </div>
     );
 };

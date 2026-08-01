@@ -4,6 +4,19 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import CalendarView from './CalendarView';
 
+const mockRouterVisit = vi.fn();
+vi.mock('@inertiajs/react', () => ({
+    router: { visit: (...args: unknown[]) => mockRouterVisit(...args) },
+}));
+
+vi.stubGlobal(
+    'route',
+    vi.fn(
+        (name: string, params: unknown) =>
+            `/${name}/${Array.isArray(params) ? params.join('/') : params}`,
+    ),
+);
+
 const makeIssue = (overrides: Partial<Issue> = {}): Issue => ({
     id: '1',
     title: 'Fix login bug',
@@ -25,26 +38,14 @@ describe('CalendarView Component', () => {
     });
 
     test('renders the pinned month and year', () => {
-        render(
-            <CalendarView
-                issues={[]}
-                activeIssue={null}
-                setActiveIssue={vi.fn()}
-            />,
-        );
+        render(<CalendarView issues={[]} />);
 
         expect(screen.getByText('July')).toBeInTheDocument();
         expect(screen.getByText('2026')).toBeInTheDocument();
     });
 
     test('renders all weekday headers', () => {
-        render(
-            <CalendarView
-                issues={[]}
-                activeIssue={null}
-                setActiveIssue={vi.fn()}
-            />,
-        );
+        render(<CalendarView issues={[]} />);
 
         // Weekday abbreviations also appear per-cell on mobile, so at least
         // one match (the header row) is expected for each label.
@@ -59,13 +60,7 @@ describe('CalendarView Component', () => {
             title: 'Ship the release',
             start_date: '2026-07-15',
         });
-        render(
-            <CalendarView
-                issues={[issue]}
-                activeIssue={null}
-                setActiveIssue={vi.fn()}
-            />,
-        );
+        render(<CalendarView issues={[issue]} />);
 
         expect(screen.getByText('Ship the release')).toBeInTheDocument();
         expect(screen.getByText('1 item')).toBeInTheDocument();
@@ -84,13 +79,7 @@ describe('CalendarView Component', () => {
                 start_date: '2026-07-15',
             }),
         ];
-        render(
-            <CalendarView
-                issues={issues}
-                activeIssue={null}
-                setActiveIssue={vi.fn()}
-            />,
-        );
+        render(<CalendarView issues={issues} />);
 
         expect(screen.getByText('First task')).toBeInTheDocument();
         expect(screen.getByText('Second task')).toBeInTheDocument();
@@ -102,46 +91,27 @@ describe('CalendarView Component', () => {
             title: 'No date issue',
             start_date: undefined,
         });
-        render(
-            <CalendarView
-                issues={[issue]}
-                activeIssue={null}
-                setActiveIssue={vi.fn()}
-            />,
-        );
+        render(<CalendarView issues={[issue]} />);
 
         expect(screen.queryByText('No date issue')).not.toBeInTheDocument();
     });
 
-    test('calls setActiveIssue when an issue is clicked', async () => {
+    test('navigates to the issue page when an issue is clicked', async () => {
         const user = userEvent.setup();
-        const setActiveIssue = vi.fn();
         const issue = makeIssue({
             id: '42',
             title: 'Clickable issue',
             start_date: '2026-07-15',
         });
-        render(
-            <CalendarView
-                issues={[issue]}
-                activeIssue={null}
-                setActiveIssue={setActiveIssue}
-            />,
-        );
+        render(<CalendarView issues={[issue]} />);
 
         await user.click(screen.getByText('Clickable issue'));
 
-        expect(setActiveIssue).toHaveBeenCalledWith(issue);
+        expect(mockRouterVisit).toHaveBeenCalledWith('/issues.show/1/42');
     });
 
     test('highlights today with the accent-colored day number', () => {
-        render(
-            <CalendarView
-                issues={[]}
-                activeIssue={null}
-                setActiveIssue={vi.fn()}
-            />,
-        );
+        render(<CalendarView issues={[]} />);
 
         const todayCell = screen.getByText('25');
         expect(todayCell).toHaveClass('bg-[var(--accent-color)]');
@@ -153,13 +123,7 @@ describe('CalendarView Component', () => {
             title: 'July only issue',
             start_date: '2026-07-15',
         });
-        render(
-            <CalendarView
-                issues={[issue]}
-                activeIssue={null}
-                setActiveIssue={vi.fn()}
-            />,
-        );
+        render(<CalendarView issues={[issue]} />);
 
         expect(screen.getByText('July only issue')).toBeInTheDocument();
 
@@ -174,13 +138,7 @@ describe('CalendarView Component', () => {
 
     test('navigates to the previous month', async () => {
         const user = userEvent.setup();
-        render(
-            <CalendarView
-                issues={[]}
-                activeIssue={null}
-                setActiveIssue={vi.fn()}
-            />,
-        );
+        render(<CalendarView issues={[]} />);
 
         const prevButton = document
             .querySelector('.lucide-chevron-left')
@@ -192,13 +150,7 @@ describe('CalendarView Component', () => {
 
     test('returns to the current month when "Today" is clicked after navigating away', async () => {
         const user = userEvent.setup();
-        render(
-            <CalendarView
-                issues={[]}
-                activeIssue={null}
-                setActiveIssue={vi.fn()}
-            />,
-        );
+        render(<CalendarView issues={[]} />);
 
         const nextButton = document
             .querySelector('.lucide-chevron-right')

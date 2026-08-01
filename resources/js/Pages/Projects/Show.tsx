@@ -2,7 +2,6 @@ import Pagination from '@/Components/Molecules/Pagination/Pagination';
 import CalendarView from '@/Components/Organisms/CalendarView/CalendarView';
 import FilterBar from '@/Components/Organisms/FilterBar/FilterBar';
 import IssueBoard from '@/Components/Organisms/IssueBoard/IssueBoard';
-import IssueDetail from '@/Components/Organisms/IssueDetail/IssueDetail';
 import IssueTable from '@/Components/Organisms/IssueTable/IssueTable';
 import { SavedFilter } from '@/hooks/useSavedFilters';
 import MainLayout from '@/Layouts/MainLayout';
@@ -39,14 +38,6 @@ export default function Show({
     savedFilters: SavedFilter[];
     users: AssignableUser[];
 }) {
-    const [activeIssue, _setActiveIssue] = useState<Issue | null>(null);
-    const [isEditing, setIsEditing] = useState(false);
-
-    const setActiveIssue = (issue: Issue | null, edit: boolean = false) => {
-        _setActiveIssue(issue);
-        setIsEditing(edit);
-    };
-
     const [selectedLook, setSelectedLook] = useState<IssuePageLooks>(() => {
         if (typeof window !== 'undefined') {
             const saved = localStorage.getItem('selectedLook');
@@ -60,27 +51,6 @@ export default function Show({
     useEffect(() => {
         localStorage.setItem('selectedLook', selectedLook);
     }, [selectedLook]);
-
-    useEffect(() => {
-        if (activeIssue) {
-            const updated = issues.data.find((i) => i.id === activeIssue.id);
-            if (updated) {
-                setActiveIssue(updated);
-            }
-        }
-    }, [issues]);
-
-    useEffect(() => {
-        const issueId = queryParams?.issue;
-        if (!issueId) return;
-
-        const target = issues.data.find(
-            (i) => String(i.id) === String(issueId),
-        );
-        if (target) {
-            setActiveIssue(target);
-        }
-    }, []);
 
     return (
         <MainLayout
@@ -106,8 +76,6 @@ export default function Show({
                         {selectedLook === 'List' ? (
                             <IssueTable
                                 issues={issues.data}
-                                activeIssue={activeIssue}
-                                setActiveIssue={setActiveIssue}
                                 queryParams={queryParams}
                                 project={project}
                                 pagination={
@@ -127,11 +95,7 @@ export default function Show({
                                         'flex flex-1 flex-row overflow-hidden'
                                     }
                                 >
-                                    <IssueBoard
-                                        issues={issues.data}
-                                        activeIssue={activeIssue}
-                                        setActiveIssue={setActiveIssue}
-                                    />
+                                    <IssueBoard issues={issues.data} />
                                 </div>
                                 <Pagination
                                     links={issues.links}
@@ -142,22 +106,9 @@ export default function Show({
                                 />
                             </>
                         ) : (
-                            <CalendarView
-                                issues={issues.data}
-                                activeIssue={activeIssue}
-                                setActiveIssue={setActiveIssue}
-                            />
+                            <CalendarView issues={issues.data} />
                         )}
                     </div>
-                    {activeIssue && (
-                        <IssueDetail
-                            isOpen={!!activeIssue}
-                            onClose={() => setActiveIssue(null)}
-                            activeIssue={activeIssue}
-                            initialIsEditing={isEditing}
-                            users={users}
-                        />
-                    )}
                 </div>
             </div>
         </MainLayout>

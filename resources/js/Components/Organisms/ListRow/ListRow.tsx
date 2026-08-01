@@ -16,7 +16,6 @@ const cellBase =
 
 export const ListRow = ({
     issue,
-    isActive,
     onClick,
     onModify,
     onRemove,
@@ -94,7 +93,6 @@ export const ListRow = ({
                 }}
                 className={cn(
                     'group/row cursor-pointer select-none transition-colors hover:bg-white/[0.03]',
-                    isActive && 'bg-white/[0.06]',
                 )}
                 style={{ height: rowHeight }}
             >
@@ -240,7 +238,7 @@ export const ListRow = ({
                                     label={
                                         <div className="flex items-center gap-2 text-xs">
                                             <Icon name="Maximize2" size={13} />
-                                            <span>Open in modal</span>
+                                            <span>Open issue</span>
                                         </div>
                                     }
                                     onClick={() => {

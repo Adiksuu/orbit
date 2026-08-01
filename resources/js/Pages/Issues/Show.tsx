@@ -2,18 +2,20 @@ import EditableSelect from '@/Components/Atoms/EditableSelect/EditableSelect';
 import EditableText from '@/Components/Atoms/EditableText/EditableText';
 import Icon from '@/Components/Atoms/Icon/Icon';
 import StatusDot from '@/Components/Atoms/StatusDot/StatusDot';
+import CommentForm from '@/Components/Molecules/CommentForm/CommentForm';
 import CommentList from '@/Components/Molecules/CommentList/CommentList';
 import EditableLabelList from '@/Components/Molecules/EditableLabelList/EditableLabelList';
 import SidebarField from '@/Components/Molecules/SidebarField/SidebarField';
 import UserBadge from '@/Components/Molecules/UserBadge/UserBadge';
 import IssuePageHeader from '@/Components/Organisms/IssuePageHeader/IssuePageHeader';
 import Sidebar from '@/Components/Organisms/Sidebar/Sidebar';
+import { PageProps } from '@/types';
 import { IssuePageProps } from '@/types/Components';
-import { IssueLabel, IssuePriority, Status } from '@/types/Issues';
+import { Comment, IssueLabel, IssuePriority, Status } from '@/types/Issues';
 import { formatStatusLabel } from '@/utils/text';
 import { formatDate } from '@/utils/time';
 import type { FormDataConvertible } from '@inertiajs/core';
-import { Link, router } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -26,8 +28,26 @@ export default function Show({
     issue,
     users,
 }: IssuePageProps) {
+    const {
+        props: { auth },
+    } = usePage<PageProps>();
+
     const updateIssue = (data: Record<string, FormDataConvertible>) => {
         router.patch(route('issues.update', issue.id), data, {
+            preserveScroll: true,
+        });
+    };
+
+    const addComment = (body: string) => {
+        router.post(
+            route('comments.store', issue.id),
+            { body },
+            { preserveScroll: true },
+        );
+    };
+
+    const deleteComment = (comment: Comment) => {
+        router.delete(route('comments.destroy', comment.id), {
             preserveScroll: true,
         });
     };
@@ -113,7 +133,12 @@ export default function Show({
                                 <span className="text-sm font-medium text-[var(--text-color)]">
                                     Activity
                                 </span>
-                                <CommentList comments={issue.comments || []} />
+                                <CommentList
+                                    comments={issue.comments || []}
+                                    currentUserId={auth.user.id}
+                                    onDelete={deleteComment}
+                                />
+                                <CommentForm onSubmit={addComment} />
                             </div>
                         </div>
 

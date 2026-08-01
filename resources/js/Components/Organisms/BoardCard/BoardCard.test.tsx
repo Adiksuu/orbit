@@ -19,7 +19,6 @@ describe('BoardCard Component', () => {
         render(
             <BoardCard
                 issue={makeIssue({ title: 'Improve dashboard load time' })}
-                isActive={false}
                 isClosed={false}
                 onClick={() => {}}
             />,
@@ -34,7 +33,6 @@ describe('BoardCard Component', () => {
         render(
             <BoardCard
                 issue={makeIssue({ assignee: undefined })}
-                isActive={false}
                 isClosed={false}
                 onClick={() => {}}
             />,
@@ -56,7 +54,6 @@ describe('BoardCard Component', () => {
                         updated_at: '',
                     },
                 })}
-                isActive={false}
                 isClosed={false}
                 onClick={() => {}}
             />,
@@ -73,7 +70,6 @@ describe('BoardCard Component', () => {
         const { container } = render(
             <BoardCard
                 issue={makeIssue({ assignee: undefined })}
-                isActive={false}
                 isClosed={false}
                 onClick={() => {}}
             />,
@@ -87,7 +83,6 @@ describe('BoardCard Component', () => {
         render(
             <BoardCard
                 issue={makeIssue({ status: 'open' })}
-                isActive={false}
                 isClosed={false}
                 onClick={() => {}}
             />,
@@ -100,7 +95,6 @@ describe('BoardCard Component', () => {
         render(
             <BoardCard
                 issue={makeIssue({ status: 'in_progress' })}
-                isActive={false}
                 isClosed={false}
                 onClick={() => {}}
             />,
@@ -114,7 +108,6 @@ describe('BoardCard Component', () => {
         render(
             <BoardCard
                 issue={makeIssue({ labels: ['bug', 'design'] })}
-                isActive={false}
                 isClosed={false}
                 onClick={() => {}}
             />,
@@ -128,7 +121,6 @@ describe('BoardCard Component', () => {
         render(
             <BoardCard
                 issue={makeIssue({ labels: [] })}
-                isActive={false}
                 isClosed={false}
                 onClick={() => {}}
             />,
@@ -142,7 +134,6 @@ describe('BoardCard Component', () => {
         render(
             <BoardCard
                 issue={makeIssue()}
-                isActive={false}
                 isClosed={false}
                 onClick={handleClick}
             />,
@@ -153,25 +144,10 @@ describe('BoardCard Component', () => {
         expect(handleClick).toHaveBeenCalledTimes(1);
     });
 
-    test('applies the active border styling when isActive is true', () => {
-        const { container } = render(
-            <BoardCard
-                issue={makeIssue()}
-                isActive={true}
-                isClosed={false}
-                onClick={() => {}}
-            />,
-        );
-
-        // firstChild is the drag-transform wrapper; the styled card is its child.
-        expect(container.firstChild?.firstChild).toHaveClass('border-zinc-600');
-    });
-
     test('applies muted/opacity styling and a line-through title when closed', () => {
         render(
             <BoardCard
                 issue={makeIssue()}
-                isActive={false}
                 isClosed={true}
                 onClick={() => {}}
             />,
@@ -186,7 +162,6 @@ describe('BoardCard Component', () => {
         const { container, rerender } = render(
             <BoardCard
                 issue={makeIssue({ priority: 'high', status: 'open' })}
-                isActive={false}
                 isClosed={false}
                 onClick={() => {}}
             />,
@@ -200,7 +175,6 @@ describe('BoardCard Component', () => {
         rerender(
             <BoardCard
                 issue={makeIssue({ priority: 'high', status: 'open' })}
-                isActive={false}
                 isClosed={true}
                 onClick={() => {}}
             />,

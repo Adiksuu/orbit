@@ -23,8 +23,6 @@ const defaultWidths = {
 
 export const IssueTable: React.FC<IssueTableProps> = ({
     issues,
-    activeIssue,
-    setActiveIssue,
     queryParams,
     pagination,
     project,
@@ -325,8 +323,6 @@ export const IssueTable: React.FC<IssueTableProps> = ({
                                                 issue.id,
                                             ),
                                         }}
-                                        activeIssue={activeIssue}
-                                        setActiveIssue={setActiveIssue}
                                         handleSelectIssueCheckbox={
                                             handleSelectIssueCheckbox
                                         }

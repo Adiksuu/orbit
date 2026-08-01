@@ -80,7 +80,7 @@ const GROUP_BY_OPTIONS: { value: BoardGroupBy; label: string }[] = [
     { value: 'status', label: 'Status' },
 ];
 
-function IssueBoard({ issues, activeIssue, setActiveIssue }: IssueBoardProps) {
+function IssueBoard({ issues }: IssueBoardProps) {
     const { addAlert } = useAlert();
     const [boardIssues, setBoardIssues] = useState<Issue[]>(issues);
     const [draggingIssue, setDraggingIssue] = useState<Issue | null>(null);
@@ -213,8 +213,6 @@ function IssueBoard({ issues, activeIssue, setActiveIssue }: IssueBoardProps) {
                                 issues={columnIssues}
                                 meta={column}
                                 count={countFor(columnIssues)}
-                                activeIssue={activeIssue}
-                                setActiveIssue={setActiveIssue}
                             />
                         );
                     })}

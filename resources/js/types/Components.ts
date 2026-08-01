@@ -212,8 +212,6 @@ export interface BoardColumnProps {
     issues: Issue[];
     meta: BoardColumnMeta;
     count: number;
-    activeIssue: Issue | null;
-    setActiveIssue: (issue: Issue | null, isEditing?: boolean) => void;
 }
 export interface FilterButtonProps {
     icon?: keyof typeof icons;
@@ -239,8 +237,6 @@ export interface SavedFiltersDropdownProps {
 }
 export interface IssueElementProps {
     issue: Issue;
-    activeIssue: Issue | null;
-    setActiveIssue: (issue: Issue | null, isEditing?: boolean) => void;
     type?: 'list' | 'board';
     handleSelectIssueCheckbox?: (issue: Issue | string) => void;
     enabledColumns?: Record<string, boolean>;
@@ -454,8 +450,6 @@ export interface ProjectOnboardingPreviewProps {
 // ORGANISMS COMPONENTS
 export interface CalendarViewProps {
     issues: Issue[];
-    activeIssue: Issue | null;
-    setActiveIssue: (issue: Issue | null) => void;
 }
 export interface DashboardVisualsProps {
     issues: Issue[];
@@ -463,15 +457,6 @@ export interface DashboardVisualsProps {
 }
 export interface IssueBoardProps {
     issues: Issue[];
-    activeIssue: Issue | null;
-    setActiveIssue: (issue: Issue | null, isEditing?: boolean) => void;
-}
-export interface IssueDetailProps {
-    isOpen: boolean;
-    onClose: () => void;
-    activeIssue: Issue;
-    initialIsEditing?: boolean;
-    users: AssignableUser[];
 }
 export interface IssuePageProps {
     project: Project;
@@ -485,14 +470,20 @@ export interface IssuePageHeaderProps {
 }
 export interface CommentItemProps {
     comment: Comment;
+    canDelete?: boolean;
+    onDelete?: (comment: Comment) => void;
 }
 export interface CommentListProps {
     comments: Comment[];
+    currentUserId?: number;
+    onDelete?: (comment: Comment) => void;
+}
+export interface CommentFormProps {
+    onSubmit: (body: string) => void;
+    isSubmitting?: boolean;
 }
 export interface IssueTableProps {
     issues: Issue[];
-    activeIssue: Issue | null;
-    setActiveIssue: (issue: Issue | null, isEditing?: boolean) => void;
     queryParams?: { sort?: string; direction?: string; [key: string]: any };
     pagination?: ReactNode;
     project?: Project;
@@ -527,13 +518,11 @@ export interface AlertContainerProps {
 }
 export interface BoardCardProps {
     issue: Issue;
-    isActive: boolean;
     onClick: () => void;
     isClosed: boolean;
 }
 export interface ListRowProps {
     issue: Issue;
-    isActive: boolean;
     onClick: () => void;
     onModify?: () => void;
     onRemove?: () => void;
