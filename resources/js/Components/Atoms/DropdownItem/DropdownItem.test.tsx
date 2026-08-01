@@ -47,4 +47,20 @@ describe('DropdownItem Component', () => {
 
         expect(screen.getByRole('button')).not.toHaveClass('font-semibold');
     });
+
+    test('renders trailing content when provided', () => {
+        render(<DropdownItem label="High" trailing={<span>2</span>} />);
+
+        expect(screen.getByText('2')).toBeInTheDocument();
+    });
+
+    test('renders no trailing content when omitted', () => {
+        const { container } = render(<DropdownItem label="High" />);
+
+        expect(
+            container.querySelector(
+                'span.text-\\[var\\(--text-gray-color\\)\\]',
+            ),
+        ).not.toBeInTheDocument();
+    });
 });

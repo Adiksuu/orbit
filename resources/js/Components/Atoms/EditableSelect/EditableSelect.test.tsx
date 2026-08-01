@@ -115,6 +115,37 @@ describe('EditableSelect Component', () => {
         expect(screen.getByRole('button')).toHaveTextContent('unknown_status');
     });
 
+    test('renders a header above the options when provided', async () => {
+        render(
+            <EditableSelect
+                value="open"
+                options={OPTIONS}
+                onSave={() => {}}
+                header="Change status to..."
+            />,
+        );
+
+        await userEvent.click(screen.getByRole('button'));
+
+        expect(screen.getByText('Change status to...')).toBeInTheDocument();
+    });
+
+    test('shows a checkmark next to the currently selected option', async () => {
+        render(
+            <EditableSelect value="open" options={OPTIONS} onSave={() => {}} />,
+        );
+
+        await userEvent.click(screen.getByRole('button', { name: 'Open' }));
+
+        const openItem = screen.getAllByText('Open')[1].closest('button');
+        expect(openItem?.querySelector('svg')).toBeInTheDocument();
+
+        const inProgressItem = screen
+            .getByText('In Progress')
+            .closest('button');
+        expect(inProgressItem?.querySelector('svg')).not.toBeInTheDocument();
+    });
+
     test('does not open the dropdown when disabled', async () => {
         render(
             <EditableSelect

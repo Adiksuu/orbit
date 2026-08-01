@@ -56,12 +56,15 @@ export interface DropdownItemProps
         ButtonHTMLAttributes<HTMLButtonElement>,
         VariantProps<typeof dropdownItemVariants> {
     label: ReactNode;
+    trailing?: ReactNode;
 }
 export interface ChildrenItemProps {
     children: ReactNode;
 }
 export interface DropdownMenuProps extends ChildrenItemProps {
     direction?: 'top' | 'bottom';
+    header?: ReactNode;
+    stretch?: boolean;
 }
 export interface DropdownTriggerProps {
     label: ReactNode;
@@ -158,6 +161,7 @@ export interface EditableSelectProps {
     options: EditableSelectOption[];
     onSave: (value: string) => void;
     renderValue?: (value: string) => ReactNode;
+    header?: ReactNode;
     disabled?: boolean;
     className?: string;
 }

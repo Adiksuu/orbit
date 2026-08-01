@@ -1,5 +1,6 @@
 import DropdownItem from '@/Components/Atoms/DropdownItem/DropdownItem';
 import DropdownMenu from '@/Components/Atoms/DropdownMenu/DropdownMenu';
+import Icon from '@/Components/Atoms/Icon/Icon';
 import { EditableSelectProps } from '@/types/Components';
 import { cn } from '@/utils/cn';
 import React, { useEffect, useRef, useState } from 'react';
@@ -9,6 +10,7 @@ const EditableSelect: React.FC<EditableSelectProps> = ({
     options,
     onSave,
     renderValue,
+    header,
     disabled = false,
     className,
 }) => {
@@ -42,11 +44,16 @@ const EditableSelect: React.FC<EditableSelectProps> = ({
                 {renderValue ? renderValue(value) : (selected?.label ?? value)}
             </button>
             {isOpen && (
-                <DropdownMenu>
+                <DropdownMenu header={header} stretch={false}>
                     {options.map((option) => (
                         <DropdownItem
                             key={option.value}
                             label={option.label}
+                            trailing={
+                                option.value === value ? (
+                                    <Icon name="Check" size={14} />
+                                ) : undefined
+                            }
                             isActive={option.value === value}
                             onClick={() => {
                                 setIsOpen(false);
