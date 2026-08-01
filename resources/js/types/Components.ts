@@ -94,6 +94,7 @@ export interface InputProps extends VariantProps<typeof inputVariants> {
     type?: string;
     className?: string;
     onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+    onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
     id?: string;
     name?: string;
     autoComplete?: string;
@@ -121,9 +122,36 @@ export interface TextAreaProps extends VariantProps<typeof textareaVariants> {
     onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
     placeholder?: string;
     isDisabled?: boolean;
+    className?: string;
+    onKeyDown?: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
+    onBlur?: (e: React.FocusEvent<HTMLTextAreaElement>) => void;
+    ref?: React.Ref<HTMLTextAreaElement> | null;
 }
 export interface VisualCardProps {
     children: ReactNode;
+    className?: string;
+}
+export interface EditableTextProps {
+    value: string;
+    onSave: (value: string) => void;
+    placeholder?: string;
+    emptyText?: string;
+    multiline?: boolean;
+    as?: 'h1' | 'h2' | 'p' | 'span' | 'div';
+    displayClassName?: string;
+    inputClassName?: string;
+    disabled?: boolean;
+}
+export interface EditableSelectOption {
+    value: string;
+    label: ReactNode;
+}
+export interface EditableSelectProps {
+    value: string;
+    options: EditableSelectOption[];
+    onSave: (value: string) => void;
+    renderValue?: (value: string) => ReactNode;
+    disabled?: boolean;
     className?: string;
 }
 export interface KeybindProps {
