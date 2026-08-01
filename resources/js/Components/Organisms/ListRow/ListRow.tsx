@@ -18,7 +18,6 @@ const cellBase =
 export const ListRow = ({
     issue,
     onClick,
-    onModify,
     onRemove,
     isClosed,
     handleSelectIssueCheckbox,
@@ -249,20 +248,6 @@ export const ListRow = ({
                                     onClick={() => {
                                         onClick();
                                         setIsMenuOpen(false);
-                                    }}
-                                />
-                                <DropdownItem
-                                    label={
-                                        <div className="flex items-center gap-2 text-xs">
-                                            <Icon name="Pencil" size={13} />
-                                            <span>Modify</span>
-                                        </div>
-                                    }
-                                    onClick={() => {
-                                        if (onModify) {
-                                            onModify();
-                                            setIsMenuOpen(false);
-                                        }
                                     }}
                                 />
                                 <DropdownItem

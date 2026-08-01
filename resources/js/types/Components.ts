@@ -542,7 +542,6 @@ export interface BoardCardProps {
 export interface ListRowProps {
     issue: Issue;
     onClick: () => void;
-    onModify?: () => void;
     onRemove?: () => void;
     isClosed: boolean;
     handleSelectIssueCheckbox?: (issue: Issue | string) => void;
