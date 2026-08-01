@@ -5,23 +5,10 @@ import { motion } from 'framer-motion';
 import { icons, X } from 'lucide-react';
 
 const alertVariants = cva(
-    'pointer-events-auto flex items-start gap-3 p-4 rounded-xl border shadow-lg backdrop-blur-md max-w-md w-full transition-all duration-300 bg-[var(--bg-color)] text-[var(--text-color)]',
-    {
-        variants: {
-            intent: {
-                success: 'border-[var(--success-color)]/30',
-                error: 'border-[var(--error-color)]/30',
-                warning: 'border-[var(--warning-color)]/30',
-                information: 'border-[var(--info-color)]/30',
-            },
-        },
-        defaultVariants: {
-            intent: 'success',
-        },
-    },
+    'pointer-events-auto inline-flex max-w-md items-center gap-3 rounded-[24px] border border-zinc-800 bg-zinc-900/95 px-4 py-2.5 shadow-lg backdrop-blur-md transition-all duration-300 text-[var(--text-color)]',
 );
 
-const iconVariants = cva('w-5 h-5 mt-0.5 flex-shrink-0', {
+const iconVariants = cva('w-4 h-4 flex-shrink-0', {
     variants: {
         intent: {
             success: 'text-[var(--success-color)]',
@@ -35,7 +22,7 @@ const iconVariants = cva('w-5 h-5 mt-0.5 flex-shrink-0', {
     },
 });
 
-type AlertIntent = NonNullable<VariantProps<typeof alertVariants>['intent']>;
+type AlertIntent = NonNullable<VariantProps<typeof iconVariants>['intent']>;
 
 const alertIcons: Record<AlertIntent, keyof typeof icons> = {
     success: 'CircleCheck',
@@ -63,19 +50,19 @@ export const Alert = ({ alert, onClose }: AlertProps) => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, scale: 0.92, transition: { duration: 0.15 } }}
             transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-            className={alertVariants({ intent })}
+            className={alertVariants()}
         >
             <Icon
                 name={alertIcons[intent]}
                 className={iconVariants({ intent })}
             />
 
-            <div className="flex-1 select-none text-sm font-medium leading-5">
+            <div className="select-none text-sm font-medium leading-5 text-[var(--text-color)]">
                 {message}
                 {actionUrl && (
                     <a
                         href={actionUrl}
-                        className="mt-1 block text-xs font-semibold underline underline-offset-2 hover:opacity-80"
+                        className="ml-2 text-xs font-semibold underline underline-offset-2 hover:opacity-80"
                     >
                         View details
                     </a>
@@ -85,10 +72,10 @@ export const Alert = ({ alert, onClose }: AlertProps) => {
             <button
                 onClick={onClose}
                 type="button"
-                className="text-current/50 hover:bg-current/10 focus-visible:ring-current/40 group relative -mr-1 -mt-1 rounded-lg p-1.5 transition-colors hover:text-current focus-visible:outline-none focus-visible:ring-2"
+                className="ml-1 flex shrink-0 items-center justify-center rounded-full p-1 text-[var(--text-gray-color)] transition-colors hover:bg-[var(--bg-light-color)] hover:text-[var(--text-color)]"
                 aria-label="Close Alert"
             >
-                <X className="h-4 w-4 transition-transform duration-150 group-hover:scale-105" />
+                <X className="h-3.5 w-3.5" />
             </button>
         </motion.div>
     );
