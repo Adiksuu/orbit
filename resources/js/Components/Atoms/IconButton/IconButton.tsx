@@ -51,6 +51,7 @@ const IconButton = ({
         <Link
             className={iconButtonVariants({ variant, className })}
             href={link}
+            aria-label={ariaLabel}
         >
             {iconName && (
                 <Icon name={iconName} size={iconSize} color={iconColor} />

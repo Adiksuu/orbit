@@ -103,6 +103,18 @@ describe('EditableSelect Component', () => {
         expect(screen.getByRole('button')).toHaveTextContent('Status: open');
     });
 
+    test('falls back to the raw value when it matches no option', () => {
+        render(
+            <EditableSelect
+                value="unknown_status"
+                options={OPTIONS}
+                onSave={() => {}}
+            />,
+        );
+
+        expect(screen.getByRole('button')).toHaveTextContent('unknown_status');
+    });
+
     test('does not open the dropdown when disabled', async () => {
         render(
             <EditableSelect

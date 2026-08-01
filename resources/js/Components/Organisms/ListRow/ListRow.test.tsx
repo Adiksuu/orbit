@@ -153,6 +153,25 @@ describe('ListRow Component', () => {
         expect(handleClick).toHaveBeenCalledTimes(1);
     });
 
+    test('pressing Space on the row prevents the page from scrolling and does not call onClick', () => {
+        const handleClick = vi.fn();
+        renderRow({ onClick: handleClick });
+
+        const row = screen
+            .getByText('Fix the login page')
+            .closest('tr') as HTMLElement;
+        const event = new KeyboardEvent('keydown', {
+            key: ' ',
+            bubbles: true,
+            cancelable: true,
+        });
+        const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
+        row.dispatchEvent(event);
+
+        expect(preventDefaultSpy).toHaveBeenCalled();
+        expect(handleClick).not.toHaveBeenCalled();
+    });
+
     test('applies a line-through title and dimmed checkbox when the issue is closed', () => {
         renderRow({ isClosed: true });
 

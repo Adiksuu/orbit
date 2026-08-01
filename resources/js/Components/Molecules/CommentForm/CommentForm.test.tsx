@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 import CommentForm from './CommentForm';
@@ -36,6 +36,17 @@ describe('CommentForm Component', () => {
             '   ',
         );
         expect(screen.getByRole('button', { name: 'Comment' })).toBeDisabled();
+    });
+
+    test('guards against a direct form submit with a whitespace-only body', () => {
+        const handleSubmit = vi.fn();
+        render(<CommentForm onSubmit={handleSubmit} />);
+
+        const textarea = screen.getByPlaceholderText('Leave a comment...');
+        fireEvent.change(textarea, { target: { value: '   ' } });
+        fireEvent.submit(textarea.closest('form') as HTMLFormElement);
+
+        expect(handleSubmit).not.toHaveBeenCalled();
     });
 
     test('disables the textarea and button, and shows "Posting..." while submitting', () => {
