@@ -1,32 +1,80 @@
+import EditableSelect from '@/Components/Atoms/EditableSelect/EditableSelect';
+import EditableText from '@/Components/Atoms/EditableText/EditableText';
 import Icon from '@/Components/Atoms/Icon/Icon';
 import StatusDot from '@/Components/Atoms/StatusDot/StatusDot';
 import CommentList from '@/Components/Molecules/CommentList/CommentList';
-import LabelList from '@/Components/Molecules/LabelList/LabelList';
+import EditableLabelList from '@/Components/Molecules/EditableLabelList/EditableLabelList';
 import SidebarField from '@/Components/Molecules/SidebarField/SidebarField';
 import UserBadge from '@/Components/Molecules/UserBadge/UserBadge';
 import IssuePageHeader from '@/Components/Organisms/IssuePageHeader/IssuePageHeader';
 import Sidebar from '@/Components/Organisms/Sidebar/Sidebar';
 import { IssuePageProps } from '@/types/Components';
-import { IssuePriority } from '@/types/Issues';
-import { cn } from '@/utils/cn';
+import { IssueLabel, IssuePriority, Status } from '@/types/Issues';
 import { formatStatusLabel } from '@/utils/text';
 import { formatDate } from '@/utils/time';
-import { Link } from '@inertiajs/react';
-import { cva } from 'class-variance-authority';
+import type { FormDataConvertible } from '@inertiajs/core';
+import { Link, router } from '@inertiajs/react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
-const priorityVariants = cva('', {
-    variants: {
-        priority: {
-            high: 'text-red-500',
-            medium: 'text-yellow-500',
-            low: 'text-green-500',
-        },
-    },
-});
+const STATUSES: Status[] = ['open', 'in_progress', 'closed'];
+const PRIORITIES: IssuePriority[] = ['high', 'medium', 'low'];
 
-export default function Show({ project, projects, issue }: IssuePageProps) {
+export default function Show({
+    project,
+    projects,
+    issue,
+    users,
+}: IssuePageProps) {
+    const updateIssue = (data: Record<string, FormDataConvertible>) => {
+        router.patch(route('issues.update', issue.id), data, {
+            preserveScroll: true,
+        });
+    };
+
+    const statusOptions = STATUSES.map((status) => ({
+        value: status,
+        label: (
+            <div className="flex items-center gap-2">
+                <StatusDot status={status} />
+                <span className="capitalize">{formatStatusLabel(status)}</span>
+            </div>
+        ),
+    }));
+
+    const priorityOptions = PRIORITIES.map((priority) => ({
+        value: priority,
+        label: (
+            <div className="flex items-center gap-2">
+                <StatusDot status={priority} size="sm" />
+                <span className="capitalize">{priority}</span>
+            </div>
+        ),
+    }));
+
+    const assigneeOptions = [
+        {
+            value: '',
+            label: (
+                <span className="flex items-center gap-2 text-[var(--text-gray-color)]">
+                    <Icon name="UserX" size={14} />
+                    Unassigned
+                </span>
+            ),
+        },
+        ...users.map((user) => ({
+            value: String(user.id),
+            label: (
+                <UserBadge
+                    avatarSrc={user.avatar ?? undefined}
+                    name={user.name}
+                    size="sm"
+                    showTooltip={false}
+                />
+            ),
+        })),
+    ];
+
     return (
         <div className="flex h-screen w-screen overflow-hidden bg-[var(--bg-color)]">
             <Sidebar projects={projects} />
@@ -35,21 +83,31 @@ export default function Show({ project, projects, issue }: IssuePageProps) {
                 <main className="flex flex-1 overflow-y-auto">
                     <div className="mx-auto grid w-full max-w-6xl flex-1 grid-cols-1 gap-8 px-6 py-8 md:grid-cols-[1fr_280px]">
                         <div className="flex min-w-0 flex-col gap-6">
-                            <h1 className="text-2xl font-semibold text-[var(--text-color)]">
-                                {issue.title}
-                            </h1>
+                            <EditableText
+                                as="h1"
+                                value={issue.title}
+                                onSave={(value) =>
+                                    updateIssue({ title: value })
+                                }
+                                placeholder="Issue title"
+                                displayClassName="text-2xl font-semibold text-[var(--text-color)]"
+                                inputClassName="text-2xl font-semibold"
+                            />
 
-                            <div className="prose prose-invert max-w-none text-sm">
-                                {issue.description ? (
+                            <EditableText
+                                multiline
+                                value={issue.description || ''}
+                                onSave={(value) =>
+                                    updateIssue({ description: value })
+                                }
+                                placeholder="Add a description..."
+                                displayClassName="prose prose-invert max-w-none text-sm"
+                                renderDisplay={(value) => (
                                     <Markdown remarkPlugins={[remarkGfm]}>
-                                        {issue.description}
+                                        {value}
                                     </Markdown>
-                                ) : (
-                                    <p className="italic text-[var(--text-gray-color)]">
-                                        No description provided.
-                                    </p>
                                 )}
-                            </div>
+                            />
 
                             <div className="mt-4 flex flex-col gap-4 border-t border-[var(--border-color)] pt-6">
                                 <span className="text-sm font-medium text-[var(--text-color)]">
@@ -61,54 +119,88 @@ export default function Show({ project, projects, issue }: IssuePageProps) {
 
                         <div className="flex flex-col gap-6 border-l border-[var(--border-color)] pl-6">
                             <SidebarField label="Status">
-                                <div className="flex items-center gap-2">
-                                    <StatusDot status={issue.status} />
-                                    <span className="text-sm capitalize text-[var(--text-color)]">
-                                        {formatStatusLabel(issue.status)}
-                                    </span>
-                                </div>
+                                <EditableSelect
+                                    value={issue.status}
+                                    options={statusOptions}
+                                    onSave={(value) =>
+                                        updateIssue({ status: value })
+                                    }
+                                    renderValue={(value) => (
+                                        <div className="flex items-center gap-2">
+                                            <StatusDot
+                                                status={value as Status}
+                                            />
+                                            <span className="text-sm capitalize text-[var(--text-color)]">
+                                                {formatStatusLabel(value)}
+                                            </span>
+                                        </div>
+                                    )}
+                                />
                             </SidebarField>
 
                             <SidebarField label="Priority">
-                                <div className="flex items-center gap-2">
-                                    <StatusDot
-                                        status={issue.priority}
-                                        size="sm"
-                                    />
-                                    <span
-                                        className={cn(
-                                            'text-sm capitalize',
-                                            priorityVariants({
-                                                priority:
-                                                    issue.priority as IssuePriority,
-                                            }),
-                                        )}
-                                    >
-                                        {issue.priority}
-                                    </span>
-                                </div>
+                                <EditableSelect
+                                    value={issue.priority}
+                                    options={priorityOptions}
+                                    onSave={(value) =>
+                                        updateIssue({ priority: value })
+                                    }
+                                    renderValue={(value) => (
+                                        <div className="flex items-center gap-2">
+                                            <StatusDot
+                                                status={value as IssuePriority}
+                                                size="sm"
+                                            />
+                                            <span className="text-sm capitalize text-[var(--text-color)]">
+                                                {value}
+                                            </span>
+                                        </div>
+                                    )}
+                                />
                             </SidebarField>
 
                             <SidebarField label="Assignee">
-                                <UserBadge
-                                    avatarSrc={issue.assignee?.avatar}
-                                    name={
-                                        issue.assignee
-                                            ? issue.assignee.name
-                                            : 'Unassigned'
+                                <EditableSelect
+                                    value={
+                                        issue.assignee_id
+                                            ? String(issue.assignee_id)
+                                            : ''
                                     }
-                                    size="sm"
+                                    options={assigneeOptions}
+                                    onSave={(value) =>
+                                        updateIssue({
+                                            assignee_id: value
+                                                ? Number(value)
+                                                : null,
+                                        })
+                                    }
+                                    renderValue={() =>
+                                        issue.assignee ? (
+                                            <UserBadge
+                                                avatarSrc={
+                                                    issue.assignee.avatar
+                                                }
+                                                name={issue.assignee.name}
+                                                size="sm"
+                                                showTooltip={false}
+                                            />
+                                        ) : (
+                                            <span className="flex items-center gap-2 text-[var(--text-gray-color)]">
+                                                <Icon name="UserX" size={14} />
+                                                Unassigned
+                                            </span>
+                                        )
+                                    }
                                 />
                             </SidebarField>
 
                             <SidebarField label="Labels">
-                                {issue.labels && issue.labels.length > 0 ? (
-                                    <LabelList labels={issue.labels} />
-                                ) : (
-                                    <span className="text-sm text-[var(--text-gray-color)]">
-                                        None
-                                    </span>
-                                )}
+                                <EditableLabelList
+                                    labels={issue.labels || []}
+                                    onSave={(labels: IssueLabel[]) =>
+                                        updateIssue({ labels })
+                                    }
+                                />
                             </SidebarField>
 
                             <SidebarField label="Project">

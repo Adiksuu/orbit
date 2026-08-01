@@ -10,6 +10,7 @@ import { AlertItem } from '@/types/Alert';
 import {
     Comment,
     Issue,
+    IssueLabel,
     IssuePageLooks,
     IssuePriority,
     ProductivityTrendProps,
@@ -140,6 +141,12 @@ export interface EditableTextProps {
     as?: 'h1' | 'h2' | 'p' | 'span' | 'div';
     displayClassName?: string;
     inputClassName?: string;
+    disabled?: boolean;
+    renderDisplay?: (value: string) => ReactNode;
+}
+export interface EditableLabelListProps {
+    labels: IssueLabel[];
+    onSave: (labels: IssueLabel[]) => void;
     disabled?: boolean;
 }
 export interface EditableSelectOption {

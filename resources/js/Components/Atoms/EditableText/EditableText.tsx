@@ -14,6 +14,7 @@ const EditableText: React.FC<EditableTextProps> = ({
     displayClassName,
     inputClassName,
     disabled = false,
+    renderDisplay,
 }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [draft, setDraft] = useState(value);
@@ -104,7 +105,13 @@ const EditableText: React.FC<EditableTextProps> = ({
                 displayClassName,
             )}
         >
-            {value || (
+            {value ? (
+                renderDisplay ? (
+                    renderDisplay(value)
+                ) : (
+                    value
+                )
+            ) : (
                 <span className="italic text-[var(--text-gray-color)]">
                     {placeholder || emptyText}
                 </span>
