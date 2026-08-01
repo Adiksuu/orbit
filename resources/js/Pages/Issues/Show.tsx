@@ -147,6 +147,7 @@ export default function Show({
                                 <EditableSelect
                                     value={issue.status}
                                     options={statusOptions}
+                                    header="Change status to..."
                                     onSave={(value) =>
                                         updateIssue({ status: value })
                                     }
@@ -167,6 +168,7 @@ export default function Show({
                                 <EditableSelect
                                     value={issue.priority}
                                     options={priorityOptions}
+                                    header="Change priority to..."
                                     onSave={(value) =>
                                         updateIssue({ priority: value })
                                     }
@@ -192,6 +194,7 @@ export default function Show({
                                             : ''
                                     }
                                     options={assigneeOptions}
+                                    header="Change assignee to..."
                                     onSave={(value) =>
                                         updateIssue({
                                             assignee_id: value

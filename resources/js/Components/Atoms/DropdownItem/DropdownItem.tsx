@@ -29,6 +29,7 @@ export const dropdownItemVariants = cva(
 
 export default function DropdownItem({
     label,
+    trailing,
     onClick,
     isActive,
     variant,
@@ -46,7 +47,14 @@ export default function DropdownItem({
             onClick={onClick}
             {...props}
         >
-            {label}
+            <span className="flex min-w-0 flex-1 items-center gap-2">
+                {label}
+            </span>
+            {trailing && (
+                <span className="flex shrink-0 items-center text-[var(--text-gray-color)]">
+                    {trailing}
+                </span>
+            )}
         </button>
     );
 }
