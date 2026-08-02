@@ -1,123 +1,149 @@
-import Button from '@/Components/Atoms/Button/Button';
 import Icon from '@/Components/Atoms/Icon/Icon';
 import SettingsPanel from '@/Components/Molecules/SettingsPanel/SettingsPanel';
+import { useState } from 'react';
 
-const integrations = [
+type IntegrationKey = 'github' | 'slack' | 'figma';
+
+const integrations: Array<{
+    id: IntegrationKey;
+    name: string;
+    description: string;
+    icon: 'GitBranch' | 'MessageSquare' | 'PenTool';
+    iconClassName: string;
+    accentClassName: string;
+}> = [
     {
         id: 'github',
         name: 'GitHub',
-        icon: 'GitBranch' as const,
-        status: 'Connected',
-        accent: 'text-emerald-400',
-        features: ['PR links', 'Commit mentions', 'Auto-closing'],
-        action: 'Manage',
+        description: 'Sync pull requests, commits, and linked issue activity.',
+        icon: 'GitBranch',
+        iconClassName: 'text-white',
+        accentClassName: 'bg-zinc-700',
     },
     {
         id: 'slack',
         name: 'Slack',
-        icon: 'MessageSquare' as const,
-        status: 'Not connected',
-        accent: 'text-zinc-400',
-        features: ['Channel digests', 'Mentions', 'Workflow notifications'],
-        action: 'Connect',
+        description:
+            'Send notifications and updates directly to team channels.',
+        icon: 'MessageSquare',
+        iconClassName: 'text-emerald-300',
+        accentClassName: 'bg-indigo-600/40',
     },
     {
-        id: 'calendar',
-        name: 'Calendar',
-        icon: 'CalendarDays' as const,
-        status: 'Connected',
-        accent: 'text-emerald-400',
-        features: ['Due dates', 'Milestones', 'Time blocks'],
-        action: 'Manage',
+        id: 'figma',
+        name: 'Figma',
+        description: 'Attach design files and discuss implementation context.',
+        icon: 'PenTool',
+        iconClassName: 'text-sky-300',
+        accentClassName: 'bg-sky-600/30',
     },
 ];
 
 export default function AccountSettingsIntegrationsTab() {
+    const [connected, setConnected] = useState<Record<IntegrationKey, boolean>>(
+        {
+            github: true,
+            slack: false,
+            figma: false,
+        },
+    );
+
     return (
         <div className="space-y-5">
             <SettingsPanel
                 title="Connected services"
-                description="Manage personal integrations for notifications and sync."
+                description="Connect external tools to enrich planning, delivery, and team communication."
             >
-                <div className="grid grid-cols-1 gap-3 px-5 py-4 md:grid-cols-3">
-                    {integrations.map((integration) => (
-                        <div
-                            key={integration.id}
-                            className="rounded-xl border border-[var(--bg-light-color)] bg-[var(--bg-color)] p-4"
-                        >
-                            <div className="mb-3 flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <span className="rounded-md bg-[var(--bg-light-color)] p-1.5">
-                                        <Icon
-                                            name={integration.icon}
-                                            size={14}
-                                        />
-                                    </span>
-                                    <p className="text-sm font-medium text-white">
-                                        {integration.name}
+                <div className="space-y-1 px-4 py-3">
+                    {integrations.map((integration) => {
+                        const isConnected = connected[integration.id];
+
+                        return (
+                            <div
+                                key={integration.id}
+                                className="flex items-center gap-4 rounded-xl border border-[var(--bg-light-color)] bg-[var(--bg-color)] p-3"
+                            >
+                                <span
+                                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${integration.accentClassName}`}
+                                >
+                                    <Icon
+                                        name={integration.icon}
+                                        size={17}
+                                        className={integration.iconClassName}
+                                    />
+                                </span>
+                                <div className="min-w-0 flex-1">
+                                    <div className="flex items-center gap-2">
+                                        <p className="text-sm font-medium text-white">
+                                            {integration.name}
+                                        </p>
+                                        {integration.id === 'figma' && (
+                                            <span className="rounded bg-blue-500/20 px-1.5 py-0.5 text-[10px] font-semibold text-blue-300">
+                                                Latest
+                                            </span>
+                                        )}
+                                    </div>
+                                    <p className="mt-0.5 text-sm text-zinc-400">
+                                        {integration.description}
                                     </p>
                                 </div>
-                                <span
-                                    className={`text-[11px] font-semibold ${integration.accent}`}
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setConnected((prev) => ({
+                                            ...prev,
+                                            [integration.id]:
+                                                !prev[integration.id],
+                                        }))
+                                    }
+                                    className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-[var(--bg-light-color)] bg-[var(--bg-dark-color)] px-3 py-1.5 text-sm text-zinc-200 transition-colors hover:border-zinc-500"
                                 >
-                                    {integration.status}
-                                </span>
+                                    <Icon
+                                        name={
+                                            isConnected
+                                                ? 'CircleCheck'
+                                                : 'Link2'
+                                        }
+                                        size={14}
+                                    />
+                                    {isConnected
+                                        ? 'Connected'
+                                        : `Connect ${integration.name}`}
+                                </button>
                             </div>
-                            <div className="mb-4 flex flex-wrap gap-1.5">
-                                {integration.features.map((feature) => (
-                                    <span
-                                        key={feature}
-                                        className="rounded-full bg-[var(--bg-light-color)] px-2 py-1 text-[10px] text-zinc-300"
-                                    >
-                                        {feature}
-                                    </span>
-                                ))}
-                            </div>
-                            <Button
-                                type="button"
-                                isBox
-                                className="w-full py-1.5"
-                            >
-                                {integration.action}
-                            </Button>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </SettingsPanel>
             <SettingsPanel
-                title="API access"
-                description="Token and endpoint access for external tooling."
+                title="Developer access"
+                description="Manage API credentials and webhook activity with real-time status."
             >
                 <div className="grid grid-cols-1 gap-3 px-5 py-4 md:grid-cols-2">
                     <div className="rounded-xl border border-[var(--bg-light-color)] bg-[var(--bg-color)] p-4">
-                        <p className="text-sm font-medium text-white">
-                            Personal access tokens
-                        </p>
-                        <div className="mt-3 rounded-lg bg-zinc-950/60 px-2 py-1.5 font-mono text-xs text-zinc-300">
+                        <div className="mb-2 flex items-center justify-between">
+                            <p className="text-sm font-medium text-white">
+                                Personal access tokens
+                            </p>
+                            <button className="text-xs text-[var(--accent-color)]">
+                                New token
+                            </button>
+                        </div>
+                        <div className="rounded-md bg-zinc-950/70 px-2 py-1.5 font-mono text-xs text-zinc-300">
                             orbit_live_xxxxxxxxxxxxxxxx
                         </div>
-                        <Button
-                            type="button"
-                            isBox
-                            className="mt-3 w-full py-1.5"
-                        >
-                            Manage
-                        </Button>
                     </div>
                     <div className="rounded-xl border border-[var(--bg-light-color)] bg-[var(--bg-color)] p-4">
                         <p className="text-sm font-medium text-white">
-                            Webhook deliveries
+                            Webhook health
                         </p>
-                        <div className="mt-3 h-1.5 rounded-full bg-zinc-700">
+                        <div className="mt-2 flex items-center justify-between text-xs text-zinc-400">
+                            <span>Success rate</span>
+                            <span>98.7%</span>
+                        </div>
+                        <div className="mt-2 h-1.5 rounded-full bg-zinc-700">
                             <div className="h-1.5 w-[88%] rounded-full bg-emerald-500" />
                         </div>
-                        <Button
-                            type="button"
-                            isBox
-                            className="mt-3 w-full py-1.5"
-                        >
-                            View logs
-                        </Button>
                     </div>
                 </div>
             </SettingsPanel>

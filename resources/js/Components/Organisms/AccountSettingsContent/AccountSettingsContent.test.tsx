@@ -39,7 +39,7 @@ describe('AccountSettingsContent', () => {
         render(<AccountSettingsContent tabId="integrations" />);
 
         expect(screen.getByText('Connected services')).toBeInTheDocument();
-        expect(screen.getByText('API access')).toBeInTheDocument();
+        expect(screen.getByText('Developer access')).toBeInTheDocument();
     });
 
     test('renders export content', () => {

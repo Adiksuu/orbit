@@ -15,13 +15,24 @@ export default function WorkspaceSettingsMembersTab() {
             >
                 <div className="space-y-2 px-5 py-4">
                     {[
-                        { initials: 'JD', name: 'John Doe', role: 'Admin' },
+                        {
+                            initials: 'JD',
+                            name: 'John Doe',
+                            role: 'Admin',
+                            activity: 'Last active now',
+                        },
                         {
                             initials: 'AK',
                             name: 'Anna Kowalska',
                             role: 'Member',
+                            activity: 'Last active 12 min ago',
                         },
-                        { initials: 'MK', name: 'Marek Kowal', role: 'Member' },
+                        {
+                            initials: 'MK',
+                            name: 'Marek Kowal',
+                            role: 'Member',
+                            activity: 'Last active 2h ago',
+                        },
                     ].map((member) => (
                         <div
                             key={member.name}
@@ -37,6 +48,9 @@ export default function WorkspaceSettingsMembersTab() {
                                     </p>
                                     <p className="text-xs text-zinc-400">
                                         {member.role}
+                                    </p>
+                                    <p className="text-[10px] text-zinc-500">
+                                        {member.activity}
                                     </p>
                                 </div>
                             </div>
@@ -66,6 +80,18 @@ export default function WorkspaceSettingsMembersTab() {
                             checked={guestInvites}
                             onChange={setGuestInvites}
                         />
+                    }
+                />
+                <SettingsPanelRow
+                    title="Default invite role"
+                    description="Set role automatically assigned to invited teammates."
+                    action={
+                        <button
+                            type="button"
+                            className="rounded-full border border-[var(--bg-light-color)] px-3 py-1.5 text-xs font-medium text-zinc-300"
+                        >
+                            Member
+                        </button>
                     }
                 />
             </SettingsPanel>
