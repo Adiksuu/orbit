@@ -2,12 +2,14 @@ import Button from '@/Components/Atoms/Button/Button';
 import Icon from '@/Components/Atoms/Icon/Icon';
 import SettingsPanel from '@/Components/Molecules/SettingsPanel/SettingsPanel';
 import SettingsPanelRow from '@/Components/Molecules/SettingsPanelRow/SettingsPanelRow';
+import AccountSettingsContent from '@/Components/Organisms/AccountSettingsContent/AccountSettingsContent';
 import SettingsSidebarSection from '@/Components/Molecules/SettingsSidebarSection/SettingsSidebarSection';
 import SettingsTabItem from '@/Components/Molecules/SettingsTabItem/SettingsTabItem';
 import { PageProps } from '@/types';
 import {
     SETTINGS_DEFAULT_TAB,
     SETTINGS_TABS,
+    isAccountSettingsTabId,
     isSettingsTabId,
 } from '@/types/Settings';
 import { Link, usePage } from '@inertiajs/react';
@@ -86,43 +88,49 @@ export default function SettingsIndex() {
                         </p>
                     </header>
 
-                    <SettingsPanel
-                        title="General"
-                        description="Foundational controls for this settings area."
-                    >
-                        <SettingsPanelRow
-                            title={`${activeTabConfig.label} configuration`}
-                            description="This section is prepared and ready for detailed controls."
-                            action={
-                                <Button type="button" isBox>
-                                    Configure
-                                </Button>
-                            }
-                        />
-                        <SettingsPanelRow
-                            title="Navigation behavior"
-                            description="Each settings tab is deep-linkable through the URL for direct access."
-                            action={
-                                <span className="text-xs font-medium uppercase tracking-wider text-[var(--accent-color)]">
-                                    Enabled
-                                </span>
-                            }
-                        />
-                    </SettingsPanel>
+                    {isAccountSettingsTabId(activeTab) ? (
+                        <AccountSettingsContent tabId={activeTab} />
+                    ) : (
+                        <>
+                            <SettingsPanel
+                                title="General"
+                                description="Foundational controls for this settings area."
+                            >
+                                <SettingsPanelRow
+                                    title={`${activeTabConfig.label} configuration`}
+                                    description="This section is prepared and ready for detailed controls."
+                                    action={
+                                        <Button type="button" isBox>
+                                            Configure
+                                        </Button>
+                                    }
+                                />
+                                <SettingsPanelRow
+                                    title="Navigation behavior"
+                                    description="Each settings tab is deep-linkable through the URL for direct access."
+                                    action={
+                                        <span className="text-xs font-medium uppercase tracking-wider text-[var(--accent-color)]">
+                                            Enabled
+                                        </span>
+                                    }
+                                />
+                            </SettingsPanel>
 
-                    <SettingsPanel
-                        title="Structure"
-                        description="Layout and organization preview for this tab."
-                    >
-                        <SettingsPanelRow
-                            title="Section grouping"
-                            description="Controls are grouped in focused cards for clarity and faster scanning."
-                        />
-                        <SettingsPanelRow
-                            title="Orbit theme"
-                            description="All visuals use Orbit color tokens and dark interface styling."
-                        />
-                    </SettingsPanel>
+                            <SettingsPanel
+                                title="Structure"
+                                description="Layout and organization preview for this tab."
+                            >
+                                <SettingsPanelRow
+                                    title="Section grouping"
+                                    description="Controls are grouped in focused cards for clarity and faster scanning."
+                                />
+                                <SettingsPanelRow
+                                    title="Orbit theme"
+                                    description="All visuals use Orbit color tokens and dark interface styling."
+                                />
+                            </SettingsPanel>
+                        </>
+                    )}
                 </div>
             </main>
         </div>
