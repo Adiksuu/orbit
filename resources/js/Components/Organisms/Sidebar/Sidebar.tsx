@@ -40,6 +40,10 @@ const Sidebar: FC<{ projects: Project[] }> = ({ projects }) => {
     const handleLogout = () => {
         router.post(route('logout'));
     };
+    const handleOpenSettings = () => {
+        setIsUserMenuOpen(false);
+        router.visit(route('settings'));
+    };
 
     const shortcuts = useMemo(
         (): ShortcutDefinition[] => [
@@ -105,11 +109,6 @@ const Sidebar: FC<{ projects: Project[] }> = ({ projects }) => {
                             badge={'Alt P'}
                             link={'/projects'}
                             isActive={url === '/projects'}
-                        />
-                        <NavItem
-                            icon="Settings"
-                            label="Settings"
-                            isActive={url === '/settings'}
                         />
                     </nav>
 
@@ -205,6 +204,15 @@ const Sidebar: FC<{ projects: Project[] }> = ({ projects }) => {
 
                     {isUserMenuOpen && (
                         <DropdownMenu direction="top">
+                            <DropdownItem
+                                label={
+                                    <>
+                                        <Icon name="Settings" size={14} />
+                                        Settings
+                                    </>
+                                }
+                                onClick={handleOpenSettings}
+                            />
                             <DropdownItem
                                 label={
                                     <>

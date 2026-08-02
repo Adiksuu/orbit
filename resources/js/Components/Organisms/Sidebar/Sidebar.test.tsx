@@ -6,6 +6,7 @@ import Sidebar from './Sidebar';
 
 const pageState = vi.hoisted(() => ({ url: '/' }));
 const mockRouterPost = vi.hoisted(() => vi.fn());
+const mockRouterVisit = vi.hoisted(() => vi.fn());
 const mockUseShortcuts = vi.hoisted(() => vi.fn());
 
 vi.stubGlobal(
@@ -39,7 +40,7 @@ vi.mock('@inertiajs/react', async () => {
                 },
             },
         }),
-        router: { post: mockRouterPost },
+        router: { post: mockRouterPost, visit: mockRouterVisit },
         useForm: (initialData: Record<string, unknown>) => ({
             data: initialData,
             setData: vi.fn(),
@@ -79,6 +80,7 @@ describe('Sidebar Component', () => {
     beforeEach(() => {
         pageState.url = '/';
         mockRouterPost.mockClear();
+        mockRouterVisit.mockClear();
         mockUseShortcuts.mockClear();
     });
 
@@ -87,7 +89,6 @@ describe('Sidebar Component', () => {
 
         expect(screen.getByText('Dashboard')).toBeInTheDocument();
         expect(screen.getByText('Projects')).toBeInTheDocument();
-        expect(screen.getByText('Settings')).toBeInTheDocument();
     });
 
     test('shows the number of projects as a badge', () => {
@@ -200,6 +201,16 @@ describe('Sidebar Component', () => {
         await user.click(logoutItem);
 
         expect(mockRouterPost).toHaveBeenCalledWith('/logout');
+    });
+
+    test('opens settings from the user menu', async () => {
+        const user = userEvent.setup();
+        render(<Sidebar projects={[]} />);
+
+        await user.click(screen.getAllByText('John Doe')[0]);
+        await user.click(screen.getByText('Settings'));
+
+        expect(mockRouterVisit).toHaveBeenCalledWith('/settings');
     });
 
     test('closes the user menu when clicking outside', async () => {

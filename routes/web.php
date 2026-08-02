@@ -6,6 +6,7 @@ use App\Http\Controllers\IssueController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SavedFilterController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -30,6 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/notifications/{notification}', [NotificationController::class, 'update'])->name('notifications.update');
     Route::post('/onboarding/complete', [UserController::class, 'completeOnboarding'])->name('onboarding.complete');
     Route::post('/onboarding/project/complete', [UserController::class, 'completeProjectOnboarding'])->name('onboarding.project.complete');
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
 });
 
 require __DIR__.'/auth.php';
