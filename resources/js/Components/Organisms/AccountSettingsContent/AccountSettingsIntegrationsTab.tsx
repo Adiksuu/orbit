@@ -61,7 +61,7 @@ export default function AccountSettingsIntegrationsTab() {
                         return (
                             <div
                                 key={integration.id}
-                                className="flex items-center gap-4 rounded-xl border border-[var(--bg-light-color)] bg-[var(--bg-color)] p-3"
+                                className="flex flex-col gap-3 rounded-xl border border-[var(--bg-light-color)] bg-[var(--bg-color)] p-3 sm:flex-row sm:items-center sm:gap-4"
                             >
                                 <span
                                     className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${integration.accentClassName}`}
@@ -96,7 +96,7 @@ export default function AccountSettingsIntegrationsTab() {
                                                 !prev[integration.id],
                                         }))
                                     }
-                                    className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-[var(--bg-light-color)] bg-[var(--bg-dark-color)] px-3 py-1.5 text-sm text-zinc-200 transition-colors hover:border-zinc-500"
+                                    className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-lg border border-[var(--bg-light-color)] bg-[var(--bg-dark-color)] px-3 py-1.5 text-sm text-zinc-200 transition-colors hover:border-zinc-500 sm:w-auto"
                                 >
                                     <Icon
                                         name={
