@@ -65,4 +65,12 @@ describe('Settings Index Page', () => {
             screen.getByRole('heading', { name: 'Members' }),
         ).toBeInTheDocument();
     });
+
+    test('renders account tab content for selected account tab', () => {
+        pageState.url = '/settings?tab=notifications';
+        render(<SettingsIndex />);
+
+        expect(screen.getByText('Activity notifications')).toBeInTheDocument();
+        expect(screen.getByText('Delivery preferences')).toBeInTheDocument();
+    });
 });

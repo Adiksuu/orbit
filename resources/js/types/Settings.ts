@@ -124,3 +124,20 @@ export const SETTINGS_DEFAULT_TAB: SettingsTabId = 'preferences';
 export const isSettingsTabId = (value: string): value is SettingsTabId => {
     return SETTINGS_TABS.some((tab) => tab.id === value);
 };
+
+export const ACCOUNT_SETTINGS_TAB_IDS = [
+    'preferences',
+    'profile',
+    'notifications',
+    'security-access',
+    'integrations',
+    'export',
+] as const;
+
+export type AccountSettingsTabId = (typeof ACCOUNT_SETTINGS_TAB_IDS)[number];
+
+export const isAccountSettingsTabId = (
+    value: SettingsTabId,
+): value is AccountSettingsTabId => {
+    return ACCOUNT_SETTINGS_TAB_IDS.includes(value as AccountSettingsTabId);
+};
