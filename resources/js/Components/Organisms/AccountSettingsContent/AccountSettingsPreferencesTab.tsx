@@ -1,6 +1,7 @@
-import Icon from '@/Components/Atoms/Icon/Icon';
 import ToggleSwitch from '@/Components/Atoms/ToggleSwitch/ToggleSwitch';
 import SettingsPanel from '@/Components/Molecules/SettingsPanel/SettingsPanel';
+import AccountSettingsHomeViewCard from '@/Components/Organisms/AccountSettingsContent/AccountSettingsHomeViewCard';
+import AccountSettingsThemeCard from '@/Components/Organisms/AccountSettingsContent/AccountSettingsThemeCard';
 import { useState } from 'react';
 
 type ThemeMode = 'dark' | 'light' | 'system';
@@ -9,9 +10,21 @@ const selectablePillClass =
     'rounded-full border border-[var(--bg-light-color)] px-3 py-1.5 text-xs font-medium text-zinc-300 transition-colors hover:border-zinc-500';
 
 const homeViewOptions = [
-    { value: 'Dashboard', icon: 'LayoutDashboard' as const, preview: 'Stats' },
-    { value: 'My issues', icon: 'ListTodo' as const, preview: 'Inbox' },
-    { value: 'Projects', icon: 'FolderGit2' as const, preview: 'Roadmap' },
+    {
+        value: 'Dashboard',
+        icon: 'LayoutDashboard' as const,
+        accentClassName: 'bg-amber-400',
+    },
+    {
+        value: 'My issues',
+        icon: 'ListTodo' as const,
+        accentClassName: 'bg-violet-400',
+    },
+    {
+        value: 'Projects',
+        icon: 'FolderGit2' as const,
+        accentClassName: 'bg-sky-400',
+    },
 ];
 
 const themeOptions: Array<{ id: ThemeMode; label: string; subtitle: string }> =
@@ -42,28 +55,14 @@ export default function AccountSettingsPreferencesTab() {
             >
                 <div className="grid grid-cols-1 gap-3 px-5 py-4 md:grid-cols-3">
                     {homeViewOptions.map((option) => (
-                        <button
+                        <AccountSettingsHomeViewCard
                             key={option.value}
-                            type="button"
-                            onClick={() => setHomeView(option.value)}
-                            className={`rounded-xl border p-3 text-left transition-colors ${
-                                homeView === option.value
-                                    ? 'border-[var(--accent-color)] bg-[var(--accent-color-opacity)]'
-                                    : 'border-[var(--bg-light-color)] bg-[var(--bg-color)] hover:border-zinc-500'
-                            }`}
-                        >
-                            <div className="mb-2 flex items-center gap-2">
-                                <span className="rounded-md bg-[var(--bg-light-color)] p-1.5">
-                                    <Icon name={option.icon} size={14} />
-                                </span>
-                                <p className="text-sm font-medium text-white">
-                                    {option.value}
-                                </p>
-                            </div>
-                            <div className="rounded-md bg-[var(--bg-light-color)] px-2 py-1 text-xs text-zinc-400">
-                                {option.preview} preview
-                            </div>
-                        </button>
+                            title={option.value}
+                            icon={option.icon}
+                            accentClassName={option.accentClassName}
+                            selected={homeView === option.value}
+                            onSelect={() => setHomeView(option.value)}
+                        />
                     ))}
                 </div>
             </SettingsPanel>
@@ -74,28 +73,14 @@ export default function AccountSettingsPreferencesTab() {
             >
                 <div className="grid grid-cols-1 gap-3 px-5 py-4 md:grid-cols-3">
                     {themeOptions.map((theme) => (
-                        <button
+                        <AccountSettingsThemeCard
                             key={theme.id}
-                            type="button"
-                            onClick={() => setThemeMode(theme.id)}
-                            className={`rounded-xl border p-3 text-left transition-colors ${
-                                themeMode === theme.id
-                                    ? 'border-[var(--accent-color)] bg-[var(--accent-color-opacity)]'
-                                    : 'border-[var(--bg-light-color)] bg-[var(--bg-color)] hover:border-zinc-500'
-                            }`}
-                        >
-                            <p className="text-sm font-medium text-white">
-                                {theme.label}
-                            </p>
-                            <p className="mt-1 text-xs text-zinc-400">
-                                {theme.subtitle}
-                            </p>
-                            <div className="mt-3 space-y-1">
-                                <div className="h-2 rounded bg-zinc-700" />
-                                <div className="h-2 rounded bg-zinc-600/80" />
-                                <div className="h-2 rounded bg-zinc-500/70" />
-                            </div>
-                        </button>
+                            id={theme.id}
+                            label={theme.label}
+                            subtitle={theme.subtitle}
+                            selected={themeMode === theme.id}
+                            onSelect={() => setThemeMode(theme.id)}
+                        />
                     ))}
                 </div>
             </SettingsPanel>
