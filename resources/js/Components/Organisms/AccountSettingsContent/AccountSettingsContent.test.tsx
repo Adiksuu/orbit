@@ -7,7 +7,7 @@ describe('AccountSettingsContent', () => {
         render(<AccountSettingsContent tabId="preferences" />);
 
         expect(screen.getByText('Default home view')).toBeInTheDocument();
-        expect(screen.getByText('Writing and input')).toBeInTheDocument();
+        expect(screen.getByText('Interface and behavior')).toBeInTheDocument();
     });
 
     test('renders profile content', () => {
