@@ -13,7 +13,11 @@ describe('SettingsPanelRow', () => {
         );
 
         expect(screen.getByText('Default home view')).toBeInTheDocument();
-        expect(screen.getByText('Choose your default page.')).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: 'Manage' })).toBeInTheDocument();
+        expect(
+            screen.getByText('Choose your default page.'),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: 'Manage' }),
+        ).toBeInTheDocument();
     });
 });

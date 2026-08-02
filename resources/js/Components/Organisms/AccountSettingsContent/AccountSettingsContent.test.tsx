@@ -27,7 +27,9 @@ describe('AccountSettingsContent', () => {
     test('renders security and access content', () => {
         render(<AccountSettingsContent tabId="security-access" />);
 
-        expect(screen.getByText('Sign-in and verification')).toBeInTheDocument();
+        expect(
+            screen.getByText('Sign-in and verification'),
+        ).toBeInTheDocument();
         expect(screen.getByText('Active sessions')).toBeInTheDocument();
     });
 

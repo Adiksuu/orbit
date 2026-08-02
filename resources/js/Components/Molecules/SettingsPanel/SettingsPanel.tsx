@@ -19,7 +19,9 @@ export default function SettingsPanel({
                     <p className="mt-1 text-sm text-zinc-400">{description}</p>
                 )}
             </header>
-            <div className="divide-y divide-[var(--bg-light-color)]">{children}</div>
+            <div className="divide-y divide-[var(--bg-light-color)]">
+                {children}
+            </div>
         </section>
     );
 }

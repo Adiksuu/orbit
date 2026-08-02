@@ -31,7 +31,8 @@ export const SETTINGS_TABS: SettingsTab[] = [
         label: 'Preferences',
         icon: 'SlidersHorizontal',
         section: 'account',
-        description: 'Control personal experience defaults and display behavior.',
+        description:
+            'Control personal experience defaults and display behavior.',
     },
     {
         id: 'profile',
@@ -45,7 +46,8 @@ export const SETTINGS_TABS: SettingsTab[] = [
         label: 'Notifications',
         icon: 'Bell',
         section: 'account',
-        description: 'Adjust delivery channels and activity notification rules.',
+        description:
+            'Adjust delivery channels and activity notification rules.',
     },
     {
         id: 'security-access',
@@ -140,4 +142,23 @@ export const isAccountSettingsTabId = (
     value: SettingsTabId,
 ): value is AccountSettingsTabId => {
     return ACCOUNT_SETTINGS_TAB_IDS.includes(value as AccountSettingsTabId);
+};
+
+export const WORKSPACE_SETTINGS_TAB_IDS = [
+    'labels',
+    'statuses',
+    'priorities',
+    'templates',
+    'documents',
+    'members',
+    'roles-management',
+] as const;
+
+export type WorkspaceSettingsTabId =
+    (typeof WORKSPACE_SETTINGS_TAB_IDS)[number];
+
+export const isWorkspaceSettingsTabId = (
+    value: SettingsTabId,
+): value is WorkspaceSettingsTabId => {
+    return WORKSPACE_SETTINGS_TAB_IDS.includes(value as WorkspaceSettingsTabId);
 };

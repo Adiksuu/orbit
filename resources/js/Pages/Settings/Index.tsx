@@ -2,15 +2,17 @@ import Button from '@/Components/Atoms/Button/Button';
 import Icon from '@/Components/Atoms/Icon/Icon';
 import SettingsPanel from '@/Components/Molecules/SettingsPanel/SettingsPanel';
 import SettingsPanelRow from '@/Components/Molecules/SettingsPanelRow/SettingsPanelRow';
-import AccountSettingsContent from '@/Components/Organisms/AccountSettingsContent/AccountSettingsContent';
 import SettingsSidebarSection from '@/Components/Molecules/SettingsSidebarSection/SettingsSidebarSection';
 import SettingsTabItem from '@/Components/Molecules/SettingsTabItem/SettingsTabItem';
+import AccountSettingsContent from '@/Components/Organisms/AccountSettingsContent/AccountSettingsContent';
+import WorkspaceSettingsContent from '@/Components/Organisms/WorkspaceSettingsContent/WorkspaceSettingsContent';
 import { PageProps } from '@/types';
 import {
     SETTINGS_DEFAULT_TAB,
     SETTINGS_TABS,
     isAccountSettingsTabId,
     isSettingsTabId,
+    isWorkspaceSettingsTabId,
 } from '@/types/Settings';
 import { Link, usePage } from '@inertiajs/react';
 import { useMemo } from 'react';
@@ -37,7 +39,9 @@ export default function SettingsIndex() {
         );
     }, [activeTab]);
 
-    const accountTabs = SETTINGS_TABS.filter((tab) => tab.section === 'account');
+    const accountTabs = SETTINGS_TABS.filter(
+        (tab) => tab.section === 'account',
+    );
     const workspaceTabs = SETTINGS_TABS.filter(
         (tab) => tab.section === 'workspace',
     );
@@ -80,6 +84,9 @@ export default function SettingsIndex() {
             <main className="flex-1 overflow-y-auto">
                 <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-8 py-10">
                     <header className="space-y-2">
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
+                            Settings
+                        </p>
                         <h1 className="text-3xl font-semibold text-white">
                             {activeTabConfig.label}
                         </h1>
@@ -90,6 +97,8 @@ export default function SettingsIndex() {
 
                     {isAccountSettingsTabId(activeTab) ? (
                         <AccountSettingsContent tabId={activeTab} />
+                    ) : isWorkspaceSettingsTabId(activeTab) ? (
+                        <WorkspaceSettingsContent tabId={activeTab} />
                     ) : (
                         <>
                             <SettingsPanel

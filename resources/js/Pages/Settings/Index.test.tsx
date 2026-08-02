@@ -64,6 +64,7 @@ describe('Settings Index Page', () => {
         expect(
             screen.getByRole('heading', { name: 'Members' }),
         ).toBeInTheDocument();
+        expect(screen.getByText('Member access')).toBeInTheDocument();
     });
 
     test('renders account tab content for selected account tab', () => {
@@ -72,5 +73,13 @@ describe('Settings Index Page', () => {
 
         expect(screen.getByText('Activity notifications')).toBeInTheDocument();
         expect(screen.getByText('Delivery preferences')).toBeInTheDocument();
+    });
+
+    test('renders workspace tab content for selected workspace tab', () => {
+        pageState.url = '/settings?tab=templates';
+        render(<SettingsIndex />);
+
+        expect(screen.getByText('Issue templates')).toBeInTheDocument();
+        expect(screen.getByText('Quality controls')).toBeInTheDocument();
     });
 });
