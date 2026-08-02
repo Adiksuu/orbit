@@ -6,6 +6,10 @@ use Inertia\Testing\AssertableInertia as Assert;
 
 uses(RefreshDatabase::class);
 
+beforeEach(function () {
+    $this->withoutVite();
+});
+
 test('authenticated user can view the settings page', function () {
     $response = $this->actingAs(User::factory()->create())->get('/settings');
 
