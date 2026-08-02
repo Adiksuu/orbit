@@ -29,22 +29,38 @@ export default function WorkspaceSettingsDocumentsTab() {
                         >
                             {documentAccess}
                         </button>
+                        <div className="mt-3 flex gap-2">
+                            <button
+                                type="button"
+                                className="rounded-md border border-[var(--bg-light-color)] px-2 py-1 text-xs text-zinc-300"
+                            >
+                                New folder
+                            </button>
+                            <button
+                                type="button"
+                                className="rounded-md border border-[var(--bg-light-color)] px-2 py-1 text-xs text-zinc-300"
+                            >
+                                New template
+                            </button>
+                        </div>
                     </div>
                     <div className="rounded-xl border border-[var(--bg-light-color)] bg-[var(--bg-color)] p-4">
                         <p className="text-sm font-medium text-white">
                             Document structure preview
                         </p>
                         <div className="mt-2 space-y-1.5">
-                            {['Product', 'Engineering', 'Operations'].map(
-                                (folder) => (
-                                    <div
-                                        key={folder}
-                                        className="rounded-md bg-[var(--bg-light-color)] px-2 py-1 text-xs text-zinc-400"
-                                    >
-                                        {folder}
-                                    </div>
-                                ),
-                            )}
+                            {[
+                                { name: 'Product', docs: 7 },
+                                { name: 'Engineering', docs: 11 },
+                                { name: 'Operations', docs: 5 },
+                            ].map((folder) => (
+                                <div
+                                    key={folder.name}
+                                    className="rounded-md bg-[var(--bg-light-color)] px-2 py-1 text-xs text-zinc-400"
+                                >
+                                    {folder.name} · {folder.docs} docs
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>
@@ -56,6 +72,18 @@ export default function WorkspaceSettingsDocumentsTab() {
                 <SettingsPanelRow
                     title="Content indexing"
                     description="Continuously index workspace documents for fast search."
+                />
+                <SettingsPanelRow
+                    title="Retention policy"
+                    description="Archive stale documents after a selected inactivity period."
+                    action={
+                        <button
+                            type="button"
+                            className="rounded-full border border-[var(--bg-light-color)] px-3 py-1.5 text-xs font-medium text-zinc-300"
+                        >
+                            180 days
+                        </button>
+                    }
                 />
             </SettingsPanel>
         </div>

@@ -134,6 +134,18 @@ export default function WorkspaceSettingsRolesTab() {
                         </Button>
                     }
                 />
+                <SettingsPanelRow
+                    title="Custom roles"
+                    description="Create additional role presets tailored to team structure."
+                    action={
+                        <button
+                            type="button"
+                            className="rounded-md border border-dashed border-[var(--bg-light-color)] px-3 py-1.5 text-xs font-semibold text-zinc-200 transition-colors hover:border-zinc-500"
+                        >
+                            + Create role
+                        </button>
+                    }
+                />
             </SettingsPanel>
             <SettingsPanel
                 title="Administration"

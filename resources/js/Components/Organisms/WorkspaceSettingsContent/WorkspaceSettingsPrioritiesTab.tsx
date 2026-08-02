@@ -5,6 +5,7 @@ import { useState } from 'react';
 
 export default function WorkspaceSettingsPrioritiesTab() {
     const [priorityScale, setPriorityScale] = useState('Three levels');
+    const [activePriority, setActivePriority] = useState('high');
 
     return (
         <div className="space-y-5">
@@ -42,8 +43,27 @@ export default function WorkspaceSettingsPrioritiesTab() {
                             <p className="text-xs text-zinc-400">
                                 {priority.info}
                             </p>
+                            <button
+                                type="button"
+                                onClick={() => setActivePriority(priority.key)}
+                                className={`mt-2 rounded-full border px-2 py-0.5 text-[10px] ${
+                                    activePriority === priority.key
+                                        ? 'border-[var(--accent-color)] text-white'
+                                        : 'border-[var(--bg-light-color)] text-zinc-400'
+                                }`}
+                            >
+                                Edit level
+                            </button>
                         </div>
                     ))}
+                </div>
+                <div className="px-5 pb-4">
+                    <button
+                        type="button"
+                        className="rounded-md border border-dashed border-[var(--bg-light-color)] px-3 py-1.5 text-xs font-semibold text-zinc-200 transition-colors hover:border-zinc-500"
+                    >
+                        + Add priority level
+                    </button>
                 </div>
                 <SettingsPanelRow
                     title="Priority scale"
@@ -78,6 +98,18 @@ export default function WorkspaceSettingsPrioritiesTab() {
                             className="rounded-full border border-[var(--bg-light-color)] px-3 py-1.5 text-xs font-medium text-zinc-300"
                         >
                             Medium
+                        </button>
+                    }
+                />
+                <SettingsPanelRow
+                    title="Auto-escalation rules"
+                    description="Trigger priority bumps based on age, status, or SLA."
+                    action={
+                        <button
+                            type="button"
+                            className="rounded-full border border-[var(--bg-light-color)] px-3 py-1.5 text-xs font-medium text-zinc-300"
+                        >
+                            Configure rules
                         </button>
                     }
                 />

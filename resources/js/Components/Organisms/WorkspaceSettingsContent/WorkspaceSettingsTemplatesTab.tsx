@@ -49,6 +49,20 @@ export default function WorkspaceSettingsTemplatesTab() {
             >
                 <div className="grid grid-cols-1 gap-3 px-5 py-4 lg:grid-cols-[1.1fr_1fr]">
                     <div className="space-y-2">
+                        <div className="flex gap-2">
+                            <button
+                                type="button"
+                                className="rounded-md border border-dashed border-[var(--bg-light-color)] px-3 py-1.5 text-xs font-semibold text-zinc-200 transition-colors hover:border-zinc-500"
+                            >
+                                + New template
+                            </button>
+                            <button
+                                type="button"
+                                className="rounded-md border border-[var(--bg-light-color)] px-3 py-1.5 text-xs text-zinc-300"
+                            >
+                                Import JSON
+                            </button>
+                        </div>
                         {templatePresets.map((template) => (
                             <button
                                 key={template.id}
@@ -139,6 +153,18 @@ export default function WorkspaceSettingsTemplatesTab() {
                             }
                         >
                             {templateVisibility}
+                        </button>
+                    }
+                />
+                <SettingsPanelRow
+                    title="Template analytics"
+                    description="Track template adoption and completion quality across teams."
+                    action={
+                        <button
+                            type="button"
+                            className="rounded-full border border-[var(--bg-light-color)] px-3 py-1.5 text-xs font-medium text-zinc-300"
+                        >
+                            View stats
                         </button>
                     }
                 />

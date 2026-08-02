@@ -1,4 +1,5 @@
 import Button from '@/Components/Atoms/Button/Button';
+import Input from '@/Components/Atoms/Input/Input';
 import LabelBadge from '@/Components/Atoms/LabelBadge/LabelBadge';
 import ToggleSwitch from '@/Components/Atoms/ToggleSwitch/ToggleSwitch';
 import SettingsPanel from '@/Components/Molecules/SettingsPanel/SettingsPanel';
@@ -17,6 +18,7 @@ const sampleLabels: IssueLabel[] = [
 
 export default function WorkspaceSettingsLabelsTab() {
     const [autoLabelColor, setAutoLabelColor] = useState(true);
+    const [newLabel, setNewLabel] = useState('');
 
     return (
         <div className="space-y-5">
@@ -29,12 +31,24 @@ export default function WorkspaceSettingsLabelsTab() {
                         {sampleLabels.map((label) => (
                             <LabelBadge key={label} label={label} />
                         ))}
-                        <button
-                            type="button"
-                            className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-[var(--bg-light-color)] px-2 py-0.5 text-xs font-medium text-zinc-400 transition-colors hover:border-zinc-500 hover:text-zinc-200"
-                        >
-                            + Add label
-                        </button>
+                    </div>
+                    <div className="rounded-xl border border-[var(--bg-light-color)] bg-[var(--bg-dark-color)] p-3">
+                        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                            New label preview
+                        </p>
+                        <div className="flex flex-col gap-2 md:flex-row">
+                            <Input
+                                value={newLabel}
+                                onChange={(e) => setNewLabel(e.target.value)}
+                                placeholder="Label name (preview only)"
+                            />
+                            <button
+                                type="button"
+                                className="rounded-md border border-dashed border-[var(--bg-light-color)] px-3 py-1.5 text-sm font-medium text-zinc-300 transition-colors hover:border-zinc-500"
+                            >
+                                Add label
+                            </button>
+                        </div>
                     </div>
                     <div className="rounded-xl border border-[var(--bg-light-color)] bg-[var(--bg-color)] p-3">
                         <div className="mb-2 flex items-center justify-between">
@@ -60,6 +74,18 @@ export default function WorkspaceSettingsLabelsTab() {
                         <Button type="button" isBox className="px-3 py-1.5">
                             Configure
                         </Button>
+                    }
+                />
+                <SettingsPanelRow
+                    title="Merge duplicate labels"
+                    description="Resolve overlapping labels and keep taxonomy clean."
+                    action={
+                        <button
+                            type="button"
+                            className="rounded-full border border-[var(--bg-light-color)] px-3 py-1.5 text-xs font-medium text-zinc-300"
+                        >
+                            Merge labels
+                        </button>
                     }
                 />
             </SettingsPanel>
