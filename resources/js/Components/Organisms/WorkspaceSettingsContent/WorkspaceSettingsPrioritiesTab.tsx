@@ -1,0 +1,87 @@
+import { PriorityIcon } from '@/Components/Atoms/PriorityIcon/PriorityIcon';
+import SettingsPanel from '@/Components/Molecules/SettingsPanel/SettingsPanel';
+import SettingsPanelRow from '@/Components/Molecules/SettingsPanelRow/SettingsPanelRow';
+import { useState } from 'react';
+
+export default function WorkspaceSettingsPrioritiesTab() {
+    const [priorityScale, setPriorityScale] = useState('Three levels');
+
+    return (
+        <div className="space-y-5">
+            <SettingsPanel
+                title="Priority framework"
+                description="Standardize urgency levels for consistent planning."
+            >
+                <div className="grid grid-cols-1 gap-3 px-5 py-4 md:grid-cols-3">
+                    {[
+                        {
+                            key: 'high',
+                            label: 'High',
+                            info: 'Immediate attention',
+                        },
+                        {
+                            key: 'medium',
+                            label: 'Medium',
+                            info: 'Important but not blocking',
+                        },
+                        { key: 'low', label: 'Low', info: 'Planned flexibly' },
+                    ].map((priority) => (
+                        <div
+                            key={priority.key}
+                            className="rounded-xl border border-[var(--bg-light-color)] bg-[var(--bg-color)] p-3"
+                        >
+                            <div className="mb-2 flex items-center gap-2">
+                                <PriorityIcon
+                                    priority={priority.key}
+                                    tooltip={false}
+                                />
+                                <p className="text-sm font-medium text-white">
+                                    {priority.label}
+                                </p>
+                            </div>
+                            <p className="text-xs text-zinc-400">
+                                {priority.info}
+                            </p>
+                        </div>
+                    ))}
+                </div>
+                <SettingsPanelRow
+                    title="Priority scale"
+                    description="Select how many priority levels your workspace uses."
+                    action={
+                        <button
+                            type="button"
+                            className="rounded-full border border-[var(--bg-light-color)] px-3 py-1.5 text-xs font-medium text-zinc-300"
+                            onClick={() =>
+                                setPriorityScale(
+                                    priorityScale === 'Three levels'
+                                        ? 'Four levels'
+                                        : 'Three levels',
+                                )
+                            }
+                        >
+                            {priorityScale}
+                        </button>
+                    }
+                />
+            </SettingsPanel>
+            <SettingsPanel
+                title="Default policy"
+                description="Control workspace defaults for newly created issues."
+            >
+                <SettingsPanelRow
+                    title="Default issue priority"
+                    description="Used when no explicit priority is selected."
+                    action={
+                        <button
+                            type="button"
+                            className="rounded-full border border-[var(--bg-light-color)] px-3 py-1.5 text-xs font-medium text-zinc-300"
+                        >
+                            Medium
+                        </button>
+                    }
+                />
+            </SettingsPanel>
+        </div>
+    );
+}

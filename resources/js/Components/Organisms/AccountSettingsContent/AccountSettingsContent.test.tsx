@@ -7,6 +7,8 @@ describe('AccountSettingsContent', () => {
         render(<AccountSettingsContent tabId="preferences" />);
 
         expect(screen.getByText('Default home view')).toBeInTheDocument();
+        expect(screen.getByText('Interface theme')).toBeInTheDocument();
+        expect(screen.getByText('System sync')).toBeInTheDocument();
         expect(screen.getByText('Interface and behavior')).toBeInTheDocument();
     });
 
@@ -14,7 +16,7 @@ describe('AccountSettingsContent', () => {
         render(<AccountSettingsContent tabId="profile" />);
 
         expect(screen.getByText('Profile details')).toBeInTheDocument();
-        expect(screen.getByText('Work email')).toBeInTheDocument();
+        expect(screen.getByText('Profile preview')).toBeInTheDocument();
     });
 
     test('renders notifications content', () => {
