@@ -10,12 +10,23 @@ import { ShortcutProvider } from '@/context/ShortcutContext';
 import { PageProps } from '@/types';
 import type { ResolvedComponent } from '@inertiajs/react';
 import { createInertiaApp, router, usePage } from '@inertiajs/react';
+import * as Sentry from '@sentry/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 const AUTH_PAGES = ['Auth/Login', 'Auth/Register'];
+
+Sentry.init({
+    dsn: import.meta.env.VITE_SENTRY_DSN,
+    dataCollection: {
+        // To disable sending user data and HTTP bodies, uncomment the lines below. For more info visit:
+        // https://docs.sentry.io/platforms/javascript/guides/react/configuration/options/#dataCollection
+        // userInfo: false,
+        // httpBodies: []
+    },
+});
 
 function OnboardingGate() {
     const { component, props } = usePage<PageProps>();
