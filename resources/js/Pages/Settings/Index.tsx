@@ -1,4 +1,4 @@
-import Icon from '@/Components/Atoms/Icon/Icon';
+import Breadcrumb from '@/Components/Molecules/Breadcrumb/Breadcrumb';
 import SettingsPanel from '@/Components/Molecules/SettingsPanel/SettingsPanel';
 import SettingsPanelRow from '@/Components/Molecules/SettingsPanelRow/SettingsPanelRow';
 import AccountSettingsContent from '@/Components/Organisms/AccountSettingsContent/AccountSettingsContent';
@@ -61,15 +61,15 @@ export default function SettingsIndex() {
                 <main className="flex-1 overflow-y-auto">
                     <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 pb-16 pt-20 sm:px-6 lg:px-10 lg:pt-12">
                         <header className="space-y-2">
-                            <div className="flex items-center gap-1.5 text-xs font-medium text-zinc-500">
-                                <span className="uppercase tracking-[0.2em]">
-                                    Settings
-                                </span>
-                                <Icon name="ChevronRight" size={12} />
-                                <span className="text-zinc-300">
-                                    {activeTabConfig.label}
-                                </span>
-                            </div>
+                            <Breadcrumb
+                                items={[
+                                    {
+                                        label: 'Settings',
+                                        className: 'uppercase tracking-[0.2em]',
+                                    },
+                                    { label: activeTabConfig.label },
+                                ]}
+                            />
                             <h1 className="text-2xl font-semibold text-white sm:text-3xl">
                                 {activeTabConfig.label}
                             </h1>

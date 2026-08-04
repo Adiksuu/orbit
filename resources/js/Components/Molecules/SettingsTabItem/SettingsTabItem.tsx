@@ -35,10 +35,7 @@ export default function SettingsTabItem({
             />
             <span className="min-w-0 flex-1 truncate font-medium">{label}</span>
             {isDisabled && (
-                <Badge
-                    color="in_progress"
-                    className="shrink-0 px-1.5 uppercase tracking-wide"
-                >
+                <Badge color="closed" className="shrink-0 tracking-wide">
                     Soon
                 </Badge>
             )}
