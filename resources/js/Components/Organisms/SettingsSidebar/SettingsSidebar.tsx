@@ -35,7 +35,7 @@ export default function SettingsSidebar({
             )}
 
             <aside
-                className={`fixed inset-y-0 left-0 z-50 flex h-screen w-[264px] shrink-0 flex-col gap-6 overflow-y-auto border-r border-solid border-r-[var(--bg-light-color)] bg-[var(--bg-dark-color)] p-4 transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
+                className={`fixed inset-y-0 left-0 z-50 flex h-screen w-[284px] shrink-0 flex-col gap-6 overflow-y-auto border-r border-solid border-r-[var(--bg-light-color)] bg-[var(--bg-dark-color)] p-4 transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
                     isOpen ? 'translate-x-0' : '-translate-x-full'
                 }`}
             >
@@ -79,6 +79,7 @@ export default function SettingsSidebar({
                                 label={tab.label}
                                 href={`/settings?tab=${tab.id}`}
                                 isActive={tab.id === activeTab}
+                                isDisabled={!tab.enabled}
                                 onClick={() => setIsOpen(false)}
                             />
                         ))}
@@ -92,6 +93,7 @@ export default function SettingsSidebar({
                                 label={tab.label}
                                 href={`/settings?tab=${tab.id}`}
                                 isActive={tab.id === activeTab}
+                                isDisabled={!tab.enabled}
                                 onClick={() => setIsOpen(false)}
                             />
                         ))}

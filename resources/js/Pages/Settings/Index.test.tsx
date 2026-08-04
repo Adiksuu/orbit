@@ -57,29 +57,26 @@ describe('Settings Index Page', () => {
         );
     });
 
-    test('reads active tab from query param', () => {
+    test('falls back to the default tab when the requested tab is disabled', () => {
         pageState.url = '/settings?tab=members';
         render(<SettingsIndex />);
 
         expect(
-            screen.getByRole('heading', { name: 'Members' }),
+            screen.getByRole('heading', { name: 'Preferences' }),
         ).toBeInTheDocument();
-        expect(screen.getByText('Member access')).toBeInTheDocument();
     });
 
-    test('renders account tab content for selected account tab', () => {
-        pageState.url = '/settings?tab=notifications';
+    test('renders account tab content for the enabled preferences tab', () => {
+        pageState.url = '/settings?tab=preferences';
         render(<SettingsIndex />);
 
-        expect(screen.getByText('Activity notifications')).toBeInTheDocument();
-        expect(screen.getByText('Delivery preferences')).toBeInTheDocument();
+        expect(screen.getByText('Default home view')).toBeInTheDocument();
     });
 
-    test('renders workspace tab content for selected workspace tab', () => {
-        pageState.url = '/settings?tab=templates';
+    test('renders disabled tabs without a link and with a "Soon" badge', () => {
         render(<SettingsIndex />);
 
-        expect(screen.getByText('Issue templates')).toBeInTheDocument();
-        expect(screen.getByText('Quality controls')).toBeInTheDocument();
+        expect(screen.getByText('Members').closest('a')).toBeNull();
+        expect(screen.getAllByText('Soon').length).toBeGreaterThan(0);
     });
 });

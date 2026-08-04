@@ -29,6 +29,7 @@ const accountTabs: SettingsTab[] = [
         icon: 'SlidersHorizontal',
         section: 'account',
         description: 'Control personal experience defaults.',
+        enabled: true,
     },
     {
         id: 'integrations',
@@ -36,6 +37,7 @@ const accountTabs: SettingsTab[] = [
         icon: 'Plug',
         section: 'account',
         description: 'Connect third-party tools.',
+        enabled: true,
     },
 ];
 
@@ -46,6 +48,7 @@ const workspaceTabs: SettingsTab[] = [
         icon: 'FileText',
         section: 'workspace',
         description: 'Create reusable issue templates.',
+        enabled: false,
     },
     {
         id: 'members',
@@ -53,6 +56,7 @@ const workspaceTabs: SettingsTab[] = [
         icon: 'Users',
         section: 'workspace',
         description: 'Manage workspace access.',
+        enabled: false,
     },
 ];
 
@@ -88,5 +92,18 @@ describe('SettingsSidebar', () => {
         expect(screen.getByText('Integrations').closest('a')).toHaveClass(
             'text-white',
         );
+    });
+
+    test('renders disabled tabs as non-navigable with a "Soon" badge', () => {
+        render(
+            <SettingsSidebar
+                activeTab="preferences"
+                accountTabs={accountTabs}
+                workspaceTabs={workspaceTabs}
+            />,
+        );
+
+        expect(screen.getByText('Members').closest('a')).toBeNull();
+        expect(screen.getAllByText('Soon').length).toBe(2);
     });
 });

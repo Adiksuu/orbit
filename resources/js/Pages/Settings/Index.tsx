@@ -9,6 +9,7 @@ import {
     SETTINGS_DEFAULT_TAB,
     SETTINGS_TABS,
     isAccountSettingsTabId,
+    isEnabledSettingsTabId,
     isSettingsTabId,
     isWorkspaceSettingsTabId,
 } from '@/types/Settings';
@@ -23,7 +24,11 @@ export default function SettingsIndex() {
         const params = new URLSearchParams(queryString);
         const tabParam = params.get('tab');
 
-        if (tabParam && isSettingsTabId(tabParam)) {
+        if (
+            tabParam &&
+            isSettingsTabId(tabParam) &&
+            isEnabledSettingsTabId(tabParam)
+        ) {
             return tabParam;
         }
 
@@ -45,14 +50,14 @@ export default function SettingsIndex() {
     );
 
     return (
-        <div className="flex min-h-screen bg-[var(--bg-color)]">
+        <div className="flex h-screen overflow-hidden bg-[var(--bg-color)]">
             <SettingsSidebar
                 activeTab={activeTab}
                 accountTabs={accountTabs}
                 workspaceTabs={workspaceTabs}
             />
 
-            <main className="min-w-0 flex-1">
+            <main className="flex min-w-0 flex-1 flex-col overflow-y-auto">
                 <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 pb-16 pt-20 sm:px-6 lg:px-10 lg:pt-12">
                     <header className="space-y-2">
                         <div className="flex items-center gap-1.5 text-xs font-medium text-zinc-500">

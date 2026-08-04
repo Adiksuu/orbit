@@ -51,4 +51,18 @@ describe('SettingsTabItem', () => {
             'text-white',
         );
     });
+
+    test('renders as non-navigable with a "Soon" badge when disabled', () => {
+        render(
+            <SettingsTabItem
+                label="Members"
+                href="/settings?tab=members"
+                icon="Users"
+                isDisabled
+            />,
+        );
+
+        expect(screen.getByText('Members').closest('a')).toBeNull();
+        expect(screen.getByText('Soon')).toBeInTheDocument();
+    });
 });
