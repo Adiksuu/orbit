@@ -40,8 +40,15 @@ const themeOptions: Array<{ id: ThemeMode; label: string; subtitle: string }> =
     ];
 
 export default function AccountSettingsPreferencesTab() {
-    const [issueView, setIssueView] = useState<IssuePageLooks>('List');
     const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
+
+    const [selectedLook, setSelectedLook] = useState<IssuePageLooks>(() => {
+        const saved = localStorage.getItem('selectedLook');
+        if (saved === 'List' || saved === 'Board' || saved === 'Calendar') {
+            return saved;
+        }
+        return 'List';
+    });
 
     return (
         <div className="space-y-5">
@@ -57,8 +64,16 @@ export default function AccountSettingsPreferencesTab() {
                             view={option.id}
                             icon={option.icon}
                             description={option.description}
-                            selected={issueView === option.id}
-                            onSelect={() => setIssueView(option.id)}
+                            selected={selectedLook === option.id}
+                            onSelect={() => {
+                                setSelectedLook(option.id);
+                                if (typeof window !== 'undefined') {
+                                    localStorage.setItem(
+                                        'selectedLook',
+                                        option.id,
+                                    );
+                                }
+                            }}
                         />
                     ))}
                 </div>
