@@ -2,19 +2,21 @@ import { SettingsTab } from '@/types/Settings';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 import { describe, expect, test, vi } from 'vitest';
-import SettingsNavigation from './SettingsNavigation';
+import SettingsSidebar from './SettingsSidebar';
 
 vi.mock('@inertiajs/react', () => ({
     Link: ({
         children,
         href,
         className,
+        onClick,
     }: {
         children: React.ReactNode;
         href?: string;
         className?: string;
+        onClick?: () => void;
     }) => (
-        <a href={href} className={className}>
+        <a href={href} className={className} onClick={onClick}>
             {children}
         </a>
     ),
@@ -54,16 +56,13 @@ const workspaceTabs: SettingsTab[] = [
     },
 ];
 
-describe('SettingsNavigation', () => {
+describe('SettingsSidebar', () => {
     test('renders account and workspace tabs plus back link', () => {
         render(
-            <SettingsNavigation
+            <SettingsSidebar
                 activeTab="preferences"
-                activeTabConfig={accountTabs[0]}
                 accountTabs={accountTabs}
                 workspaceTabs={workspaceTabs}
-                isDesktopNavigationHidden={false}
-                onDesktopNavigationToggle={() => {}}
             />,
         );
 
@@ -77,36 +76,17 @@ describe('SettingsNavigation', () => {
         expect(screen.getAllByText('Members').length).toBeGreaterThan(0);
     });
 
-    test('shows spotlight card for active tab', () => {
+    test('marks the active tab', () => {
         render(
-            <SettingsNavigation
+            <SettingsSidebar
                 activeTab="integrations"
-                activeTabConfig={accountTabs[1]}
                 accountTabs={accountTabs}
                 workspaceTabs={workspaceTabs}
-                isDesktopNavigationHidden={false}
-                onDesktopNavigationToggle={() => {}}
             />,
         );
 
-        expect(screen.getByText('Spotlight')).toBeInTheDocument();
-        expect(
-            screen.getAllByText('Connect third-party tools.').length,
-        ).toBeGreaterThan(0);
-    });
-
-    test('shows desktop navigation toggle', () => {
-        render(
-            <SettingsNavigation
-                activeTab="preferences"
-                activeTabConfig={accountTabs[0]}
-                accountTabs={accountTabs}
-                workspaceTabs={workspaceTabs}
-                isDesktopNavigationHidden
-                onDesktopNavigationToggle={() => {}}
-            />,
+        expect(screen.getByText('Integrations').closest('a')).toHaveClass(
+            'text-white',
         );
-
-        expect(screen.getByText('Show navigation')).toBeInTheDocument();
     });
 });

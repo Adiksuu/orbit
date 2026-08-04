@@ -1,8 +1,8 @@
-import Button from '@/Components/Atoms/Button/Button';
+import Icon from '@/Components/Atoms/Icon/Icon';
 import SettingsPanel from '@/Components/Molecules/SettingsPanel/SettingsPanel';
 import SettingsPanelRow from '@/Components/Molecules/SettingsPanelRow/SettingsPanelRow';
 import AccountSettingsContent from '@/Components/Organisms/AccountSettingsContent/AccountSettingsContent';
-import SettingsNavigation from '@/Components/Organisms/SettingsNavigation/SettingsNavigation';
+import SettingsSidebar from '@/Components/Organisms/SettingsSidebar/SettingsSidebar';
 import WorkspaceSettingsContent from '@/Components/Organisms/WorkspaceSettingsContent/WorkspaceSettingsContent';
 import { PageProps } from '@/types';
 import {
@@ -13,12 +13,10 @@ import {
     isWorkspaceSettingsTabId,
 } from '@/types/Settings';
 import { usePage } from '@inertiajs/react';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 export default function SettingsIndex() {
     const { url } = usePage<PageProps>();
-    const [isDesktopNavigationHidden, setIsDesktopNavigationHidden] =
-        useState(false);
 
     const activeTab = useMemo(() => {
         const [, queryString = ''] = url.split('?');
@@ -47,83 +45,50 @@ export default function SettingsIndex() {
     );
 
     return (
-        <div className="min-h-screen bg-[var(--bg-color)]">
-            <div className="flex w-full flex-col gap-6 px-0 py-4 sm:py-5">
-                <div className="px-4 sm:px-6 lg:px-8">
-                    <SettingsNavigation
-                        activeTab={activeTab}
-                        activeTabConfig={activeTabConfig}
-                        accountTabs={accountTabs}
-                        workspaceTabs={workspaceTabs}
-                        isDesktopNavigationHidden={isDesktopNavigationHidden}
-                        onDesktopNavigationToggle={() =>
-                            setIsDesktopNavigationHidden((prev) => !prev)
-                        }
-                    />
-                </div>
+        <div className="flex min-h-screen bg-[var(--bg-color)]">
+            <SettingsSidebar
+                activeTab={activeTab}
+                accountTabs={accountTabs}
+                workspaceTabs={workspaceTabs}
+            />
 
-                <main className="w-full">
-                    <div className="flex w-full flex-col gap-6 px-3 py-2 sm:px-4 lg:px-6">
-                        <header className="space-y-2">
-                            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
+            <main className="min-w-0 flex-1">
+                <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 pb-16 pt-20 sm:px-6 lg:px-10 lg:pt-12">
+                    <header className="space-y-2">
+                        <div className="flex items-center gap-1.5 text-xs font-medium text-zinc-500">
+                            <span className="uppercase tracking-[0.2em]">
                                 Settings
-                            </p>
-                            <h1 className="text-2xl font-semibold text-white sm:text-3xl">
+                            </span>
+                            <Icon name="ChevronRight" size={12} />
+                            <span className="text-zinc-300">
                                 {activeTabConfig.label}
-                            </h1>
-                            <p className="max-w-3xl text-sm text-zinc-400">
-                                {activeTabConfig.description}
-                            </p>
-                        </header>
+                            </span>
+                        </div>
+                        <h1 className="text-2xl font-semibold text-white sm:text-3xl">
+                            {activeTabConfig.label}
+                        </h1>
+                        <p className="max-w-2xl text-sm text-zinc-400">
+                            {activeTabConfig.description}
+                        </p>
+                    </header>
 
-                        {isAccountSettingsTabId(activeTab) ? (
-                            <AccountSettingsContent tabId={activeTab} />
-                        ) : isWorkspaceSettingsTabId(activeTab) ? (
-                            <WorkspaceSettingsContent tabId={activeTab} />
-                        ) : (
-                            <>
-                                <SettingsPanel
-                                    title="General"
-                                    description="Foundational controls for this settings area."
-                                >
-                                    <SettingsPanelRow
-                                        title={`${activeTabConfig.label} configuration`}
-                                        description="This section is prepared and ready for detailed controls."
-                                        action={
-                                            <Button type="button" isBox>
-                                                Configure
-                                            </Button>
-                                        }
-                                    />
-                                    <SettingsPanelRow
-                                        title="Navigation behavior"
-                                        description="Each settings tab is deep-linkable through the URL for direct access."
-                                        action={
-                                            <span className="text-xs font-medium uppercase tracking-wider text-[var(--accent-color)]">
-                                                Enabled
-                                            </span>
-                                        }
-                                    />
-                                </SettingsPanel>
-
-                                <SettingsPanel
-                                    title="Structure"
-                                    description="Layout and organization preview for this tab."
-                                >
-                                    <SettingsPanelRow
-                                        title="Section grouping"
-                                        description="Controls are grouped in focused cards for clarity and faster scanning."
-                                    />
-                                    <SettingsPanelRow
-                                        title="Orbit theme"
-                                        description="All visuals use Orbit color tokens and dark interface styling."
-                                    />
-                                </SettingsPanel>
-                            </>
-                        )}
-                    </div>
-                </main>
-            </div>
+                    {isAccountSettingsTabId(activeTab) ? (
+                        <AccountSettingsContent tabId={activeTab} />
+                    ) : isWorkspaceSettingsTabId(activeTab) ? (
+                        <WorkspaceSettingsContent tabId={activeTab} />
+                    ) : (
+                        <SettingsPanel
+                            title={activeTabConfig.label}
+                            description="This section is ready for detailed controls."
+                        >
+                            <SettingsPanelRow
+                                title="No additional configuration yet"
+                                description="Check back soon for more options in this area."
+                            />
+                        </SettingsPanel>
+                    )}
+                </div>
+            </main>
         </div>
     );
 }

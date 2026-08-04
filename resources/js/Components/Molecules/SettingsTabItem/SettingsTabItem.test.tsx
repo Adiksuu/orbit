@@ -8,12 +8,14 @@ vi.mock('@inertiajs/react', () => ({
         children,
         href,
         className,
+        onClick,
     }: {
         children: React.ReactNode;
         href?: string;
         className?: string;
+        onClick?: () => void;
     }) => (
-        <a href={href} className={className}>
+        <a href={href} className={className} onClick={onClick}>
             {children}
         </a>
     ),

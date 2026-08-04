@@ -12,7 +12,7 @@ export default function SettingsPanel({
     children,
 }: SettingsPanelProps) {
     return (
-        <section className="rounded-xl border border-[var(--bg-light-color)] bg-[var(--bg-dark-color)]">
+        <section className="overflow-hidden rounded-xl border border-[var(--bg-light-color)] bg-[var(--bg-dark-color)]">
             <header className="border-b border-[var(--bg-light-color)] px-5 py-4">
                 <h3 className="text-sm font-semibold text-white">{title}</h3>
                 {description && (
