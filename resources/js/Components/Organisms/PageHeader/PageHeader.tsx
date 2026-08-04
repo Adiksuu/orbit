@@ -10,8 +10,10 @@ function PageHeader({ title, children }: PageHeaderProps) {
     return (
         <header className="flex h-16 shrink-0 items-center justify-between border-b border-solid border-[var(--bg-light-color)] bg-[var(--bg-color)] px-6">
             <div className="flex flex-col">
-                <h1 className="text-sm font-semibold text-white">{title}</h1>
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
+                <h1 className="text-sm font-semibold text-[var(--text-color)]">
+                    {title}
+                </h1>
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted-color)]">
                     {formattedDate()}
                 </span>
             </div>

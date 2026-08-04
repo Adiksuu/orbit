@@ -16,25 +16,27 @@ export default function SettingsPanel({
     children,
 }: SettingsPanelProps) {
     return (
-        <section className="overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm">
-            <header className="flex items-start gap-3 border-b border-white/[0.06] px-5 py-4">
+        <section className="overflow-hidden rounded-2xl border border-[var(--border-color)] bg-[var(--surface-color)] backdrop-blur-sm">
+            <header className="flex items-start gap-3 border-b border-[var(--border-color)] px-5 py-4">
                 {icon && (
                     <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--accent-color-opacity)] text-[var(--accent-color)]">
                         <Icon name={icon} size={15} />
                     </span>
                 )}
                 <div className="min-w-0">
-                    <h3 className="text-sm font-semibold text-white">
+                    <h3 className="text-sm font-semibold text-[var(--text-color)]">
                         {title}
                     </h3>
                     {description && (
-                        <p className="mt-1 text-sm text-zinc-400">
+                        <p className="mt-1 text-sm text-[var(--text-gray-color)]">
                             {description}
                         </p>
                     )}
                 </div>
             </header>
-            <div className="divide-y divide-white/[0.06]">{children}</div>
+            <div className="divide-y divide-[var(--border-color)]">
+                {children}
+            </div>
         </section>
     );
 }

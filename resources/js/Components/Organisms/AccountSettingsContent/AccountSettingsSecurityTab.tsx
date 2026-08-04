@@ -19,7 +19,7 @@ export default function AccountSettingsSecurityTab() {
                     <div className="rounded-xl border border-[var(--bg-light-color)] bg-[var(--bg-color)] p-4">
                         <div className="mb-2 flex items-center gap-2">
                             <Icon name="ShieldCheck" size={15} />
-                            <p className="text-sm font-medium text-white">
+                            <p className="text-sm font-medium text-[var(--text-color)]">
                                 Two-factor authentication
                             </p>
                         </div>
@@ -37,13 +37,13 @@ export default function AccountSettingsSecurityTab() {
                     <div className="rounded-xl border border-[var(--bg-light-color)] bg-[var(--bg-color)] p-4">
                         <div className="mb-2 flex items-center gap-2">
                             <Icon name="Clock3" size={15} />
-                            <p className="text-sm font-medium text-white">
+                            <p className="text-sm font-medium text-[var(--text-color)]">
                                 Session timeout
                             </p>
                         </div>
                         <button
                             type="button"
-                            className="rounded-full border border-[var(--bg-light-color)] px-3 py-1.5 text-xs font-medium text-zinc-300"
+                            className="rounded-full border border-[var(--bg-light-color)] px-3 py-1.5 text-xs font-medium text-[var(--text-color)]"
                             onClick={() =>
                                 setSessionTimeout(
                                     sessionTimeout === '8 hours'
@@ -57,7 +57,7 @@ export default function AccountSettingsSecurityTab() {
                     </div>
                     <div className="rounded-xl border border-[var(--bg-light-color)] bg-[var(--bg-color)] p-4">
                         <div className="mb-2 flex items-center justify-between">
-                            <p className="text-sm font-medium text-white">
+                            <p className="text-sm font-medium text-[var(--text-color)]">
                                 IP allowlist mode
                             </p>
                             <ToggleSwitch
@@ -81,7 +81,7 @@ export default function AccountSettingsSecurityTab() {
                             key={session.device}
                             className="flex items-center justify-between rounded-lg border border-[var(--bg-light-color)] bg-[var(--bg-color)] px-3 py-2"
                         >
-                            <p className="text-sm text-white">
+                            <p className="text-sm text-[var(--text-color)]">
                                 {session.device}
                             </p>
                             {session.active === 'Current session' ? (

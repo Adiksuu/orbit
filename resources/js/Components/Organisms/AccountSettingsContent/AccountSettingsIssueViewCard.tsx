@@ -34,13 +34,13 @@ const listPreviewRows: Array<{
 
 function ListPreview() {
     return (
-        <div className="overflow-hidden rounded-lg border border-white/[0.06] bg-black/20">
-            <div className="flex items-center gap-2 border-b border-white/[0.06] bg-white/[0.03] px-2 py-1.5">
-                <div className="h-1 w-3 rounded-full bg-zinc-600" />
-                <div className="h-1 w-9 rounded-full bg-zinc-600" />
-                <div className="ml-auto h-1 w-5 rounded-full bg-zinc-600" />
+        <div className="overflow-hidden rounded-lg border border-[var(--border-color)] bg-[var(--overlay-color)]">
+            <div className="flex items-center gap-2 border-b border-[var(--border-color)] bg-[var(--surface-color)] px-2 py-1.5">
+                <div className="h-1 w-3 rounded-full bg-[var(--border-color-strong)]" />
+                <div className="h-1 w-9 rounded-full bg-[var(--border-color-strong)]" />
+                <div className="ml-auto h-1 w-5 rounded-full bg-[var(--border-color-strong)]" />
             </div>
-            <div className="divide-y divide-white/[0.05]">
+            <div className="divide-y divide-[var(--border-color)]">
                 {listPreviewRows.map((row, index) => (
                     <div
                         key={index}
@@ -50,7 +50,7 @@ function ListPreview() {
                             className={`h-1.5 w-1.5 shrink-0 rounded-full ${row.statusClass}`}
                         />
                         <div
-                            className={`h-1.5 rounded-full bg-zinc-700 ${row.widthClass}`}
+                            className={`h-1.5 rounded-full bg-[var(--border-color-strong)] ${row.widthClass}`}
                         />
                         <span
                             className={`ml-auto h-1.5 w-4 shrink-0 rounded-full ${row.priorityClass}`}
@@ -74,14 +74,14 @@ function BoardPreview() {
             {boardPreviewColumns.map((column, index) => (
                 <div
                     key={index}
-                    className="flex-1 space-y-1.5 rounded-lg border border-white/[0.06] bg-black/20 p-1.5"
+                    className="flex-1 space-y-1.5 rounded-lg border border-[var(--border-color)] bg-[var(--overlay-color)] p-1.5"
                 >
                     <div className="flex items-center gap-1">
                         <span
                             className={`h-1.5 w-1.5 shrink-0 rounded-full ${column.accentClass}`}
                         />
-                        <div className="h-1 w-5 rounded-full bg-zinc-600" />
-                        <span className="ml-auto text-[8px] font-semibold leading-none text-zinc-600">
+                        <div className="h-1 w-5 rounded-full bg-[var(--border-color-strong)]" />
+                        <span className="ml-auto text-[8px] font-semibold leading-none text-[var(--text-muted-color)]">
                             {column.cardCount}
                         </span>
                     </div>
@@ -90,7 +90,7 @@ function BoardPreview() {
                             (_, cardIndex) => (
                                 <div
                                     key={cardIndex}
-                                    className="h-3 rounded-md border border-white/[0.06] bg-white/[0.04]"
+                                    className="h-3 rounded-md border border-[var(--border-color)] bg-[var(--bg-light-color)]"
                                 />
                             ),
                         )}
@@ -107,10 +107,13 @@ const calendarTodayIndex = 5;
 
 function CalendarPreview() {
     return (
-        <div className="overflow-hidden rounded-lg border border-white/[0.06] bg-black/20">
-            <div className="grid grid-cols-7 gap-1 border-b border-white/[0.06] bg-white/[0.03] p-1.5">
+        <div className="overflow-hidden rounded-lg border border-[var(--border-color)] bg-[var(--overlay-color)]">
+            <div className="grid grid-cols-7 gap-1 border-b border-[var(--border-color)] bg-[var(--surface-color)] p-1.5">
                 {Array.from({ length: 7 }).map((_, index) => (
-                    <div key={index} className="h-1 rounded-full bg-zinc-600" />
+                    <div
+                        key={index}
+                        className="h-1 rounded-full bg-[var(--border-color-strong)]"
+                    />
                 ))}
             </div>
             <div className="grid grid-cols-7 gap-1 p-1.5">
@@ -124,7 +127,7 @@ function CalendarPreview() {
                         ) : calendarAccentCellIndexes.has(index) ? (
                             <span className="h-1 w-1 rounded-full bg-[var(--info-color)]" />
                         ) : (
-                            <span className="h-1 w-1 rounded-full bg-white/10" />
+                            <span className="h-1 w-1 rounded-full bg-[var(--bg-light-color-hover)]" />
                         )}
                     </div>
                 ))}
@@ -159,7 +162,7 @@ export default function AccountSettingsIssueViewCard({
             className={`rounded-xl border p-3 text-left transition-colors ${
                 selected
                     ? 'border-[var(--accent-color)] bg-[var(--accent-color-opacity)]'
-                    : 'border-white/[0.06] bg-white/[0.02] hover:border-white/[0.16]'
+                    : 'border-[var(--border-color)] bg-[var(--surface-color)] hover:border-[var(--border-color-strong)]'
             }`}
         >
             <div className="mb-2.5 flex items-center gap-2">
@@ -167,14 +170,16 @@ export default function AccountSettingsIssueViewCard({
                     className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${
                         selected
                             ? 'bg-[var(--accent-color)]/20 text-[var(--accent-color)]'
-                            : 'bg-white/[0.06] text-zinc-400'
+                            : 'bg-[var(--bg-light-color)] text-[var(--text-gray-color)]'
                     }`}
                 >
                     <Icon name={icon} size={14} />
                 </span>
-                <p className="text-sm font-medium text-white">{view}</p>
+                <p className="text-sm font-medium text-[var(--text-color)]">
+                    {view}
+                </p>
             </div>
-            <p className="mb-3 text-xs leading-5 text-zinc-500">
+            <p className="mb-3 text-xs leading-5 text-[var(--text-muted-color)]">
                 {description}
             </p>
             <IssueViewPreview view={view} />

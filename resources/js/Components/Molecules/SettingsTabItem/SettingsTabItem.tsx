@@ -29,8 +29,8 @@ export default function SettingsTabItem({
                     isActive
                         ? 'text-[var(--accent-color)]'
                         : isDisabled
-                          ? 'text-zinc-600'
-                          : 'text-zinc-500 group-hover:text-zinc-300'
+                          ? 'text-[var(--text-muted-color)]'
+                          : 'text-[var(--text-muted-color)] group-hover:text-[var(--text-color)]'
                 }
             />
             <span className="min-w-0 flex-1 truncate font-medium">{label}</span>
@@ -46,7 +46,7 @@ export default function SettingsTabItem({
         return (
             <div
                 aria-disabled="true"
-                className="group flex cursor-not-allowed items-center gap-2.5 rounded-md border-l-2 border-transparent px-2.5 py-2 text-sm text-zinc-600"
+                className="group flex cursor-not-allowed items-center gap-2.5 rounded-md border-l-2 border-transparent px-2.5 py-2 text-sm text-[var(--text-muted-color)]"
             >
                 {content}
             </div>
@@ -59,8 +59,8 @@ export default function SettingsTabItem({
             onClick={onClick}
             className={`group flex items-center gap-2.5 rounded-md border-l-2 px-2.5 py-2 text-sm transition-colors ${
                 isActive
-                    ? 'border-[var(--accent-color)] bg-[var(--bg-light-color)] text-white'
-                    : 'border-transparent text-zinc-400 hover:bg-[var(--bg-light-color)] hover:text-white'
+                    ? 'border-[var(--accent-color)] bg-[var(--bg-light-color)] text-[var(--text-color)]'
+                    : 'border-transparent text-[var(--text-gray-color)] hover:bg-[var(--bg-light-color)] hover:text-[var(--text-color)]'
             }`}
         >
             {content}

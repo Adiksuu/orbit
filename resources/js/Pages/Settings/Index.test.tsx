@@ -1,9 +1,17 @@
+import { ThemeProvider } from '@/context/ThemeContext';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import SettingsIndex from './Index';
 
 const pageState = vi.hoisted(() => ({ url: '/settings' }));
+
+const renderSettingsIndex = () =>
+    render(
+        <ThemeProvider>
+            <SettingsIndex />
+        </ThemeProvider>,
+    );
 
 vi.mock('@inertiajs/react', () => ({
     Link: ({
@@ -31,7 +39,7 @@ describe('Settings Index Page', () => {
     });
 
     test('renders account and workspace sections with tabs', () => {
-        render(<SettingsIndex />);
+        renderSettingsIndex();
 
         expect(screen.getByText('Account')).toBeInTheDocument();
         expect(screen.getByText('Workspace')).toBeInTheDocument();
@@ -46,7 +54,7 @@ describe('Settings Index Page', () => {
     });
 
     test('renders heading and back link', () => {
-        render(<SettingsIndex />);
+        renderSettingsIndex();
 
         expect(
             screen.getByRole('heading', { name: 'Preferences' }),
@@ -59,7 +67,7 @@ describe('Settings Index Page', () => {
 
     test('falls back to the default tab when the requested tab is disabled', () => {
         pageState.url = '/settings?tab=members';
-        render(<SettingsIndex />);
+        renderSettingsIndex();
 
         expect(
             screen.getByRole('heading', { name: 'Preferences' }),
@@ -68,13 +76,13 @@ describe('Settings Index Page', () => {
 
     test('renders account tab content for the enabled preferences tab', () => {
         pageState.url = '/settings?tab=preferences';
-        render(<SettingsIndex />);
+        renderSettingsIndex();
 
         expect(screen.getByText('Default issue view')).toBeInTheDocument();
     });
 
     test('renders disabled tabs without a link and with a "Soon" badge', () => {
-        render(<SettingsIndex />);
+        renderSettingsIndex();
 
         expect(screen.getByText('Members').closest('a')).toBeNull();
         expect(screen.getAllByText('Soon').length).toBeGreaterThan(0);

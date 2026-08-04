@@ -42,7 +42,7 @@ export default function AccountSettingsProfileTab() {
                         </div>
                     </div>
                     <div className="rounded-xl border border-[var(--bg-light-color)] bg-[var(--bg-color)] p-4">
-                        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-muted-color)]">
                             Profile preview
                         </p>
                         <div className="flex items-center gap-3">
@@ -50,13 +50,15 @@ export default function AccountSettingsProfileTab() {
                                 JD
                             </div>
                             <div>
-                                <p className="text-sm font-medium text-white">
+                                <p className="text-sm font-medium text-[var(--text-color)]">
                                     {fullName}
                                 </p>
-                                <p className="text-xs text-zinc-400">{title}</p>
+                                <p className="text-xs text-[var(--text-gray-color)]">
+                                    {title}
+                                </p>
                             </div>
                         </div>
-                        <div className="mt-4 space-y-2 text-xs text-zinc-400">
+                        <div className="mt-4 space-y-2 text-xs text-[var(--text-gray-color)]">
                             <p>{email}</p>
                             <p>{timezone}</p>
                             <p>{pronouns}</p>
@@ -70,21 +72,21 @@ export default function AccountSettingsProfileTab() {
             >
                 <div className="grid grid-cols-1 gap-3 px-5 py-4 md:grid-cols-2">
                     <div className="rounded-xl border border-[var(--bg-light-color)] bg-[var(--bg-color)] p-4">
-                        <p className="text-sm font-medium text-white">
+                        <p className="text-sm font-medium text-[var(--text-color)]">
                             Avatar and cover
                         </p>
-                        <p className="mt-1 text-sm text-zinc-400">
+                        <p className="mt-1 text-sm text-[var(--text-gray-color)]">
                             Upload profile media and personalize your presence.
                         </p>
                     </div>
                     <div className="rounded-xl border border-[var(--bg-light-color)] bg-[var(--bg-color)] p-4">
                         <div className="flex items-center justify-between">
-                            <p className="text-sm font-medium text-white">
+                            <p className="text-sm font-medium text-[var(--text-color)]">
                                 Public profile visibility
                             </p>
                             <ToggleSwitch checked onChange={() => {}} />
                         </div>
-                        <p className="mt-2 text-sm text-zinc-400">
+                        <p className="mt-2 text-sm text-[var(--text-gray-color)]">
                             Allow workspace members to discover your profile
                             details.
                         </p>

@@ -23,13 +23,13 @@ export default function SettingsSidebar({
             <button
                 type="button"
                 onClick={() => setIsOpen(true)}
-                className="fixed left-4 top-4 z-40 rounded-md border border-solid border-[var(--bg-light-color)] bg-[var(--bg-dark-color)] p-2 text-zinc-400 hover:text-white lg:hidden"
+                className="fixed left-4 top-4 z-40 rounded-md border border-solid border-[var(--bg-light-color)] bg-[var(--bg-dark-color)] p-2 text-[var(--text-gray-color)] hover:text-[var(--text-color)] lg:hidden"
             >
                 <Icon name="Menu" size={20} />
             </button>
             {isOpen && (
                 <div
-                    className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
+                    className="fixed inset-0 z-40 bg-[var(--overlay-color)] backdrop-blur-sm lg:hidden"
                     onClick={() => setIsOpen(false)}
                 />
             )}
@@ -42,7 +42,7 @@ export default function SettingsSidebar({
                 <div className="flex items-center justify-between">
                     <Link
                         href="/"
-                        className="inline-flex items-center gap-1.5 rounded-md py-1.5 pl-1 pr-2 text-sm text-zinc-400 transition-colors hover:text-white"
+                        className="inline-flex items-center gap-1.5 rounded-md py-1.5 pl-1 pr-2 text-sm text-[var(--text-gray-color)] transition-colors hover:text-[var(--text-color)]"
                     >
                         <Icon name="ChevronLeft" size={16} />
                         Back to app
@@ -50,7 +50,7 @@ export default function SettingsSidebar({
                     <button
                         type="button"
                         onClick={() => setIsOpen(false)}
-                        className="rounded-md p-1.5 text-zinc-400 hover:bg-[var(--bg-light-color)] hover:text-white lg:hidden"
+                        className="rounded-md p-1.5 text-[var(--text-gray-color)] hover:bg-[var(--bg-light-color)] hover:text-[var(--text-color)] lg:hidden"
                     >
                         <Icon name="X" size={18} />
                     </button>
@@ -61,10 +61,10 @@ export default function SettingsSidebar({
                         <Icon name="Settings" size={16} />
                     </span>
                     <div className="min-w-0">
-                        <p className="truncate text-sm font-semibold text-white">
+                        <p className="truncate text-sm font-semibold text-[var(--text-color)]">
                             Settings
                         </p>
-                        <p className="truncate text-xs text-zinc-500">
+                        <p className="truncate text-xs text-[var(--text-muted-color)]">
                             Manage your workspace
                         </p>
                     </div>

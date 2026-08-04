@@ -48,7 +48,7 @@ describe('SettingsTabItem', () => {
         );
 
         expect(screen.getByText('Preferences').closest('a')).toHaveClass(
-            'text-white',
+            'text-[var(--text-color)]',
         );
     });
 

@@ -6,6 +6,20 @@
 
         <title inertia>{{ config('app.name', 'Orbit') }}</title>
 
+        <!-- Apply the persisted theme before first paint to avoid a flash of the wrong theme. -->
+        <script>
+            (function () {
+                try {
+                    var stored = localStorage.getItem('theme');
+                    var mode = (stored === 'light' || stored === 'dark' || stored === 'system') ? stored : 'dark';
+                    var resolved = mode === 'system'
+                        ? (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
+                        : mode;
+                    document.documentElement.setAttribute('data-theme', resolved);
+                } catch (e) {}
+            })();
+        </script>
+
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />

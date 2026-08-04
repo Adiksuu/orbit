@@ -1,10 +1,15 @@
+import { ThemeProvider } from '@/context/ThemeContext';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, test } from 'vitest';
 import AccountSettingsContent from './AccountSettingsContent';
 
 describe('AccountSettingsContent', () => {
     test('renders preferences content', () => {
-        render(<AccountSettingsContent tabId="preferences" />);
+        render(
+            <ThemeProvider>
+                <AccountSettingsContent tabId="preferences" />
+            </ThemeProvider>,
+        );
 
         expect(screen.getByText('Default issue view')).toBeInTheDocument();
         expect(screen.getByText('Board')).toBeInTheDocument();

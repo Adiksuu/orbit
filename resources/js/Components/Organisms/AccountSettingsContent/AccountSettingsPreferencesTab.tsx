@@ -1,10 +1,10 @@
 import SettingsPanel from '@/Components/Molecules/SettingsPanel/SettingsPanel';
 import AccountSettingsIssueViewCard from '@/Components/Organisms/AccountSettingsContent/AccountSettingsIssueViewCard';
 import AccountSettingsThemeCard from '@/Components/Organisms/AccountSettingsContent/AccountSettingsThemeCard';
+import { useTheme } from '@/context/ThemeContext';
 import { IssuePageLooks } from '@/types/Issues';
+import { ThemeMode } from '@/types/Theme';
 import { useState } from 'react';
-
-type ThemeMode = 'dark' | 'light' | 'system';
 
 const issueViewOptions: Array<{
     id: IssuePageLooks;
@@ -40,7 +40,7 @@ const themeOptions: Array<{ id: ThemeMode; label: string; subtitle: string }> =
     ];
 
 export default function AccountSettingsPreferencesTab() {
-    const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
+    const { theme, setTheme } = useTheme();
 
     const [selectedLook, setSelectedLook] = useState<IssuePageLooks>(() => {
         const saved = localStorage.getItem('selectedLook');
@@ -85,14 +85,14 @@ export default function AccountSettingsPreferencesTab() {
                 icon="Palette"
             >
                 <div className="grid grid-cols-1 gap-3 px-5 py-4 md:grid-cols-3">
-                    {themeOptions.map((theme) => (
+                    {themeOptions.map((option) => (
                         <AccountSettingsThemeCard
-                            key={theme.id}
-                            id={theme.id}
-                            label={theme.label}
-                            subtitle={theme.subtitle}
-                            selected={themeMode === theme.id}
-                            onSelect={() => setThemeMode(theme.id)}
+                            key={option.id}
+                            id={option.id}
+                            label={option.label}
+                            subtitle={option.subtitle}
+                            selected={theme === option.id}
+                            onSelect={() => setTheme(option.id)}
                         />
                     ))}
                 </div>

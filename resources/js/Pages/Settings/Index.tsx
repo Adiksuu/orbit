@@ -70,10 +70,10 @@ export default function SettingsIndex() {
                                     { label: activeTabConfig.label },
                                 ]}
                             />
-                            <h1 className="text-2xl font-semibold text-white sm:text-3xl">
+                            <h1 className="text-2xl font-semibold text-[var(--text-color)] sm:text-3xl">
                                 {activeTabConfig.label}
                             </h1>
-                            <p className="max-w-2xl text-sm text-zinc-400">
+                            <p className="max-w-2xl text-sm text-[var(--text-gray-color)]">
                                 {activeTabConfig.description}
                             </p>
                         </header>

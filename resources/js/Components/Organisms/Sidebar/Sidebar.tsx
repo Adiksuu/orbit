@@ -63,13 +63,13 @@ const Sidebar: FC<{ projects: Project[] }> = ({ projects }) => {
         <>
             <button
                 onClick={() => setIsOpen(true)}
-                className="fixed left-4 top-4 z-40 rounded-md border border-solid border-[var(--bg-light-color)] bg-[var(--bg-dark-color)] p-2 text-zinc-400 hover:text-white md:hidden"
+                className="fixed left-4 top-4 z-40 rounded-md border border-solid border-[var(--bg-light-color)] bg-[var(--bg-dark-color)] p-2 text-[var(--text-gray-color)] hover:text-[var(--text-color)] md:hidden"
             >
                 <Icon name="Menu" size={20} />
             </button>
             {isOpen && (
                 <div
-                    className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden"
+                    className="fixed inset-0 z-40 bg-[var(--overlay-color)] backdrop-blur-sm md:hidden"
                     onClick={() => setIsOpen(false)}
                 />
             )}
@@ -89,7 +89,7 @@ const Sidebar: FC<{ projects: Project[] }> = ({ projects }) => {
                         </div>
                         <button
                             onClick={() => setIsOpen(false)}
-                            className="rounded-md p-2 text-zinc-400 hover:bg-[var(--bg-light-color)] hover:text-white md:hidden"
+                            className="rounded-md p-2 text-[var(--text-gray-color)] hover:bg-[var(--bg-light-color)] hover:text-[var(--text-color)] md:hidden"
                         >
                             <Icon name="X" size={18} />
                         </button>
@@ -125,7 +125,7 @@ const Sidebar: FC<{ projects: Project[] }> = ({ projects }) => {
                             <div className="flex items-center gap-1.5">
                                 <h3
                                     className={
-                                        'text-sm font-semibold text-zinc-400 group-hover:text-white'
+                                        'text-sm font-semibold text-[var(--text-gray-color)] group-hover:text-[var(--text-color)]'
                                     }
                                 >
                                     PROJECTS
@@ -133,7 +133,7 @@ const Sidebar: FC<{ projects: Project[] }> = ({ projects }) => {
                                 <Icon
                                     name={'PackagePlus'}
                                     className={
-                                        'text-zinc-400 group-hover:text-white'
+                                        'text-[var(--text-gray-color)] group-hover:text-[var(--text-color)]'
                                     }
                                 />
                             </div>

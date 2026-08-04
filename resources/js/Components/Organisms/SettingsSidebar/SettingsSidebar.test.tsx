@@ -90,7 +90,7 @@ describe('SettingsSidebar', () => {
         );
 
         expect(screen.getByText('Integrations').closest('a')).toHaveClass(
-            'text-white',
+            'text-[var(--text-color)]',
         );
     });
 

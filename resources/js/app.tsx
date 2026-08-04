@@ -7,6 +7,7 @@ import ProjectOnboardingModal from '@/Components/Organisms/ProjectOnboardingModa
 import { AlertProvider } from '@/context/AlertContext';
 import { ModalProvider } from '@/context/ModalContext';
 import { ShortcutProvider } from '@/context/ShortcutContext';
+import { ThemeProvider } from '@/context/ThemeContext';
 import { PageProps } from '@/types';
 import type { ResolvedComponent } from '@inertiajs/react';
 import { createInertiaApp, router, usePage } from '@inertiajs/react';
@@ -73,15 +74,17 @@ createInertiaApp({
         root.render(
             <App {...props}>
                 {({ Component, props: pageProps, key }) => (
-                    <ModalProvider>
-                        <AlertProvider>
-                            <ShortcutProvider>
-                                <ModalContainer />
-                                <Component {...pageProps} key={key} />
-                                <OnboardingGate />
-                            </ShortcutProvider>
-                        </AlertProvider>
-                    </ModalProvider>
+                    <ThemeProvider>
+                        <ModalProvider>
+                            <AlertProvider>
+                                <ShortcutProvider>
+                                    <ModalContainer />
+                                    <Component {...pageProps} key={key} />
+                                    <OnboardingGate />
+                                </ShortcutProvider>
+                            </AlertProvider>
+                        </ModalProvider>
+                    </ThemeProvider>
                 )}
             </App>,
         );

@@ -1,6 +1,5 @@
 import Icon from '@/Components/Atoms/Icon/Icon';
-
-type ThemeMode = 'dark' | 'light' | 'system';
+import { ThemeMode } from '@/types/Theme';
 
 interface AccountSettingsThemeCardProps {
     id: ThemeMode;
@@ -10,6 +9,13 @@ interface AccountSettingsThemeCardProps {
     onSelect: () => void;
 }
 
+/**
+ * These previews render a fixed snapshot of what each theme option looks
+ * like, independent of the currently active theme — so every swatch is a
+ * literal hex value rather than a CSS variable (which would just reflect
+ * whatever theme is active right now, breaking the "Dark" preview while
+ * viewing the page in light mode, and vice versa).
+ */
 const themePreviewStyles: Record<
     ThemeMode,
     {
@@ -22,27 +28,27 @@ const themePreviewStyles: Record<
     }
 > = {
     dark: {
-        frame: 'bg-[var(--bg-color)]',
-        canvas: 'bg-[var(--bg-color-hover)]',
-        sidebar: 'bg-[var(--bg-dark-color)]',
-        topbar: 'bg-[var(--bg-color)]',
-        accent: 'bg-[var(--accent-color)]',
-        row: 'bg-white/[0.08]',
+        frame: 'bg-[#08090a]',
+        canvas: 'bg-[#101113]',
+        sidebar: 'bg-[#050505]',
+        topbar: 'bg-[#08090a]',
+        accent: 'bg-[#8844da]',
+        row: 'bg-[rgba(255,255,255,0.08)]',
     },
     light: {
-        frame: 'bg-[#f1f3f8]',
+        frame: 'bg-[#f7f8fa]',
         canvas: 'bg-[#ffffff]',
-        sidebar: 'bg-[#e8ebf2]',
-        topbar: 'bg-[#f6f7fb]',
-        accent: 'bg-[#7c3aed]',
-        row: 'bg-[#d6dbe8]',
+        sidebar: 'bg-[#eef0f4]',
+        topbar: 'bg-[#f7f8fa]',
+        accent: 'bg-[#8844da]',
+        row: 'bg-[rgba(0,0,0,0.06)]',
     },
     system: {
         frame: 'bg-[#0d0e13]',
         canvas: 'bg-[#181a22]',
         sidebar: 'bg-[#12131a]',
         topbar: 'bg-[#0d0e13]',
-        accent: 'bg-[var(--accent-color)]',
+        accent: 'bg-[#8844da]',
         row: 'bg-[#33384a]',
     },
 };
@@ -63,26 +69,30 @@ export default function AccountSettingsThemeCard({
             className={`rounded-xl border p-3 text-left transition-colors ${
                 selected
                     ? 'border-[var(--accent-color)] bg-[var(--accent-color-opacity)]'
-                    : 'border-white/[0.06] bg-white/[0.02] hover:border-white/[0.16]'
+                    : 'border-[var(--border-color)] bg-[var(--surface-color)] hover:border-[var(--border-color-strong)]'
             }`}
         >
             <div className="mb-3 flex items-start justify-between">
                 <div>
-                    <p className="text-sm font-medium text-white">{label}</p>
-                    <p className="mt-1 text-xs text-zinc-400">{subtitle}</p>
+                    <p className="text-sm font-medium text-[var(--text-color)]">
+                        {label}
+                    </p>
+                    <p className="mt-1 text-xs text-[var(--text-gray-color)]">
+                        {subtitle}
+                    </p>
                 </div>
                 <span
                     className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border ${
                         selected
                             ? 'border-[var(--accent-color)] text-[var(--accent-color)]'
-                            : 'border-zinc-600 text-transparent'
+                            : 'border-[var(--border-color-strong)] text-transparent'
                     }`}
                 >
                     <Icon name="Check" size={11} />
                 </span>
             </div>
             <div
-                className={`flex h-[74px] gap-1 overflow-hidden rounded-lg border border-white/[0.06] p-1 ${palette.frame}`}
+                className={`flex h-[74px] gap-1 overflow-hidden rounded-lg border border-[var(--border-color)] p-1 ${palette.frame}`}
             >
                 <div
                     className={`w-5 shrink-0 space-y-1 rounded-md p-1 ${palette.sidebar}`}
