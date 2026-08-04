@@ -70,7 +70,7 @@ describe('Settings Index Page', () => {
         pageState.url = '/settings?tab=preferences';
         render(<SettingsIndex />);
 
-        expect(screen.getByText('Default home view')).toBeInTheDocument();
+        expect(screen.getByText('Default issue view')).toBeInTheDocument();
     });
 
     test('renders disabled tabs without a link and with a "Soon" badge', () => {

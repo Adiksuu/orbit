@@ -6,10 +6,10 @@ describe('AccountSettingsContent', () => {
     test('renders preferences content', () => {
         render(<AccountSettingsContent tabId="preferences" />);
 
-        expect(screen.getByText('Default home view')).toBeInTheDocument();
+        expect(screen.getByText('Default issue view')).toBeInTheDocument();
+        expect(screen.getByText('Board')).toBeInTheDocument();
         expect(screen.getByText('Interface theme')).toBeInTheDocument();
         expect(screen.getByText('System sync')).toBeInTheDocument();
-        expect(screen.getByText('Interface and behavior')).toBeInTheDocument();
     });
 
     test('renders profile content', () => {

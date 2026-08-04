@@ -57,43 +57,45 @@ export default function SettingsIndex() {
                 workspaceTabs={workspaceTabs}
             />
 
-            <main className="flex min-w-0 flex-1 flex-col overflow-y-auto">
-                <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 pb-16 pt-20 sm:px-6 lg:px-10 lg:pt-12">
-                    <header className="space-y-2">
-                        <div className="flex items-center gap-1.5 text-xs font-medium text-zinc-500">
-                            <span className="uppercase tracking-[0.2em]">
-                                Settings
-                            </span>
-                            <Icon name="ChevronRight" size={12} />
-                            <span className="text-zinc-300">
+            <div className="m-2 flex min-w-0 flex-1 flex-col overflow-hidden rounded-2xl bg-[var(--bg-color-hover)]">
+                <main className="flex-1 overflow-y-auto">
+                    <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 pb-16 pt-20 sm:px-6 lg:px-10 lg:pt-12">
+                        <header className="space-y-2">
+                            <div className="flex items-center gap-1.5 text-xs font-medium text-zinc-500">
+                                <span className="uppercase tracking-[0.2em]">
+                                    Settings
+                                </span>
+                                <Icon name="ChevronRight" size={12} />
+                                <span className="text-zinc-300">
+                                    {activeTabConfig.label}
+                                </span>
+                            </div>
+                            <h1 className="text-2xl font-semibold text-white sm:text-3xl">
                                 {activeTabConfig.label}
-                            </span>
-                        </div>
-                        <h1 className="text-2xl font-semibold text-white sm:text-3xl">
-                            {activeTabConfig.label}
-                        </h1>
-                        <p className="max-w-2xl text-sm text-zinc-400">
-                            {activeTabConfig.description}
-                        </p>
-                    </header>
+                            </h1>
+                            <p className="max-w-2xl text-sm text-zinc-400">
+                                {activeTabConfig.description}
+                            </p>
+                        </header>
 
-                    {isAccountSettingsTabId(activeTab) ? (
-                        <AccountSettingsContent tabId={activeTab} />
-                    ) : isWorkspaceSettingsTabId(activeTab) ? (
-                        <WorkspaceSettingsContent tabId={activeTab} />
-                    ) : (
-                        <SettingsPanel
-                            title={activeTabConfig.label}
-                            description="This section is ready for detailed controls."
-                        >
-                            <SettingsPanelRow
-                                title="No additional configuration yet"
-                                description="Check back soon for more options in this area."
-                            />
-                        </SettingsPanel>
-                    )}
-                </div>
-            </main>
+                        {isAccountSettingsTabId(activeTab) ? (
+                            <AccountSettingsContent tabId={activeTab} />
+                        ) : isWorkspaceSettingsTabId(activeTab) ? (
+                            <WorkspaceSettingsContent tabId={activeTab} />
+                        ) : (
+                            <SettingsPanel
+                                title={activeTabConfig.label}
+                                description="This section is ready for detailed controls."
+                            >
+                                <SettingsPanelRow
+                                    title="No additional configuration yet"
+                                    description="Check back soon for more options in this area."
+                                />
+                            </SettingsPanel>
+                        )}
+                    </div>
+                </main>
+            </div>
         </div>
     );
 }

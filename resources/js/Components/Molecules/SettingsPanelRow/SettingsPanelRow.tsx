@@ -12,7 +12,7 @@ export default function SettingsPanelRow({
     action,
 }: SettingsPanelRowProps) {
     return (
-        <div className="hover:bg-[var(--bg-light-color)]/40 flex flex-col gap-3 px-4 py-4 transition-colors sm:px-5 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-3 px-4 py-4 transition-colors hover:bg-white/[0.03] sm:px-5 md:flex-row md:items-center md:justify-between">
             <div className="min-w-0 space-y-1">
                 <p className="text-sm font-medium text-white">{title}</p>
                 {description && (

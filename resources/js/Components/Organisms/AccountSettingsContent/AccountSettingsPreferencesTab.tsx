@@ -1,29 +1,30 @@
-import ToggleSwitch from '@/Components/Atoms/ToggleSwitch/ToggleSwitch';
 import SettingsPanel from '@/Components/Molecules/SettingsPanel/SettingsPanel';
-import AccountSettingsHomeViewCard from '@/Components/Organisms/AccountSettingsContent/AccountSettingsHomeViewCard';
+import AccountSettingsIssueViewCard from '@/Components/Organisms/AccountSettingsContent/AccountSettingsIssueViewCard';
 import AccountSettingsThemeCard from '@/Components/Organisms/AccountSettingsContent/AccountSettingsThemeCard';
+import { IssuePageLooks } from '@/types/Issues';
 import { useState } from 'react';
 
 type ThemeMode = 'dark' | 'light' | 'system';
 
-const selectablePillClass =
-    'rounded-full border border-[var(--bg-light-color)] px-3 py-1.5 text-xs font-medium text-zinc-300 transition-colors hover:border-zinc-500';
-
-const homeViewOptions = [
+const issueViewOptions: Array<{
+    id: IssuePageLooks;
+    icon: 'Rows3' | 'Columns3' | 'CalendarDays';
+    description: string;
+}> = [
     {
-        value: 'Dashboard',
-        icon: 'LayoutDashboard' as const,
-        accentClassName: 'bg-amber-400',
+        id: 'List',
+        icon: 'Rows3',
+        description: 'A dense, sortable table of every issue.',
     },
     {
-        value: 'My issues',
-        icon: 'ListTodo' as const,
-        accentClassName: 'bg-violet-400',
+        id: 'Board',
+        icon: 'Columns3',
+        description: 'Kanban columns grouped by status or priority.',
     },
     {
-        value: 'Projects',
-        icon: 'FolderGit2' as const,
-        accentClassName: 'bg-sky-400',
+        id: 'Calendar',
+        icon: 'CalendarDays',
+        description: 'Issues plotted against their due dates.',
     },
 ];
 
@@ -39,29 +40,25 @@ const themeOptions: Array<{ id: ThemeMode; label: string; subtitle: string }> =
     ];
 
 export default function AccountSettingsPreferencesTab() {
-    const [homeView, setHomeView] = useState('My issues');
-    const [displayNames, setDisplayNames] = useState('Full name');
-    const [firstDay, setFirstDay] = useState('Monday');
-    const [commentsSubmit, setCommentsSubmit] = useState('Enter');
-    const [convertEmoticons, setConvertEmoticons] = useState(true);
-    const [compactNumbers, setCompactNumbers] = useState(false);
+    const [issueView, setIssueView] = useState<IssuePageLooks>('List');
     const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
 
     return (
         <div className="space-y-5">
             <SettingsPanel
-                title="Default home view"
-                description="Choose the first view shown when opening Orbit."
+                title="Default issue view"
+                description="Choose how issues open by default across your projects."
+                icon="LayoutGrid"
             >
                 <div className="grid grid-cols-1 gap-3 px-5 py-4 md:grid-cols-3">
-                    {homeViewOptions.map((option) => (
-                        <AccountSettingsHomeViewCard
-                            key={option.value}
-                            title={option.value}
+                    {issueViewOptions.map((option) => (
+                        <AccountSettingsIssueViewCard
+                            key={option.id}
+                            view={option.id}
                             icon={option.icon}
-                            accentClassName={option.accentClassName}
-                            selected={homeView === option.value}
-                            onSelect={() => setHomeView(option.value)}
+                            description={option.description}
+                            selected={issueView === option.id}
+                            onSelect={() => setIssueView(option.id)}
                         />
                     ))}
                 </div>
@@ -70,6 +67,7 @@ export default function AccountSettingsPreferencesTab() {
             <SettingsPanel
                 title="Interface theme"
                 description="Choose how Orbit should render colors in your account."
+                icon="Palette"
             >
                 <div className="grid grid-cols-1 gap-3 px-5 py-4 md:grid-cols-3">
                     {themeOptions.map((theme) => (
@@ -82,72 +80,6 @@ export default function AccountSettingsPreferencesTab() {
                             onSelect={() => setThemeMode(theme.id)}
                         />
                     ))}
-                </div>
-            </SettingsPanel>
-
-            <SettingsPanel
-                title="Interface and behavior"
-                description="Choose how personal information and writing behavior should appear."
-            >
-                <div className="space-y-4 px-5 py-4">
-                    <div className="flex flex-wrap gap-2">
-                        {['Full name', 'First name', 'Handle'].map((option) => (
-                            <button
-                                key={option}
-                                type="button"
-                                onClick={() => setDisplayNames(option)}
-                                className={`${selectablePillClass} ${displayNames === option ? 'border-[var(--accent-color)] text-white' : ''}`}
-                            >
-                                {option}
-                            </button>
-                        ))}
-                    </div>
-                    <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-                        <button
-                            type="button"
-                            className={selectablePillClass}
-                            onClick={() =>
-                                setFirstDay(
-                                    firstDay === 'Monday' ? 'Sunday' : 'Monday',
-                                )
-                            }
-                        >
-                            First day: {firstDay}
-                        </button>
-                        <button
-                            type="button"
-                            className={selectablePillClass}
-                            onClick={() =>
-                                setCommentsSubmit(
-                                    commentsSubmit === 'Enter'
-                                        ? 'Ctrl+Enter'
-                                        : 'Enter',
-                                )
-                            }
-                        >
-                            Send comments: {commentsSubmit}
-                        </button>
-                    </div>
-                    <div className="grid grid-cols-1 gap-3 rounded-xl border border-[var(--bg-light-color)] bg-[var(--bg-color)] p-3 md:grid-cols-2">
-                        <div className="flex items-center justify-between">
-                            <p className="text-sm text-zinc-300">
-                                Convert text emoticons
-                            </p>
-                            <ToggleSwitch
-                                checked={convertEmoticons}
-                                onChange={setConvertEmoticons}
-                            />
-                        </div>
-                        <div className="flex items-center justify-between">
-                            <p className="text-sm text-zinc-300">
-                                Compact number formatting
-                            </p>
-                            <ToggleSwitch
-                                checked={compactNumbers}
-                                onChange={setCompactNumbers}
-                            />
-                        </div>
-                    </div>
                 </div>
             </SettingsPanel>
         </div>
