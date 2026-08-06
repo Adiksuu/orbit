@@ -1,3 +1,4 @@
+import { AccentProvider } from '@/context/AccentContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, test } from 'vitest';
@@ -7,7 +8,9 @@ describe('AccountSettingsContent', () => {
     test('renders preferences content', () => {
         render(
             <ThemeProvider>
-                <AccountSettingsContent tabId="preferences" />
+                <AccentProvider>
+                    <AccountSettingsContent tabId="preferences" />
+                </AccentProvider>
             </ThemeProvider>,
         );
 

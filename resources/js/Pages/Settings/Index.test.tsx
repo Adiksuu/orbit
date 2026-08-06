@@ -1,3 +1,4 @@
+import { AccentProvider } from '@/context/AccentContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
@@ -9,7 +10,9 @@ const pageState = vi.hoisted(() => ({ url: '/settings' }));
 const renderSettingsIndex = () =>
     render(
         <ThemeProvider>
-            <SettingsIndex />
+            <AccentProvider>
+                <SettingsIndex />
+            </AccentProvider>
         </ThemeProvider>,
     );
 

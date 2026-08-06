@@ -4,6 +4,7 @@ import './bootstrap';
 import { ModalContainer } from '@/Components/Organisms/Modal';
 import OnboardingModal from '@/Components/Organisms/OnboardingModal/OnboardingModal';
 import ProjectOnboardingModal from '@/Components/Organisms/ProjectOnboardingModal/ProjectOnboardingModal';
+import { AccentProvider } from '@/context/AccentContext';
 import { AlertProvider } from '@/context/AlertContext';
 import { ModalProvider } from '@/context/ModalContext';
 import { ShortcutProvider } from '@/context/ShortcutContext';
@@ -75,15 +76,17 @@ createInertiaApp({
             <App {...props}>
                 {({ Component, props: pageProps, key }) => (
                     <ThemeProvider>
-                        <ModalProvider>
-                            <AlertProvider>
-                                <ShortcutProvider>
-                                    <ModalContainer />
-                                    <Component {...pageProps} key={key} />
-                                    <OnboardingGate />
-                                </ShortcutProvider>
-                            </AlertProvider>
-                        </ModalProvider>
+                        <AccentProvider>
+                            <ModalProvider>
+                                <AlertProvider>
+                                    <ShortcutProvider>
+                                        <ModalContainer />
+                                        <Component {...pageProps} key={key} />
+                                        <OnboardingGate />
+                                    </ShortcutProvider>
+                                </AlertProvider>
+                            </ModalProvider>
+                        </AccentProvider>
                     </ThemeProvider>
                 )}
             </App>,

@@ -15,6 +15,11 @@ interface AccountSettingsThemeCardProps {
  * literal hex value rather than a CSS variable (which would just reflect
  * whatever theme is active right now, breaking the "Dark" preview while
  * viewing the page in light mode, and vice versa).
+ *
+ * The accent bars are the one exception: the accent color is chosen
+ * separately (Settings > Preferences > Accent color) and applies the same
+ * regardless of theme, so those bars use `var(--accent-color)` directly to
+ * always reflect the user's current pick.
  */
 const themePreviewStyles: Record<
     ThemeMode,
@@ -23,7 +28,6 @@ const themePreviewStyles: Record<
         canvas: string;
         sidebar: string;
         topbar: string;
-        accent: string;
         row: string;
     }
 > = {
@@ -32,7 +36,6 @@ const themePreviewStyles: Record<
         canvas: 'bg-[#101113]',
         sidebar: 'bg-[#050505]',
         topbar: 'bg-[#08090a]',
-        accent: 'bg-[#8844da]',
         row: 'bg-[rgba(255,255,255,0.08)]',
     },
     light: {
@@ -40,7 +43,6 @@ const themePreviewStyles: Record<
         canvas: 'bg-[#ffffff]',
         sidebar: 'bg-[#eef0f4]',
         topbar: 'bg-[#f7f8fa]',
-        accent: 'bg-[#8844da]',
         row: 'bg-[rgba(0,0,0,0.06)]',
     },
     system: {
@@ -48,7 +50,6 @@ const themePreviewStyles: Record<
         canvas: 'bg-[#181a22]',
         sidebar: 'bg-[#12131a]',
         topbar: 'bg-[#0d0e13]',
-        accent: 'bg-[#8844da]',
         row: 'bg-[#33384a]',
     },
 };
@@ -99,7 +100,7 @@ export default function AccountSettingsThemeCard({
                 >
                     <div className={`h-1 rounded-full ${palette.row}`} />
                     <div className={`h-1 rounded-full ${palette.row}`} />
-                    <div className={`h-1 rounded-full ${palette.accent}`} />
+                    <div className="h-1 rounded-full bg-[var(--accent-color)]" />
                 </div>
                 <div className="flex flex-1 flex-col gap-1 overflow-hidden rounded-md">
                     <div
@@ -108,9 +109,7 @@ export default function AccountSettingsThemeCard({
                     <div
                         className={`flex-1 space-y-1.5 rounded-sm p-1 ${palette.canvas}`}
                     >
-                        <div
-                            className={`h-1.5 w-2/3 rounded-full ${palette.accent}`}
-                        />
+                        <div className="h-1.5 w-2/3 rounded-full bg-[var(--accent-color)]" />
                         <div className={`h-1.5 rounded-full ${palette.row}`} />
                         <div
                             className={`h-1.5 w-4/5 rounded-full ${palette.row}`}
