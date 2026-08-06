@@ -1,6 +1,7 @@
 import { AccentProvider } from '@/context/AccentContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, test } from 'vitest';
 import AccountSettingsContent from './AccountSettingsContent';
 
@@ -23,8 +24,29 @@ describe('AccountSettingsContent', () => {
     test('renders profile content', () => {
         render(<AccountSettingsContent tabId="profile" />);
 
-        expect(screen.getByText('Profile details')).toBeInTheDocument();
-        expect(screen.getByText('Profile preview')).toBeInTheDocument();
+        expect(screen.getByText('Profile')).toBeInTheDocument();
+        expect(screen.getByText('Live preview')).toBeInTheDocument();
+    });
+
+    test('profile: shows initials when no photo is set, and disables the reset control', () => {
+        render(<AccountSettingsContent tabId="profile" />);
+
+        expect(screen.getAllByText('JD').length).toBeGreaterThan(0);
+        expect(
+            screen.getByRole('button', { name: 'Reset to default' }),
+        ).toBeDisabled();
+    });
+
+    test('profile: editing the username updates the live preview and initials', async () => {
+        render(<AccountSettingsContent tabId="profile" />);
+        const user = userEvent.setup();
+
+        const usernameInput = screen.getByPlaceholderText('Your name');
+        await user.clear(usernameInput);
+        await user.type(usernameInput, 'Ada Lovelace');
+
+        expect(screen.getAllByText('Ada Lovelace').length).toBeGreaterThan(0);
+        expect(screen.getAllByText('AL').length).toBeGreaterThan(0);
     });
 
     test('renders notifications content', () => {
