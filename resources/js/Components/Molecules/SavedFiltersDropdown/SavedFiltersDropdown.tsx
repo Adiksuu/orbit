@@ -182,7 +182,7 @@ const SavedFiltersDropdown: React.FC<SavedFiltersDropdownProps> = ({
                             zIndex: 9999,
                             width: PANEL_WIDTH,
                         }}
-                        className="animate-in fade-in zoom-in-95 flex max-h-[26rem] flex-col overflow-hidden rounded-xl border border-[var(--border-color-strong)] bg-[var(--surface-color)] shadow-2xl backdrop-blur-md duration-100"
+                        className="animate-in fade-in zoom-in-95 flex max-h-[26rem] flex-col overflow-hidden rounded-xl border border-[var(--border-color-strong)] bg-[var(--bg-dark-color)] shadow-2xl backdrop-blur-md duration-100"
                     >
                         <div className="flex items-center justify-between px-3 py-2.5">
                             <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted-color)]">

@@ -27,10 +27,18 @@ function PageHeader({ title, children }: PageHeaderProps) {
                         setShowNotificationsPopup(!showNotificationsPopup)
                     }
                 >
-                    <Icon name="Bell" size={18} color="var(--text-gray-color)" />
+                    <Icon
+                        name="Bell"
+                        size={18}
+                        color="var(--text-gray-color)"
+                    />
                 </button>
                 <button className="flex cursor-pointer items-center justify-center rounded-md border-none bg-transparent p-1.5 hover:bg-[var(--bg-light-color)]">
-                    <Icon name="Settings" size={16} color="var(--text-gray-color)" />
+                    <Icon
+                        name="Settings"
+                        size={16}
+                        color="var(--text-gray-color)"
+                    />
                 </button>
 
                 {children}

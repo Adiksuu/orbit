@@ -113,7 +113,7 @@ const Calendar: React.FC<CalendarProps> = ({
                 damping: 25,
                 stiffness: 300,
             }}
-            className="w-[320px] rounded-2xl border border-[var(--border-color)] bg-[var(--surface-color)] p-5 shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl"
+            className="w-[320px] rounded-2xl border border-[var(--border-color)] bg-[var(--bg-dark-color)] p-5 shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl"
         >
             <div className="mb-6 flex items-center justify-between">
                 <button

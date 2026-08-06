@@ -100,7 +100,11 @@ const FILTER_CONFIG: Record<FilterDropdownType, FilterConfig> = {
                 optionRow(
                     value,
                     label,
-                    <Icon name={icon} size={13} color="var(--text-gray-color)" />,
+                    <Icon
+                        name={icon}
+                        size={13}
+                        color="var(--text-gray-color)"
+                    />,
                 ),
         })),
     },
@@ -246,7 +250,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
                             left: coords.left,
                             zIndex: 9999,
                         }}
-                        className="animate-in fade-in zoom-in-95 w-56 overflow-hidden rounded-xl border border-[var(--border-color-strong)] bg-[var(--surface-color)] p-1.5 shadow-2xl backdrop-blur-md duration-100"
+                        className="animate-in fade-in zoom-in-95 w-56 overflow-hidden rounded-xl border border-[var(--border-color-strong)] bg-[var(--bg-dark-color)] p-1.5 shadow-2xl backdrop-blur-md duration-100"
                     >
                         <div className="flex items-center justify-between px-2 py-1.5">
                             <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted-color)]">

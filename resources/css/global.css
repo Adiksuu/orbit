@@ -114,6 +114,28 @@ html, body, #app {
     list-style: revert;
 }
 
+/* Tailwind Typography's own color variables, pointed at our theme tokens so
+   rendered markdown (issue descriptions, etc.) follows the active theme
+   instead of the fixed light-on-dark palette `prose-invert` would apply. */
+.prose {
+    --tw-prose-body: var(--text-color);
+    --tw-prose-headings: var(--text-color);
+    --tw-prose-lead: var(--text-gray-color);
+    --tw-prose-links: var(--accent-color);
+    --tw-prose-bold: var(--text-color);
+    --tw-prose-counters: var(--text-gray-color);
+    --tw-prose-bullets: var(--text-gray-color);
+    --tw-prose-hr: var(--border-color);
+    --tw-prose-quotes: var(--text-gray-color);
+    --tw-prose-quote-borders: var(--border-color-strong);
+    --tw-prose-captions: var(--text-muted-color);
+    --tw-prose-code: var(--text-color);
+    --tw-prose-pre-code: var(--text-color);
+    --tw-prose-pre-bg: var(--surface-color);
+    --tw-prose-th-borders: var(--border-color-strong);
+    --tw-prose-td-borders: var(--border-color);
+}
+
 .tiptap p.is-editor-empty:first-child::before {
     content: attr(data-placeholder);
     float: left;
