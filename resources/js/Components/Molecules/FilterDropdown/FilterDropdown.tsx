@@ -100,7 +100,7 @@ const FILTER_CONFIG: Record<FilterDropdownType, FilterConfig> = {
                 optionRow(
                     value,
                     label,
-                    <Icon name={icon} size={13} color="#999" />,
+                    <Icon name={icon} size={13} color="var(--text-gray-color)" />,
                 ),
         })),
     },

@@ -258,7 +258,7 @@ const SavedFiltersDropdown: React.FC<SavedFiltersDropdownProps> = ({
                                 <Icon
                                     name="BookmarkX"
                                     size={20}
-                                    color="#52525b"
+                                    color="var(--text-gray-color)"
                                 />
                                 <p className="text-xs font-medium text-[var(--text-muted-color)]">
                                     No saved views yet

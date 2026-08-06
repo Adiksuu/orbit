@@ -85,7 +85,7 @@ const Sidebar: FC<{ projects: Project[] }> = ({ projects }) => {
                                 avatarSrc="/path/to/avatar.png"
                                 size="sm"
                             />
-                            <Icon name="ChevronDown" size={14} color="#999" />
+                            <Icon name="ChevronDown" size={14} color="var(--text-gray-color)" />
                         </div>
                         <button
                             onClick={() => setIsOpen(false)}
@@ -199,7 +199,7 @@ const Sidebar: FC<{ projects: Project[] }> = ({ projects }) => {
                             showDetails
                             showTooltip={false}
                         />
-                        <Icon name="ChevronDown" size={14} color="#999" />
+                        <Icon name="ChevronDown" size={14} color="var(--text-gray-color)" />
                     </div>
 
                     {isUserMenuOpen && (

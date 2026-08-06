@@ -157,7 +157,7 @@ const TopNav: React.FC<TopNavProps> = ({
                                     'flex cursor-pointer items-center justify-center rounded-md border-none bg-transparent p-1.5 hover:bg-[var(--bg-light-color)]'
                                 }
                             >
-                                <Icon name="Search" size={18} color="#999" />
+                                <Icon name="Search" size={18} color="var(--text-gray-color)" />
                             </button>
                             <button
                                 className={
@@ -169,7 +169,7 @@ const TopNav: React.FC<TopNavProps> = ({
                                     )
                                 }
                             >
-                                <Icon name="Bell" size={18} color="#999" />
+                                <Icon name="Bell" size={18} color="var(--text-gray-color)" />
                             </button>
                             <button
                                 className={
@@ -179,7 +179,7 @@ const TopNav: React.FC<TopNavProps> = ({
                                 <Icon
                                     name="CircleQuestionMark"
                                     size={18}
-                                    color="#999"
+                                    color="var(--text-gray-color)"
                                 />
                             </button>
                         </div>
