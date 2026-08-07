@@ -6,7 +6,7 @@ import AccountSettingsAvatarUploader from '@/Components/Organisms/AccountSetting
 import AccountSettingsProfilePreview from '@/Components/Organisms/AccountSettingsContent/AccountSettingsProfilePreview';
 import { cn } from '@/utils/cn';
 import { useForm } from '@inertiajs/react';
-import { FormEvent, useState } from 'react';
+import { SyntheticEvent, useState } from 'react';
 
 const getInitials = (name: string) => {
     const trimmed = name.trim();
@@ -36,7 +36,7 @@ export default function AccountSettingsProfileTab({
     const initials = getInitials(data.name);
     const hasUnsavedChanges = data.name.trim() !== savedName.trim();
 
-    const handleSubmitUsername = (e: FormEvent<HTMLFormElement>) => {
+    const handleSubmitUsername = (e: SyntheticEvent) => {
         e.preventDefault();
         post(route('account.rename'), {
             preserveScroll: true,
