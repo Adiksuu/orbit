@@ -49,6 +49,7 @@ test('an authenticated user can rename account name', function () {
     ]);
 
     $response->assertRedirect();
+    $response->assertSessionHas('success', 'Profile name has been updated successfully.');
     $this->assertDatabaseHas('users', [
         'id' => $user->id,
         'name' => 'New Name',
@@ -64,6 +65,10 @@ test('rename name requires a non-empty name', function () {
 
     $response->assertRedirect('/settings');
     $response->assertSessionHasErrors(['name']);
+    $response->assertSessionHas(
+        'error',
+        'Profile name update failed. Please fix the form errors.',
+    );
     $this->assertDatabaseHas('users', [
         'id' => $user->id,
         'name' => 'Old Name',

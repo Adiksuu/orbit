@@ -1,8 +1,10 @@
+import Icon from '@/Components/Atoms/Icon/Icon';
 import Input from '@/Components/Atoms/Input/Input';
 import SettingsPanel from '@/Components/Molecules/SettingsPanel/SettingsPanel';
 import SettingsPanelRow from '@/Components/Molecules/SettingsPanelRow/SettingsPanelRow';
 import AccountSettingsAvatarUploader from '@/Components/Organisms/AccountSettingsContent/AccountSettingsAvatarUploader';
 import AccountSettingsProfilePreview from '@/Components/Organisms/AccountSettingsContent/AccountSettingsProfilePreview';
+import { cn } from '@/utils/cn';
 import { useForm } from '@inertiajs/react';
 import { FormEvent, useState } from 'react';
 
@@ -25,16 +27,24 @@ interface AccountSettingsProfileTabProps {
 export default function AccountSettingsProfileTab({
     userName = 'John Doe',
 }: AccountSettingsProfileTabProps) {
-    const { data, setData, post } = useForm({
+    const { data, setData, post, errors, processing, clearErrors } = useForm({
         name: userName,
     });
     const [avatarSrc, setAvatarSrc] = useState<string | null>(null);
+    const [savedName, setSavedName] = useState(userName);
 
     const initials = getInitials(data.name);
+    const hasUnsavedChanges = data.name.trim() !== savedName.trim();
 
     const handleSubmitUsername = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        post(route('account.rename'), { preserveScroll: true });
+        post(route('account.rename'), {
+            preserveScroll: true,
+            onSuccess: () => {
+                setSavedName(data.name);
+                clearErrors('name');
+            },
+        });
     };
 
     return (
@@ -48,16 +58,57 @@ export default function AccountSettingsProfileTab({
                     title="Username"
                     description="Teammates will see this name and can @mention you with it."
                     action={
-                        <form onSubmit={handleSubmitUsername}>
+                        <form
+                            onSubmit={handleSubmitUsername}
+                            className="flex flex-col gap-1.5"
+                        >
                             <Input
                                 name="name"
                                 value={data.name}
-                                onChange={(event) =>
-                                    setData('name', event.target.value)
-                                }
+                                onChange={(event) => {
+                                    setData('name', event.target.value);
+                                    if (errors.name) {
+                                        clearErrors('name');
+                                    }
+                                }}
                                 placeholder="Your name"
-                                className="w-56"
+                                className={cn(
+                                    'w-56',
+                                    errors.name &&
+                                        'border-[var(--error-color)] focus:border-[var(--error-color)]',
+                                )}
                             />
+                            {errors.name && (
+                                <span className="text-xs text-[var(--error-color)]">
+                                    {errors.name}
+                                </span>
+                            )}
+                            <span className="flex items-center gap-1.5 text-xs text-[var(--text-gray-color)]">
+                                {processing ? (
+                                    <>
+                                        <Icon
+                                            name="LoaderCircle"
+                                            size={14}
+                                            className="animate-spin"
+                                        />
+                                        Saving...
+                                    </>
+                                ) : hasUnsavedChanges ? (
+                                    <>
+                                        <Icon name="CircleAlert" size={14} />
+                                        Unsaved changes
+                                    </>
+                                ) : (
+                                    <>
+                                        <Icon
+                                            name="CircleCheck"
+                                            size={14}
+                                            className="text-[var(--success-color)]"
+                                        />
+                                        Changes saved
+                                    </>
+                                )}
+                            </span>
                         </form>
                     }
                 />

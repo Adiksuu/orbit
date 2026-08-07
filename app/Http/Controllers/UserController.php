@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\UserService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -28,12 +29,27 @@ class UserController extends Controller
 
     public function rename(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
         ]);
 
+        if ($validator->fails()) {
+            return redirect()
+                ->back()
+                ->withErrors($validator)
+                ->withInput()
+                ->with(
+                    'error',
+                    'Profile name update failed. Please fix the form errors.',
+                );
+        }
+
+        $validated = $validator->validated();
+
         $this->userService->rename($request->user(), $validated['name']);
 
-        return redirect()->back();
+        return redirect()
+            ->back()
+            ->with('success', 'Profile name has been updated successfully.');
     }
 }
