@@ -81,12 +81,16 @@ describe('AccountSettingsContent', () => {
     });
 
     test('renders security and access content', () => {
-        render(<AccountSettingsContent tabId="security-access" />);
+        render(
+            <AlertProvider>
+                <AccountSettingsContent tabId="security-access" />
+            </AlertProvider>,
+        );
 
-        expect(
-            screen.getByText('Sign-in and verification'),
-        ).toBeInTheDocument();
+        expect(screen.getByText('Password')).toBeInTheDocument();
         expect(screen.getByText('Active sessions')).toBeInTheDocument();
+        expect(screen.getByText('Session expiry')).toBeInTheDocument();
+        expect(screen.getAllByText('Delete account').length).toBeGreaterThan(0);
     });
 
     test('renders integrations content', () => {

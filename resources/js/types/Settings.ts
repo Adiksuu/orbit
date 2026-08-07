@@ -63,7 +63,7 @@ export const SETTINGS_TABS: SettingsTab[] = [
         icon: 'ShieldCheck',
         section: 'account',
         description: 'Review authentication, sessions, and access controls.',
-        enabled: false,
+        enabled: true,
     },
     {
         id: 'integrations',
