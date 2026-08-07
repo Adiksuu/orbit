@@ -52,4 +52,9 @@ class UserController extends Controller
             ->back()
             ->with('success', 'Profile name has been updated successfully.');
     }
+
+//    public function uploadAvatar(Request $request): RedirectResponse
+//    {
+//
+//    }
 }

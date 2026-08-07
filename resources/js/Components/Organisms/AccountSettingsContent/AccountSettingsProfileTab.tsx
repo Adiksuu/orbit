@@ -4,6 +4,7 @@ import SettingsPanel from '@/Components/Molecules/SettingsPanel/SettingsPanel';
 import SettingsPanelRow from '@/Components/Molecules/SettingsPanelRow/SettingsPanelRow';
 import AccountSettingsAvatarUploader from '@/Components/Organisms/AccountSettingsContent/AccountSettingsAvatarUploader';
 import AccountSettingsProfilePreview from '@/Components/Organisms/AccountSettingsContent/AccountSettingsProfilePreview';
+import { useAlert } from '@/context/AlertContext';
 import { cn } from '@/utils/cn';
 import { useForm } from '@inertiajs/react';
 import { SyntheticEvent, useState } from 'react';
@@ -27,6 +28,8 @@ interface AccountSettingsProfileTabProps {
 export default function AccountSettingsProfileTab({
     userName = 'John Doe',
 }: AccountSettingsProfileTabProps) {
+    const { addAlert } = useAlert();
+
     const { data, setData, post, errors, processing, clearErrors } = useForm({
         name: userName,
     });
@@ -45,6 +48,11 @@ export default function AccountSettingsProfileTab({
                 clearErrors('name');
             },
         });
+    };
+
+    const handleResetAvatar = () => {
+        setAvatarSrc(null);
+        addAlert('Avatar reset to default.', 'information');
     };
 
     return (
@@ -120,7 +128,7 @@ export default function AccountSettingsProfileTab({
                             avatarSrc={avatarSrc}
                             initials={initials}
                             onUpload={setAvatarSrc}
-                            onReset={() => setAvatarSrc(null)}
+                            onReset={() => handleResetAvatar()}
                         />
                     }
                 />
