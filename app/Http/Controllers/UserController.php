@@ -30,7 +30,7 @@ class UserController extends Controller
     public function rename(Request $request): RedirectResponse
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:30|min:3',
         ]);
 
         if ($validator->fails()) {
