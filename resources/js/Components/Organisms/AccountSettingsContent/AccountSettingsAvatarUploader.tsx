@@ -11,6 +11,9 @@ interface AccountSettingsAvatarUploaderProps {
     onReset: () => void;
 }
 
+// Mirrors the `max:5120` (KB) rule enforced in UserController::uploadAvatar.
+const MAX_AVATAR_SIZE_BYTES = 5 * 1024 * 1024;
+
 export default function AccountSettingsAvatarUploader({
     avatarSrc,
     initials,
@@ -39,6 +42,11 @@ export default function AccountSettingsAvatarUploader({
                 'Invalid image. Please upload a JPEG, PNG, or GIF image.',
                 'error',
             );
+            return;
+        }
+
+        if (file.size > MAX_AVATAR_SIZE_BYTES) {
+            addAlert('Image must be smaller than 5 MB.', 'error');
             return;
         }
 

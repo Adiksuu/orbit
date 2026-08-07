@@ -30,6 +30,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+COPY docker/uploads.ini /usr/local/etc/php/conf.d/uploads.ini
+
 # Composer (from the official Composer image).
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
