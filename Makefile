@@ -73,6 +73,20 @@ up-d: ensure-env
 down:
 	$(COMPOSE) down
 
+# Start the monitoring stack detached.
+
+up-monitoring:
+	$(COMPOSE) --profile monitoring up -d uptime-kuma
+
+# Stop the monitoring stack.
+
+down-monitoring:
+	$(COMPOSE) --profile monitoring stop uptime-kuma
+
+# Tail logs from the monitoring stack.
+
+logs-monitoring:
+	$(COMPOSE) --profile monitoring logs -f uptime-kuma
 
 # (Re)build the images.
 

@@ -126,6 +126,25 @@ services:
         networks:
             - orbit-network
 
+    uptime-kuma:
+        image: louislam/uptime-kuma:2
+        profiles:
+            - monitoring
+
+        ports:
+            - "3001:3001"
+
+        volumes:
+            - uptime-kuma-data:/app/data
+
+        restart: unless-stopped
+
+        networks:
+            - orbit-network
+
 networks:
     orbit-network:
         driver: bridge
+
+volumes:
+    uptime-kuma-data:
