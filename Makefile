@@ -1,4 +1,4 @@
-.PHONY: setup up dev up-d down build ensure-env npm-install test test-coverage test-js test-js-coverage lint type-check logs shell tinker migrate fresh clean
+.PHONY: setup up dev up-d down build ensure-env npm-install composer-install test test-coverage test-js test-js-coverage lint type-check logs shell tinker migrate fresh clean
 
 # Use Doppler to inject environment variables when this directory is linked
 # to a Doppler project/config (`doppler setup`). Third parties without
@@ -99,6 +99,13 @@ build: ensure-env
 npm-install: ensure-env
 	$(COMPOSE) build vite
 	$(COMPOSE) up -d --renew-anon-volumes vite
+
+
+# Run this after adding/updating/removing a composer package.
+
+composer-install: ensure-env
+	$(COMPOSE) build app
+	$(COMPOSE) up -d --renew-anon-volumes app
 
 
 # Run the PHP (Pest) test suite.
