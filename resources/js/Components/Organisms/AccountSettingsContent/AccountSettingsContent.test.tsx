@@ -1,9 +1,21 @@
 import { AccentProvider } from '@/context/AccentContext';
+import { AlertProvider } from '@/context/AlertContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import AccountSettingsContent from './AccountSettingsContent';
+
+vi.mock('@inertiajs/react', async () => {
+    const actual =
+        await vi.importActual<typeof import('@inertiajs/react')>(
+            '@inertiajs/react',
+        );
+    return {
+        ...actual,
+        usePage: () => ({ props: { flash: {} } }),
+    };
+});
 
 describe('AccountSettingsContent', () => {
     test('renders preferences content', () => {
@@ -22,14 +34,22 @@ describe('AccountSettingsContent', () => {
     });
 
     test('renders profile content', () => {
-        render(<AccountSettingsContent tabId="profile" />);
+        render(
+            <AlertProvider>
+                <AccountSettingsContent tabId="profile" />
+            </AlertProvider>,
+        );
 
         expect(screen.getByText('Profile')).toBeInTheDocument();
         expect(screen.getByText('Live preview')).toBeInTheDocument();
     });
 
     test('profile: shows initials when no photo is set, and disables the reset control', () => {
-        render(<AccountSettingsContent tabId="profile" />);
+        render(
+            <AlertProvider>
+                <AccountSettingsContent tabId="profile" />
+            </AlertProvider>,
+        );
 
         expect(screen.getAllByText('JD').length).toBeGreaterThan(0);
         expect(
@@ -38,7 +58,11 @@ describe('AccountSettingsContent', () => {
     });
 
     test('profile: editing the username updates the live preview and initials', async () => {
-        render(<AccountSettingsContent tabId="profile" />);
+        render(
+            <AlertProvider>
+                <AccountSettingsContent tabId="profile" />
+            </AlertProvider>,
+        );
         const user = userEvent.setup();
 
         const usernameInput = screen.getByPlaceholderText('Your name');

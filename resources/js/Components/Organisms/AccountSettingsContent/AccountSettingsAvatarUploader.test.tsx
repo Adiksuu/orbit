@@ -1,14 +1,54 @@
+import { AlertProvider } from '@/context/AlertContext';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { ReactNode } from 'react';
 import { describe, expect, test, vi } from 'vitest';
 import AccountSettingsAvatarUploader from './AccountSettingsAvatarUploader';
+
+interface RouterPostOptions {
+    onSuccess?: () => void;
+}
+
+const { mockRouterPost } = vi.hoisted(() => ({
+    mockRouterPost: vi.fn(
+        (_url: string, _data: unknown, options?: RouterPostOptions) => {
+            options?.onSuccess?.();
+        },
+    ),
+}));
+
+vi.mock('@inertiajs/react', () => ({
+    usePage: () => ({ props: { flash: {} } }),
+    router: { post: mockRouterPost },
+}));
+
+vi.stubGlobal(
+    'route',
+    vi.fn((name: string) => `/${name}`),
+);
+
+class MockImage {
+    onload: (() => void) | null = null;
+    onerror: (() => void) | null = null;
+    width = 1;
+    height = 1;
+
+    set src(_value: string) {
+        queueMicrotask(() => this.onload?.());
+    }
+}
+
+vi.stubGlobal('Image', MockImage);
+
+const renderWithAlertProvider = (children: ReactNode) =>
+    render(<AlertProvider>{children}</AlertProvider>);
 
 const getFileInput = () =>
     document.querySelector('input[type="file"]') as HTMLInputElement;
 
 describe('AccountSettingsAvatarUploader', () => {
     test('shows initials and disables the reset control when there is no photo', () => {
-        render(
+        renderWithAlertProvider(
             <AccountSettingsAvatarUploader
                 avatarSrc={null}
                 initials="JD"
@@ -25,7 +65,7 @@ describe('AccountSettingsAvatarUploader', () => {
 
     test('shows the photo and a reset control when a photo is set', async () => {
         const onReset = vi.fn();
-        render(
+        renderWithAlertProvider(
             <AccountSettingsAvatarUploader
                 avatarSrc="data:image/png;base64,abc"
                 initials="JD"
@@ -46,7 +86,7 @@ describe('AccountSettingsAvatarUploader', () => {
     });
 
     test('clicking "Upload new photo" opens the hidden file picker', async () => {
-        render(
+        renderWithAlertProvider(
             <AccountSettingsAvatarUploader
                 avatarSrc={null}
                 initials="JD"
@@ -66,7 +106,7 @@ describe('AccountSettingsAvatarUploader', () => {
 
     test('selecting a file calls onUpload with its data URL', async () => {
         const onUpload = vi.fn();
-        render(
+        renderWithAlertProvider(
             <AccountSettingsAvatarUploader
                 avatarSrc={null}
                 initials="JD"
