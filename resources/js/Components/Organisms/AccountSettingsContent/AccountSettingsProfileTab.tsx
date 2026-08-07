@@ -23,17 +23,19 @@ const getInitials = (name: string) => {
 
 interface AccountSettingsProfileTabProps {
     userName?: string;
+    userAvatar?: string | null;
 }
 
 export default function AccountSettingsProfileTab({
     userName = 'John Doe',
+    userAvatar = null,
 }: AccountSettingsProfileTabProps) {
     const { addAlert } = useAlert();
 
     const { data, setData, post, errors, processing, clearErrors } = useForm({
         name: userName,
     });
-    const [avatarSrc, setAvatarSrc] = useState<string | null>(null);
+    const [avatarSrc, setAvatarSrc] = useState<string | null>(userAvatar);
     const [savedName, setSavedName] = useState(userName);
 
     const initials = getInitials(data.name);

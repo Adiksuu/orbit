@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\NsfwDetectionService;
 use App\Services\UserService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -53,8 +54,34 @@ class UserController extends Controller
             ->with('success', 'Profile name has been updated successfully.');
     }
 
-//    public function uploadAvatar(Request $request): RedirectResponse
-//    {
-//
-//    }
+    public function uploadAvatar(Request $request, NsfwDetectionService $nsfwDetection): RedirectResponse
+    {
+        $request->validate([
+            'avatar' => [
+                'required',
+                'image',
+                'mimes:jpeg,png,gif',
+                'max:5120',
+            ],
+        ]);
+
+        $avatar = $request->file('avatar');
+
+        if (! $nsfwDetection->validate($avatar)) {
+            return back()->withErrors([
+                'avatar' => 'This image cannot be used.',
+            ])->with('error', 'This image cannot be used.');
+        }
+
+        $this->userService->updateProfile($request->user(), [], $avatar);
+
+        return back();
+    }
+
+    public function resetAvatar(Request $request): RedirectResponse
+    {
+        $this->userService->resetAvatar($request->user());
+
+        return back();
+    }
 }

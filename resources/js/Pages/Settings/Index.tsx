@@ -19,6 +19,7 @@ import { useMemo } from 'react';
 export default function SettingsIndex() {
     const { url, props } = usePage<PageProps>();
     const userName = props.auth?.user?.name ?? 'John Doe';
+    const userAvatar = props.auth?.user?.avatar ?? null;
 
     const activeTab = useMemo(() => {
         const [, queryString = ''] = url.split('?');
@@ -83,6 +84,7 @@ export default function SettingsIndex() {
                             <AccountSettingsContent
                                 tabId={activeTab}
                                 userName={userName}
+                                userAvatar={userAvatar}
                             />
                         ) : isWorkspaceSettingsTabId(activeTab) ? (
                             <WorkspaceSettingsContent tabId={activeTab} />

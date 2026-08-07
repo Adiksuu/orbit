@@ -29,6 +29,14 @@ class UserService
         return $this->userRepository->update($user, $data);
     }
 
+    public function resetAvatar(User $user): User {
+        if ($user->avatar) {
+            Storage::disk('public')->delete(str_replace('/storage/', '', $user->avatar));
+        }
+
+        return $this->userRepository->update($user, ['avatar' => null]);
+    }
+
     public function completeOnboarding(User $user): User {
         return $this->userRepository->completeOnboarding($user);
     }

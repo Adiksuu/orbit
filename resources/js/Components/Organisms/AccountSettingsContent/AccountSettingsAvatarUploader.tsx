@@ -1,6 +1,8 @@
 import Avatar from '@/Components/Atoms/Avatar/Avatar';
+import Icon from '@/Components/Atoms/Icon/Icon';
 import { useAlert } from '@/context/AlertContext';
-import { ChangeEvent, useRef } from 'react';
+import { router } from '@inertiajs/react';
+import { ChangeEvent, useRef, useState } from 'react';
 
 interface AccountSettingsAvatarUploaderProps {
     avatarSrc: string | null;
@@ -19,6 +21,8 @@ export default function AccountSettingsAvatarUploader({
     const { addAlert } = useAlert();
 
     const openFilePicker = () => inputRef.current?.click();
+
+    const [processing, setProcessing] = useState(false);
 
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -50,7 +54,27 @@ export default function AccountSettingsAvatarUploader({
             image.onload = () => {
                 if (image.width > 0 && image.height > 0) {
                     onUpload(result);
-                    addAlert('Avatar uploaded successfully.', 'success');
+
+                    setProcessing(true);
+                    router.post(
+                        route('account.upload-avatar'),
+                        { avatar: file },
+                        {
+                            preserveScroll: true,
+                            onSuccess: () => {
+                                addAlert(
+                                    'Avatar uploaded successfully.',
+                                    'success',
+                                );
+                            },
+                            onError: (e) => {
+                                addAlert(e.avatar, 'error');
+                            },
+                            onFinish: () => {
+                                setProcessing(false);
+                            },
+                        },
+                    );
                 } else {
                     addAlert('Invalid image file.', 'error');
                 }
@@ -67,6 +91,26 @@ export default function AccountSettingsAvatarUploader({
         reader.readAsDataURL(file);
     };
 
+    const handleReset = () => {
+        setProcessing(true);
+        router.post(
+            route('account.reset-avatar'),
+            {},
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    onReset();
+                },
+                onError: () => {
+                    addAlert('Failed to reset avatar.', 'error');
+                },
+                onFinish: () => {
+                    setProcessing(false);
+                },
+            },
+        );
+    };
+
     return (
         <div className="flex items-center gap-3">
             <Avatar
@@ -77,21 +121,34 @@ export default function AccountSettingsAvatarUploader({
             />
 
             <div className="flex flex-col items-start gap-1.5">
-                <button
-                    type="button"
-                    onClick={openFilePicker}
-                    className="rounded-md border border-[var(--border-color-strong)] px-3 py-1.5 text-xs font-medium text-[var(--text-color)] transition-colors hover:bg-[var(--bg-light-color)]"
-                >
-                    Upload new photo
-                </button>
-                <button
-                    type="button"
-                    onClick={onReset}
-                    disabled={!avatarSrc}
-                    className="px-1 text-xs font-medium text-[var(--error-color)] transition-colors hover:underline disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:no-underline"
-                >
-                    Reset to default
-                </button>
+                {!processing ? (
+                    <>
+                        <button
+                            type="button"
+                            onClick={openFilePicker}
+                            className="rounded-md border border-[var(--border-color-strong)] px-3 py-1.5 text-xs font-medium text-[var(--text-color)] transition-colors hover:bg-[var(--bg-light-color)]"
+                        >
+                            Upload new photo
+                        </button>
+                        <button
+                            type="button"
+                            onClick={handleReset}
+                            disabled={!avatarSrc}
+                            className="px-1 text-xs font-medium text-[var(--error-color)] transition-colors hover:underline disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:no-underline"
+                        >
+                            Reset to default
+                        </button>
+                    </>
+                ) : (
+                    <span className="flex items-center gap-1.5 text-xs text-[var(--text-gray-color)]">
+                        <Icon
+                            name="LoaderCircle"
+                            size={14}
+                            className="animate-spin"
+                        />
+                        Saving...
+                    </span>
+                )}
             </div>
 
             <input

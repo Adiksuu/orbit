@@ -67,6 +67,12 @@ services:
             SENTRY_LARAVEL_DSN: ${SENTRY_LARAVEL_DSN}
             SENTRY_TRACES_SAMPLE_RATE: ${SENTRY_TRACES_SAMPLE_RATE}
 
+            NSFW_DETECTION_ENABLED: ${NSFW_DETECTION_ENABLED}
+            # Hardcoded (not ${NSFW_SERVICE_URL}): inside the app container, the nsfwjs
+            # service is only reachable via its Docker network hostname, never localhost.
+            NSFW_SERVICE_URL: http://nsfwjs:3333
+            NSFW_THRESHOLD: ${NSFW_THRESHOLD}
+
         volumes:
             - .:/app
 
@@ -76,6 +82,9 @@ services:
         restart: unless-stopped
         tty: true
         stdin_open: true
+
+        depends_on:
+            - nsfwjs
 
         networks:
             - orbit-network
@@ -104,6 +113,15 @@ services:
         restart: unless-stopped
         tty: true
         stdin_open: true
+
+        networks:
+            - orbit-network
+
+    nsfwjs:
+        image: andresribeiroo/nsfwjs
+        restart: unless-stopped
+        ports:
+            - "3333:3333"
 
         networks:
             - orbit-network

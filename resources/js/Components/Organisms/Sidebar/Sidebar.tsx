@@ -199,6 +199,7 @@ const Sidebar: FC<{ projects: Project[] }> = ({ projects }) => {
                         <UserBadge
                             name={auth.user.name}
                             email={auth.user.email}
+                            avatarSrc={auth.user.avatar ?? undefined}
                             size="md"
                             showDetails
                             showTooltip={false}

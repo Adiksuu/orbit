@@ -9,18 +9,25 @@ import AccountSettingsSecurityTab from './AccountSettingsSecurityTab';
 interface AccountSettingsContentProps {
     tabId: AccountSettingsTabId;
     userName?: string;
+    userAvatar?: string | null;
 }
 
 export default function AccountSettingsContent({
     tabId,
     userName,
+    userAvatar,
 }: AccountSettingsContentProps) {
     if (tabId === 'preferences') {
         return <AccountSettingsPreferencesTab />;
     }
 
     if (tabId === 'profile') {
-        return <AccountSettingsProfileTab userName={userName} />;
+        return (
+            <AccountSettingsProfileTab
+                userName={userName}
+                userAvatar={userAvatar}
+            />
+        );
     }
 
     if (tabId === 'notifications') {
