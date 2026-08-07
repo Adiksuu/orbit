@@ -46,7 +46,7 @@ export const SETTINGS_TABS: SettingsTab[] = [
         icon: 'User',
         section: 'account',
         description: 'Manage your personal details and profile visibility.',
-        enabled: false,
+        enabled: true,
     },
     {
         id: 'notifications',

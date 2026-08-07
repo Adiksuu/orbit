@@ -3,7 +3,8 @@ import SettingsPanel from '@/Components/Molecules/SettingsPanel/SettingsPanel';
 import SettingsPanelRow from '@/Components/Molecules/SettingsPanelRow/SettingsPanelRow';
 import AccountSettingsAvatarUploader from '@/Components/Organisms/AccountSettingsContent/AccountSettingsAvatarUploader';
 import AccountSettingsProfilePreview from '@/Components/Organisms/AccountSettingsContent/AccountSettingsProfilePreview';
-import { useState } from 'react';
+import { useForm } from '@inertiajs/react';
+import { FormEvent, useState } from 'react';
 
 const getInitials = (name: string) => {
     const trimmed = name.trim();
@@ -17,11 +18,24 @@ const getInitials = (name: string) => {
     return (first.charAt(0) + last.charAt(0)).toUpperCase();
 };
 
-export default function AccountSettingsProfileTab() {
-    const [name, setName] = useState('John Doe');
+interface AccountSettingsProfileTabProps {
+    userName?: string;
+}
+
+export default function AccountSettingsProfileTab({
+    userName = 'John Doe',
+}: AccountSettingsProfileTabProps) {
+    const { data, setData, post } = useForm({
+        name: userName,
+    });
     const [avatarSrc, setAvatarSrc] = useState<string | null>(null);
 
-    const initials = getInitials(name);
+    const initials = getInitials(data.name);
+
+    const handleSubmitUsername = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        post(route('account.rename'), { preserveScroll: true });
+    };
 
     return (
         <div className="space-y-5">
@@ -34,12 +48,17 @@ export default function AccountSettingsProfileTab() {
                     title="Username"
                     description="Teammates will see this name and can @mention you with it."
                     action={
-                        <Input
-                            value={name}
-                            onChange={(event) => setName(event.target.value)}
-                            placeholder="Your name"
-                            className="w-56"
-                        />
+                        <form onSubmit={handleSubmitUsername}>
+                            <Input
+                                name="name"
+                                value={data.name}
+                                onChange={(event) =>
+                                    setData('name', event.target.value)
+                                }
+                                placeholder="Your name"
+                                className="w-56"
+                            />
+                        </form>
                     }
                 />
                 <SettingsPanelRow
@@ -62,7 +81,7 @@ export default function AccountSettingsProfileTab() {
                 icon="Eye"
             >
                 <AccountSettingsProfilePreview
-                    name={name}
+                    name={data.name}
                     avatarSrc={avatarSrc}
                     initials={initials}
                 />

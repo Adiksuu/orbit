@@ -17,7 +17,8 @@ import { usePage } from '@inertiajs/react';
 import { useMemo } from 'react';
 
 export default function SettingsIndex() {
-    const { url } = usePage<PageProps>();
+    const { url, props } = usePage<PageProps>();
+    const userName = props.auth?.user?.name ?? 'John Doe';
 
     const activeTab = useMemo(() => {
         const [, queryString = ''] = url.split('?');
@@ -79,7 +80,10 @@ export default function SettingsIndex() {
                         </header>
 
                         {isAccountSettingsTabId(activeTab) ? (
-                            <AccountSettingsContent tabId={activeTab} />
+                            <AccountSettingsContent
+                                tabId={activeTab}
+                                userName={userName}
+                            />
                         ) : isWorkspaceSettingsTabId(activeTab) ? (
                             <WorkspaceSettingsContent tabId={activeTab} />
                         ) : (

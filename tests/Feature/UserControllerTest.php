@@ -40,3 +40,40 @@ test('guests cannot mark project onboarding as completed', function () {
 
     $response->assertRedirect(route('login'));
 });
+
+test('an authenticated user can rename account name', function () {
+    $user = User::factory()->create(['name' => 'Old Name']);
+
+    $response = $this->actingAs($user)->post('/account/rename', [
+        'name' => 'New Name',
+    ]);
+
+    $response->assertRedirect();
+    $this->assertDatabaseHas('users', [
+        'id' => $user->id,
+        'name' => 'New Name',
+    ]);
+});
+
+test('rename name requires a non-empty name', function () {
+    $user = User::factory()->create(['name' => 'Old Name']);
+
+    $response = $this->from('/settings')->actingAs($user)->post('/account/rename', [
+        'name' => '',
+    ]);
+
+    $response->assertRedirect('/settings');
+    $response->assertSessionHasErrors(['name']);
+    $this->assertDatabaseHas('users', [
+        'id' => $user->id,
+        'name' => 'Old Name',
+    ]);
+});
+
+test('guests cannot rename account name', function () {
+    $response = $this->post('/account/rename', [
+        'name' => 'New Name',
+    ]);
+
+    $response->assertRedirect(route('login'));
+});

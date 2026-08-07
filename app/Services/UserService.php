@@ -36,4 +36,7 @@ class UserService
     public function completeProjectOnboarding(User $user): User {
         return $this->userRepository->completeProjectOnboarding($user);
     }
+    public function rename(User $user, string $newName): User {
+        return $this->userRepository->rename($user, $newName);
+    }
 }
