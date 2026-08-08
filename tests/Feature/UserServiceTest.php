@@ -157,3 +157,52 @@ test('it maps user sessions to their display shape', function () {
             \Illuminate\Support\Carbon::createFromTimestamp(1700000000)->toIso8601String(),
         );
 });
+
+test('it revokes another session via the repository', function () {
+    $user = User::factory()->create();
+    $this->app['request']->setLaravelSession($this->app['session']->driver());
+
+    $this->userRepository->shouldReceive('deleteSession')
+        ->once()
+        ->with($user, 'other-session')
+        ->andReturn(true);
+
+    $this->service->revokeSession($user, 'other-session');
+
+    expect(true)->toBeTrue();
+});
+
+test('it throws when attempting to revoke the current session', function () {
+    $user = User::factory()->create();
+    $this->app['request']->setLaravelSession($this->app['session']->driver());
+    $currentSessionId = $this->app['session']->driver()->getId();
+
+    $this->userRepository->shouldReceive('deleteSession')->never();
+
+    $this->service->revokeSession($user, $currentSessionId);
+})->throws(ValidationException::class);
+
+test('it throws when the session to revoke does not exist for the user', function () {
+    $user = User::factory()->create();
+    $this->app['request']->setLaravelSession($this->app['session']->driver());
+
+    $this->userRepository->shouldReceive('deleteSession')
+        ->once()
+        ->andReturn(false);
+
+    $this->service->revokeSession($user, 'missing-session');
+})->throws(ValidationException::class);
+
+test('it delegates revoking other sessions to the repository using the current session id', function () {
+    $user = User::factory()->create();
+    $this->app['request']->setLaravelSession($this->app['session']->driver());
+    $currentSessionId = $this->app['session']->driver()->getId();
+
+    $this->userRepository->shouldReceive('deleteOtherSessions')
+        ->once()
+        ->with($user, $currentSessionId);
+
+    $this->service->revokeOtherSessions($user);
+
+    expect(true)->toBeTrue();
+});

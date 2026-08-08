@@ -73,4 +73,24 @@ class UserService
             'isCurrent' => $session->id === request()->session()->getId(),
         ]);
     }
+
+    public function revokeSession(User $user, string $sessionId): void {
+        if ($sessionId === request()->session()->getId()) {
+            throw ValidationException::withMessages([
+                'session' => 'You cannot revoke your current session.',
+            ]);
+        }
+
+        $revoked = $this->userRepository->deleteSession($user, $sessionId);
+
+        if (! $revoked) {
+            throw ValidationException::withMessages([
+                'session' => 'Session not found.',
+            ]);
+        }
+    }
+
+    public function revokeOtherSessions(User $user): void {
+        $this->userRepository->deleteOtherSessions($user, request()->session()->getId());
+    }
 }

@@ -3,7 +3,8 @@ import Icon from '@/Components/Atoms/Icon/Icon';
 import StatusDot from '@/Components/Atoms/StatusDot/StatusDot';
 import { useAlert } from '@/context/AlertContext';
 import { Session } from '@/types/Users';
-import { formatDate } from '@/utils/time';
+import { formatTimeAgo } from '@/utils/time';
+import { router } from '@inertiajs/react';
 import { cva } from 'class-variance-authority';
 import { useState } from 'react';
 
@@ -28,19 +29,42 @@ const iconBgVariants = cva(
 );
 
 export default function AccountSettingsSessionsList({
-    sessions: initialSessions = [],
+    sessions = [],
 }: AccountSettingsSessionsListProps) {
     const { addAlert } = useAlert();
-    const [sessions, setSessions] = useState(initialSessions);
+    const [revokingId, setRevokingId] = useState<string | null>(null);
+    const [isRevokingOthers, setIsRevokingOthers] = useState(false);
 
     const revoke = (session: Session) => {
-        setSessions((prev) => prev.filter((item) => item.id !== session.id));
-        addAlert(`Signed out of "${session.ipAddress}".`, 'success');
+        setRevokingId(session.id);
+        router.delete(route('account.sessions.revoke', session.id), {
+            preserveScroll: true,
+            onSuccess: () => {
+                addAlert(`Signed out of "${session.ipAddress}".`, 'success');
+            },
+            onError: () => {
+                addAlert('Failed to sign out of that session.', 'error');
+            },
+            onFinish: () => {
+                setRevokingId(null);
+            },
+        });
     };
 
     const revokeAllOthers = () => {
-        setSessions((prev) => prev.filter((item) => item.isCurrent));
-        addAlert('Signed out of all other sessions.', 'success');
+        setIsRevokingOthers(true);
+        router.delete(route('account.sessions.revoke-others'), {
+            preserveScroll: true,
+            onSuccess: () => {
+                addAlert('Signed out of all other sessions.', 'success');
+            },
+            onError: () => {
+                addAlert('Failed to sign out of other sessions.', 'error');
+            },
+            onFinish: () => {
+                setIsRevokingOthers(false);
+            },
+        });
     };
 
     const hasOtherSessions = sessions.some((session) => !session.isCurrent);
@@ -69,8 +93,8 @@ export default function AccountSettingsSessionsList({
                             {session.ipAddress}
                         </p>
                         <p className="truncate text-xs text-[var(--text-gray-color)]">
-                            {session.userAgent} ·{' '}
-                            {formatDate(session.lastActiveAt)}
+                            Active {formatTimeAgo(session.lastActiveAt)} ago ·{' '}
+                            {session.userAgent}
                         </p>
                     </div>
                     {session.isCurrent ? (
@@ -82,10 +106,11 @@ export default function AccountSettingsSessionsList({
                         <Button
                             type="button"
                             isBox
+                            isDisabled={revokingId === session.id}
                             onClick={() => revoke(session)}
                             className="shrink-0 px-3 py-1.5 text-xs"
                         >
-                            Revoke
+                            {revokingId === session.id ? 'Revoking…' : 'Revoke'}
                         </Button>
                     )}
                 </div>
@@ -96,9 +121,12 @@ export default function AccountSettingsSessionsList({
                     <button
                         type="button"
                         onClick={revokeAllOthers}
-                        className="text-xs font-medium text-[var(--error-color)] transition-colors hover:underline"
+                        disabled={isRevokingOthers}
+                        className="text-xs font-medium text-[var(--error-color)] transition-colors hover:underline disabled:cursor-not-allowed disabled:opacity-50"
                     >
-                        Sign out of all other sessions
+                        {isRevokingOthers
+                            ? 'Signing out…'
+                            : 'Sign out of all other sessions'}
                     </button>
                 </div>
             )}

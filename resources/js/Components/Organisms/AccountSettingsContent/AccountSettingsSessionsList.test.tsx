@@ -5,6 +5,23 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 import AccountSettingsSessionsList from './AccountSettingsSessionsList';
 
+vi.stubGlobal(
+    'route',
+    vi.fn((name: string, params?: unknown) => `/${name}/${params ?? ''}`),
+);
+
+const { mockRouterDelete } = vi.hoisted(() => ({
+    mockRouterDelete: vi.fn(
+        (
+            _url: string,
+            opts?: { onSuccess?: () => void; onFinish?: () => void },
+        ) => {
+            opts?.onSuccess?.();
+            opts?.onFinish?.();
+        },
+    ),
+}));
+
 vi.mock('@inertiajs/react', async () => {
     const actual =
         await vi.importActual<typeof import('@inertiajs/react')>(
@@ -13,6 +30,7 @@ vi.mock('@inertiajs/react', async () => {
     return {
         ...actual,
         usePage: () => ({ props: { flash: {} } }),
+        router: { ...actual.router, delete: mockRouterDelete },
     };
 });
 
@@ -57,21 +75,22 @@ describe('AccountSettingsSessionsList', () => {
         );
     });
 
-    test('revoking a session removes it from the list', async () => {
+    test('revoking a session calls the revoke endpoint and shows a success alert', async () => {
         renderList();
         const user = userEvent.setup();
 
-        expect(screen.getByText('192.168.1.2')).toBeInTheDocument();
-
         await user.click(screen.getAllByRole('button', { name: 'Revoke' })[0]);
 
-        expect(screen.queryByText('192.168.1.2')).not.toBeInTheDocument();
+        expect(mockRouterDelete).toHaveBeenCalledWith(
+            '/account.sessions.revoke/session-2',
+            expect.objectContaining({ preserveScroll: true }),
+        );
         expect(
             screen.getByText('Signed out of "192.168.1.2".'),
         ).toBeInTheDocument();
     });
 
-    test('"Sign out of all other sessions" clears every non-current session', async () => {
+    test('"Sign out of all other sessions" calls the bulk revoke endpoint', async () => {
         renderList();
         const user = userEvent.setup();
 
@@ -81,14 +100,12 @@ describe('AccountSettingsSessionsList', () => {
             }),
         );
 
-        expect(screen.queryAllByRole('button', { name: 'Revoke' }).length).toBe(
-            0,
+        expect(mockRouterDelete).toHaveBeenCalledWith(
+            '/account.sessions.revoke-others/',
+            expect.objectContaining({ preserveScroll: true }),
         );
-        expect(screen.getByText('This device')).toBeInTheDocument();
         expect(
-            screen.queryByRole('button', {
-                name: 'Sign out of all other sessions',
-            }),
-        ).not.toBeInTheDocument();
+            screen.getByText('Signed out of all other sessions.'),
+        ).toBeInTheDocument();
     });
 });

@@ -92,3 +92,48 @@ test('it gets sessions belonging to a user ordered by most recent activity', fun
     expect($sessions)->toHaveCount(2)
         ->and($sessions->pluck('id')->all())->toBe(['session-newer', 'session-older']);
 });
+
+test('it deletes a session belonging to the given user', function () {
+    $user = User::factory()->create();
+
+    DB::table('sessions')->insert([
+        'id' => 'session-a', 'user_id' => $user->id, 'ip_address' => '10.0.0.1', 'user_agent' => 'Agent A', 'payload' => '', 'last_activity' => 100,
+    ]);
+
+    $result = $this->repository->deleteSession($user, 'session-a');
+
+    expect($result)->toBeTrue();
+    $this->assertDatabaseMissing('sessions', ['id' => 'session-a']);
+});
+
+test('it does not delete a session belonging to another user', function () {
+    $user = User::factory()->create();
+    $otherUser = User::factory()->create();
+
+    DB::table('sessions')->insert([
+        'id' => 'session-a', 'user_id' => $otherUser->id, 'ip_address' => '10.0.0.1', 'user_agent' => 'Agent A', 'payload' => '', 'last_activity' => 100,
+    ]);
+
+    $result = $this->repository->deleteSession($user, 'session-a');
+
+    expect($result)->toBeFalse();
+    $this->assertDatabaseHas('sessions', ['id' => 'session-a']);
+});
+
+test('it deletes every session for a user except the current one', function () {
+    $user = User::factory()->create();
+    $otherUser = User::factory()->create();
+
+    DB::table('sessions')->insert([
+        ['id' => 'current-session', 'user_id' => $user->id, 'ip_address' => '10.0.0.1', 'user_agent' => 'Agent A', 'payload' => '', 'last_activity' => 100],
+        ['id' => 'other-session', 'user_id' => $user->id, 'ip_address' => '10.0.0.2', 'user_agent' => 'Agent B', 'payload' => '', 'last_activity' => 200],
+        ['id' => 'foreign-session', 'user_id' => $otherUser->id, 'ip_address' => '10.0.0.3', 'user_agent' => 'Agent C', 'payload' => '', 'last_activity' => 300],
+    ]);
+
+    $deletedCount = $this->repository->deleteOtherSessions($user, 'current-session');
+
+    expect($deletedCount)->toBe(1);
+    $this->assertDatabaseHas('sessions', ['id' => 'current-session']);
+    $this->assertDatabaseMissing('sessions', ['id' => 'other-session']);
+    $this->assertDatabaseHas('sessions', ['id' => 'foreign-session']);
+});

@@ -110,4 +110,18 @@ class UserController extends Controller
 
         return back()->with('success', 'Password has been updated successfully.');
     }
+
+    public function revokeSession(Request $request, string $session): RedirectResponse
+    {
+        $this->userService->revokeSession($request->user(), $session);
+
+        return back()->with('success', 'Session has been signed out.');
+    }
+
+    public function revokeOtherSessions(Request $request): RedirectResponse
+    {
+        $this->userService->revokeOtherSessions($request->user());
+
+        return back()->with('success', 'Signed out of all other sessions.');
+    }
 }

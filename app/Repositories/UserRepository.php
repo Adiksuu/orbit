@@ -47,4 +47,20 @@ class UserRepository {
     {
         return DB::table('sessions')->where('user_id', $user->id)->orderByDesc('last_activity')->get();
     }
+
+    public function deleteSession(User $user, string $sessionId): bool
+    {
+        return DB::table('sessions')
+            ->where('id', $sessionId)
+            ->where('user_id', $user->id)
+            ->delete() > 0;
+    }
+
+    public function deleteOtherSessions(User $user, string $currentSessionId): int
+    {
+        return DB::table('sessions')
+            ->where('user_id', $user->id)
+            ->where('id', '!=', $currentSessionId)
+            ->delete();
+    }
 }

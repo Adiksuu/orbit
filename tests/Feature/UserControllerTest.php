@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 uses(RefreshDatabase::class);
@@ -143,6 +144,100 @@ test('guests cannot change password', function () {
         'new_password' => 'new-password',
         'new_password_confirmation' => 'new-password',
     ]);
+
+    $response->assertRedirect(route('login'));
+});
+
+test('an authenticated user can revoke one of their other sessions', function () {
+    $user = User::factory()->create();
+    $currentSessionId = str_repeat('a', 40);
+
+    DB::table('sessions')->insert([
+        ['id' => $currentSessionId, 'user_id' => $user->id, 'ip_address' => '10.0.0.1', 'user_agent' => 'Current', 'payload' => '', 'last_activity' => now()->timestamp],
+        ['id' => 'other-session-id', 'user_id' => $user->id, 'ip_address' => '10.0.0.2', 'user_agent' => 'Other', 'payload' => '', 'last_activity' => now()->timestamp],
+    ]);
+
+    $response = $this->withCookie(config('session.cookie'), $currentSessionId)
+        ->actingAs($user)
+        ->delete('/account/sessions/other-session-id');
+
+    $response->assertRedirect();
+    $response->assertSessionHas('success', 'Session has been signed out.');
+    $this->assertDatabaseMissing('sessions', ['id' => 'other-session-id']);
+    $this->assertDatabaseHas('sessions', ['id' => $currentSessionId]);
+});
+
+test('a user cannot revoke their own current session', function () {
+    $user = User::factory()->create();
+    $currentSessionId = str_repeat('a', 40);
+
+    DB::table('sessions')->insert([
+        'id' => $currentSessionId,
+        'user_id' => $user->id,
+        'ip_address' => '10.0.0.1',
+        'user_agent' => 'Current',
+        'payload' => '',
+        'last_activity' => now()->timestamp,
+    ]);
+
+    $response = $this->withCookie(config('session.cookie'), $currentSessionId)
+        ->actingAs($user)
+        ->delete('/account/sessions/' . $currentSessionId);
+
+    $response->assertSessionHasErrors(['session']);
+    $this->assertDatabaseHas('sessions', ['id' => $currentSessionId]);
+});
+
+test('a user cannot revoke a session belonging to another user', function () {
+    $user = User::factory()->create();
+    $otherUser = User::factory()->create();
+    $currentSessionId = str_repeat('a', 40);
+
+    DB::table('sessions')->insert([
+        ['id' => $currentSessionId, 'user_id' => $user->id, 'ip_address' => '10.0.0.1', 'user_agent' => 'Current', 'payload' => '', 'last_activity' => now()->timestamp],
+        ['id' => 'foreign-session-id', 'user_id' => $otherUser->id, 'ip_address' => '10.0.0.2', 'user_agent' => 'Foreign', 'payload' => '', 'last_activity' => now()->timestamp],
+    ]);
+
+    $response = $this->withCookie(config('session.cookie'), $currentSessionId)
+        ->actingAs($user)
+        ->delete('/account/sessions/foreign-session-id');
+
+    $response->assertSessionHasErrors(['session']);
+    $this->assertDatabaseHas('sessions', ['id' => 'foreign-session-id']);
+});
+
+test('guests cannot revoke a session', function () {
+    $response = $this->delete('/account/sessions/some-session-id');
+
+    $response->assertRedirect(route('login'));
+});
+
+test('an authenticated user can sign out of all other sessions', function () {
+    $user = User::factory()->create();
+    $otherUser = User::factory()->create();
+    $currentSessionId = str_repeat('a', 40);
+
+    DB::table('sessions')->insert([
+        ['id' => $currentSessionId, 'user_id' => $user->id, 'ip_address' => '10.0.0.1', 'user_agent' => 'Current', 'payload' => '', 'last_activity' => now()->timestamp],
+        ['id' => 'other-session-1', 'user_id' => $user->id, 'ip_address' => '10.0.0.2', 'user_agent' => 'Other 1', 'payload' => '', 'last_activity' => now()->timestamp],
+        ['id' => 'other-session-2', 'user_id' => $user->id, 'ip_address' => '10.0.0.3', 'user_agent' => 'Other 2', 'payload' => '', 'last_activity' => now()->timestamp],
+        ['id' => 'foreign-session', 'user_id' => $otherUser->id, 'ip_address' => '10.0.0.4', 'user_agent' => 'Foreign', 'payload' => '', 'last_activity' => now()->timestamp],
+    ]);
+
+    $response = $this->withCookie(config('session.cookie'), $currentSessionId)
+        ->actingAs($user)
+        ->delete('/account/sessions');
+
+    $response->assertRedirect();
+    $response->assertSessionHas('success', 'Signed out of all other sessions.');
+    $this->assertDatabaseHas('sessions', ['id' => $currentSessionId]);
+    $this->assertDatabaseMissing('sessions', ['id' => 'other-session-1']);
+    $this->assertDatabaseMissing('sessions', ['id' => 'other-session-2']);
+    $this->assertDatabaseHas('sessions', ['id' => 'foreign-session']);
+});
+
+test('guests cannot sign out of all other sessions', function () {
+    $response = $this->delete('/account/sessions');
 
     $response->assertRedirect(route('login'));
 });
