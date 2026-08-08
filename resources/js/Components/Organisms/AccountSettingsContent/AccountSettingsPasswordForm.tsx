@@ -1,7 +1,7 @@
 import Button from '@/Components/Atoms/Button/Button';
 import Icon from '@/Components/Atoms/Icon/Icon';
 import PasswordField from '@/Components/Molecules/PasswordField/PasswordField';
-import { useAlert } from '@/context/AlertContext';
+import { useForm } from '@inertiajs/react';
 import { FormEvent, useEffect, useRef, useState } from 'react';
 
 const MAX_ATTEMPTS = 5;
@@ -32,13 +32,29 @@ const strengthCopy: Record<Strength, { label: string; className: string }> = {
     strong: { label: 'Strong', className: 'bg-[var(--success-color)]' },
 };
 
-export default function AccountSettingsPasswordForm() {
-    const { addAlert } = useAlert();
+interface PasswordFormData {
+    current_password: string;
+    new_password: string;
+    new_password_confirmation: string;
+    [key: string]: string;
+}
 
-    const [currentPassword, setCurrentPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [errors, setErrors] = useState<Record<string, string>>({});
+export default function AccountSettingsPasswordForm() {
+    const {
+        data,
+        setData,
+        post,
+        errors,
+        processing,
+        reset,
+        setError,
+        clearErrors,
+    } = useForm<PasswordFormData>({
+        current_password: '',
+        new_password: '',
+        new_password_confirmation: '',
+    });
+
     const [attempts, setAttempts] = useState(0);
     const [lockoutSeconds, setLockoutSeconds] = useState(0);
     const intervalRef = useRef<ReturnType<typeof setInterval> | undefined>(
@@ -58,12 +74,16 @@ export default function AccountSettingsPasswordForm() {
         return () => clearInterval(intervalRef.current);
     }, [isLocked]);
 
-    const strength = getStrength(newPassword);
+    const strength = getStrength(data.new_password);
 
-    const resetFields = () => {
-        setCurrentPassword('');
-        setNewPassword('');
-        setConfirmPassword('');
+    const registerFailedAttempt = () => {
+        const nextAttempts = attempts + 1;
+        setAttempts(nextAttempts);
+
+        if (nextAttempts >= MAX_ATTEMPTS) {
+            setLockoutSeconds(LOCKOUT_SECONDS);
+            setAttempts(0);
+        }
     };
 
     const handleSubmit = (event: FormEvent) => {
@@ -73,38 +93,37 @@ export default function AccountSettingsPasswordForm() {
             return;
         }
 
-        const nextErrors: Record<string, string> = {};
+        clearErrors();
 
-        if (!currentPassword) {
-            nextErrors.current = 'Enter your current password.';
-        }
-        if (newPassword.length < 8) {
-            nextErrors.newPassword = 'Use at least 8 characters.';
-        }
-        if (newPassword && currentPassword && newPassword === currentPassword) {
-            nextErrors.newPassword =
-                'New password must be different from your current password.';
-        }
-        if (confirmPassword !== newPassword) {
-            nextErrors.confirm = 'Passwords do not match.';
-        }
-
-        setErrors(nextErrors);
-
-        if (Object.keys(nextErrors).length > 0) {
-            const nextAttempts = attempts + 1;
-            setAttempts(nextAttempts);
-
-            if (nextAttempts >= MAX_ATTEMPTS) {
-                setLockoutSeconds(LOCKOUT_SECONDS);
-                setAttempts(0);
-            }
+        if (
+            data.new_password &&
+            data.current_password &&
+            data.new_password === data.current_password
+        ) {
+            setError(
+                'new_password',
+                'New password must be different from your current password.',
+            );
+            registerFailedAttempt();
             return;
         }
 
-        setAttempts(0);
-        addAlert('Your password has been updated.', 'success');
-        resetFields();
+        if (data.new_password_confirmation !== data.new_password) {
+            setError('new_password_confirmation', 'Passwords do not match.');
+            registerFailedAttempt();
+            return;
+        }
+
+        post(route('account.change-password'), {
+            preserveScroll: true,
+            onSuccess: () => {
+                setAttempts(0);
+                reset();
+            },
+            onError: () => {
+                registerFailedAttempt();
+            },
+        });
     };
 
     return (
@@ -131,12 +150,12 @@ export default function AccountSettingsPasswordForm() {
                     <PasswordField
                         id="current-password"
                         label="Current password"
-                        value={currentPassword}
+                        value={data.current_password}
                         onChange={(event) =>
-                            setCurrentPassword(event.target.value)
+                            setData('current_password', event.target.value)
                         }
                         autoComplete="current-password"
-                        error={errors.current}
+                        error={errors.current_password}
                         isDisabled={isLocked}
                         required
                     />
@@ -146,10 +165,12 @@ export default function AccountSettingsPasswordForm() {
                     <PasswordField
                         id="new-password"
                         label="New password"
-                        value={newPassword}
-                        onChange={(event) => setNewPassword(event.target.value)}
+                        value={data.new_password}
+                        onChange={(event) =>
+                            setData('new_password', event.target.value)
+                        }
                         autoComplete="new-password"
-                        error={errors.newPassword}
+                        error={errors.new_password}
                         isDisabled={isLocked}
                         required
                     />
@@ -185,10 +206,12 @@ export default function AccountSettingsPasswordForm() {
                 <PasswordField
                     id="confirm-password"
                     label="Confirm new password"
-                    value={confirmPassword}
-                    onChange={(event) => setConfirmPassword(event.target.value)}
+                    value={data.new_password_confirmation}
+                    onChange={(event) =>
+                        setData('new_password_confirmation', event.target.value)
+                    }
                     autoComplete="new-password"
-                    error={errors.confirm}
+                    error={errors.new_password_confirmation}
                     isDisabled={isLocked}
                     required
                 />
@@ -201,7 +224,7 @@ export default function AccountSettingsPasswordForm() {
                 </p>
                 <Button
                     type="submit"
-                    isDisabled={isLocked}
+                    isDisabled={isLocked || processing}
                     className="shrink-0 rounded-lg px-4 py-1.5"
                 >
                     Update password

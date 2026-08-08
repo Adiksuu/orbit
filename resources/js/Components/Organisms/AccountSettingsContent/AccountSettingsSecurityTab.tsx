@@ -41,24 +41,24 @@ export default function AccountSettingsSecurityTab() {
     const [resetCooldown, setResetCooldown] = useState(0);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-    const sendResetLink = () => {
-        if (resetCooldown > 0) {
-            return;
-        }
-
-        addAlert('Password reset link sent — check your inbox.', 'success');
-        setResetCooldown(30);
-
-        const interval = setInterval(() => {
-            setResetCooldown((prev) => {
-                if (prev <= 1) {
-                    clearInterval(interval);
-                    return 0;
-                }
-                return prev - 1;
-            });
-        }, 1000);
-    };
+    // const sendResetLink = () => {
+    //     if (resetCooldown > 0) {
+    //         return;
+    //     }
+    //
+    //     addAlert('Password reset link sent — check your inbox.', 'success');
+    //     setResetCooldown(30);
+    //
+    //     const interval = setInterval(() => {
+    //         setResetCooldown((prev) => {
+    //             if (prev <= 1) {
+    //                 clearInterval(interval);
+    //                 return 0;
+    //             }
+    //             return prev - 1;
+    //         });
+    //     }, 1000);
+    // };
 
     return (
         <div className="space-y-5">
@@ -68,23 +68,23 @@ export default function AccountSettingsSecurityTab() {
                 icon="KeyRound"
             >
                 <AccountSettingsPasswordForm />
-                <SettingsPanelRow
-                    title="Reset via email"
-                    description="Send a password reset link if you've forgotten your current password."
-                    action={
-                        <Button
-                            type="button"
-                            isBox
-                            onClick={sendResetLink}
-                            isDisabled={resetCooldown > 0}
-                            className="px-3 py-1.5 text-xs"
-                        >
-                            {resetCooldown > 0
-                                ? `Resend in ${resetCooldown}s`
-                                : 'Send reset link'}
-                        </Button>
-                    }
-                />
+                {/*<SettingsPanelRow*/}
+                {/*    title="Reset via email"*/}
+                {/*    description="Send a password reset link if you've forgotten your current password."*/}
+                {/*    action={*/}
+                {/*        <Button*/}
+                {/*            type="button"*/}
+                {/*            isBox*/}
+                {/*            onClick={sendResetLink}*/}
+                {/*            isDisabled={resetCooldown > 0}*/}
+                {/*            className="px-3 py-1.5 text-xs"*/}
+                {/*        >*/}
+                {/*            {resetCooldown > 0*/}
+                {/*                ? `Resend in ${resetCooldown}s`*/}
+                {/*                : 'Send reset link'}*/}
+                {/*        </Button>*/}
+                {/*    }*/}
+                {/*/>*/}
             </SettingsPanel>
 
             <SettingsPanel
