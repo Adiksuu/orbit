@@ -1,36 +1,12 @@
 import Button from '@/Components/Atoms/Button/Button';
 import Icon from '@/Components/Atoms/Icon/Icon';
 import PasswordField from '@/Components/Molecules/PasswordField/PasswordField';
+import PasswordStrengthMeter from '@/Components/Molecules/PasswordStrengthMeter/PasswordStrengthMeter';
 import { useForm } from '@inertiajs/react';
 import { FormEvent, useEffect, useRef, useState } from 'react';
 
 const MAX_ATTEMPTS = 5;
 const LOCKOUT_SECONDS = 60;
-
-type Strength = 'weak' | 'fair' | 'strong';
-
-const getStrength = (password: string): Strength | null => {
-    if (!password) {
-        return null;
-    }
-
-    let score = 0;
-    if (password.length >= 8) score += 1;
-    if (password.length >= 12) score += 1;
-    if (/[A-Z]/.test(password) && /[a-z]/.test(password)) score += 1;
-    if (/\d/.test(password)) score += 1;
-    if (/[^A-Za-z0-9]/.test(password)) score += 1;
-
-    if (score <= 2) return 'weak';
-    if (score <= 3) return 'fair';
-    return 'strong';
-};
-
-const strengthCopy: Record<Strength, { label: string; className: string }> = {
-    weak: { label: 'Weak', className: 'bg-[var(--error-color)]' },
-    fair: { label: 'Fair', className: 'bg-[var(--warning-color)]' },
-    strong: { label: 'Strong', className: 'bg-[var(--success-color)]' },
-};
 
 interface PasswordFormData {
     current_password: string;
@@ -73,8 +49,6 @@ export default function AccountSettingsPasswordForm() {
 
         return () => clearInterval(intervalRef.current);
     }, [isLocked]);
-
-    const strength = getStrength(data.new_password);
 
     const registerFailedAttempt = () => {
         const nextAttempts = attempts + 1;
@@ -174,33 +148,7 @@ export default function AccountSettingsPasswordForm() {
                         isDisabled={isLocked}
                         required
                     />
-                    {strength && (
-                        <div className="flex items-center gap-2 px-0.5">
-                            <div className="flex flex-1 gap-1">
-                                {(['weak', 'fair', 'strong'] as Strength[]).map(
-                                    (tier, index) => (
-                                        <div
-                                            key={tier}
-                                            className={`h-1 flex-1 rounded-full ${
-                                                index <=
-                                                [
-                                                    'weak',
-                                                    'fair',
-                                                    'strong',
-                                                ].indexOf(strength)
-                                                    ? strengthCopy[strength]
-                                                          .className
-                                                    : 'bg-[var(--bg-light-color)]'
-                                            }`}
-                                        />
-                                    ),
-                                )}
-                            </div>
-                            <span className="text-[10px] font-medium text-[var(--text-muted-color)]">
-                                {strengthCopy[strength].label}
-                            </span>
-                        </div>
-                    )}
+                    <PasswordStrengthMeter password={data.new_password} />
                 </div>
 
                 <PasswordField
