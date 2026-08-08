@@ -14,7 +14,10 @@ use Illuminate\Validation\ValidationException;
 
 class UserService
 {
-    public function __construct(protected UserRepository $userRepository) {}
+    public function __construct(
+        protected UserRepository $userRepository,
+        protected ActivityLogService $activityLogService
+    ) {}
 
     public function getAssignableUsers(): Collection {
         return $this->userRepository->getAssignableUsers();
@@ -30,7 +33,15 @@ class UserService
             $data['avatar'] = Storage::url($path);
         }
 
-        return $this->userRepository->update($user, $data);
+        $updatedUser = $this->userRepository->update($user, $data);
+
+        $this->activityLogService->log(
+            null,
+            $avatarFile ? 'Uploaded a new profile avatar' : 'Updated profile details',
+            $user->id
+        );
+
+        return $updatedUser;
     }
 
     public function resetAvatar(User $user): User {
@@ -38,7 +49,11 @@ class UserService
             Storage::disk('public')->delete(str_replace('/storage/', '', $user->avatar));
         }
 
-        return $this->userRepository->update($user, ['avatar' => null]);
+        $updatedUser = $this->userRepository->update($user, ['avatar' => null]);
+
+        $this->activityLogService->log(null, 'Reset profile avatar to default', $user->id);
+
+        return $updatedUser;
     }
 
     public function completeOnboarding(User $user): User {
@@ -49,7 +64,11 @@ class UserService
         return $this->userRepository->completeProjectOnboarding($user);
     }
     public function rename(User $user, string $newName): User {
-        return $this->userRepository->rename($user, $newName);
+        $updatedUser = $this->userRepository->rename($user, $newName);
+
+        $this->activityLogService->log(null, "Changed display name to \"$newName\"", $user->id);
+
+        return $updatedUser;
     }
     public function updatePassword(User $user, string $currentPassword, string $newPassword): User {
         if (! Hash::check($currentPassword, $user->password)) {
@@ -58,7 +77,11 @@ class UserService
             ]);
         }
 
-        return $this->userRepository->updatePassword($user, $newPassword);
+        $updatedUser = $this->userRepository->updatePassword($user, $newPassword);
+
+        $this->activityLogService->log(null, 'Changed account password', $user->id);
+
+        return $updatedUser;
     }
     public function getUserSessions(User $user): SupportCollection {
         $sessions = $this->userRepository->getUserSessions($user);
@@ -88,9 +111,13 @@ class UserService
                 'session' => 'Session not found.',
             ]);
         }
+
+        $this->activityLogService->log(null, 'Signed out of another active session', $user->id);
     }
 
     public function revokeOtherSessions(User $user): void {
         $this->userRepository->deleteOtherSessions($user, request()->session()->getId());
+
+        $this->activityLogService->log(null, 'Signed out of all other active sessions', $user->id);
     }
 }
