@@ -3,6 +3,8 @@ namespace App\Repositories;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as SupportCollection;
+use Illuminate\Support\Facades\DB;
 
 class UserRepository {
     public function getAssignableUsers(): Collection
@@ -40,5 +42,9 @@ class UserRepository {
     public function updatePassword(User $user, string $newPassword): User {
         $user->update(['password' => $newPassword]);
         return $user;
+    }
+    public function getUserSessions(User $user): SupportCollection
+    {
+        return DB::table('sessions')->where('user_id', $user->id)->orderByDesc('last_activity')->get();
     }
 }

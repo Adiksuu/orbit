@@ -1,4 +1,5 @@
 import { AlertProvider } from '@/context/AlertContext';
+import { Session } from '@/types/Users';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
@@ -15,10 +16,34 @@ vi.mock('@inertiajs/react', async () => {
     };
 });
 
-const renderList = () =>
+const mockSessions: Session[] = [
+    {
+        id: 'session-1',
+        ipAddress: '192.168.1.1',
+        userAgent: 'Chrome on macOS',
+        lastActiveAt: new Date().toISOString(),
+        isCurrent: true,
+    },
+    {
+        id: 'session-2',
+        ipAddress: '192.168.1.2',
+        userAgent: 'Safari on iOS',
+        lastActiveAt: new Date().toISOString(),
+        isCurrent: false,
+    },
+    {
+        id: 'session-3',
+        ipAddress: '192.168.1.3',
+        userAgent: 'Edge on Windows',
+        lastActiveAt: new Date().toISOString(),
+        isCurrent: false,
+    },
+];
+
+const renderList = (sessions: Session[] = mockSessions) =>
     render(
         <AlertProvider>
-            <AccountSettingsSessionsList />
+            <AccountSettingsSessionsList sessions={sessions} />
         </AlertProvider>,
     );
 
@@ -36,15 +61,13 @@ describe('AccountSettingsSessionsList', () => {
         renderList();
         const user = userEvent.setup();
 
-        expect(screen.getByText('iPhone 15 · Safari')).toBeInTheDocument();
+        expect(screen.getByText('192.168.1.2')).toBeInTheDocument();
 
         await user.click(screen.getAllByRole('button', { name: 'Revoke' })[0]);
 
+        expect(screen.queryByText('192.168.1.2')).not.toBeInTheDocument();
         expect(
-            screen.queryByText('iPhone 15 · Safari'),
-        ).not.toBeInTheDocument();
-        expect(
-            screen.getByText('Signed out of "iPhone 15 · Safari".'),
+            screen.getByText('Signed out of "192.168.1.2".'),
         ).toBeInTheDocument();
     });
 

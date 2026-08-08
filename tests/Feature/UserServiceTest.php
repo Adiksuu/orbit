@@ -125,3 +125,35 @@ test('it throws a validation exception when the current password is incorrect', 
 
     $this->service->updatePassword($user, 'wrong-password', 'new-password');
 })->throws(ValidationException::class);
+
+test('it maps user sessions to their display shape', function () {
+    $user = User::factory()->create();
+
+    $this->app['request']->setLaravelSession($this->app['session']->driver());
+
+    $sessions = collect([
+        (object) [
+            'id' => 'session-a',
+            'ip_address' => '127.0.0.1',
+            'user_agent' => 'Agent A',
+            'last_activity' => 1700000000,
+        ],
+    ]);
+
+    $this->userRepository->shouldReceive('getUserSessions')
+        ->once()
+        ->with($user)
+        ->andReturn($sessions);
+
+    $result = $this->service->getUserSessions($user);
+
+    expect($result)->toHaveCount(1)
+        ->and($result->first())->toMatchArray([
+            'id' => 'session-a',
+            'ipAddress' => '127.0.0.1',
+            'userAgent' => 'Agent A',
+        ])
+        ->and($result->first()['lastActiveAt'])->toBe(
+            \Illuminate\Support\Carbon::createFromTimestamp(1700000000)->toIso8601String(),
+        );
+});

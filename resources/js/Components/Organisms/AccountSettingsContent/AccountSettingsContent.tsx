@@ -1,4 +1,5 @@
 import { AccountSettingsTabId } from '@/types/Settings';
+import { Session } from '@/types/Users';
 import AccountSettingsExportTab from './AccountSettingsExportTab';
 import AccountSettingsIntegrationsTab from './AccountSettingsIntegrationsTab';
 import AccountSettingsNotificationsTab from './AccountSettingsNotificationsTab';
@@ -10,12 +11,14 @@ interface AccountSettingsContentProps {
     tabId: AccountSettingsTabId;
     userName?: string;
     userAvatar?: string | null;
+    sessions?: Session[];
 }
 
 export default function AccountSettingsContent({
     tabId,
     userName,
     userAvatar,
+    sessions = [],
 }: AccountSettingsContentProps) {
     if (tabId === 'preferences') {
         return <AccountSettingsPreferencesTab />;
@@ -35,7 +38,7 @@ export default function AccountSettingsContent({
     }
 
     if (tabId === 'security-access') {
-        return <AccountSettingsSecurityTab />;
+        return <AccountSettingsSecurityTab sessions={sessions} />;
     }
 
     if (tabId === 'integrations') {

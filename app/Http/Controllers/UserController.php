@@ -6,7 +6,9 @@ use App\Services\NsfwDetectionService;
 use App\Services\UserService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Throwable;
 
 class UserController extends Controller
 {
@@ -67,7 +69,20 @@ class UserController extends Controller
 
         $avatar = $request->file('avatar');
 
-        if (! $nsfwDetection->validate($avatar)) {
+        try {
+            $isValid = $nsfwDetection->validate($avatar);
+        } catch (Throwable $e) {
+            Log::error('NSFW detection service failure during avatar upload: ' . $e->getMessage(), [
+                'exception' => $e,
+                'user_id' => $request->user()?->id,
+            ]);
+
+            return back()->withErrors([
+                'avatar' => 'Unable to verify image safety right now. Please try again later.',
+            ])->with('error', 'Unable to verify image safety right now. Please try again later.');
+        }
+
+        if (! $isValid) {
             return back()->withErrors([
                 'avatar' => 'This image cannot be used.',
             ])->with('error', 'This image cannot be used.');

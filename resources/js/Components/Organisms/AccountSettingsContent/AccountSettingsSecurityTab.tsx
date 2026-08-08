@@ -4,6 +4,7 @@ import AccountSettingsDeleteAccountModal from '@/Components/Organisms/AccountSet
 import AccountSettingsPasswordForm from '@/Components/Organisms/AccountSettingsContent/AccountSettingsPasswordForm';
 import AccountSettingsSessionTimeoutCard from '@/Components/Organisms/AccountSettingsContent/AccountSettingsSessionTimeoutCard';
 import AccountSettingsSessionsList from '@/Components/Organisms/AccountSettingsContent/AccountSettingsSessionsList';
+import { Session } from '@/types/Users';
 import { useState } from 'react';
 
 const sessionTimeoutOptions = [
@@ -33,7 +34,13 @@ const sessionTimeoutOptions = [
     },
 ];
 
-export default function AccountSettingsSecurityTab() {
+interface AccountSettingsSecurityTabProps {
+    sessions?: Session[];
+}
+
+export default function AccountSettingsSecurityTab({
+    sessions = [],
+}: AccountSettingsSecurityTabProps) {
     // const { addAlert } = useAlert();
     const [sessionTimeout, setSessionTimeout] = useState('8-hours');
     // const [resetCooldown, setResetCooldown] = useState(0);
@@ -90,7 +97,7 @@ export default function AccountSettingsSecurityTab() {
                 description="Review and revoke devices currently signed in to your account."
                 icon="ShieldCheck"
             >
-                <AccountSettingsSessionsList />
+                <AccountSettingsSessionsList sessions={sessions} />
             </SettingsPanel>
 
             <SettingsPanel

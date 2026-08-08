@@ -3,6 +3,7 @@
 use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 uses(RefreshDatabase::class);
@@ -74,4 +75,20 @@ test('it can update a user password', function () {
     $updatedUser = $this->repository->updatePassword($user, 'new-password');
 
     expect(Hash::check('new-password', $updatedUser->password))->toBeTrue();
+});
+
+test('it gets sessions belonging to a user ordered by most recent activity', function () {
+    $user = User::factory()->create();
+    $otherUser = User::factory()->create();
+
+    DB::table('sessions')->insert([
+        ['id' => 'session-older', 'user_id' => $user->id, 'ip_address' => '10.0.0.1', 'user_agent' => 'Agent A', 'payload' => '', 'last_activity' => 100],
+        ['id' => 'session-newer', 'user_id' => $user->id, 'ip_address' => '10.0.0.2', 'user_agent' => 'Agent B', 'payload' => '', 'last_activity' => 200],
+        ['id' => 'session-other-user', 'user_id' => $otherUser->id, 'ip_address' => '10.0.0.3', 'user_agent' => 'Agent C', 'payload' => '', 'last_activity' => 300],
+    ]);
+
+    $sessions = $this->repository->getUserSessions($user);
+
+    expect($sessions)->toHaveCount(2)
+        ->and($sessions->pluck('id')->all())->toBe(['session-newer', 'session-older']);
 });

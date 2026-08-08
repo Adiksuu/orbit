@@ -6,6 +6,8 @@ use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
@@ -57,5 +59,18 @@ class UserService
         }
 
         return $this->userRepository->updatePassword($user, $newPassword);
+    }
+    public function getUserSessions(User $user): SupportCollection {
+        $sessions = $this->userRepository->getUserSessions($user);
+
+        return $sessions->map(fn ($session) => [
+            'id' => $session->id,
+            'ipAddress' => $session->ip_address,
+            'userAgent' => $session->user_agent,
+            'lastActiveAt' => Carbon::createFromTimestamp(
+                $session->last_activity
+            )->toIso8601String(),
+            'isCurrent' => $session->id === request()->session()->getId(),
+        ]);
     }
 }

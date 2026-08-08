@@ -13,10 +13,15 @@ import {
     isSettingsTabId,
     isWorkspaceSettingsTabId,
 } from '@/types/Settings';
+import { Session } from '@/types/Users';
 import { usePage } from '@inertiajs/react';
 import { useMemo } from 'react';
 
-export default function SettingsIndex() {
+interface SettingsIndexProps {
+    sessions?: Session[];
+}
+
+export default function SettingsIndex({ sessions = [] }: SettingsIndexProps) {
     const { url, props } = usePage<PageProps>();
     const userName = props.auth?.user?.name ?? 'John Doe';
     const userAvatar = props.auth?.user?.avatar ?? null;
@@ -85,6 +90,7 @@ export default function SettingsIndex() {
                                 tabId={activeTab}
                                 userName={userName}
                                 userAvatar={userAvatar}
+                                sessions={sessions}
                             />
                         ) : isWorkspaceSettingsTabId(activeTab) ? (
                             <WorkspaceSettingsContent tabId={activeTab} />

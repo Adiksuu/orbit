@@ -2,52 +2,40 @@ import Button from '@/Components/Atoms/Button/Button';
 import Icon from '@/Components/Atoms/Icon/Icon';
 import StatusDot from '@/Components/Atoms/StatusDot/StatusDot';
 import { useAlert } from '@/context/AlertContext';
-import { icons } from 'lucide-react';
+import { Session } from '@/types/Users';
+import { formatDate } from '@/utils/time';
+import { cva } from 'class-variance-authority';
 import { useState } from 'react';
 
-interface Session {
-    id: string;
-    device: string;
-    icon: keyof typeof icons;
-    location: string;
-    lastActive: string;
-    isCurrent: boolean;
+interface AccountSettingsSessionsListProps {
+    sessions?: Session[];
 }
 
-const initialSessions: Session[] = [
+const iconBgVariants = cva(
+    'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg',
     {
-        id: 'session-1',
-        device: 'MacBook Pro · Chrome',
-        icon: 'Laptop',
-        location: 'Warsaw, Poland',
-        lastActive: 'Active now',
-        isCurrent: true,
+        variants: {
+            status: {
+                current:
+                    'bg-[var(--accent-color-opacity)] text-[var(--accent-color)]',
+                other: 'bg-[var(--bg-light-color)] text-[var(--text-gray-color)]',
+            },
+        },
+        defaultVariants: {
+            status: 'current',
+        },
     },
-    {
-        id: 'session-2',
-        device: 'iPhone 15 · Safari',
-        icon: 'Smartphone',
-        location: 'Warsaw, Poland',
-        lastActive: 'Last active 2 hours ago',
-        isCurrent: false,
-    },
-    {
-        id: 'session-3',
-        device: 'Windows PC · Edge',
-        icon: 'Monitor',
-        location: 'Krakow, Poland',
-        lastActive: 'Last active 3 days ago',
-        isCurrent: false,
-    },
-];
+);
 
-export default function AccountSettingsSessionsList() {
+export default function AccountSettingsSessionsList({
+    sessions: initialSessions = [],
+}: AccountSettingsSessionsListProps) {
     const { addAlert } = useAlert();
     const [sessions, setSessions] = useState(initialSessions);
 
     const revoke = (session: Session) => {
         setSessions((prev) => prev.filter((item) => item.id !== session.id));
-        addAlert(`Signed out of "${session.device}".`, 'success');
+        addAlert(`Signed out of "${session.ipAddress}".`, 'success');
     };
 
     const revokeAllOthers = () => {
@@ -64,15 +52,25 @@ export default function AccountSettingsSessionsList() {
                     key={session.id}
                     className="flex items-center gap-3 rounded-xl border border-[var(--border-color)] bg-[var(--surface-color)] px-3.5 py-3"
                 >
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--bg-light-color)] text-[var(--text-gray-color)]">
-                        <Icon name={session.icon} size={16} />
+                    <span
+                        className={iconBgVariants({
+                            status: session.isCurrent ? 'current' : 'other',
+                        })}
+                    >
+                        <Icon
+                            name={
+                                session.isCurrent ? 'ShieldCheck' : 'ShieldBan'
+                            }
+                            size={16}
+                        />
                     </span>
                     <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-medium text-[var(--text-color)]">
-                            {session.device}
+                            {session.ipAddress}
                         </p>
                         <p className="truncate text-xs text-[var(--text-gray-color)]">
-                            {session.location} · {session.lastActive}
+                            {session.userAgent} ·{' '}
+                            {formatDate(session.lastActiveAt)}
                         </p>
                     </div>
                     {session.isCurrent ? (
