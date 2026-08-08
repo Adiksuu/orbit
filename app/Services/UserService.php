@@ -6,7 +6,9 @@ use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class UserService
 {
@@ -46,5 +48,14 @@ class UserService
     }
     public function rename(User $user, string $newName): User {
         return $this->userRepository->rename($user, $newName);
+    }
+    public function updatePassword(User $user, string $currentPassword, string $newPassword): User {
+        if (! Hash::check($currentPassword, $user->password)) {
+            throw ValidationException::withMessages([
+                'current_password' => 'The provided password does not match your current password.',
+            ]);
+        }
+
+        return $this->userRepository->updatePassword($user, $newPassword);
     }
 }

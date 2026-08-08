@@ -84,4 +84,15 @@ class UserController extends Controller
 
         return back();
     }
+    public function updatePassword(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'current_password' => 'required|string',
+            'new_password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $this->userService->updatePassword($request->user(), $request->input('current_password'), $request->input('new_password'));
+
+        return back()->with('success', 'Password has been updated successfully.');
+    }
 }

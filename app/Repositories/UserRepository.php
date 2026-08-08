@@ -37,4 +37,8 @@ class UserRepository {
         $user->update(['name' => $newName]);
         return $user;
     }
+    public function updatePassword(User $user, string $newPassword): User {
+        $user->update(['password' => $newPassword]);
+        return $user;
+    }
 }

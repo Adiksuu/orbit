@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 
 uses(RefreshDatabase::class);
 
@@ -78,6 +79,69 @@ test('rename name requires a non-empty name', function () {
 test('guests cannot rename account name', function () {
     $response = $this->post('/account/rename', [
         'name' => 'New Name',
+    ]);
+
+    $response->assertRedirect(route('login'));
+});
+
+test('an authenticated user can change their password', function () {
+    $user = User::factory()->create(['password' => 'old-password']);
+
+    $response = $this->actingAs($user)->post('/account/change-password', [
+        'current_password' => 'old-password',
+        'new_password' => 'new-password',
+        'new_password_confirmation' => 'new-password',
+    ]);
+
+    $response->assertRedirect();
+    $response->assertSessionHas('success', 'Password has been updated successfully.');
+    expect(Hash::check('new-password', $user->fresh()->password))->toBeTrue();
+});
+
+test('changing password fails when current password is incorrect', function () {
+    $user = User::factory()->create(['password' => 'old-password']);
+
+    $response = $this->actingAs($user)->post('/account/change-password', [
+        'current_password' => 'wrong-password',
+        'new_password' => 'new-password',
+        'new_password_confirmation' => 'new-password',
+    ]);
+
+    $response->assertSessionHasErrors(['current_password']);
+    expect(Hash::check('old-password', $user->fresh()->password))->toBeTrue();
+});
+
+test('changing password requires new password to be confirmed', function () {
+    $user = User::factory()->create(['password' => 'old-password']);
+
+    $response = $this->actingAs($user)->post('/account/change-password', [
+        'current_password' => 'old-password',
+        'new_password' => 'new-password',
+        'new_password_confirmation' => 'does-not-match',
+    ]);
+
+    $response->assertSessionHasErrors(['new_password']);
+    expect(Hash::check('old-password', $user->fresh()->password))->toBeTrue();
+});
+
+test('changing password requires a minimum length', function () {
+    $user = User::factory()->create(['password' => 'old-password']);
+
+    $response = $this->actingAs($user)->post('/account/change-password', [
+        'current_password' => 'old-password',
+        'new_password' => 'short',
+        'new_password_confirmation' => 'short',
+    ]);
+
+    $response->assertSessionHasErrors(['new_password']);
+    expect(Hash::check('old-password', $user->fresh()->password))->toBeTrue();
+});
+
+test('guests cannot change password', function () {
+    $response = $this->post('/account/change-password', [
+        'current_password' => 'old-password',
+        'new_password' => 'new-password',
+        'new_password_confirmation' => 'new-password',
     ]);
 
     $response->assertRedirect(route('login'));
