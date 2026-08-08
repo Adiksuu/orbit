@@ -47,6 +47,7 @@ class HandleInertiaRequests extends Middleware
                     'role' => $request->user()->role->value,
                     'has_completed_onboarding' => $request->user()->has_completed_onboarding,
                     'has_completed_project_onboarding' => $request->user()->has_completed_project_onboarding,
+                    'session_lifetime' => $request->user()->session_lifetime,
                 ] : null,
             ],
             'hasProjects' => fn () => $request->user()

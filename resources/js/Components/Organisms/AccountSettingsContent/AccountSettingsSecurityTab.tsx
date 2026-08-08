@@ -4,7 +4,10 @@ import AccountSettingsDeleteAccountModal from '@/Components/Organisms/AccountSet
 import AccountSettingsPasswordForm from '@/Components/Organisms/AccountSettingsContent/AccountSettingsPasswordForm';
 import AccountSettingsSessionTimeoutCard from '@/Components/Organisms/AccountSettingsContent/AccountSettingsSessionTimeoutCard';
 import AccountSettingsSessionsList from '@/Components/Organisms/AccountSettingsContent/AccountSettingsSessionsList';
+import { useAlert } from '@/context/AlertContext';
+import { PageProps } from '@/types';
 import { Session } from '@/types/Users';
+import { router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
 const sessionTimeoutOptions = [
@@ -45,10 +48,36 @@ interface AccountSettingsSecurityTabProps {
 export default function AccountSettingsSecurityTab({
     sessions = [],
 }: AccountSettingsSecurityTabProps) {
-    // const { addAlert } = useAlert();
-    const [sessionTimeout, setSessionTimeout] = useState('8-hours');
+    const { addAlert } = useAlert();
+    const { props } = usePage<PageProps>();
+    const currentLifetime = props.auth?.user?.session_lifetime ?? 480;
+    const [pendingLifetime, setPendingLifetime] = useState<number | null>(null);
     // const [resetCooldown, setResetCooldown] = useState(0);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+    const selectSessionTimeout = (lifetime: number) => {
+        if (lifetime === currentLifetime) {
+            return;
+        }
+
+        setPendingLifetime(lifetime);
+        router.post(
+            route('account.session-lifetime.update', lifetime),
+            {},
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    addAlert('Session expiry has been updated.', 'success');
+                },
+                onError: () => {
+                    addAlert('Failed to update session expiry.', 'error');
+                },
+                onFinish: () => {
+                    setPendingLifetime(null);
+                },
+            },
+        );
+    };
 
     // const sendResetLink = () => {
     //     if (resetCooldown > 0) {
@@ -116,8 +145,12 @@ export default function AccountSettingsSecurityTab({
                             label={option.label}
                             icon={option.icon}
                             description={option.description}
-                            selected={sessionTimeout === option.id}
-                            onSelect={() => setSessionTimeout(option.id)}
+                            selected={
+                                (pendingLifetime ?? currentLifetime) ===
+                                option.value
+                            }
+                            isDisabled={pendingLifetime !== null}
+                            onSelect={() => selectSessionTimeout(option.value)}
                         />
                     ))}
                 </div>

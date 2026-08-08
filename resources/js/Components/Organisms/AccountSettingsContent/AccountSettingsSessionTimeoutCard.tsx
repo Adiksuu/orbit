@@ -6,6 +6,7 @@ interface AccountSettingsSessionTimeoutCardProps {
     icon: keyof typeof icons;
     description: string;
     selected: boolean;
+    isDisabled?: boolean;
     onSelect: () => void;
 }
 
@@ -14,13 +15,15 @@ export default function AccountSettingsSessionTimeoutCard({
     icon,
     description,
     selected,
+    isDisabled = false,
     onSelect,
 }: AccountSettingsSessionTimeoutCardProps) {
     return (
         <button
             type="button"
             onClick={onSelect}
-            className={`rounded-xl border p-3 text-left transition-colors ${
+            disabled={isDisabled}
+            className={`rounded-xl border p-3 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
                 selected
                     ? 'border-[var(--accent-color)] bg-[var(--accent-color-opacity)]'
                     : 'border-[var(--border-color)] bg-[var(--surface-color)] hover:border-[var(--border-color-strong)]'

@@ -9,6 +9,7 @@ export interface User {
     role: 'admin' | 'member';
     has_completed_onboarding: boolean;
     has_completed_project_onboarding: boolean;
+    session_lifetime: number;
 }
 
 export type PageProps<
