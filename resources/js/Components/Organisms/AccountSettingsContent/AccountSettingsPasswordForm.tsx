@@ -3,7 +3,7 @@ import Icon from '@/Components/Atoms/Icon/Icon';
 import PasswordField from '@/Components/Molecules/PasswordField/PasswordField';
 import PasswordStrengthMeter from '@/Components/Molecules/PasswordStrengthMeter/PasswordStrengthMeter';
 import { useForm } from '@inertiajs/react';
-import { FormEvent, useEffect, useRef, useState } from 'react';
+import { SyntheticEvent, useEffect, useRef, useState } from 'react';
 
 const MAX_ATTEMPTS = 5;
 const LOCKOUT_SECONDS = 60;
@@ -60,7 +60,7 @@ export default function AccountSettingsPasswordForm() {
         }
     };
 
-    const handleSubmit = (event: FormEvent) => {
+    const handleSubmit = (event: SyntheticEvent) => {
         event.preventDefault();
 
         if (isLocked) {

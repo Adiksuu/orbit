@@ -1,11 +1,9 @@
-import Button from '@/Components/Atoms/Button/Button';
 import SettingsPanel from '@/Components/Molecules/SettingsPanel/SettingsPanel';
 import SettingsPanelRow from '@/Components/Molecules/SettingsPanelRow/SettingsPanelRow';
 import AccountSettingsDeleteAccountModal from '@/Components/Organisms/AccountSettingsContent/AccountSettingsDeleteAccountModal';
 import AccountSettingsPasswordForm from '@/Components/Organisms/AccountSettingsContent/AccountSettingsPasswordForm';
 import AccountSettingsSessionTimeoutCard from '@/Components/Organisms/AccountSettingsContent/AccountSettingsSessionTimeoutCard';
 import AccountSettingsSessionsList from '@/Components/Organisms/AccountSettingsContent/AccountSettingsSessionsList';
-import { useAlert } from '@/context/AlertContext';
 import { useState } from 'react';
 
 const sessionTimeoutOptions = [
@@ -36,9 +34,9 @@ const sessionTimeoutOptions = [
 ];
 
 export default function AccountSettingsSecurityTab() {
-    const { addAlert } = useAlert();
+    // const { addAlert } = useAlert();
     const [sessionTimeout, setSessionTimeout] = useState('8-hours');
-    const [resetCooldown, setResetCooldown] = useState(0);
+    // const [resetCooldown, setResetCooldown] = useState(0);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
     // const sendResetLink = () => {
