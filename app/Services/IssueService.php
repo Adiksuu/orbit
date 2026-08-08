@@ -257,7 +257,13 @@ class IssueService
         $this->issueRepository->delete($issue);
         $this->activityLogService->log($issue->project_id, "Deleted issue #$issue->id \"$issue->title\"");
     }
-    public function bulkDeleteIssues(array $issues): void {
-        $this->issueRepository->bulkDelete($issues);
+    public function bulkDeleteIssues(array $issueIds): void {
+        $issues = $this->issueRepository->getMany($issueIds);
+
+        $this->issueRepository->bulkDelete($issueIds);
+
+        foreach ($issues as $issue) {
+            $this->activityLogService->log($issue->project_id, "Deleted issue #$issue->id \"$issue->title\"");
+        }
     }
 }

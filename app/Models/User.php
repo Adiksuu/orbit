@@ -23,6 +23,8 @@ class User extends Authenticatable
         'has_completed_project_onboarding',
 //        'avatar',
 //        'type'
+        'avatar',
+        'session_lifetime',
     ];
 
     protected $hidden = [

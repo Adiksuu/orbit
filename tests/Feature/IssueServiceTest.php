@@ -390,14 +390,29 @@ test('deleteIssue calls the repository delete and logs activity', function () {
     $this->service->deleteIssue($issue);
 });
 
-test('bulkDeleteIssues calls the repository bulkDelete with the given ids and does not log activity', function () {
+test('bulkDeleteIssues calls the repository bulkDelete with the given ids and logs one entry per deleted issue', function () {
+    $project = Project::factory()->create();
     $ids = [1, 2, 3];
+    $issues = collect([
+        (object) ['id' => 1, 'project_id' => $project->id, 'title' => 'Bug one'],
+        (object) ['id' => 2, 'project_id' => $project->id, 'title' => 'Bug two'],
+        (object) ['id' => 3, 'project_id' => $project->id, 'title' => 'Bug three'],
+    ]);
+
+    $this->issueRepository->shouldReceive('getMany')
+        ->once()
+        ->with($ids)
+        ->andReturn($issues);
 
     $this->issueRepository->shouldReceive('bulkDelete')
         ->once()
         ->with($ids);
 
-    $this->activityLogService->shouldNotReceive('log');
+    foreach ($issues as $issue) {
+        $this->activityLogService->shouldReceive('log')
+            ->once()
+            ->with($project->id, "Deleted issue #$issue->id \"$issue->title\"");
+    }
 
     $this->service->bulkDeleteIssues($ids);
 });
