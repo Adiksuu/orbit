@@ -13,24 +13,28 @@ const sessionTimeoutOptions = [
         label: '1 hour',
         icon: 'Zap' as const,
         description: 'Most secure. Re-authenticate frequently.',
+        value: 60,
     },
     {
         id: '8-hours',
         label: '8 hours',
         icon: 'Clock3' as const,
         description: 'Balanced for a typical workday.',
+        value: 480,
     },
     {
         id: '24-hours',
         label: '24 hours',
         icon: 'CalendarClock' as const,
         description: 'Stay signed in for a full day.',
+        value: 1440,
     },
     {
         id: '7-days',
         label: '7 days',
         icon: 'TimerReset' as const,
         description: 'Most convenient. Sign in less often.',
+        value: 10080,
     },
 ];
 

@@ -24,6 +24,7 @@ class User extends Authenticatable
 //        'avatar',
 //        'type'
         'avatar',
+        'session_lifetime',
     ];
 
     protected $hidden = [

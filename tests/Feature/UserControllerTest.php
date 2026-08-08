@@ -241,3 +241,28 @@ test('guests cannot sign out of all other sessions', function () {
 
     $response->assertRedirect(route('login'));
 });
+
+test('an authenticated user can update their session lifetime to an allowed value', function () {
+    $user = User::factory()->create(['session_lifetime' => 480]);
+
+    $response = $this->actingAs($user)->post('/account/session-lifetime/1440');
+
+    $response->assertRedirect();
+    $response->assertSessionHas('success', 'Session lifetime has been updated.');
+    $this->assertDatabaseHas('users', ['id' => $user->id, 'session_lifetime' => 1440]);
+});
+
+test('updating session lifetime rejects a value outside the allowed list', function () {
+    $user = User::factory()->create(['session_lifetime' => 480]);
+
+    $response = $this->actingAs($user)->post('/account/session-lifetime/999');
+
+    $response->assertSessionHasErrors(['lifetime']);
+    $this->assertDatabaseHas('users', ['id' => $user->id, 'session_lifetime' => 480]);
+});
+
+test('guests cannot update session lifetime', function () {
+    $response = $this->post('/account/session-lifetime/1440');
+
+    $response->assertRedirect(route('login'));
+});

@@ -120,4 +120,12 @@ class UserService
 
         $this->activityLogService->log(null, 'Signed out of all other active sessions', $user->id);
     }
+
+    public function updateSessionLifetime(User $user, int $lifetime): User {
+        $updatedUser = $this->userRepository->updateSessionLifetime($user, $lifetime);
+
+        $this->activityLogService->log(null, 'Updated session lifetime', $user->id);
+
+        return $updatedUser;
+    }
 }

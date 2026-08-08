@@ -63,4 +63,10 @@ class UserRepository {
             ->where('id', '!=', $currentSessionId)
             ->delete();
     }
+
+    public function updateSessionLifetime(User $user, int $lifetime): User {
+        session()->put('session_lifetime', $lifetime);
+        $user->update(['session_lifetime' => $lifetime]);
+        return $user;
+    }
 }

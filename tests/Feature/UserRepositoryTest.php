@@ -137,3 +137,12 @@ test('it deletes every session for a user except the current one', function () {
     $this->assertDatabaseMissing('sessions', ['id' => 'other-session']);
     $this->assertDatabaseHas('sessions', ['id' => 'foreign-session']);
 });
+
+test('it updates a user session lifetime', function () {
+    $user = User::factory()->create(['session_lifetime' => 480]);
+
+    $updatedUser = $this->repository->updateSessionLifetime($user, 1440);
+
+    expect($updatedUser->session_lifetime)->toBe(1440);
+    $this->assertDatabaseHas('users', ['id' => $user->id, 'session_lifetime' => 1440]);
+});

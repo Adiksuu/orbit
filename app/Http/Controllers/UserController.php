@@ -124,4 +124,15 @@ class UserController extends Controller
 
         return back()->with('success', 'Signed out of all other sessions.');
     }
+    public function updateSessionLifetime(Request $request, int $lifetime): RedirectResponse
+    {
+        Validator::make(
+            ['lifetime' => $lifetime],
+            ['lifetime' => 'required|integer|in:60,480,1440,10080']
+        )->validate();
+
+        $this->userService->updateSessionLifetime($request->user(), $lifetime);
+
+        return back()->with('success', 'Session lifetime has been updated.');
+    }
 }

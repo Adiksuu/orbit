@@ -9,4 +9,5 @@ Route::middleware('auth')->group(function () {
    Route::post('/account/change-password', [UserController::class, 'updatePassword'])->name('account.change-password');
    Route::delete('/account/sessions/{session}', [UserController::class, 'revokeSession'])->name('account.sessions.revoke');
    Route::delete('/account/sessions', [UserController::class, 'revokeOtherSessions'])->name('account.sessions.revoke-others');
+   Route::post('/account/session-lifetime/{lifetime}', [UserController::class, 'updateSessionLifetime'])->name('account.session-lifetime.update');
 });

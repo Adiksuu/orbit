@@ -268,3 +268,20 @@ test('it delegates revoking other sessions to the repository using the current s
 
     expect(true)->toBeTrue();
 });
+
+test('it updates the session lifetime via the repository and logs the change', function () {
+    $user = User::factory()->create(['session_lifetime' => 480]);
+
+    $this->userRepository->shouldReceive('updateSessionLifetime')
+        ->once()
+        ->with($user, 1440)
+        ->andReturn($user);
+
+    $this->activityLogService->shouldReceive('log')
+        ->once()
+        ->with(null, 'Updated session lifetime', $user->id);
+
+    $result = $this->service->updateSessionLifetime($user, 1440);
+
+    expect($result)->toBe($user);
+});
